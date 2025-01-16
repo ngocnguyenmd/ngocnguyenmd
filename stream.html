@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chọn Tập Phim</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212; /* Nền tối */
+            color: white;
+            margin: 0;
+            padding: 20px;
+            display:flex ;
+            flex-direction :column ;
+            align-items:center ;
+        }
+
+        h1{
+            text-align:center ;
+            margin-bottom :20px ;
+        }
+
+        .episode-list{
+            display:flex ;
+            flex-wrap :wrap ; 
+            justify-content:center ; 
+        }
+
+        .episode-list button{
+            background-color:#ff0000 ; 
+            color:white ; 
+            padding :10px ; 
+            border:none ; 
+            border-radius :5px ;
+            cursor:pointer ; 
+            margin :5px ;
+        }
+
+        .episode-list button:hover{
+            background-color:#cc0000 ; 
+        }
+      
+      .button-container {
+          margin-top :20px ;
+          display:flex ;
+          justify-content:center ; 
+      }
+      
+      .back-button, .home-button {
+          background-color:#ff0000 ; 
+          color:white ; 
+          padding :10px ; 
+          border:none ; 
+          border-radius :5px ; 
+          cursor:pointer ;
+          margin :0 10px ;
+      }
+      
+      .back-button:hover, .home-button:hover{
+          background-color:#cc0000 ; 
+      }
+   </style>
+</head>
+<body>
+
+    <h1>Chọn Tập Phim</h1>
+
+    <!-- Danh sách các tập phim -->
+    <div id="episodeMenu" class="episode-list"></div>
+
+    <!-- Nút quay lại danh sách tập và trang chủ -->
+    <div class="button-container">
+         <button class="back-button" onclick="goBack()">Quay lại danh sách tập</button>
+         <button class="home-button" onclick="goHome()">Quay lại trang chủ</button>
+     </div>
+
+     <script>
+         const episodes = {
+             movieA: [ // Cập nhật danh sách các tập cho movieA
+                 { title: "Tập 18", link: "https://vip.opstream15.com/20250107/47189_de6ddd41/index.m3u8" },
+                 { title: "Tập 17", link: "https://vip.opstream15.com/20250108/47276_a0ded240/index.m3u8" },
+                 { title: "Tập 16", link: "https://vip.opstream15.com/20250108/47275_c83672b4/index.m3u8" },
+                 { title: "Tập 15", link: "https://vip.opstream15.com/20250112/47541_6a69660a/index.m3u8" },
+                 { title: "Tập 14", link: "https://vip.opstream15.com/20250112/47540_68702494/index.m3u8" },
+                 { title: "Tập 13", link: "https://vip.opstream15.com/20250112/47472_2d01216e/index.m3u8" },
+                 { title: "Tập 12", link: "https://vip.opstream15.com/20250112/47471_b772565d/index.m3u8" },
+                 { title: "Tập 11", link: "https://vip.opstream15.com/20250110/47389_abcdc440/index.m3u8" },
+                 { title: "Tập 10", link: "https://vip.opstream15.com/20250110/47388_ed7ef736/index.m3u8" },
+                 { title: "Tập 9", link: "https://vip.opstream15.com/20250109/47307_1af9a111/index.m3u8" },
+                 { title: "Tập 8", link: "https://vip.opstream15.com/20250109/47306_7e8d1a0b/index.m3u8" },
+                 { title: "Tập 7", link: "https://vip.opstream15.com/20250108/47276_a0ded240/index.m3u8" },
+                 { title: "Tập 6", link:"https://vip.opstream15.com/20250108/47275_c83672b4/index.m3u8"},
+                 { title:"Tập 5", link:"https://vip.opstream15.com/20250107/47193_de40ab56/index.m3u8"},
+                 { title:"Tập 4", link:"https://vip.opstream15.com/20250107/47192_86ccaeb1/index.m3u8"},
+                 { title:"Tập 3", link:"https://vip.opstream15.com/20250107/47191_a727afed/index.m3u8"},
+                 { title:"Tập 2", link:"https://vip.opstream15.com/20250107/47190_72abde3b/index.m3u8"},
+                 { title:"Tập 1", link:"https://vip.opstream15.com/20250107/47189_de6ddd41/index.m3u8"}
+             ],
+             movieB: [
+    { title: "Tập 16", link: "https://vip.opstream15.com/20250116/47799_060c6421/index.m3u8" },
+    { title: "Tập 15", link: "https://vip.opstream15.com/20250116/47798_5e1c1540/index.m3u8" },
+    { title: "Tập 14", link: "https://vip.opstream15.com/20250115/47765_3acba246/index.m3u8" },
+    { title: "Tập 13", link: "https://vip.opstream15.com/20250115/47764_e5cdd46d/index.m3u8" },
+    { title: "Tập 12", link: "https://vip.opstream15.com/20250115/47763_1768ecf0/index.m3u8" },
+    { title: "Tập 11", link: "https://vip.opstream15.com/20250115/47762_ad2dfdb5/index.m3u8" },
+    { title: "Tập 10", link: "https://vip.opstream15.com/20250112/47543_48cab7c7/index.m3u8" },
+    { title: "Tập 9", link: "https://vip.opstream15.com/20250112/47468_68bf9164/index.m3u8" },
+    { title: "Tập 8", link: "https://vip.opstream15.com/20250112/47467_c63ba052/index.m3u8" },
+    { title: "Tập 7", link: "https://vip.opstream15.com/20250112/47461_6fe987b1/index.m3u8" },
+    { title: "Tập 6", link: "https://vip.opstream15.com/20250112/47460_b8ada840/index.m3u8" },
+    { title: "Tập 5", link: "https://vip.opstream15.com/20250112/47459_6bc4cd4a/index.m3u8" },
+    { title: "Tập 4", link: "https://vip.opstream15.com/20250112/47458_61b360a1/index.m3u8" },
+    { title: "Tập 3", link: "https://vip.opstream15.com/20250112/47457_68730bb2/index.m3u8" },
+    { title: "Tập 2", link: "https://vip.opstream15.com/20250112/47456_f1bcb265/index.m3u8" },
+    { title: "Tập 1", link: "https://vip.opstream15.com/20250112/47455_2ba14bf3/index.m3u8" }
+    
+             ],
+             movieC: [
+                { title:"Tập Full", link:"https://vip.opstream15.com/20250107/47228_6107eb48/index.m3u8"},
+               
+        
+        ],
+         
+      movieD: [
+         
+        { title: "Tập 24", link: "https://vip.opstream13.com/20240407/3541_d6a4cb29/index.m3u8" },
+        { title: "Tập 23", link: "https://vip.opstream13.com/20240407/3540_37d333ff/index.m3u8" },
+        { title: "Tập 22", link: "https://vip.opstream13.com/20240407/3539_a74278c7/index.m3u8" },
+        { title: "Tập 21", link: "https://vip.opstream13.com/20240407/3538_565d2ff9/index.m3u8" },
+        { title: "Tập 20", link: "https://vip.opstream13.com/20240407/3537_9006cd01/index.m3u8" },
+        { title: "Tập 19", link: "https://vip.opstream13.com/20240407/3536_65d60c31/index.m3u8" },
+        { title: "Tập 18", link: "https://vip.opstream13.com/20240407/3535_2601eb1d/index.m3u8" },
+        { title: "Tập 17", link: "https://vip.opstream13.com/20240406/3520_ca348321/index.m3u8" },
+        { title: "Tập 16", link: "https://vip.opstream13.com/20240406/3519_93fe0c2e/index.m3u8" },
+        { title: "Tập 15", link: "https://vip.opstream13.com/20240406/3518_50ab859d/index.m3u8" },
+        { title: "Tập 14", link: "https://vip.opstream13.com/20240406/3517_ffffd11c/index.m3u8" },
+        { title: "Tập 13", link: "https://vip.opstream13.com/20240406/3516_a715f977/index.m3u8" },
+        { title: "Tập 12", link: "https://vip.opstream13.com/20240404/3503_cb4f8f18/index.m3u8" },
+        { title: "Tập 11", link: "https://vip.opstream13.com/20240404/3502_85db0b81/index.m3u8" },
+        { title: "Tập 10", link: "https://vip.opstream13.com/20240402/3464_6d7a2a1a/index.m3u8" },
+        { title: "Tập 9", link: "https://vip.opstream13.com/20240402/3463_10784964/index.m3u8" },
+        { title: "Tập 8", link: "https://vip.opstream13.com/20240402/3462_51878b3b/index.m3u8" },
+        { title: "Tập 7", link: "https://vip.opstream13.com/20240401/3454_f2ef6682/index.m3u8" },
+        { title: "Tập 6", link: "https://vip.opstream13.com/20240401/3455_dc411a35/index.m3u8" },
+        { title: "Tập 5", link: "https://vip.opstream13.com/20240331/3442_b7302650/index.m3u8" },
+        { title: "Tập 4", link: "https://vip.opstream13.com/20240331/3441_dce05b8e/index.m3u8" },
+        { title: "Tập 3", link: "https://vip.opstream13.com/20240331/3440_fba7734f/index.m3u8" },
+        { title: "Tập 2", link: "https://vip.opstream13.com/20240331/3439_1b4fb895/index.m3u8" },
+        { title: "Tập 1", link: "https://vip.opstream13.com/20240331/3438_a78e371d/index.m3u8" }
+     ],
+           
+   movieE: [
+    { title: "Tập 8", link: "https://vip.opstream15.com/20250115/47747_5c58445e/index.m3u8" },
+    { title: "Tập 7", link: "https://vip.opstream15.com/20250114/47684_ca5b6584/index.m3u8" },
+    { title: "Tập 6", link: "https://vip.opstream15.com/20250114/47683_308aa073/index.m3u8" },
+    { title: "Tập 5", link: "https://vip.opstream15.com/20250114/47682_a4fe3e4d/index.m3u8" },
+    { title: "Tập 4", link: "https://vip.opstream15.com/20250114/47681_e824ff2d/index.m3u8" },
+    { title: "Tập 3", link: "https://vip.opstream15.com/20250114/47680_02461c51/index.m3u8" },
+    { title: "Tập 2", link: "https://vip.opstream15.com/20250114/47679_20fb03bf/index.m3u8" },
+    { title: "Tập 1", link: "https://vip.opstream15.com/20250114/47678_f2f28358/index.m3u8" }
+],
+         
+         
+   movieF: [
+    { title: "Tập 22", link: "https://vip.opstream15.com/20250115/47754_18451bbd/index.m3u8" },
+    { title: "Tập 21", link: "https://vip.opstream15.com/20250114/47717_d69eed52/index.m3u8" },
+    { title: "Tập 20", link: "https://vip.opstream15.com/20250114/47716_e3326c37/index.m3u8" },
+    { title: "Tập 19", link: "https://vip.opstream15.com/20250114/47715_9d02788d/index.m3u8" },
+    { title: "Tập 18", link: "https://vip.opstream15.com/20250112/47464_77b72cfe/index.m3u8" },
+    { title: "Tập 17", link: "https://vip.opstream15.com/20250110/47385_abb19cd6/index.m3u8" },
+    { title: "Tập 16", link: "https://vip.opstream15.com/20250109/47299_10f39dba/index.m3u8" },
+    { title: "Tập 15", link: "https://vip.opstream15.com/20250108/47270_6b76a9b5/index.m3u8" },
+    { title: "Tập 14", link: "https://vip.opstream15.com/20250107/47183_43829cbd/index.m3u8" },
+    { title: "Tập 13", link: "https://vip.opstream15.com/20250106/47095_c090dfe1/index.m3u8" },
+    { title: "Tập 12", link: "https://vip.opstream15.com/20250106/47094_ce3ecbae/index.m3u8" },
+    { title: "Tập 11", link: "https://vip.opstream15.com/20250106/47093_7fe79c97/index.m3u8" },
+    { title: "Tập 10", link: "https://vip.opstream15.com/20250104/46987_313d7aa0/index.m3u8" },
+    { title: "Tập 9", link: "https://vip.opstream15.com/20250104/46986_cb875061/index.m3u8" },
+    { title: "Tập 8", link: "https://vip.opstream15.com/20250104/46985_8ad38a1a/index.m3u8" },
+    { title: "Tập 7", link: "https://vip.opstream15.com/20250104/46984_0498053f/index.m3u8" },
+    { title: "Tập 6", link: "https://vip.opstream15.com/20250104/46983_89186f00/index.m3u8" },
+    { title: "Tập 5", link: "https://vip.opstream15.com/20250104/46982_1fa857d6/index.m3u8" },
+    { title: "Tập 4", link: "https://vip.opstream15.com/20250104/46981_0198d08e/index.m3u8" },
+    { title: "Tập 3", link: "https://vip.opstream15.com/20250104/46980_fe2e9cb2/index.m3u8" },
+    { title: "Tập 2", link: "https://vip.opstream15.com/20250104/46979_18b16aa4/index.m3u8" },
+    { title: "Tập 1", link: "https://vip.opstream15.com/20250104/46978_2fc945b5/index.m3u8" },
+],
+         
+   movieG: [
+{ title: "Tập 42", link: "https://vip.opstream17.com/20240406/3938_b0f7b3b5/index.m3u8" },
+{ title: "Tập 41", link: "https://vip.opstream17.com/20240406/3937_808753ac/index.m3u8" },
+{ title: "Tập 40", link: "https://vip.opstream17.com/20240405/3906_b15e4b3a/index.m3u8" },
+{ title: "Tập 39", link: "https://vip.opstream17.com/20240405/3905_8f5e85c3/index.m3u8" },
+{ title: "Tập 38", link: "https://vip.opstream17.com/20240404/3862_f6da0e36/index.m3u8" },
+{ title: "Tập 37", link: "https://vip.opstream17.com/20240404/3860_8ae1f769/index.m3u8" },
+{ title: "Tập 36", link: "https://vip.opstream17.com/20240330/3529_f35ca0f7/index.m3u8" },
+{ title: "Tập 35", link: "https://vip.opstream17.com/20240330/3528_94c8d05d/index.m3u8" },
+{ title: "Tập 34", link: "https://vip.opstream17.com/20240329/3498_bc3d4300/index.m3u8" },
+{ title: "Tập 33", link: "https://vip.opstream17.com/20240329/3497_0383f13c/index.m3u8" },
+{ title: "Tập 32", link: "https://vip.opstream17.com/20240328/3296_8266dbbb/index.m3u8" },
+{ title: "Tập 31", link: "https://vip.opstream17.com/20240328/3295_7c48d138/index.m3u8" },
+{ title: "Tập 30", link: "https://vip.opstream17.com/20240323/3020_dfed4877/index.m3u8" },
+{ title: "Tập 29", link: "https://vip.opstream17.com/20240323/3019_0837699f/index.m3u8" },
+{ title: "Tập 28", link: "https://vip.opstream17.com/20240322/2970_fa8976c0/index.m3u8" },
+{ title: "Tập 27", link: "https://vip.opstream17.com/20240322/2969_c9cb12db/index.m3u8" },
+{ title: "Tập 26", link: "https://vip.opstream17.com/20240321/2935_2d588f55/index.m3u8" },
+{ title: "Tập 25", link: "https://vip.opstream17.com/20240321/2936_b2b95cb9/index.m3u8" },
+{ title: "Tập 24", link: "https://vip.opstream17.com/20240316/2735_3bae6b55/index.m3u8" },
+{ title: "Tập 23", link: "https://vip.opstream17.com/20240316/2734_c356d62a/index.m3u8" },
+{ title: "Tập 22", link: "https://vip.opstream17.com/20240315/2614_85312a2e/index.m3u8" },
+{ title: "Tập 21", link: "https://vip.opstream17.com/20240315/2613_823bee88/index.m3u8" },
+{ title: "Tập 20", link: "https://vip.opstream17.com/20240314/2594_9ee7abf8/index.m3u8" },
+{ title: "Tập 19", link: "https://vip.opstream17.com/20240314/2593_2e0cd310/index.m3u8" },
+{ title: "Tập 18", link: "https://vip.opstream17.com/20240309/2313_97978238/index.m3u8" },
+{ title: "Tập 17", link: "https://vip.opstream17.com/20240309/2312_bf7892d7/index.m3u8" },
+{ title: "Tập 16", link: "https://vip.opstream17.com/20240308/2054_08a7bb36/index.m3u8" },
+{ title: "Tập 15", link: "https://vip.opstream17.com/20240308/2053_56839661/index.m3u8" },
+{ title: "Tập 14", link: "https://vip.opstream17.com/20240307/2013_3f1b5b21/index.m3u8" },
+{ title: "Tập 13", link: "https://vip.opstream17.com/20240307/2012_8cab62a1/index.m3u8" },
+{ title: "Tập 12", link: "https://vip.opstream17.com/20240302/1802_c0fb59e0/index.m3u8" },
+{ title: "Tập 11", link: "https://vip.opstream17.com/20240302/1801_97a576d8/index.m3u8" },
+{ title: "Tập 10", link: "https://vip.opstream17.com/20240301/1740_707daa7c/index.m3u8" },
+{ title: "Tập 9", link: "https://vip.opstream17.com/20240301/1739_8b4f1242/index.m3u8" },
+{ title: "Tập 8", link: "https://vip.opstream17.com/20240229/1649_4bb3db4e/index.m3u8" },
+{ title: "Tập 7", link: "https://vip.opstream17.com/20240229/1648_a2a5a54d/index.m3u8" },
+{ title: "Tập 6", link: "https://vip.opstream17.com/20240229/1647_28bc542f/index.m3u8" },
+{ title: "Tập 5", link: "https://vip.opstream17.com/20240229/1646_b742ae99/index.m3u8" },
+{ title: "Tập 4", link: "https://vip.opstream17.com/20240229/1645_ce2f6156/index.m3u8" },
+{ title: "Tập 3 ", link: "https://vip.opstream17.com/20240229/1644_18ff150e/index.m3u8" },
+{ title: "Tập 2 ", link: "https://vip.opstream17.com/20240229/1643_80a9f2fd/index.m3u8" },
+{ title: "Tập 1 ", link: "https://vip.opstream17.com/20240229/1642_596976ea/index.m3u8" },
+     
+],
+           movieH: [
+{ title: "Tập 24", link: "https://vip.opstream17.com/20240404/3858_c7be6543/index.m3u8" },
+{ title: "Tập 23", link: "https://vip.opstream17.com/20240404/3857_1c3062d7/index.m3u8" },
+{ title: "Tập 22", link: "https://vip.opstream17.com/20240403/3755_14f55305/index.m3u8" },
+{ title: "Tập 21", link: "https://vip.opstream17.com/20240403/3757_1997b126/index.m3u8" },
+{ title: "Tập 20", link: "https://vip.opstream17.com/20240402/3674_6f69c72d/index.m3u8" },
+{ title: "Tập 19", link: "https://vip.opstream17.com/20240402/3675_8dd44e73/index.m3u8" },
+{ title: "Tập 18", link: "https://vip.opstream17.com/20240328/3291_8de6409c/index.m3u8" },
+{ title: "Tập 17", link: "https://vip.opstream17.com/20240328/3292_15afd9fa/index.m3u8" },
+{ title: "Tập 16", link: "https://vip.opstream17.com/20240327/3252_e0867f2d/index.m3u8" },
+{ title: "Tập 15", link: "https://vip.opstream17.com/20240327/3253_df9111fb/index.m3u8" },
+{ title: "Tập 14", link: "https://vip.opstream17.com/20240326/3220_ef074cb9/index.m3u8" },
+{ title: "Tập 13", link: "https://vip.opstream17.com/20240326/3219_65253301/index.m3u8" },
+{ title: "Tập 12", link: "https://vip.opstream17.com/20240321/2934_2d63a9b1/index.m3u8" },
+{ title: "Tập 11", link: "https://vip.opstream17.com/20240321/2933_a8a49f81/index.m3u8" },
+{ title: "Tập 10", link: "https://vip.opstream17.com/20240320/2902_ad521076/index.m3u8" },
+{ title: "Tập 9", link: "https://vip.opstream17.com/20240320/2903_b871e797/index.m3u8" },
+{ title: "Tập 8", link: "https://vip.opstream17.com/20240319/2869_486dca0f/index.m3u8" },
+{ title: "Tập 7", link: "https://vip.opstream17.com/20240319/2868_b9b34a0a/index.m3u8" },
+{ title: "Tập 6", link: "https://vip.opstream17.com/20240319/2866_4019d723/index.m3u8" },
+{ title: "Tập 5", link: "https://vip.opstream17.com/20240319/2867_158bbb08/index.m3u8" },
+{ title: "Tập 4", link: "https://vip.opstream17.com/20240319/2865_423e7117/index.m3u8" },
+{ title: "Tập 3", link: "https://vip.opstream17.com/20240319/2864_c74976c3/index.m3u8" },
+{ title: "Tập 2", link: "https://vip.opstream17.com/20240319/2863_6ffd80ed/index.m3u8" },
+{ title: "Tập 1", link: "https://vip.opstream17.com/20240319/2862_c95614ed/index.m3u8" },
+             ]}       
+           
+         
+         
+         // Lấy thông tin từ URL
+         const urlParams = new URLSearchParams(window.location.search);
+         const movie = urlParams.get('movie');
+
+         function loadEpisodes() {
+             const episodeMenu = document.getElementById('episodeMenu');
+             episodeMenu.innerHTML = ''; // Xóa nội dung cũ
+
+             // Tạo danh sách các tập
+             episodes[movie].forEach(episode => {
+                 const button = document.createElement('button');
+                 button.innerText = episode.title;
+
+                 // Khi nhấn vào nút sẽ chuyển hướng đến play.html với đường dẫn video
+                 button.onclick = () => window.location.href = `play.html?link=${encodeURIComponent(episode.link)}`;
+                 
+                 episodeMenu.appendChild(button);
+             });
+         }
+
+         function goBack() {
+             window.history.back(); // Quay lại trang trước đó
+         }
+         
+         function goHome() {
+             window.location.href = 'index.html'; // Chuyển hướng đến trang chủ
+         }
+
+         window.onload = loadEpisodes; // Tải danh sách khi trang được tải
+     </script>
+
+</body>
+</html>
