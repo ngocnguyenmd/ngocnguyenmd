@@ -12,6 +12,7 @@
             color: #ffffff;
             margin: 0;
             padding: 20px;
+            overflow-y: auto; /* Cho phép cuộn dọc */
         }
 
         h1 {
@@ -23,26 +24,26 @@
             display: flex;
             justify-content: center; /* Căn giữa bộ sưu tập */
             flex-wrap: wrap; /* Cho phép gói lại các poster */
+            gap: 15px; /* Khoảng cách giữa các poster */
         }
 
         .poster {
-            margin: 15px;
             cursor: pointer; /* Hiển thị con trỏ tay khi hover */
             border-radius: 8px;
             overflow: hidden; /* Để không bị tràn ra ngoài */
             position: relative; /* Để căn chỉnh tên phim */
-            width: 300px; /* Chiều rộng cố định cho poster */
-            height: 380px; /* Chiều cao cố định cho poster */
+            width: 250px; /* Chiều rộng cố định cho poster */
+            height: 350px; /* Chiều cao cố định cho poster */
+            transition: transform 0.3s ease; /* Hiệu ứng phóng to khi hover */
         }
 
         .poster img {
             width: 100%; /* Đặt chiều rộng là 100% để tự động điều chỉnh */
             height: auto; /* Tự động điều chỉnh chiều cao để giữ tỉ lệ hình ảnh */
             border-radius: 8px;
-            transition: transform 0.3s ease; /* Hiệu ứng phóng to khi hover */
         }
 
-        .poster:hover img {
+        .poster:hover {
             transform: scale(1.05); /* Phóng to khi hover */
         }
 
@@ -61,34 +62,36 @@
         @media (max-width: 768px) {
             .poster {
                 width: 150px; /* Chiều rộng cho điện thoại nhỏ hơn */
-                height: auto; /* Tự động điều chỉnh chiều cao để giữ tỉ lệ hình ảnh */
-            }
+                height:auto; /* Tự động điều chỉnh chiều cao để giữ tỉ lệ hình ảnh */
+                margin-bottom :10px;
+                transition:none; /* Bỏ hiệu ứng phóng to trên di động*/
+           }
         }
 
         @media (max-width: 480px) {
-            .poster {
-                width: 100%; /* Chiếm toàn bộ chiều rộng cho điện thoại rất nhỏ */
-                margin-bottom: 20px; /* Khoảng cách giữa các poster trên điện thoại nhỏ */
-                height: auto; /* Tự động điều chỉnh chiều cao để giữ tỉ lệ hình ảnh */
-            }
-        }
+           .poster {
+               width :100%; /* Chiếm toàn bộ chiều rộng cho điện thoại rất nhỏ*/
+               margin-bottom :20px; 
+           }
+       }
 
-        .search-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+       .search-container {
+           text-align: center;
+           margin-bottom: 20px;
+       }
 
-        .search-container input[type="text"] {
-            padding: 10px;
-            font-size: 16px;
-        }
+       .search-container input[type="text"] {
+           padding: 10px;
+           font-size: 16px;
+           width :200px ; 
+       }
 
-        .search-container button {
-            padding: 10px;
-            font-size: 16px;
-        }
+       .search-container button {
+           padding: 10px;
+           font-size :16px ;
+       }
 
-        .message {
+       .message {
           text-align:center;
           color:red;
           margin-top :20px
@@ -163,7 +166,7 @@
 
       <!-- Poster cho Phim J -->
       < div class = "poster " data-title = "Hạ Cánh Nơi Anh" onclick = "window.location.href='stream.html?movie=movieJ'" >
-          < img src = "https://afamilycdn.com/150157425591193600/2020/8/6/crash-landing-on-you-2-3-15967215614981107096309.jpg" alt = "Phim J "> 
+          < img src = "https://admin.vov.gov.vn/UploadFolder/KhoTin/Images/UploadFolder/VOVVN/Images/w800/uploaded/9eqrbt2uv7o/2020_05_04/unnamed_8_yqba.jpg" alt = "Phim J "> 
           < div class = "poster-title ">Hạ Cánh Nơi Anh</ div>
       </ div>
 
