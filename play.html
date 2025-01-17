@@ -24,8 +24,7 @@
         }
 
         .video-frame {
-            width: 100%; /* Chiều rộng tự động cho khung video */
-            max-width: 897px; /* Chiều rộng tối đa */
+            width: 897px; /* Chiều rộng cố định cho khung video */
             border-radius: 8px; 
             overflow: hidden; 
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
@@ -56,15 +55,6 @@
         .back-button:hover, .home-button:hover {
             background-color: #cc0000; 
         }
-
-        .subtitle {
-          margin-top: 10px;
-          font-size: 16px;
-          color: #ccc;
-          text-align: center;
-          max-width: 897px; /* Đảm bảo phụ đề không rộng quá */
-          word-wrap: break-word; /* Ngắt dòng nếu cần thiết */
-        }
     </style>
 </head>
 <body>
@@ -79,7 +69,6 @@
             <vm-default-ui></vm-default-ui> 
         </vm-player>
     </div>
-    
 
     <div class="button-container">
         <button class="back-button" onclick="goBack()">Quay lại danh sách tập</button>
@@ -108,14 +97,6 @@
       } else {
           alert("Không có liên kết video.");
       }
-
-      // Ví dụ về cách cập nhật phụ đề (cần điều chỉnh theo yêu cầu thực tế)
-      function updateSubtitle(text) {
-          const subtitleContainer = document.getElementById('subtitleContainer');
-          subtitleContainer.innerText = text;
-      }
-
-      // Gọi hàm updateSubtitle khi cần thiết để cập nhật nội dung phụ đề
    </script>
 
 </body>
