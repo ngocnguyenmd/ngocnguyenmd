@@ -81,6 +81,7 @@
         <vm-player playsinline id="videoPlayer" autoplay>
             <vm-hls cross-origin="true">
                 <source id="videoSource" type="application/x-mpegURL" />
+                <source src="videoSource" type="video/mp4">
                 <!-- Track cho phụ đề -->
                 <track kind="subtitles" id="userSubtitleTrack" srclang="vi" label="Phụ đề người dùng" />
                 <!-- Thêm track mặc định nếu cần -->
