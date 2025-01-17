@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xem Video</title>
-    <script src="https://cdn.jsdelivr.net/npm/@vime/core/dist/vime.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vime/core@^5/themes/default.css">
+    <title>Xem Video HLS</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -24,14 +23,14 @@
         }
 
         .video-frame {
-            width: 100%; /* Chiều rộng tự động cho khung video */
+            width: 100%;
             max-width: 897px; /* Chiều rộng tối đa */
             border-radius: 8px; 
             overflow: hidden; 
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
-        #videoPlayer {
+        video {
             width: 100%; 
             height: auto; 
         }
@@ -42,7 +41,7 @@
             justify-content: center; 
         }
 
-        .back-button, .home-button, .upload-button {
+        .back-button, .home-button {
             background-color: #ff0000; 
             color: white; 
             padding: 10px 15px; 
@@ -53,55 +52,23 @@
             transition: background-color 0.3s ease; 
         }
 
-        .back-button:hover, .home-button:hover, .upload-button:hover {
+        .back-button:hover, .home-button:hover {
             background-color: #cc0000; 
-        }
-
-        .subtitle {
-          margin-top: -30px; /* Đẩy lên một chút nếu cần */
-          font-size: 14px; /* Kích thước chữ nhỏ hơn */
-          color: rgba(255, 255, 255, 0.8); /* Màu trắng với độ trong suốt */
-          text-align: center;
-          max-width: 897px; /* Đảm bảo phụ đề không rộng quá */
-          word-wrap: break-word; /* Ngắt dòng nếu cần thiết */
-          position:absolute;
-          bottom :10%; /* Đặt ở dưới cùng video */
-          left :50%;
-          transform :translateX(-50%);
-          z-index :1000; /* Đảm bảo phụ đề hiển thị trên video */
         }
     </style>
 </head>
 <body>
 
-    <h1>Xem Phim Vui Vẻ</h1>
+    <h1>Xem Video HLS</h1>
 
     <div class="video-frame">
-        <vm-player playsinline id="videoPlayer" autoplay>
-            <vm-hls cross-origin="true">
-                <source id="videoSource" type="application/x-mpegURL" />
-                <!-- Track cho phụ đề -->
-                <track kind="subtitles" id="userSubtitleTrack" srclang="vi" label="Phụ đề người dùng" />
-                <!-- Thêm track mặc định nếu cần -->
-                <track kind="subtitles" src="" srclang="vi" label="Tiếng Việt" default />
-                <!-- Hoặc nếu bạn muốn người dùng nhập URL phụ đề -->
-                <!-- <track kind="subtitles" src="" srclang="vi" label="Tiếng Việt" default /> -->
-            </vm-hls>
-            <vm-default-ui></vm-default-ui> 
-        </vm-player>
-
-        <!-- Container cho phụ đề -->
-        <div class="subtitle" id="subtitleContainer"></div>
+        <video id="videoPlayer" controls></video>
     </div>
 
     <div class="button-container">
         <button class="back-button" onclick="goBack()">Quay lại danh sách tập</button>
         <button class="home-button" onclick="goHome()">Quay lại trang chủ</button>
     </div>
-
-    <!-- Nút upload file SRT hoặc VTT -->
-    <input type="file" id="fileInput" accept=".srt,.vtt"/>
-    <button class="upload-button" onclick="uploadSubtitle()">Tải lên phụ đề</button>
 
     <script>    
         function goBack() {
@@ -116,77 +83,24 @@
         const videoLink = urlParams.get('link');
 
         if (videoLink) {
-          const videoSource = document.getElementById('videoSource');
+          const videoPlayer = document.getElementById('videoPlayer');
           
-          // Cập nhật thuộc tính src của source
-          videoSource.src = decodeURIComponent(videoLink);
-          
-          const vmPlayer = document.getElementById('videoPlayer');
-          vmPlayer.load(); // Tải lại player
-          vmPlayer.play(); // Tự động phát video
+          if (Hls.isSupported()) {
+              const hls = new Hls();
+              hls.loadSource(videoLink); // Đường dẫn đến tệp m3u8
+              hls.attachMedia(videoPlayer);
+              hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                  videoPlayer.play();
+              });
+          } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+              // Nếu trình duyệt là Safari
+              videoPlayer.src = videoLink;
+              videoPlayer.addEventListener('loadedmetadata', function() {
+                  videoPlayer.play();
+              });
+          }
       } else {
           alert("Không có liên kết video.");
-      }
-
-      function uploadSubtitle() {
-          const fileInput = document.getElementById('fileInput');
-          const userSubtitleTrack = document.getElementById('userSubtitleTrack');
-
-          if (fileInput.files.length > 0) {
-              const file = fileInput.files[0];
-              const reader = new FileReader();
-
-              reader.onload = function(event) {
-                  let vttContent;
-
-                  if (file.name.endsWith('.srt')) {
-                      vttContent = convertSRTtoVTT(event.target.result);
-                  } else if (file.name.endsWith('.vtt')) {
-                      vttContent = event.target.result;
-                  } else {
-                      alert("Vui lòng chọn một file SRT hoặc VTT.");
-                      return;
-                  }
-
-                  // Tạo URL từ nội dung VTT
-                  const blob = new Blob([vttContent], { type: 'text/vtt' });
-                  const url = URL.createObjectURL(blob);
-
-                  // Cập nhật thuộc tính src của track phụ đề người dùng
-                  userSubtitleTrack.src = url;
-
-                  // Tải lại player để áp dụng thay đổi
-                  const vmPlayer = document.getElementById('videoPlayer');
-                  vmPlayer.load(); // Tải lại player
-
-                  alert("Phụ đề đã được tải lên thành công!");
-              };
-
-              reader.readAsText(file);
-          } else {
-              alert("Vui lòng chọn một file phụ đề.");
-          }
-      }
-
-      function convertSRTtoVTT(srt) {
-          // Chuyển đổi nội dung SRT sang định dạng VTT
-          let vtt = "WEBVTT\n\n";
-          const srtLines = srt.split('\n');
-
-          for (let i = 0; i < srtLines.length; i++) {
-              let line = srtLines[i].trim();
-              
-              // Bỏ qua các dòng số thứ tự
-              if (!line || /^\d+$/.test(line)) continue;
-
-              // Thay đổi định dạng thời gian từ SRT sang VTT
-              line = line.replace(/(\d{2}):(\d{2}):(\d{2}),(\d{3})/g, '$1:$2:$3.$4');
-              line = line.replace(/(\d{2}):(\d{2}):(\d{2})\s-->\s(\d{2}):(\d{2}):(\d{2}),(\d{3})/g, '$1:$2:$3.$4 --> $4:$5:$6.$7');
-
-              vtt += line + '\n';
-          }
-          
-          return vtt;
       }
    </script>
 
