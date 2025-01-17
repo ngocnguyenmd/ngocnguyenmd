@@ -117,7 +117,9 @@
 
         if (videoLink) {
           const videoSource = document.getElementById('videoSource');
-          videoSource.setAttribute('data-src', decodeURIComponent(videoLink));
+          
+          // Cập nhật thuộc tính src của source
+          videoSource.src = decodeURIComponent(videoLink);
           
           const vmPlayer = document.getElementById('videoPlayer');
           vmPlayer.load(); // Tải lại player
