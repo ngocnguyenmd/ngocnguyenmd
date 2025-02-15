@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie of Nguyên</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #000; /* Nền đen giống rạp phim */
+            color: #ffffff;
+            margin: 0px;
+            padding: 0px;
+            overflow-y: auto;
+        }
+
+       
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+ 	    width: 100%;
+            margin: 0px;
+            background: red;
+            padding: 6px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .gallery {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .poster {
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            width: 250px;
+            height: 350px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .poster:hover {
+            transform: scale(1.08);
+            box-shadow: 0px 8px 16px rgba(255, 255, 255, 0.3);
+        }
+
+        .poster-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: red;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .poster {
+                width: 150px;
+                height: auto;
+                transition: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .poster {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+
+        .search-container {
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: 40px;
+        }
+
+        .search-container input {
+            padding: 10px;
+            font-size: 16px;
+            width: 210px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+
+        .search-container button {
+            padding: 8px;
+            font-size: 16px;
+            margin-left: 5px;
+            cursor: pointer;
+            border: none;
+            background: #ff0000;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .message {
+            text-align: center;
+            color: red;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎬 Phim Mỹ 🎬</h1>
+    <div style="text-align: center; margin-top: 20px;">
+        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+            <button onclick="window.location.href='index.html'" 
+                style="padding: 10px 20px; font-size: 16px; background: rgb(51, 47, 47); color: white; 
+                       border: none; border-radius: 5px; cursor: pointer;">
+                 Trung Quốc
+            </button>
+            <button onclick="window.location.href='korea.html'" 
+            style="padding: 10px 20px; font-size: 16px; background:rgb(51, 47, 47); color: white; 
+                   border: none; border-radius: 5px; cursor: pointer;">
+                 Hàn Quốc
+            </button>
+            <button onclick="window.location.href='tv01.html'" 
+            style="padding: 10px 20px; font-size: 16px; background: rgb(51, 47, 47); color: white; 
+                   border: none; border-radius: 5px; cursor: pointer;">
+                 TV Online
+        </button>
+        <button onclick="window.location.href='any.html'" 
+            style="padding: 10px 20px; font-size: 16px; background: rgb(51, 47, 47); color: white; 
+                   border: none; border-radius: 5px; cursor: pointer;">
+                 Tổng hợp
+        </button>
+        
+            <button onclick="window.location.href='anime.html'" 
+                style="padding: 10px 20px; font-size: 16px; background: rgb(51, 47, 47); color: white; 
+                       border: none; border-radius: 5px; cursor: pointer;">
+                 Hoạt hình 
+            </button>
+    </div>
+        </div>
+    </div> 
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Nhập tên phim...">
+        <button onclick="searchMovie()">Tìm kiếm phim</button>
+    </div>
+
+    <div class="gallery" id="movieGallery">
+        <!-- Poster của phim -->
+        <div class="poster" data-title="Hẻm núi" onclick="window.location.href='stream.html?movie=us01'">
+            <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/fRChc2N8kLZpDmol3eTGZnYyVen.jpg" alt="Hẻm núi">
+            <div class="poster-title">Hẻm núi</div>
+        </div>
+        </div>
+    <p id="notFoundMessage" class="message"></p>
+
+    <script>
+        function searchMovie() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const posters = document.querySelectorAll('.poster');
+            let found = false;
+
+            // Xóa thông báo cũ
+            const notFoundMessage = document.getElementById('notFoundMessage');
+            notFoundMessage.textContent = '';
+
+            posters.forEach(poster => {
+                const title = poster.getAttribute('data-title').toLowerCase();
+                if (title.includes(input)) {
+                    poster.style.display = 'block';
+                    found = true;
+                } else {
+                    poster.style.display = 'none';
+                }
+            });
+
+            if (!found) {
+                notFoundMessage.textContent = ' Không tìm thấy phim!';
+            }
+        }
+    </script>
+
+</body>
+</html>
