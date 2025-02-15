@@ -561,6 +561,13 @@ https://vip.opstream15.com/20250211/49194_1e4be822/index.m3u8
 https://vip.opstream15.com/20250211/49195_a26c9661/index.m3u8
 https://vip.opstream15.com/20250211/49196_f611d5fb/index.m3u8
 https://vip.opstream15.com/20250211/49197_7c1abf44/index.m3u8
+# movie12 
+https://vip.opstream15.com/20250214/49271_46cdab6e/index.m3u8
+https://vip.opstream15.com/20250214/49272_790e2f99/index.m3u8
+https://vip.opstream15.com/20250214/49273_0c051e68/index.m3u8
+https://vip.opstream15.com/20250214/49274_f2bfe9ac/index.m3u8
+https://vip.opstream15.com/20250215/49327_c8097345/index.m3u8
+https://vip.opstream15.com/20250215/49328_6de5f0ac/index.m3u8
 # anime01
 https://vip.opstream11.com/20241012/54743_82882629/index.m3u8
 https://vip.opstream11.com/20241021/55435_33457f8d/index.m3u8
@@ -582,9 +589,15 @@ https://vip.opstream15.com/20250208/49027_6efa2f3c/index.m3u8
 https://vip.opstream15.com/20250215/49317_a7aa1c16/index.m3u8
 # anime02
 https://sundaythekingplays.xyz/hls/1Cyn7fUpku2Qm4LCK1jmBviyJzD-lJ2KL0GHYZegclP54eQzJAB3rbZ+FvZyMGa0ARBfukJ2XnJ4Dv04PFywlg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+# anime03
+https://vip.opstream15.com/20250112/47520_3b16ba31/index.m3u8
+https://vip.opstream15.com/20250211/49184_5290f86d/index.m3u8
+https://vip.opstream15.com/20250211/49185_622afa4a/index.m3u8
+https://vip.opstream15.com/20250211/49186_d52999d6/index.m3u8
+https://vip.opstream15.com/20250211/49187_4df8eccd/index.m3u8
 # us01 
 https://vip.opstream15.com/20250215/49323_ea26d763/index.m3u8
 # any01 
 https://vip.opstream15.com/20250207/48932_4d42f4c2/index.m3u8
 # tv01 
-https://cdn-live.vtv.vn/zhP7L3abc2A4QwY9_JxKEA/1739644416/live/vtv1/vtv1-720p.m3u8
+http://fl2.moveonjoy.com/CARTOON_NETWORK/index.m3u8
