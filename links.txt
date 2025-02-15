@@ -1,0 +1,583 @@
+# movie01kr
+https://vip.opstream10.com/20250208/28798_f5bdd987/index.m3u8
+https://vip.opstream10.com/20250208/28797_f93f4793/index.m3u8
+https://vip.opstream10.com/20250214/28842_abd146bc/index.m3u8
+# movie02kr
+https://vip.opstream15.com/20250124/48304_8122ef54/index.m3u8
+https://vip.opstream15.com/20250124/48305_48b0c1e7/index.m3u8
+https://vip.opstream15.com/20250124/48306_e49d2c55/index.m3u8
+https://vip.opstream15.com/20250124/48307_3b864667/index.m3u8
+https://vip.opstream15.com/20250124/48308_696f528c/index.m3u8
+https://vip.opstream15.com/20250124/48309_55670925/index.m3u8
+https://vip.opstream15.com/20250124/48310_61e1ec2a/index.m3u8
+https://vip.opstream15.com/20250124/48311_ae3957e9/index.m3u8
+# movie03kr
+https://vip.opstream15.com/20250104/46927_a58bc8cf/index.m3u8
+https://vip.opstream15.com/20250105/46992_b56a4eea/index.m3u8
+https://vip.opstream15.com/20250111/47413_417dedd0/index.m3u8
+https://vip.opstream15.com/20250112/47478_732752db/index.m3u8
+https://vip.opstream15.com/20250118/47939_f6717917/index.m3u8
+https://vip.opstream15.com/20250119/47972_4cc863f5/index.m3u8
+https://vip.opstream15.com/20250125/48322_a5442d14/index.m3u8
+https://vip.opstream15.com/20250125/48430_f5a1d0cc/index.m3u8
+https://vip.opstream15.com/20250202/48632_1c32110f/index.m3u8
+https://vip.opstream15.com/20250207/48982_feaba3ff/index.m3u8
+https://vip.opstream15.com/20250208/49045_2da3df19/index.m3u8
+https://vip.opstream15.com/20250215/49315_b83a52c0/index.m3u8
+# movie04kr
+https://vip.opstream15.com/20250125/48424_25a76ba8/index.m3u8
+https://vip.opstream15.com/20250125/48425_ee8c32be/index.m3u8
+https://vip.opstream15.com/20250203/48687_c18961bb/index.m3u8
+https://vip.opstream15.com/20250203/48688_07853a2a/index.m3u8
+https://vip.opstream15.com/20250214/49261_bbe5f8f0/index.m3u8
+https://vip.opstream15.com/20250214/49262_a3f0bf3b/index.m3u8
+https://vip.opstream15.com/20250214/49263_4ffd6130/index.m3u8
+https://vip.opstream15.com/20250214/49264_772b0bae/index.m3u8
+# movie05kr
+https://vip.opstream12.com/20220330/6637_243233f1/index.m3u8
+https://vip.opstream12.com/20220330/6638_0285fafd/index.m3u8
+https://vip.opstream12.com/20220330/6639_5aee5c27/index.m3u8
+https://vip.opstream12.com/20220330/6640_c56f488e/index.m3u8
+https://vip.opstream12.com/20220330/6641_2c5ace9c/index.m3u8
+https://vip.opstream12.com/20220330/6642_9c833619/index.m3u8
+https://vip.opstream12.com/20220330/6643_0983c4ab/index.m3u8
+https://vip.opstream12.com/20220330/6644_432f8de0/index.m3u8
+https://vip.opstream12.com/20220330/6645_9a7cbfda/index.m3u8
+https://vip.opstream12.com/20220330/6646_0519520b/index.m3u8
+https://vip.opstream12.com/20220330/6647_6da5ff23/index.m3u8
+https://vip.opstream12.com/20220330/6648_dabb8f78/index.m3u8
+https://vip.opstream12.com/20220330/6649_9c6d08e4/index.m3u8
+https://vip.opstream12.com/20220330/6650_790ba277/index.m3u8
+https://vip.opstream12.com/20220330/6651_1d99e861/index.m3u8
+https://vip.opstream12.com/20220330/6652_dcabc4f2/index.m3u8
+# movie06kr
+https://vip.opstream11.com/20240128/50981_a5ecc1f2/index.m3u8
+https://vip.opstream11.com/20240129/50989_db6e2f45/index.m3u8
+https://vip.opstream11.com/20240204/51297_64aaa5be/index.m3u8
+https://vip.opstream11.com/20240205/51316_3f161c61/index.m3u8
+https://vip.opstream11.com/20240211/51455_9ff60871/index.m3u8
+https://vip.opstream17.com/20240213/465_d35801ef/index.m3u8
+https://vip.opstream17.com/20240218/798_7a6a3761/index.m3u8
+https://vip.opstream17.com/20240219/859_5ae1a2d9/index.m3u8
+https://vip.opstream17.com/20240224/1273_f3bf0bc7/index.m3u8
+https://vip.opstream13.com/20240227/3039_06ee1996/index.m3u8
+https://vip.opstream17.com/20240303/1874_58a63d24/index.m3u8
+https://vip.opstream17.com/20240303/1895_9a181d78/index.m3u8
+https://vip.opstream17.com/20240309/2400_1a8451fd/index.m3u8
+https://vip.opstream17.com/20240310/2424_343fdd2b/index.m3u8
+https://vip.opstream17.com/20240316/2786_68ce9b58/index.m3u8
+https://vip.opstream11.com/20240318/51659_f8485afc/index.m3u8
+# movie07kr
+https://vip.opstream12.com/20250113/24810_6def9da7/index.m3u8
+https://vip.opstream12.com/20250113/24811_446ad38f/index.m3u8
+https://vip.opstream12.com/20250113/24812_f36d576d/index.m3u8
+https://vip.opstream12.com/20250113/24813_ba61ab7d/index.m3u8
+https://vip.opstream12.com/20250113/24814_3348d3e1/index.m3u8
+https://vip.opstream12.com/20250113/24815_c0c6489f/index.m3u8
+https://vip.opstream12.com/20250113/24816_9a2327a2/index.m3u8
+https://vip.opstream12.com/20250113/24817_d38d719f/index.m3u8
+https://vip.opstream12.com/20250113/24818_d9511037/index.m3u8
+https://vip.opstream12.com/20250113/24819_47e2a1d3/index.m3u8
+https://vip.opstream12.com/20250113/24820_24be14e1/index.m3u8
+https://vip.opstream12.com/20250113/24821_4299f209/index.m3u8
+https://vip.opstream12.com/20250113/24822_219b87ff/index.m3u8
+https://vip.opstream12.com/20250113/24823_65b895f3/index.m3u8
+https://vip.opstream12.com/20250113/24824_5e640b4e/index.m3u8
+https://vip.opstream12.com/20250113/24825_eb860953/index.m3u8
+https://vip.opstream12.com/20250113/24826_193d44f2/index.m3u8
+https://vip.opstream12.com/20250113/24827_b4591e1e/index.m3u8
+https://vip.opstream12.com/20250113/24828_f15422af/index.m3u8
+https://vip.opstream12.com/20250113/24829_8a4d3214/index.m3u8
+https://vip.opstream12.com/20250113/24830_643ddc64/index.m3u8
+https://vip.opstream12.com/20250113/24831_7273e671/index.m3u8
+https://vip.opstream12.com/20250113/24832_659f7811/index.m3u8
+https://vip.opstream12.com/20250113/24833_eef80e65/index.m3u8
+https://vip.opstream12.com/20250113/24834_e3133801/index.m3u8
+https://vip.opstream12.com/20250113/24835_2842db40/index.m3u8
+https://vip.opstream12.com/20250113/24836_bd44f20e/index.m3u8
+https://vip.opstream12.com/20250113/24837_e75b50aa/index.m3u8
+https://vip.opstream12.com/20250113/24838_36f3776e/index.m3u8
+https://vip.opstream12.com/20250113/24839_3aed8736/index.m3u8
+https://vip.opstream12.com/20250113/24840_c32e5739/index.m3u8
+https://vip.opstream12.com/20250113/24841_ccc83cd1/index.m3u8
+https://vip.opstream12.com/20250113/24842_9eeded30/index.m3u8
+https://vip.opstream12.com/20250113/24843_534345ff/index.m3u8
+https://vip.opstream12.com/20250113/24844_dd608520/index.m3u8
+https://vip.opstream12.com/20250113/24845_fb8af9b1/index.m3u8
+https://vip.opstream12.com/20250113/24846_3b5d4919/index.m3u8
+https://vip.opstream12.com/20250113/24847_0743832a/index.m3u8
+https://vip.opstream12.com/20250113/24848_e4eea37f/index.m3u8
+https://vip.opstream12.com/20250113/24849_e16a7577/index.m3u8
+https://vip.opstream12.com/20250113/24850_69ed4d71/index.m3u8
+https://vip.opstream12.com/20250113/24851_f2935c67/index.m3u8
+https://vip.opstream12.com/20250113/24852_e0070f4a/index.m3u8
+https://vip.opstream12.com/20250113/24853_d6cc54c4/index.m3u8
+https://vip.opstream12.com/20250113/24854_4a420e5b/index.m3u8
+https://vip.opstream12.com/20250113/24855_28614d9b/index.m3u8
+https://vip.opstream12.com/20250113/24856_83d204b6/index.m3u8
+https://vip.opstream12.com/20250113/24857_51c9e6f8/index.m3u8
+https://vip.opstream12.com/20250113/24858_baa0cb56/index.m3u8
+https://vip.opstream12.com/20250113/24859_416883f0/index.m3u8
+https://vip.opstream12.com/20250113/24860_4ffdf96a/index.m3u8
+https://vip.opstream12.com/20250113/24861_4ee81d87/index.m3u8
+https://vip.opstream12.com/20250113/24862_a6a4398a/index.m3u8
+https://vip.opstream12.com/20250113/24863_66a733fe/index.m3u8
+https://vip.opstream12.com/20250113/24864_55fabff2/index.m3u8
+https://vip.opstream12.com/20250113/24865_a0712a11/index.m3u8
+https://vip.opstream12.com/20250113/24866_fc524d94/index.m3u8
+https://vip.opstream12.com/20250113/24867_cbec56ea/index.m3u8
+https://vip.opstream12.com/20250113/24868_90da3608/index.m3u8
+https://vip.opstream12.com/20250113/24869_cec819fa/index.m3u8
+https://vip.opstream12.com/20250113/24870_8ac8ab57/index.m3u8
+https://vip.opstream12.com/20250113/24871_4d57c8ac/index.m3u8
+https://vip.opstream12.com/20250113/24872_b6e61f3a/index.m3u8
+https://vip.opstream12.com/20250113/24873_df3abfaa/index.m3u8
+https://vip.opstream12.com/20250113/24874_aa08caa9/index.m3u8
+https://vip.opstream12.com/20250113/24875_4e85fa3a/index.m3u8
+https://vip.opstream12.com/20250113/24876_e04f87e5/index.m3u8
+https://vip.opstream12.com/20250113/24877_8f413147/index.m3u8
+https://vip.opstream12.com/20250113/24878_519fab1c/index.m3u8
+https://vip.opstream12.com/20250113/24880_592f69eb/index.m3u8
+https://vip.opstream12.com/20250113/24881_d0a194dc/index.m3u8
+https://vip.opstream12.com/20250113/24882_32e0740f/index.m3u8
+https://vip.opstream12.com/20250113/24883_38a647f5/index.m3u8
+https://vip.opstream12.com/20250113/24884_8755e0a9/index.m3u8
+https://vip.opstream12.com/20250113/24885_e62649f9/index.m3u8
+https://vip.opstream12.com/20250113/24886_0df6dca4/index.m3u8
+https://vip.opstream12.com/20250113/24887_083e8145/index.m3u8
+https://vip.opstream12.com/20250113/24888_121f1127/index.m3u8
+https://vip.opstream12.com/20250113/24889_8e952443/index.m3u8
+https://vip.opstream12.com/20250113/24890_ec5df877/index.m3u8
+https://vip.opstream12.com/20250113/24891_6547489e/index.m3u8
+https://vip.opstream12.com/20250113/24892_73715c09/index.m3u8
+https://vip.opstream12.com/20250214/25124_f03a550c/index.m3u8
+https://vip.opstream12.com/20250214/25125_925e3987/index.m3u8
+https://vip.opstream12.com/20250214/25126_e3f2b325/index.m3u8
+https://vip.opstream12.com/20250214/25127_d92ea9b8/index.m3u8
+https://vip.opstream12.com/20250214/25128_803a8c2d/index.m3u8
+https://vip.opstream12.com/20250214/25129_33933554/index.m3u8
+https://vip.opstream12.com/20250214/25130_2c6da25c/index.m3u8
+https://vip.opstream12.com/20250214/25131_00752d4f/index.m3u8
+https://vip.opstream12.com/20250214/25132_c24c1162/index.m3u8
+https://vip.opstream12.com/20250214/25133_b7f0b1c1/index.m3u8
+https://vip.opstream12.com/20250214/25134_2ced6d22/index.m3u8
+https://vip.opstream12.com/20250214/25135_0dc76d68/index.m3u8
+https://vip.opstream12.com/20250214/25136_9f2ba735/index.m3u8
+https://vip.opstream12.com/20250214/25137_5b514cb9/index.m3u8
+https://vip.opstream12.com/20250214/25138_e8cc6d71/index.m3u8
+https://vip.opstream12.com/20250214/25139_077c7fb8/index.m3u8
+https://vip.opstream12.com/20250214/25140_6ca2a46d/index.m3u8
+https://vip.opstream12.com/20250214/25141_0b7127c9/index.m3u8
+https://vip.opstream12.com/20250214/25142_9940dc91/index.m3u8
+https://vip.opstream12.com/20250214/25143_bfc58c81/index.m3u8
+https://vip.opstream12.com/20250214/25144_208c538e/index.m3u8
+https://vip.opstream12.com/20250214/25145_be419cdf/index.m3u8
+https://vip.opstream12.com/20250214/25146_8c317a7c/index.m3u8
+https://vip.opstream12.com/20250214/25147_18318da7/index.m3u8
+https://vip.opstream12.com/20250214/25148_861771f2/index.m3u8
+https://vip.opstream12.com/20250214/25149_2354ec28/index.m3u8
+https://vip.opstream12.com/20250214/25150_32600351/index.m3u8
+https://vip.opstream12.com/20250214/25151_fd2c18a2/index.m3u8
+https://vip.opstream12.com/20250214/25152_dc61c131/index.m3u8
+https://vip.opstream12.com/20250214/25153_54fca99f/index.m3u8
+https://vip.opstream12.com/20250214/25154_d21555f0/index.m3u8
+https://vip.opstream12.com/20250214/25155_2ad33598/index.m3u8
+https://vip.opstream12.com/20250214/25156_a9dbfcad/index.m3u8
+https://vip.opstream12.com/20250214/25157_2810641a/index.m3u8
+https://vip.opstream12.com/20250214/25158_856821bd/index.m3u8
+# movie01
+https://sundaythekingplays.xyz/hls/xyZ5Lw7bq01uR4uS5E7ELWG77DjrfV2Ns4HJcysRYAqVgLWOMfK0RPndBlTpyx3sn9rWE0gJJSOfDxiH41Hziw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/QyaKtKBuoWURaOQYYgLU17rr5RM68EJ2D7O74zk+1Jl5gvH6EBcfgYHTwHCV2r0PDVnQRgFZLpuh4PNf5LovWA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/2JpBZ+RFFtmOfU7xpDyDnUQU1nF79Vh0SIQAJYgpQ9F9bsUlg6t7VRX6qI3ghbYmJj9MQGEjYTSfscXuOPvN9Q==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/1bmK6utiKUTtWt77coKXD85IhyHPeaxhxtsysnHgVAplQH1GiWKAqyiM2g3Q0JbiOqbQTGw4pJNhDpSRzDB6Sw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/djqw2q8KoRdp12mbQE3qxSMNTgvtBFdaGRxH6OohJVIspe1545wfWCfKKajueKHxWM41JytY2zKfo90GdUQYSg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/NMcegCwlRsU8iDcVrQL2F0+fM5hul11toSuod8d7AwkdQkSdjzti4InLJcn54Lhw5QmsocTG2tshS73kokLwWw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/5E0KldD2vSN-um11CPR3hXJh8JEJ1-D5V6T-fVCfr8hhJ+tXpCMMDYKs01kpl3qm6vKEVTPM5DHRMCuqhulM9A==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/sWliLagiyN1qd2Mj8q73Y98KDrd4-n+uJB0CWUI2lJmjlXtelX1-6WKFzcqsjHyjEm72amzTAVoPs8JbtT54KQ==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/13Y8WATEpvLKQafxEyfrJFFH0novmC3AO1C-wxS4nuckscgm3wcfS12VMAdOSDvdZYbXT5Agxyhueiopa69tDw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/+uqwMm0pOaX3Gh9cWen4-XskJ6Ats5Ifnm2nNdPdn-zWmW8x4Gr7ibwnnCGZUScYx23ozZLFxwWlHIYjosu+HQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/00HI9RTZGTqh8Jh4NAUpHCixYv288CLfhy85qnhNRb7Eym0k47N7odAD1jHTJ8ysmcv-D3bYkhCRfpAn2N0JoQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/tzVE8OF1mRLLOCCGXoMqYZmiPLCljGc2-FHxGN20ZAD1cL9LQOOVKBnaiyYu6WnhABEp+RgbJoJnljjTAP4tRQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/ErkErsPFW9OlELQtVv+WaGpUJg8dcrqnXDM1deW5w+2KhxJO-gCpHgyHKWusdIkLTtYy7dXW+9EASwY1cPaoiQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/iZFEC+ks6fYwlFxh3bxcl9KhcH2GKEReStpmzeYiccEaf4w2wTnnIh+FT+B3QDWSVnGtECjvERabSRNr0+U6dw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/rCgGThnOX53pzBwUCTSwPL-VNJ9ULN8O77qB42IHGgod-xp2Y3SjsUSA0TVFmai0qf85XCejyPicNbISeEM29w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/Fs1jtrOdBQ9W5h0Y5CZfUcq1CtS47oIy560CeEoYiGEh8PpMCkHWrrqb29XyOhOXhA--jYOTsoJWjCExxi8EXQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/wMmNSOP7pKMIm4jcMH2Irltwq4VmcKh5e-K5RznLkWLqo7GIrVhwiHiW+LQaFn1rAlGq-MQYrfXeza38phfmHA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/nCptKZcxin6o4QaRehE5sJW7JKXpQ6tYXJXSe7t4-a5FlIbik+wWflr01V0QtRPIE+T2leddI5vZ9vtUKV0imw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/BrVvhwypGsmaMf+1uL5GaYpgoy-DDqQLu2Dw4cRrZbR9MyQdpU4-Ty+7sZU6bOT1Ubv+noiFvY-V5GFyFCY7Cg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/ZqWT1q65usD9hLEQ0PKRU5G64uW8gxGe4gDlOleQA+pabPWNtuIh6xKD-oMLsqS+-OnaVmc710uIDLtb9HEr-w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/wO+CF-hEZcFGHsy9e1GT3Cy3BN+wqAOcbNOGxy-Q8SPIlRK9Ja7FOujScZ2rMiHpZnX-ktTdUEAUoPkL9o7U4Q==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/wiqCBg00ak1EU-s6frx-pwnuBFF6ALAnyk3udBmvFf3AX849qok+8PTsU7zPf8a4QVvkJ8i-SIvd5RyXHyqQBA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/vOCiyplbCgOegtRrrJYPVMeKYWaHZMNaHR-GJL8fU51OqFWO5z6rELvqdt+Yxn9LJkZQr3gjPKl+JFiWbxK9lA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/7LY6EEEg9xq1X7gpelrvf7FZjRwTWj16nm0yOKp9koPjDrkJFHPNXbtKgteOOHLKw1L3MZX-ax4Q6U0KW4sp6w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/fNOSOj9EINTOSUPqGuTuwjk-t7QNwEtrSuhLuZoSnUJvDyuEwukE3hSGa+4DyoYRgXXJxPuqq7FfAOhN9Vw1KQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/tEjDdxAyXdAF87eFI8KQcwQ3-b4Q7WdA18rT3j29y6zOi3OnrJTsX+QgXXmGoQC8EgqaaGgN9OqRhIxuPE+Sfg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/-XhBQiVCbNWujxTNNE6KQdf0pxsOsqU6xcz7QrfuaPTBuisKHdAuUz9RM8lW0OzPs962JsvXg3sJQWorbWaoWQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/ahh1T77eE9O8kVu0M7oFes3LDuEsVmGtnqWwJmiBLJtC0NsfUiTXMLxRD5qucWIXmPlvzl92+fV43MSmcB-tjA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/aJIeL8xl4QklZfB21t0iX23190VYOTCKPsfYFN0GU3-4cdRYNfkZHaHRZHHju6uo9teXUTv9aQXG0nmOlWMMjA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/IyZYxyINw8UkjPPkUfmFSJf7WJtghv60Oz8d1xW279TVhPgP4KNJTU4GrCTjW-eIrz3yeSno4V6P3pppldzfgA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/bhLRSC-4mMHmtOE45hX+FdSCqgXE3VxhKB3kk95Ypufkn12FjvUxipB9Ruk+6LruXMM8HvY26-2nFxijbeyr0g==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/osQIdZZp7a9tqiEl0WhrGJVdloz238VJRJboVqzwu+q+zWQ8VZT-SX96e7tjP3LJt42FzIv5BUnH4Sw8IaHyRw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+# movie02
+https://sundaythekingplays.xyz/hls/fnLzndLdInAQchppj58u2rkAtGYbdl4mSqQviq3no8HLO0HUHjuCSIGYHrSVvtULt0qC9D9SjmZPhSCtRkjBfA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8"},
+https://sundaythekingplays.xyz/hls/ZiOKjabw7VAqu5lJz8YYDtn0DdSZc+bdlo4y0f1gp28gVhqFfHJsEvE8bPCyW-W49ML51aCKyj7QUtxY9oAYnw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/38yjXGIDq-Uw-dgEUOPod8vV+59LUw3j+zv7v1HgxeG4m8iPyrNki6RtZHRNKz8We-cxuXtvtHRzumjp-d94xA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/3s+QFi6hCDENvHI8iMXUybGPZ4Qlndgez3F7JE6SFnLYYBHVq3miRdFcqLeT00Mh1FAsHffKxhq-Raxtle9N7Q==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/4liIbGqo36fmHyXjkHmbd42ta4YmkPHS4nVINZBF05kAEGalCdHu775ChUNX831eeAl+knXmLqzyjf7hMm7g7A==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/t1OqJLGX5prcJODgMNOLhE62NaP-LA0+iIncJTphxmRdZHUhywmctXvXrn9ynka4jYRUUvX9i83h4tK4eBoFfw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/lY3y7Wjw94vpWS9yngL14o7jGyFNZSRyvWm2TrmlFMRVGaOmRVTIJvyhqyPeepjwbl8gE7DvN2L43Qi3zZ00QA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/FqsVzhBvgX0e1ccJgCvEYTwfHMVbJ9BNniAo5fFTDX8k4kdvyqjPAPArmD7hRAOZD7TLeHoijSDvlkTog7zz3g==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/YnBEIjnRzxKRdqwFl6R532w280LH7rKvnDWxEtOSymhliP9Zs8WgaKKSWRVQqhM-9kmPoTithGmhiaTkufmTXw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/8izM5ONTAvsoDqvtS2d-5AcrSKvz38jkojarOUEmfVD6U3CnJZMjDOhJ5FohnBM1HS39+oaF+ae8SDLCtbrUcw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/Zwr8r52O17KRFpBCUERA+WMKOUqG0d97xz5J52RkzgBMcSfgPt49ulKlFjwlwFe4GSoiY0tj-ceU0YnTdYdS6Q==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/TilX2s+raWWPpJ5t5konWB+G-nEVkyoTv4ordy6EJYQdCZ3KrF6bs3-VDlnmtXNRMu9OkZwZaR6qF5dP6gVr+w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/Nqf2RpDx-GzvX6rMUCn5XCQsl66KAl2IgxgCIflcrRHJyMNPjnXpkkkzKqYi8PVO1cFZhcT0CekarQBTRSaHZA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/ASR5iYuYFbJdffyXWbLCyA0NLN6Rm6CeHa3jFfRk46-E0fENppttUYChndDWdNmw1awANWSAB3PzmhnIaX5DZQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/DluItZNlDIMojjO4vnPUaxgs0q5+uMayiSPrtqxI+lKaru+-uc1yLpjIhwdUIu9O-5lyk49JvqEAee9AMosugQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/+qrUXqPlZ5aTa-8diy-kusMSrTtS-PMKz79cNxhkeOSO6IpxHQZTCly8Fm-AUcxc63oHWmRENS6me9Wkwtu0OQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/yTTxuXOrWiJL9KRCPyqU+vIbVrD+31sUBoQm9g0BscDJBvFWpBH4Z9jlQ7jE8+OzfU8FA1Vh6zvh6k1CLO-1uw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/HtWk6u8tYoqQ64AvlDa7rLlF62--V+isjz971LGNBCX8t3Tj3nc-nhbh371m7eoWRkmi9+nppyHLbTXkQyWdWg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/xCBGV4ObRRskqlPu6l5Rst6T3Qx4x1YuM0hEusiRMZJYbnZbht3sMZg8bzixeZY8VxWeec6AgA5mjzR4yaMQEg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/uBdNY8v5Ah-A6svhatP3Z2T2uT6Ps7JjcAQ3U+tWKYw+aSY67kQpDVhMFCmFjRZgQoQuH4y3uGcBYOAOyC93AQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/uHHXmhdaNWHmcG4b+JfAiPvC-8aDCSh3Zo9risTDAHkYLrnunvsm7lJNCMSrIg7VDTArKATjqGTTK6Hcp162xA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/O8pr3l+fo7hWIrad6IoWzfhY1b+HSRt-IiPGTvarUcPfdn4knbzp7rMcVRiP9rrn8h6XWebESMmo9aHQ7KtDwg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/kJn+F7dgTE0EgcG9irM0jau0MTOUdh+wSxWBChsADXYRczX5V-978bcBvA2XNjdmlNK+eBbUaiA6PwMdi7dpmg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/PMGcXYUyuuJzof08EdqJOMyor+xI0tIj0NtM7iqPtBSBrEgoPHFyhqrWgP5UGGDM748JTE5LdCDt2QhrV7EJtA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/xEDfXVf10iX8U6N-CU1JLwMGLV+Dlb0kRkiQBEBXz4TmBg0l-KDUjsotcQ04XArTyEWnkQDtvtem-twtccqE7w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/JNhwzgwmjJ5p83Zp+n-8hY9A9XX8NukbpcydfmXP8JADuz9w6jVxvNlEh7-dVkhTXIRaIQpRYXy7-CAS8cmoww==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/ME+RbuSAhcdxA9rijjpA24wwpmgqB1Wrq4gmfIUdNOGQ0hIis4iUMOFTm2IJP1CNeQ2B1wQs2knqqHVgRxYk5w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/Xcb7Nh2e00D5qX0af6ETQVr-rZnB15Tr+CommJAJkTNAfRxMAAWZkkDkTN+Zy-oNq15XtZehZxm0vegTKoWduA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/egILtIIHN-+7wyNApPf3eM2VckSbjEl9J0WESI73ohG2cIPuDvt364QEP++1ZOVsa4iZLN5uJdcjwY2LtHPaWg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/eG8sNKlgPkrMEwmrzu97Ruhzq76uaKTKNNe2p-Gim3HRAY1YiCgHpT4W5SiHaZuYZlmm6cxTQ3HWaDsM+op6Mw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/kQPgyPgP2oxKW9Ofu0IwG+XnIsrGOJfpdkq3efXp0HNY0e176DzuCES5+Bkrm8n1AuQrZcaIF5U4D63cGWQ8Tg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/-VKq-pwEVwzOkUnrqrFVC3Gj8PyAkQB6N-IEf901Gq19fuIIV6mmeP3Q7JQxsgwMahQPJHjGge1sLjsLC6JqJQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/Adj5IehS9k2tK3QSXjo-DDglboVxyuESTidA22AkxxTO0UkjqTumqUMyYF0sgf39ZVMRjN+6QjNQ0w2Ne26QLA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/dOMw653DR-tyx21SrOH1KixHY3L0dworkaTktJ+tYG1BEoAGB6KFTWWellgQcgAcqVvHNyo1TOOMaNP8XqsUQg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/fjsNU5lnvCY8DdZxMI6Iwua00Q4vH4eVFGuP0O3VcKMNdKmNYoLYi0Bs61e1PML7pV973b2aRhu8BycsDO7Yvw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/ZYe-w6j523-dA8dbRAgooNUNINXvDzLhjfqo3HwUV-cZ9OOq7EAOe9lBK7c3RrDonpQApTx63GONzIwvRkXZvg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/hvqSGolJfNEl9ZeEnIvGxuW6Tz1tlSneWoFUbQv2qxfEVkWzIvaV25cm68Akox8sgNaEU0oqDQtu1vvkHDUBvQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/LbdKgqjGhGO9XJmDKR8VwjZZmVsGFem0RB31rdzqDchpU4JwxgVqzKjAK6KBv8zYCv-E4aLFmTlI4M9IUZpsNg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/7VUdHKB0NLUwAVwTMbUcloZZTWhHZETlFLTgpmIcEB2d-aehARPzskFeGy4JihmNxEcDqo-3-LM5VMJWrAwJfg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/kMcmZadj17grv9qk8ZehHrCSYb7qhsB5GMlMa2UukEpi8gifusZ6bYQBoXDLpBzBkeiuOvTIOSPyvdJma4bqzA==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/9dqQK00CAbWmtnv-xinjVCPxp6RzxMe+qle4x1v0v3lQT3qjw9MHIgmRXZuWmzBWZLmUBoTKX657jRfA9l88+Q==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8" },
+# movie03 
+https://sundaythekingplays.xyz/hls/DC0GtiaPtuEy7UL6DzQWQoy7Nblcnfs4N1+EQOMDfia-MeEM+wasb3L3IejhYUthv63jDAbA32hEDUXI6vvTYA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/k09q1k-VO-HEq9dxClYFFVk-GnyaEL2HpTz3BwywvoWHfJMKCTNVQ7SYVqVo8EgYcvd1415AmGYTPMSb2X735g==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/O-VwqgSbLTwLHCGDF8dxe6O1xpTkS7nH96UtlEwIh5-xLtB1FEEDdBB6eya2HT2DV7jZXcZpI4OMXDfuTKLQWQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/jTg6Hp0ybfnLo1iJKk9uwoANVDf5DSQA7Zwqwfg1BIUASo6Mjgjk-i211nNBE12PsBDQ+UZRuBjQYikQdxCFRA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/s41cg2OMcaaCWCMT-3L+iPjsZF2AVRyXNmyQMNVvoAlHJbqaOn6wzTlIz301jlnbq-8lQNT8DYBQheNAauhg0w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/sNPuehNts2Cukr1TtDwQCsr7dqJuFjneSbMwvrje24TnGEckN5D7WbmMurOsI9v3PN7e7nkRdnPusbWAyqMDpw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/uP5afClxLq0VRoQTIByFIwp7PU8N9u5H3PtvCK6egIa95DiUMSIJc2cAQzvDjDotBm5jKZzeqnVo12gUhhVKpA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/eViT1FhySp92cL0HKy6Q0gZOaeU2-1I-21sClN30KnC302W8ujkYi4xPQyC9LuLtjTGktHe6PF0y-FYoYhVPXQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/I21N4WJWYBlhvkRdPjFDLKjvB+Oyym+QfuQvpvOff9oKHipD6uHGcUt5QmpDscjnBoIil9c7vz7Y7qqKHtNvBQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/NNSUFeuHyViNuRSGzMNvEdwXwHxuhiGe9xvQo3AlYa-XRQn4V4lISP79IOuH9OMdJs+svVlKKIh1HZIKA2Bslw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/XpzDRMzkl3VBlW7ft4xqbDC-rmJr3vohf5bm1EJzvY9SOjgFM5jELeLMEHGz1fJXKi8QkV+9Kq2zJf5Qfep9hQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/PovXQVcH-nMGkiIlOurjAB4aTBi41Q9zR9Ozf2AP8gRhB8QfbX9zpNPCUXnBcwOa9ZDViO61sB8SQc15c-TURQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/Y1YJKxoDw9dXwOG7PhU8aRytobGX7BynyXe6HqJs6Pvit3JZj5NNqjpa0VdYgxyzcqbtTvPbZObVIA9DjuS4KQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/xenNZkYfBWp2ZQz70zWkhSsksVCOdTqLmD3-iLD3PrbsefzzNXXYO0J23dMNnDihoAJx55FBkb2-gRR1GgmvDQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/fAzdQx4rU80ouGfJBfCDlzqZkeZ5kr2t8J6rG9CFMX7DBB2uuEVLh5ii3nysl5NXD0zLBbCPBZgNh12OnKLTRw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/4REHAwd262HxAUDb5i55ncOPo7Bl94egSQh4EljsI2CEWWrIOxSLImg4lqNrT3ASq7F875VwpN3zV1VamM9DoA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/x7QxG+aHuMqk5eUaG0C-BZ2LHXtEoMrEj99b5q-3JVh64zpHtIUSVKI7sGu3bc8OlEE3jlSgDlKKrpBHPmlc3g==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/GivwdSJ3sYm7jolzvy7x8XIAsM+7qUsOWAQ1h1p+Rv7RFaAIN8QY4fqSsELI8tucqRgg1UYopfeBtQ4B+uzeVA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/1xUeWxPdgdQbHvSewP963JOhrbfL3UKWHVwDEet1xfli59T3zeWZdyAjFkN1xWl+r+ouIXUBLjTd1qAcyhNMkg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://sundaythekingplays.xyz/hls/Wg9x0xy0fuFLgmOyv3pXl4J0p9aHXUt0b8B-cRhhaZJzHGzL+qQIiNKV4YAhSc7TBkQaAXKMeE3x8pL4xn6I-Q==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+# movie04 
+https://vip.opstream11.com/20241130/58741_e7e8f449/index.m3u8
+https://vip.opstream11.com/20241130/58743_ffc0e23e/index.m3u8
+https://vip.opstream11.com/20241130/58742_201556f1/index.m3u8
+https://vip.opstream11.com/20241130/58744_33f6c40d/index.m3u8
+https://vip.opstream11.com/20241130/58745_4216684c/index.m3u8
+https://vip.opstream15.com/20241201/44397_31e2835b/index.m3u8
+https://vip.opstream15.com/20241201/44398_25fa2d39/index.m3u8
+https://vip.opstream15.com/20241202/44462_35c6d8b3/index.m3u8
+https://vip.opstream15.com/20241202/44463_c724bedf/index.m3u8
+https://vip.opstream15.com/20241203/44493_9e3a3a82/index.m3u8
+https://vip.opstream15.com/20241203/44494_6240c4d9/index.m3u8
+https://vip.opstream15.com/20241204/44543_3a2cdaaf/index.m3u8
+https://vip.opstream15.com/20241204/44544_85e43237/index.m3u8
+https://vip.opstream15.com/20241205/44574_6d7e8412/index.m3u8
+https://vip.opstream15.com/20241206/44593_34ff462c/index.m3u8
+https://vip.opstream15.com/20241206/44594_9117b589/index.m3u8
+https://vip.opstream15.com/20241207/44666_aae92066/index.m3u8
+https://vip.opstream15.com/20241207/44667_9f187d77/index.m3u8
+https://vip.opstream15.com/20241208/44723_1a5bcb25/index.m3u8
+https://vip.opstream15.com/20241208/44724_9cfc99e3/index.m3u8
+https://vip.opstream15.com/20241209/44784_083b8170/index.m3u8
+https://vip.opstream15.com/20241209/44785_f87a6139/index.m3u8
+https://vip.opstream15.com/20241210/44817_908c5a80/index.m3u8
+https://vip.opstream15.com/20241211/44904_29eafc27/index.m3u8
+https://vip.opstream15.com/20241212/45014_01639908/index.m3u8
+https://vip.opstream15.com/20241212/45015_3f99f750/index.m3u8
+https://vip.opstream15.com/20241213/45100_b56d9d8b/index.m3u8
+https://vip.opstream15.com/20241214/45269_361f991a/index.m3u8
+https://vip.opstream15.com/20241215/45326_3a3b87fe/index.m3u8
+https://vip.opstream15.com/20241215/45327_fc656c04/index.m3u8
+https://vip.opstream15.com/20241216/45359_4dd7b347/index.m3u8
+https://vip.opstream15.com/20241221/45733_dd921d82/index.m3u8
+https://vip.opstream15.com/20241221/45734_e8692656/index.m3u8
+https://vip.opstream15.com/20241221/45737_8004a717/index.m3u8
+https://vip.opstream15.com/20241221/45740_1ad74cae/index.m3u8
+https://vip.opstream15.com/20241221/45742_ecf77995/index.m3u8
+https://vip.opstream15.com/20241221/45743_69e437ff/index.m3u8
+https://vip.opstream15.com/20241221/45744_418f995c/index.m3u8
+https://vip.opstream15.com/20241221/45745_3d738ba7/index.m3u8
+https://vip.opstream15.com/20241221/45746_88dc6aff/index.m3u8
+
+# movie05 
+https://vip.opstream12.com/20241101/24255_87be9679/index.m3u8
+https://vip.opstream12.com/20241101/24256_e62f08e8/index.m3u8
+https://vip.opstream12.com/20241101/24257_13ac6fa0/index.m3u8
+https://vip.opstream12.com/20241101/24258_19873725/index.m3u8
+https://vip.opstream11.com/20241103/56408_2a2a919e/index.m3u8
+https://vip.opstream11.com/20241103/56409_33192c6a/index.m3u8
+https://vip.opstream11.com/20241104/56569_d92491ca/index.m3u8
+https://vip.opstream11.com/20241104/56570_a3444aab/index.m3u8
+https://vip.opstream11.com/20241105/56606_d8f86c08/index.m3u8
+https://vip.opstream11.com/20241105/56607_44de5d09/index.m3u8
+https://vip.opstream11.com/20241106/56809_152992da/index.m3u8
+https://vip.opstream11.com/20241106/56884_6fa77d8a/index.m3u8
+https://vip.opstream11.com/20241108/57006_e845b1cf/index.m3u8
+https://vip.opstream11.com/20241108/57007_09569cf5/index.m3u8
+https://vip.opstream11.com/20241108/57048_78d6ca97/index.m3u8
+https://vip.opstream11.com/20241108/57049_42b1ca0e/index.m3u8
+https://vip.opstream11.com/20241110/57183_84550b83/index.m3u8
+https://vip.opstream11.com/20241110/57184_a901828b/index.m3u8
+https://vip.opstream11.com/20241110/57220_2aa3c2f1/index.m3u8
+https://vip.opstream11.com/20241110/57221_8469efbc/index.m3u8
+https://vip.opstream11.com/20241112/57265_454cec43/index.m3u8
+https://vip.opstream11.com/20241112/57297_800c438d/index.m3u8
+https://vip.opstream11.com/20241113/57348_b9d582cd/index.m3u8
+https://vip.opstream11.com/20241114/57428_bdc86606/index.m3u8
+https://vip.opstream11.com/20241115/57502_8eb6c13d/index.m3u8
+https://vip.opstream11.com/20241116/57676_9bfe728c/index.m3u8
+https://vip.opstream11.com/20241117/57715_45c0dce7/index.m3u8
+https://vip.opstream11.com/20241118/57840_40b393d7/index.m3u8
+https://vip.opstream11.com/20241120/57939_ce3e0c75/index.m3u8
+https://vip.opstream11.com/20241120/57940_14c46951/index.m3u8
+https://vip.opstream11.com/20241122/57984_02912b18/index.m3u8
+https://vip.opstream11.com/20241123/58045_e449446f/index.m3u8
+# movie06 
+https://vip.opstream11.com/20231107/48973_c5f5520b/index.m3u8
+https://vip.opstream11.com/20231107/48974_b2cc96ba/index.m3u8
+https://vip.opstream11.com/20231107/48975_452e68e4/index.m3u8
+https://vip.opstream11.com/20231107/48976_adcf4297/index.m3u8
+https://vip.opstream11.com/20231107/48977_27a025f9/index.m3u8
+https://vip.opstream11.com/20231107/48978_ccdbc925/index.m3u8
+https://vip.opstream11.com/20231108/48986_0685c288/index.m3u8
+https://vip.opstream11.com/20231108/48987_500c8dc9/index.m3u8
+https://vip.opstream16.com/20231109/37120_061f717d/index.m3u8
+https://vip.opstream16.com/20231109/37121_e294de41/index.m3u8
+https://vip.opstream11.com/20231110/48998_42ccd768/index.m3u8
+https://vip.opstream11.com/20231110/48999_6b354091/index.m3u8
+https://vip.opstream16.com/20231111/37176_11e44e89/index.m3u8
+https://vip.opstream16.com/20231111/37177_84c6b3ac/index.m3u8
+https://vip.opstream16.com/20231113/37302_0c103369/index.m3u8
+https://vip.opstream16.com/20231113/37303_60b68370/index.m3u8
+https://vip.opstream16.com/20231113/37384_40d97af7/index.m3u8
+https://vip.opstream16.com/20231113/37385_a8515581/index.m3u8
+https://vip.opstream16.com/20231114/37444_e49ccd08/index.m3u8
+https://vip.opstream16.com/20231114/37445_7394eca5/index.m3u8
+https://vip.opstream11.com/20231117/49237_e8367d21/index.m3u8
+https://vip.opstream11.com/20231117/49238_c4015cd6/index.m3u8
+https://vip.opstream11.com/20231118/49296_f1e24cb8/index.m3u8
+https://vip.opstream11.com/20231118/49297_3346fad6/index.m3u8
+https://vip.opstream11.com/20231119/49333_a9d1433c/index.m3u8
+https://vip.opstream11.com/20231119/49334_08665400/index.m3u8
+https://vip.opstream11.com/20231122/49459_e78ba4e1/index.m3u8
+https://vip.opstream11.com/20231122/49460_78b34ff4/index.m3u8
+https://vip.opstream11.com/20231123/49477_fe16a593/index.m3u8
+https://vip.opstream11.com/20231124/49498_e57e4794/index.m3u8
+https://vip.opstream11.com/20231124/49492_8cfda104/index.m3u8
+https://vip.opstream11.com/20231124/49499_cac8a513/index.m3u8
+https://vip.opstream11.com/20231125/49507_4228c6a0/index.m3u8
+https://vip.opstream11.com/20231125/49508_a1cde699/index.m3u8
+https://vip.opstream16.com/20231126/38099_99d9b4ad/index.m3u8
+https://vip.opstream16.com/20231126/38100_40f09f84/index.m3u8
+https://vip.opstream16.com/20231126/38101_5d7df27b/index.m3u8
+https://vip.opstream16.com/20231126/38102_dcf109d3/index.m3u8
+https://vip.opstream16.com/20231126/38103_0d67ab53/index.m3u8
+# movie07 
+https://vip.opstream17.com/20240226/1357_45e7eb7d/index.m3u8
+https://vip.opstream17.com/20240226/1359_209a2aa2/index.m3u8
+https://vip.opstream17.com/20240226/1358_7eafe0b3/index.m3u8
+https://vip.opstream17.com/20240226/1360_0444ddd6/index.m3u8
+https://vip.opstream17.com/20240226/1361_a9a07b2d/index.m3u8
+https://vip.opstream17.com/20240226/1364_89e09445/index.m3u8
+https://vip.opstream17.com/20240226/1362_17cd1174/index.m3u8
+https://vip.opstream17.com/20240226/1363_0ec1dbf6/index.m3u8
+https://vip.opstream17.com/20240227/1388_d38721d6/index.m3u8
+https://vip.opstream17.com/20240227/1389_924e30b1/index.m3u8
+https://vip.opstream17.com/20240228/1411_dd1b58b5/index.m3u8
+https://vip.opstream17.com/20240228/1413_92e31486/index.m3u8
+https://vip.opstream17.com/20240304/1904_eccad539/index.m3u8
+https://vip.opstream17.com/20240304/1903_c051e768/index.m3u8
+https://vip.opstream17.com/20240305/1937_3aea839b/index.m3u8
+https://vip.opstream17.com/20240305/1938_e96e6c4c/index.m3u8
+https://vip.opstream17.com/20240306/1974_6ba771d6/index.m3u8
+https://vip.opstream17.com/20240306/1973_3116edb3/index.m3u8
+https://vip.opstream17.com/20240311/2448_de3c9d08/index.m3u8
+https://vip.opstream17.com/20240311/2449_cb0ce806/index.m3u8
+https://vip.opstream17.com/20240312/2492_1e25e026/index.m3u8
+# movie08 
+https://vip.opstream15.com/20250204/48816_fc804d53/index.m3u8
+https://vip.opstream15.com/20250204/48817_1fff5826/index.m3u8
+https://vip.opstream15.com/20250204/48818_f0adba5e/index.m3u8
+https://vip.opstream15.com/20250204/48819_f4693942/index.m3u8
+https://vip.opstream15.com/20250204/48820_c0d17660/index.m3u8
+https://vip.opstream15.com/20250205/48867_52421ad7/index.m3u8
+https://vip.opstream15.com/20250206/48882_984381c0/index.m3u8
+https://vip.opstream15.com/20250206/48883_4a26b01e/index.m3u8
+https://vip.opstream15.com/20250206/48884_5d8297e4/index.m3u8
+https://vip.opstream15.com/20250206/48885_3c841cee/index.m3u8
+https://vip.opstream15.com/20250206/48886_ce3d2268/index.m3u8
+https://vip.opstream15.com/20250206/48887_708748bb/index.m3u8
+https://vip.opstream15.com/20250206/48888_222ac746/index.m3u8
+https://vip.opstream15.com/20250206/48889_0f85fd68/index.m3u8
+https://vip.opstream15.com/20250207/48969_ff30aea8/index.m3u8
+https://vip.opstream15.com/20250207/48970_5db1317e/index.m3u8
+https://vip.opstream15.com/20250207/48972_08703b55/index.m3u8
+https://vip.opstream15.com/20250207/48973_791ce193/index.m3u8
+https://vip.opstream15.com/20250208/49033_d64d8db3/index.m3u8
+https://vip.opstream15.com/20250208/49034_098a6aed/index.m3u8
+https://vip.opstream15.com/20250209/49058_a22769dc/index.m3u8
+https://vip.opstream15.com/20250209/49059_cbaf30bc/index.m3u8
+https://vip.opstream15.com/20250210/49086_b1d0c019/index.m3u8
+https://vip.opstream15.com/20250210/49087_9338c9d9/index.m3u8
+https://vip.opstream15.com/20250211/49198_ca612752/index.m3u8
+https://vip.opstream15.com/20250211/49199_94e53343/index.m3u8
+https://vip.opstream15.com/20250212/49221_fe92afbc/index.m3u8
+https://vip.opstream15.com/20250212/49222_2252b347/index.m3u8
+https://vip.opstream15.com/20250213/49252_a06df170/index.m3u8
+https://vip.opstream15.com/20250213/49253_cb5baa5a/index.m3u8
+https://vip.opstream15.com/20250214/49306_38281a75/index.m3u8
+https://vip.opstream15.com/20250214/49308_f1fc635f/index.m3u8
+# movie09 
+https://vip.opstream15.com/20250112/47485_4bf9decb/index.m3u8
+https://vip.opstream15.com/20250112/47486_9ad55466/index.m3u8
+https://vip.opstream15.com/20250112/47487_cc155475/index.m3u8
+https://vip.opstream15.com/20250112/47488_fcc4103f/index.m3u8
+https://vip.opstream15.com/20250112/47489_8fe74e77/index.m3u8
+https://vip.opstream15.com/20250112/47490_fe037be4/index.m3u8
+https://vip.opstream15.com/20250112/47491_e723a81a/index.m3u8
+https://vip.opstream15.com/20250112/47492_7a0ec788/index.m3u8
+https://vip.opstream15.com/20250112/47493_dd80eca1/index.m3u8
+https://vip.opstream15.com/20250112/47494_cc033bc7/index.m3u8
+https://vip.opstream15.com/20250114/47693_8b2c5535/index.m3u8
+https://vip.opstream15.com/20250114/47694_15b69565/index.m3u8
+https://vip.opstream15.com/20250114/47695_d0724cf9/index.m3u8
+https://vip.opstream15.com/20250114/47696_786d2f3c/index.m3u8
+https://vip.opstream15.com/20250115/47748_b82c6621/index.m3u8
+https://vip.opstream15.com/20250116/47812_fa8a1948/index.m3u8
+https://vip.opstream15.com/20250118/47904_9a29c329/index.m3u8
+https://vip.opstream15.com/20250118/47909_e1155a41/index.m3u8
+https://vip.opstream15.com/20250119/48001_5b2b9001/index.m3u8
+https://vip.opstream15.com/20250120/48037_56b42b0a/index.m3u8
+https://vip.opstream15.com/20250121/48069_5eca46e4/index.m3u8
+https://vip.opstream15.com/20250122/48137_0608ebde/index.m3u8
+https://vip.opstream15.com/20250123/48167_f0b80244/index.m3u8
+https://vip.opstream15.com/20250124/48246_74273b6f/index.m3u8
+https://vip.opstream15.com/20250125/48332_9d297429/index.m3u8
+https://vip.opstream15.com/20250126/48447_3b14bb16/index.m3u8
+https://vip.opstream15.com/20250127/48479_c861d092/index.m3u8
+https://vip.opstream15.com/20250129/48510_5804a7be/index.m3u8
+https://vip.opstream15.com/20250129/48511_c51bf93c/index.m3u8
+https://vip.opstream15.com/20250130/48529_2a3a716a/index.m3u8
+https://vip.opstream15.com/20250131/48559_896b690b/index.m3u8
+# movie10 
+https://vip.opstream14.com/20230323/33970_f5a127f8/index.m3u8
+https://vip.opstream14.com/20230323/33972_3b1aaa6f/index.m3u8
+https://vip.opstream14.com/20230323/33974_586a4158/index.m3u8
+https://vip.opstream14.com/20230323/33975_32f26284/index.m3u8
+https://vip.opstream14.com/20230323/33976_365929d8/index.m3u8
+https://vip.opstream14.com/20230323/33978_1aa6d043/index.m3u8
+https://vip.opstream14.com/20230323/33979_e581e523/index.m3u8
+https://vip.opstream14.com/20230323/33981_9d8cbf86/index.m3u8
+https://vip.opstream14.com/20230323/33982_706fb33e/index.m3u8
+https://vip.opstream14.com/20230323/33983_953507a2/index.m3u8
+https://vip.opstream14.com/20230323/33984_d683df48/index.m3u8
+https://vip.opstream14.com/20230323/33986_4103c947/index.m3u8
+https://vip.opstream14.com/20230323/33987_8c3a9163/index.m3u8
+https://vip.opstream14.com/20230323/33989_283d8e9e/index.m3u8
+https://vip.opstream14.com/20230323/33990_76373737/index.m3u8
+https://vip.opstream14.com/20230323/33991_da91c5e1/index.m3u8
+https://vip.opstream14.com/20230323/33992_5b262c1b/index.m3u8
+https://vip.opstream14.com/20230323/33994_8b6b72fe/index.m3u8
+https://vip.opstream14.com/20230323/33995_8b5ad47b/index.m3u8
+https://vip.opstream14.com/20230323/33996_23d3a1ac/index.m3u8
+https://vip.opstream14.com/20230422/35707_8bc10818/index.m3u8
+https://vip.opstream14.com/20230323/33999_38b8e523/index.m3u8
+https://vip.opstream14.com/20230323/34000_53dbe1be/index.m3u8
+https://vip.opstream14.com/20230323/34001_211aa9f9/index.m3u8
+https://vip.opstream14.com/20230323/34002_becee23e/index.m3u8
+https://vip.opstream14.com/20230323/34003_f753c6cf/index.m3u8
+https://vip.opstream14.com/20230323/34005_d51c4b3b/index.m3u8
+https://vip.opstream14.com/20230323/34006_5e2279a9/index.m3u8
+https://vip.opstream14.com/20230323/34007_06613f16/index.m3u8
+https://vip.opstream14.com/20230323/34008_d4563c76/index.m3u8
+https://vip.opstream14.com/20230323/34010_08af368f/index.m3u8
+https://vip.opstream14.com/20230323/34011_02f8c925/index.m3u8
+https://vip.opstream14.com/20230323/34012_69278301/index.m3u8
+https://vip.opstream14.com/20230323/34013_9be1f61d/index.m3u8
+https://vip.opstream14.com/20230323/34014_baebe7c4/index.m3u8
+https://vip.opstream14.com/20230323/34015_7f62818d/index.m3u8
+https://vip.opstream14.com/20230323/34017_11731a48/index.m3u8
+https://vip.opstream14.com/20230323/34020_bec5d96e/index.m3u8
+https://vip.opstream14.com/20230323/34021_af01e9bc/index.m3u8
+https://vip.opstream14.com/20230323/34022_031ebd30/index.m3u8
+# movie11 
+https://vip.opstream15.com/20250126/48431_9c153a8e/index.m3u8
+https://vip.opstream15.com/20250126/48432_48f02bed/index.m3u8
+https://vip.opstream15.com/20250126/48433_f133b305/index.m3u8
+https://vip.opstream15.com/20250126/48434_e4f7dd56/index.m3u8
+https://vip.opstream15.com/20250127/48470_69356590/index.m3u8
+https://vip.opstream15.com/20250127/48471_398b98b7/index.m3u8
+https://vip.opstream15.com/20250127/48494_ea422b28/index.m3u8
+https://vip.opstream15.com/20250127/48495_80759094/index.m3u8
+https://vip.opstream15.com/20250129/48513_f72ea1e6/index.m3u8
+https://vip.opstream15.com/20250129/48514_a1dbc648/index.m3u8
+https://vip.opstream15.com/20250130/48532_ce34d8eb/index.m3u8
+https://vip.opstream15.com/20250131/48550_62b91df0/index.m3u8
+https://vip.opstream15.com/20250202/48627_f0e52158/index.m3u8
+https://vip.opstream15.com/20250202/48628_95570bfc/index.m3u8
+https://vip.opstream15.com/20250202/48629_6d6fe678/index.m3u8
+https://vip.opstream15.com/20250202/48639_c3d01570/index.m3u8
+https://vip.opstream15.com/20250202/48640_83ea4c80/index.m3u8
+https://vip.opstream15.com/20250204/48791_8e266aef/index.m3u8
+https://vip.opstream15.com/20250204/48792_52ec4473/index.m3u8
+https://vip.opstream15.com/20250204/48795_c1d18eef/index.m3u8
+https://vip.opstream15.com/20250204/48798_60ff8e3e/index.m3u8
+https://vip.opstream15.com/20250205/48872_3a019cd8/index.m3u8
+https://vip.opstream15.com/20250207/48923_4ae5a924/index.m3u8
+https://vip.opstream15.com/20250207/48974_0a722827/index.m3u8
+https://vip.opstream15.com/20250208/49041_0a16b097/index.m3u8
+https://vip.opstream15.com/20250208/49042_145756e8/index.m3u8
+https://vip.opstream15.com/20250210/49070_0750d1f8/index.m3u8
+https://vip.opstream15.com/20250210/49071_4072c1d9/index.m3u8
+https://vip.opstream15.com/20250210/49095_34474dcb/index.m3u8
+https://vip.opstream15.com/20250210/49096_cf4aa1d3/index.m3u8
+https://vip.opstream15.com/20250211/49192_2e4d29df/index.m3u8
+https://vip.opstream15.com/20250211/49193_9973b42c/index.m3u8
+https://vip.opstream15.com/20250211/49194_1e4be822/index.m3u8
+https://vip.opstream15.com/20250211/49195_a26c9661/index.m3u8
+https://vip.opstream15.com/20250211/49196_f611d5fb/index.m3u8
+https://vip.opstream15.com/20250211/49197_7c1abf44/index.m3u8
+# anime01
+https://vip.opstream11.com/20241012/54743_82882629/index.m3u8
+https://vip.opstream11.com/20241021/55435_33457f8d/index.m3u8
+https://vip.opstream11.com/20241026/55732_03af645c/index.m3u8
+https://vip.opstream11.com/20241102/56274_84328fbe/index.m3u8
+https://vip.opstream11.com/20241110/57177_042a4b5e/index.m3u8
+https://vip.opstream11.com/20241116/57586_f8517a16/index.m3u8
+https://vip.opstream11.com/20241123/58125_eaff0e91/index.m3u8
+https://vip.opstream11.com/20241130/58740_d292aa67/index.m3u8
+https://vip.opstream15.com/20241207/44703_27ce438e/index.m3u8
+https://vip.opstream15.com/20241214/45261_63e50dd1/index.m3u8
+https://vip.opstream15.com/20241221/45732_b44d4a19/index.m3u8
+https://vip.opstream15.com/20241228/46320_2f20c482/index.m3u8
+https://vip.opstream15.com/20250111/47394_a95af315/index.m3u8
+https://vip.opstream15.com/20250118/47910_30eeae50/index.m3u8
+https://vip.opstream15.com/20250125/48323_9c975e80/index.m3u8
+https://vip.opstream15.com/20250201/48571_a42434c7/index.m3u8
+https://vip.opstream15.com/20250208/49027_6efa2f3c/index.m3u8
+https://vip.opstream15.com/20250215/49317_a7aa1c16/index.m3u8
+# anime02
