@@ -10,239 +10,198 @@
             font-family: 'Arial', sans-serif;
             background-color: #000; /* Nền đen giống rạp phim */
             color: #ffffff;
-            margin: 0;
-            padding: 20px;
-            overflow-y: auto; /* Cho phép cuộn dọc */
+            margin: 0px;
+            padding: 0px;
+            overflow-y: auto;
         }
 
+       
         h1 {
             text-align: center;
             margin-bottom: 20px;
+ 	    width: 100%;
+            margin: 0px;
+            background: red;
+            padding: 6px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
         }
 
         .gallery {
             display: flex;
-            justify-content: center; /* Căn giữa bộ sưu tập */
-            flex-wrap: wrap; /* Cho phép gói lại các poster */
-            gap: 15px; /* Khoảng cách giữa các poster */
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .poster {
-            cursor: pointer; /* Hiển thị con trỏ tay khi hover */
+            cursor: pointer;
             border-radius: 8px;
-            overflow: hidden; /* Để không bị tràn ra ngoài */
-            position: relative; /* Để căn chỉnh tên phim */
-            width: 250px; /* Chiều rộng cố định cho poster */
-            height: 350px; /* Chiều cao cố định cho poster */
-            transition: transform 0.3s ease; /* Hiệu ứng phóng to khi hover */
+            overflow: hidden;
+            position: relative;
+            width: 250px;
+            height: 350px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .poster img {
-            width: 100%; /* Đặt chiều rộng là 100% để tự động điều chỉnh */
-            height: auto; /* Tự động điều chỉnh chiều cao để giữ tỉ lệ hình ảnh */
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             border-radius: 8px;
         }
 
         .poster:hover {
-            transform: scale(1.05); /* Phóng to khi hover */
+            transform: scale(1.08);
+            box-shadow: 0px 8px 16px rgba(255, 255, 255, 0.3);
         }
 
         .poster-title {
             position: absolute;
-            bottom: 0; /* Đặt tên phim ở dưới cùng của poster */
+            bottom: 0;
             left: 0;
             right: 0;
-            background-color: rgba(0, 0, 0, 0.7); /* Nền mờ cho tên phim */
+            background: red;
             color: white;
-            text-align: center; 
-            padding: 5px; 
-            font-size: 14px; /* Kích thước chữ có thể điều chỉnh theo ý thích */
+            text-align: center;
+            padding: 8px;
+            font-size: 13px;
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
             .poster {
-                width: 150px; /* Chiều rộng cho điện thoại nhỏ hơn */
-                height:auto; /* Tự động điều chỉnh chiều cao để giữ tỉ lệ hình ảnh */
-                margin-bottom :10px;
-                transition:none; /* Bỏ hiệu ứng phóng to trên di động*/
-           }
+                width: 150px;
+                height: auto;
+                transition: none;
+            }
         }
 
         @media (max-width: 480px) {
-           .poster {
-               width :100%; /* Chiếm toàn bộ chiều rộng cho điện thoại rất nhỏ*/
-               margin-bottom :20px; 
-           }
-       }
+            .poster {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
 
-       .search-container {
-           text-align: center;
-           margin-bottom: 20px;
-       }
+        .search-container {
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: 40px;
+        }
 
-       .search-container input[type="text"] {
-           padding: 10px;
-           font-size: 16px;
-           width :200px ; 
-       }
+        .search-container input {
+            padding: 10px;
+            font-size: 16px;
+            width: 210px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
 
-       .search-container button {
-           padding: 10px;
-           font-size :16px ;
-       }
+        .search-container button {
+            padding: 8px;
+            font-size: 16px;
+            margin-left: 5px;
+            cursor: pointer;
+            border: none;
+            background: #ff0000;
+            color: white;
+            border-radius: 5px;
+        }
 
-       .message {
-          text-align:center;
-          color:red;
-          margin-top :20px
-      }
+        .message {
+            text-align: center;
+            color: red;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <h1>Danh Sách Phim</h1>
-    
+
+    <h1>🎬 Phim Trung Quốc 🎬</h1>
+
     <div class="search-container">
         <input type="text" id="searchInput" placeholder="Nhập tên phim...">
-        <button onclick="searchMovie()">Tìm Kiếm</button>
+        <button onclick="searchMovie()">Tìm kiếm phim</button>
     </div>
 
     <div class="gallery" id="movieGallery">
-        
-       <!-- Poster cho Phim A -->
-       <div class="poster" data-title="Bạch Nguyệt Phạn Tinh" onclick="window.location.href='stream.html?movie=movieA'">
-           <img src="https://i.starzd.com/bach-nguyet-phan-tinh.jpg" alt="Phim A">
-           <div class="poster-title">Bạch Nguyệt Phạn Tinh</div> <!-- Tên hiển thị -->
-       </div>
+        <!-- Poster của phim -->
+        <div class="poster" data-title="Quốc Sắc Phương Hoa" onclick="window.location.href='stream.html?movie=movie01'">
+            <img src="https://static.nutscdn.com/vimg/300-0/748fadff0d75a6aef4bf4bc371d536ee.jpg" alt="Quốc Sắc Phương Hoa">
+            <div class="poster-title">Quốc Sắc Phương Hoa Full</div>
+        </div>
+        <div class="poster" data-title="Bạch Nguyệt Phạn Tinh" onclick="window.location.href='stream.html?movie=movie02'">
+            <img src="https://motchill.fm/wp-content/uploads/2025/01/0be1e197a92e490ddc9c56cd56057070.webp" alt="Bạch Nguyệt Phạn Tinh">
+            <div class="poster-title">Bạch Nguyệt Phạn Tinh Full</div>
+        </div>
+        <div class="poster" data-title="Tiên Đài Hữu Thụ" onclick="window.location.href='stream.html?movie=movie03'">
+            <img src="https://www.motchillso.com/webp/upload/images/phim/phim/tiendaicocay.webp" alt="Tiên Đài Hữu Thụ ">
+            <div class="poster-title">Tiên Đài Hữu Thụ 20/40 </div>
+        </div>
+        <div class="poster" data-title="Thục cẩm nhân gia" onclick="window.location.href='stream.html?movie=movie04'">
+            <img src="https://static.nutscdn.com/vimg/300-0/09c63bd009b8a32615b2d79716d52aad.jpg" alt="Thục cẩm nhân gia">
+            <div class="poster-title">Thục cẩm nhân gia Full</div>
+        </div>
+        <div class="poster" data-title="Vĩnh Dạ Tinh Hà" onclick="window.location.href='stream.html?movie=movie05'">
+            <img src="https://static.nutscdn.com/vimg/300-0/39279320cbcab41b5465a47cac6ae6a5.jpg" alt="Vĩnh Dạ Tinh Hà">
+            <div class="poster-title">Vĩnh Dạ Tinh Hà Full</div>
+        </div>
+        <div class="poster" data-title="Ninh An Như Mộng" onclick="window.location.href='stream.html?movie=movie06'">
+            <img src="https://static.nutscdn.com/vimg/300-0/bbb0aea9551976453d757e8a88de37b5.jpg" alt="Ninh An Như Mộng">
+            <div class="poster-title">Ninh An Như Mộng Full</div>
+        </div>
+        <div class="poster" data-title="Anh từng đến tương lai của em" onclick="window.location.href='stream.html?movie=movie07'">
+            <img src="https://img.hdpic.pro/uploads/1708924289-anh-tung-den-tuong-lai-cua-em-thumb.jpg" alt="Anh từng đến tương lai của em">
+            <div class="poster-title">Anh từng đến tương lai của em Full</div>
+        </div>
+        <div class="poster" data-title="Cây Ô Liu Màu Trắng" onclick="window.location.href='stream.html?movie=movie08'">
+            <img src="https://pic4.iqiyipic.com/image/20250212/e6/b7/a_100545438_m_601_vi_m2_260_360.jpg" alt="Cây Ô Liu Màu Trắng">
+            <div class="poster-title">Cây Ô Liu Màu Trắng Full</div>
+        </div>
+        <div class="poster" data-title="Yêu Khi Sắp Ly Hôn" onclick="window.location.href='stream.html?movie=movie09'">
+            <img src="https://static.nutscdn.com/vimg/300-0/3a2746c200772c82301b1607c3a4777c.jpg" alt="Yêu Khi Sắp Ly Hôn">
+            <div class="poster-title">Yêu Khi Sắp Ly Hôn Full</div>
+        </div>
+        <div class="poster" data-title="Đi Đến Nơi Có Gió" onclick="window.location.href='stream.html?movie=movie10'">
+            <img src="https://static.nutscdn.com/vimg/300-0/f9a22ba22b4494cfba5742bac4eb6e48.png" alt="Đi Đến Nơi Có Gió">
+            <div class="poster-title">Đi Đến Nơi Có Gió Full</div>
+        </div> 
+        <div class="poster" data-title="Ngũ Phúc Lâm Môn" onclick="window.location.href='stream.html?movie=movie11'">
+            <img src="https://static.nutscdn.com/vimg/300-0/eca1c3f1011f24aede6fbdec5ef674ec.jpg" alt="Ngũ Phúc Lâm Môn">
+            <div class="poster-title">Ngũ Phúc Lâm Môn Full</div>
+        </div> 
+    </div>
 
-       <!-- Poster cho Phim B -->
-       <div class="poster" data-title="Quốc Sắc Phương Hoa" onclick="window.location.href='stream.html?movie=movieB'">
-           <img src="https://image.tmdb.org/t/p/original/1GRvNJXwOeMnG4P0zdzVfzeI8W4.jpg" alt="Phim B"> <!-- Poster mới -->
-           <div class="poster-title">Quốc Sắc Phương Hoa</div> <!-- Tên hiển thị -->
-       </div>
+    <p id="notFoundMessage" class="message"></p>
 
-       <!-- Poster cho Phim C -->
-       <div class="poster" data-title="Wicked" onclick="window.location.href='stream.html?movie=movieC'">
-           <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/v0wmLuNj4rsyfTF6V30StYZAXdb.jpg" alt="Phim C"> <!-- Poster mới cho phim C -->
-           <div class="poster-title">Wicked</div> <!-- Tên hiển thị -->
-       </div>
+    <script>
+        function searchMovie() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const posters = document.querySelectorAll('.poster');
+            let found = false;
 
-       <!-- Poster cho Phim D -->
-       <div class="poster" data-title="Chuyến Bay Không Có Khiếu Nại" onclick="window.location.href='stream.html?movie=movieD'">
-           <img src="https://i.starzd.com/chuyen-bay-khong-co-khieu-nai.jpg" alt="Phim D"> <!-- Poster mới cho phim D -->
-           <div class="poster-title">Chuyến Bay Không Có Khiếu Nại</div> <!-- Tên hiển thị -->
-       </div>
+            // Xóa thông báo cũ
+            const notFoundMessage = document.getElementById('notFoundMessage');
+            notFoundMessage.textContent = '';
 
-       <!-- Poster cho Phim E -->
-       <div class="poster" data-title="TÀO HUYÊN HUYÊN TÀI BA" onclick="window.location.href='stream.html?movie=movieE'">
-           <img src="https://img.onflix.vip/upload/thumb_67854a179c389.jpg" alt="Phim E"> <!-- Poster mới cho phim E -->
-           <div class="poster-title">TÀO HUYÊN HUYÊN TÀI BA</div> <!-- Tên hiển thị -->
-       </div>
+            posters.forEach(poster => {
+                const title = poster.getAttribute('data-title').toLowerCase();
+                if (title.includes(input)) {
+                    poster.style.display = 'block';
+                    found = true;
+                } else {
+                    poster.style.display = 'none';
+                }
+            });
 
-       <!-- Poster cho Phim F -->
-       <div class="poster" data-title="Phú Quý Ào Àt" onclick="window.location.href='stream.html?movie=movieF'">
-          <img src="https://parliamentfiles.com/wp-content/uploads/2025/01/phu-quy-ao-at-14361-thumb.webp" alt="Phim F"> <!-- Poster mới cho phim F -->
-          <div class="poster-title">Phú Quý Ào Àt</div> <!-- Tên hiển thị -->
-      </div>
+            if (!found) {
+                notFoundMessage.textContent = ' Không tìm thấy phim!';
+            }
+        }
+    </script>
 
-      <!-- Thêm các poster mới ở đây -->
-
-      <!-- Poster cho Phim G -->
-      <div class="poster" data-title="Thánh Ăn đại Đường" onclick="window.location.href='stream.html?movie=movieG'">
-          <img src=https://motchill.ad/storage/images/thanh-an-dai-duong-phan-2/motchill-thanh-an-dai-duong-phan-2-thumb.jpg alt ="Phim G"> 
-          <div class = "poster-title">Thánh Ăn Đại Đường (Phần 2)</div>
-      </div>
-
-      <!-- Poster cho Phim H -->
-      <div class = "poster" data-title = "Sủng Phi Hoàng Đồ " onclick = "window.location.href='stream.html?movie=movieH'" >
-          <img src = "https://i.mydramalist.com/jQWdKB_4f.jpg" alt = "Phim H "> 
-          <div class = "poster-title ">Sủng Phi Hoàng Đồ</div>
-      </div>
-
-      <!-- Poster cho Phim I -->
-      <div class = "poster " data-title = "Gả Cho Chàng" onclick = "window.location.href='stream.html?movie=movieI'" >
-          <img src = "https://i.pinimg.com/736x/84/93/52/849352d4297413b385b5c20edf3b1b55.jpg" alt = "Phim I "> 
-          <div class = "poster-title ">Gả Cho Chàng</div>
-      </div>
-
-      <!-- Poster cho Phim J -->
-      <div class = "poster " data-title = "Hạ Cánh Nơi Anh" onclick = "window.location.href='stream.html?movie=movieJ'" >
-          <img src = "https://admin.vov.gov.vn/UploadFolder/KhoTin/Images/UploadFolder/VOVVN/Images/w800/uploaded/9eqrbt2uv7o/2020_05_04/unnamed_8_yqba.jpg" alt = "Phim J "> 
-          <div class = "poster-title ">Hạ Cánh Nơi Anh</div>
-      </div>
-
-     <!-- Poster cho Phim K -->
-       <div class="poster" data-title="Yêu Em Từ Cái Nhìn Đầu Tiên" onclick="window.location.href='stream.html?movie=movieK'">
-           <img src="https://upload.wikimedia.org/wikipedia/vi/thumb/b/bd/Love_O2O_Poster.jpg/250px-Love_O2O_Poster.jpg" alt="Phim K">
-           <div class="poster-title">Yêu Em Từ Cái Nhìn Đầu Tiên</div> <!-- Tên hiển thị -->
-       </div>
-  <!-- Poster cho Phim L -->
-  <div class="poster" data-title="Dr. STONE (Season 4)" onclick="window.location.href='stream.html?movie=movieL'">
-    <img src="https://sm.ign.com/ign_in/screenshot/default/dr-stone-science-future-posterjpetg_z73t.jpg" alt="Phim L">
-    <div class="poster-title">Dr. STONE (Season 4)</div> <!-- Tên hiển thị -->
-      </div>
-   <!-- Poster cho Phim M -->
-  <div class="poster" data-title="Thục Cẩm Nhân Gia" onclick="window.location.href='stream.html?movie=movieM'">
-    <img src="https://static.kinhtedothi.vn/w960/images/upload/2024/12/03/harper-bazaar-review-phim-thuc-cam-nhan-gia-brocade-odyssey-allsortsofdrama-1.jpg" alt="Phim M">
-    <div class="poster-title">Thục Cẩm Nhân Gia</div> <!-- Tên hiển thị -->
-      </div>
-  <!-- Poster cho Phim N -->
-  <div class="poster" data-title="Câu Chuyện Của Hoa Hồng" onclick="window.location.href='stream.html?movie=movieN'">
-    <img src="https://upload.wikimedia.org/wikipedia/vi/1/14/%C3%81p_ph%C3%ADch_phim_C%C3%A2u_chuy%E1%BB%87n_hoa_h%E1%BB%93ng.jpg" alt="Phim N">
-    <div class="poster-title">Câu Chuyện Của Hoa Hồng</div> <!-- Tên hiển thị -->
-      </div>
-  <!-- Poster cho Phim O -->
-  <div class="poster" data-title="Tỏa Hồng Nhan" onclick="window.location.href='stream.html?movie=movieO'">
-    <img src="https://motchill.pl/storage/images/toa-hong-nhan/motchill-toa-hong-nhan.jpg" alt="Phim O">
-    <div class="poster-title">Tỏa Hồng Nhan</div> <!-- Tên hiển thị -->
-      </div>
-  <!-- Poster cho Phim kr -->
-  <div class="poster" data-title="Chàng Thư Ký Hoàn Hảo Của Tôi" onclick="window.location.href='stream.html?movie=moviekr'">
-    <img src="https://subnhanhio.cdn1-img.net/chang-thu-ky-hoan-hao-cua-toi.jpg" alt="Phim kr">
-    <div class="poster-title">Chàng Thư Ký Hoàn Hảo Của Tôi</div> <!-- Tên hiển thị -->
-      </div>
-  <!-- Poster cho Phim kr1 -->
-  <div class="poster" data-title="Tiên Đài Có Cây" onclick="window.location.href='stream.html?movie=moviekr1'">
-    <img src="https://motphim.bot/wp-content/uploads/2025/02/tien-dai-co-cay-15506-poster.webp" alt="Phim kr1">
-    <div class="poster-title">Tiên Đài Có Cây</div> <!-- Tên hiển thị -->
-      </div>
-  <!-- Poster cho Phim kr2 -->
-  <div class="poster" data-title="Tân Thế Giới" onclick="window.location.href='stream.html?movie=moviekr2'">
-    <img src="https://motchill.ad/storage/images/the-gioi-moi-173892523608645-the-gioi-moi.jpg" alt="Phim kr2">
-    <div class="poster-title">Tân Thế Giới</div> <!-- Tên hiển thị -->
-      </div>
-    </div> 
-<!-- Poster cho Phim cn1 -->
-  <div class="poster" data-title="Anh từng đến tương lai của em" onclick="window.location.href='stream.html?movie=moviecn1'">
-    <img src="https://img.ophim.live/uploads/movies/anh-tung-den-tuong-lai-cua-em-thumb.jpg" alt="Phim cn1">
-    <div class="poster-title">Anh từng đến tương lai của em</div> <!-- Tên hiển thị -->
-      </div>
-    </div> 
-   <p id ="notFoundMessage"class ="message"></p>
-
-   <script>
-     function searchMovie() {
-         const input = document.getElementById('searchInput').value.toLowerCase();
-         const posters = document.querySelectorAll('.poster');
-         let found = false;
-
-         // Lấy thông điệp không tìm thấy
-         const notFoundMessage = document.getElementById('notFoundMessage');
-         notFoundMessage.textContent = ''; // Xóa thông điệp trước đó
-
-         posters.forEach(poster => {
-             const title = poster.getAttribute('data-title').toLowerCase();
-             if (title.includes(input)) {
-                 poster.style.display = 'block'; // Hiện poster nếu tìm thấy
-                 found = true;
-             } else {
-                 poster.style.display = 'none'; // Giấu poster nếu không tìm thấy
-             }
-         });
-
-         if (!found) {
-             notFoundMessage.textContent = 'Không tìm thấy'; // Hiện thông điệp nếu không tìm thấy
-         }
-     }
-   </script>
 </body>
 </html>
