@@ -595,9 +595,76 @@ https://vip.opstream15.com/20250211/49184_5290f86d/index.m3u8
 https://vip.opstream15.com/20250211/49185_622afa4a/index.m3u8
 https://vip.opstream15.com/20250211/49186_d52999d6/index.m3u8
 https://vip.opstream15.com/20250211/49187_4df8eccd/index.m3u8
+# anime04
+https://sundaythekingplays.xyz/hls/rqHUzkeaLdJA6MizbwJT6SyODQbwKzRRkJI7AX8lTsZjDAKMzxb+rW1QPL9TbfwShhXGIeDVyVBCy020a+jw0g==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+# anime05 
+https://vip.opstream11.com/20231104/48909_5379f9a1/index.m3u8
+https://vip.opstream11.com/20231104/48910_611c7a6b/index.m3u8
+https://vip.opstream11.com/20231104/48911_b7d1b2fa/index.m3u8
+https://vip.opstream11.com/20231104/48912_b375a7b5/index.m3u8
+https://vip.opstream11.com/20231104/48913_5055bbd4/index.m3u8
+https://vip.opstream11.com/20231104/48907_96d7b4ff/index.m3u8
+https://vip.opstream11.com/20231104/48905_5d534b4f/index.m3u8
+https://vip.opstream11.com/20231104/48906_226caf17/index.m3u8
+https://vip.opstream11.com/20231104/48908_d2b4abae/index.m3u8
+https://vip.opstream16.com/20231113/37383_ada3b3e0/index.m3u8
+https://vip.opstream11.com/20231118/49259_869583e3/index.m3u8
+https://vip.opstream16.com/20231209/38881_ba7a6c92/index.m3u8
+https://vip.opstream16.com/20231209/38882_287135b5/index.m3u8
+https://hbo.opstream5.com/20231209/38883_dffb13cb/index.m3u8
+https://vip.opstream16.com/20240105/40257_6e46f5bd/index.m3u8
+https://vip.opstream16.com/20240105/40258_7f61731f/index.m3u8
+https://vip.opstream17.com/20240323/2997_d8f57eb0/index.m3u8
+https://vip.opstream17.com/20240323/2996_0f004613/index.m3u8
+https://vip.opstream17.com/20240323/2998_3a8bc396/index.m3u8
+https://vip.opstream17.com/20240323/2999_127edc26/index.m3u8
+https://vip.opstream17.com/20240323/3000_271f5ce1/index.m3u8
+https://vip.opstream17.com/20240323/3001_9e3de432/index.m3u8
+https://vip.opstream17.com/20240323/3002_8268941b/index.m3u8
+https://vip.opstream17.com/20240323/3003_1da2f577/index.m3u8
+https://vip.opstream17.com/20240323/3004_2900d8ba/index.m3u8
+https://vip.opstream17.com/20240323/3005_11a8762d/index.m3u8
+https://vip.opstream17.com/20240323/3006_a8539743/index.m3u8
+https://vip.opstream17.com/20240323/3007_ca7d0add/index.m3u8
+# anime06
+https://vip.opstream15.com/20250110/47375_d91942b1/index.m3u8
+https://vip.opstream15.com/20250117/47862_652f459c/index.m3u8
+https://vip.opstream15.com/20250125/48357_f19a4a20/index.m3u8
+https://vip.opstream15.com/20250205/48834_b4904a2f/index.m3u8
+https://vip.opstream15.com/20250211/49180_048bb2f9/index.m3u8
+# anime07
+https://vip.opstream17.com/20240802/16102_63cdb76a/index.m3u8
+# anime08
+https://sundaythekingplays.xyz/hls/8eUc57Npy5-EeQT2VwUXestPjG2CM7C0YO7LGoyp21icWSt996h1-byvzn77rBmMkiPmvRyVOQ9FZPzIe-NfGA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+# anime09
+https://vip.opstream17.com/20240625/13566_23f9a43e/index.m3u8
+# anime10 
+https://sundaythekingplays.xyz/hls/dt4xt1-FLSyzYoPYuvSnv3A9qn7JzjLNt3Qs+wJrZN76fS8p3TOK+2SvlXBuTMoKUvUW4jQPtdKc5jNEkQtNBA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
 # us01 
 https://vip.opstream15.com/20250215/49323_ea26d763/index.m3u8
+# us02 
+https://vip.opstream15.com/20250118/47936_9375fea0/index.m3u8
+# us03 
+https://vip.opstream15.com/20221203/29217_5d6a19b4/index.m3u8
+https://vip.opstream15.com/20221203/29218_5027aa10/index.m3u8
+https://vip.opstream15.com/20221203/29219_ee4d8080/index.m3u8
+https://vip.opstream15.com/20221203/29220_77045fda/index.m3u8
+https://vip.opstream15.com/20221203/29221_aafc978f/index.m3u8
+https://vip.opstream15.com/20221203/29222_06cbce7f/index.m3u8
+https://vip.opstream15.com/20221203/29223_c66c954f/index.m3u8
+https://vip.opstream15.com/20221203/29224_5621eef5/index.m3u8
+https://vip.opstream15.com/20221203/29225_dcb18e3c/index.m3u8
+https://vip.opstream15.com/20221203/29226_9df2d3a9/index.m3u8
+https://vip.opstream15.com/20221203/29227_f692aedc/index.m3u8
+https://vip.opstream15.com/20221203/29228_6f2a2c21/index.m3u8
+https://vip.opstream15.com/20221203/29229_c330ccc5/index.m3u8
+https://vip.opstream15.com/20221203/29230_88d72f75/index.m3u8
+https://vip.opstream15.com/20221203/29231_cf477d3d/index.m3u8
+https://vip.opstream15.com/20221203/29232_b993f809/index.m3u8
+https://vip.opstream15.com/20221203/29233_8922dbbc/index.m3u8
+https://vip.opstream15.com/20221203/29234_b1193cb9/index.m3u8 
+
 # any01 
 https://vip.opstream15.com/20250207/48932_4d42f4c2/index.m3u8
 # tv01 
-http://fl2.moveonjoy.com/CARTOON_NETWORK/index.m3u8
+http://84.17.40.25/CARTOON_NETWORK/index.m3u8 
