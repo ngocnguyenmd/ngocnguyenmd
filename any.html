@@ -10,29 +10,82 @@
             font-family: 'Arial', sans-serif;
             background-color: #000; /* Nền đen giống rạp phim */
             color: #ffffff;
-            margin: 0px;
-            padding: 0px;
-            overflow-y: auto;
+            margin: 0;
+            padding: 0;
         }
 
-       
+        /* Tiêu đề */
         h1 {
             text-align: center;
-            margin-bottom: 20px;
- 	    width: 100%;
-            margin: 0px;
             background: red;
-            padding: 6px;
-            text-align: center;
+            padding: 10px;
+            margin: 0;
             font-weight: bold;
             color: white;
         }
 
+        /* Nút bấm danh mục phim */
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .categories button {
+            padding: 12px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff0000, #b30000);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0px 4px 8px rgba(255, 0, 0, 0.4);
+            text-transform: uppercase;
+            min-width: 150px;
+        }
+
+        .categories button:hover {
+            background: linear-gradient(45deg, #b30000, #ff0000);
+            transform: scale(1.05);
+            box-shadow: 0px 6px 12px rgba(255, 0, 0, 0.6);
+        }
+
+        /* Tìm kiếm phim */
+        .search-container {
+            text-align: center;
+            margin: 20px;
+        }
+
+        .search-container input {
+            padding: 10px;
+            font-size: 16px;
+            width: 220px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+
+        .search-container button {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background: #ff0000;
+            color: white;
+            border-radius: 5px;
+        }
+
+        /* Thư viện phim */
         .gallery {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: 15px;
+            padding: 10px;
         }
 
         .poster {
@@ -74,7 +127,6 @@
             .poster {
                 width: 150px;
                 height: auto;
-                transition: none;
             }
         }
 
@@ -83,34 +135,18 @@
                 width: 100%;
                 margin-bottom: 20px;
             }
+
+            .categories {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .categories button {
+                width: 80%;
+            }
         }
 
-        .search-container {
-            text-align: center;
-            margin-bottom: 40px;
-            margin-top: 40px;
-        }
-
-        .search-container input {
-            padding: 10px;
-            font-size: 16px;
-            width: 210px;
-            border-radius: 5px;
-            border: none;
-            outline: none;
-        }
-
-        .search-container button {
-            padding: 8px;
-            font-size: 16px;
-            margin-left: 5px;
-            cursor: pointer;
-            border: none;
-            background: #ff0000;
-            color: white;
-            border-radius: 5px;
-        }
-
+        /* Thông báo tìm kiếm */
         .message {
             text-align: center;
             color: red;
@@ -121,34 +157,12 @@
 <body>
 
     <h1>🎬 Random 🎬</h1>
-    <div style="text-align: center; margin-top: 20px;">
-        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-            <button onclick="window.location.href='index.html'" 
-                style="padding: 10px 20px; font-size: 16px; background: rgb(51, 47, 47); color: white; 
-                       border: none; border-radius: 5px; cursor: pointer;">
-                 Trung Quốc
-            </button>
-            <button onclick="window.location.href='korea.html'" 
-            style="padding: 10px 20px; font-size: 16px; background:rgb(51, 47, 47); color: white; 
-                   border: none; border-radius: 5px; cursor: pointer;">
-                 Hàn Quốc
-            </button>
-            <button onclick="window.location.href='anime.html'" 
-            style="padding: 10px 20px; font-size: 16px; background: rgb(51, 47, 47); color: white; 
-                   border: none; border-radius: 5px; cursor: pointer;">
-                 Hoạt Hình
-        </button>
-        <button onclick="window.location.href='tv01.html'" 
-            style="padding: 10px 20px; font-size: 16px; background: rgb(51, 47, 47); color: white; 
-                   border: none; border-radius: 5px; cursor: pointer;">
-                 TV Online 
-        </button>
-        
-            <button onclick="window.location.href='usa.html'" 
-                style="padding: 10px 20px; font-size: 16px; background: rgb(51, 47, 47); color: white; 
-                       border: none; border-radius: 5px; cursor: pointer;">
-                 USA
-            </button>
+    <div class="categories">
+        <button onclick="window.location.href='korea.html'">🎬 Phim Hàn Quốc</button>
+        <button onclick="window.location.href='anime.html'">🎭 Hoạt Hình</button>
+        <button onclick="window.location.href='tv01.html'">📺 TV Online</button>
+        <button onclick="window.location.href='usa.html'">🎬 Phim mỹ 🎬</button>
+        <button onclick="window.location.href='index.html'">🎥 Phim Trung Quốc</button>
     </div>
         </div>
     </div> 
