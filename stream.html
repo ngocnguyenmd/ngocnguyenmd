@@ -5,111 +5,129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chọn Tập Phim</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #121212; /* Nền tối */
-            color: white;
-            margin: 0;
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #808080; /* Nền màu xám */
+            color: white; 
+            text-align: center; 
+            margin: 0; 
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
-
-        h1 {
+        .season-container {
+            background-color: #333;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 2px solid #fff;
             text-align: center;
-            margin-bottom: 20px;
         }
-
-        .episode-list {
-            display: flex;
+        .season-title { 
+            font-weight: bold; 
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: yellow;
+        }
+        .episode-list { 
+            display: flex; 
             flex-wrap: wrap; 
             justify-content: center; 
+            gap: 5px;
         }
-
-        .episode-list button {
-            background-color: #ff0000; 
-            color: white; 
-            padding: 10px; 
-            border: none; 
-            border-radius: 5px;
-            cursor: pointer; 
-            margin: 5px;
-        }
-
-        .episode-list button:hover {
-            background-color: #cc0000; 
-        }
-      
-        .button-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center; 
-        }
-      
-        .back-button, .home-button {
-            background-color: #ff0000; 
+        .episode-list button { 
+            background-color: red; 
             color: white; 
             padding: 10px; 
             border: none; 
             border-radius: 5px; 
-            cursor: pointer;
-            margin: 0 10px;
+            cursor: pointer; 
         }
-      
-        .back-button:hover, .home-button:hover {
-            background-color: #cc0000; 
+        .episode-list button:hover { 
+            background-color: darkred; 
+        }
+
+        /* Nút điều hướng */
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .nav-button {
+            background-color: black; 
+            color: white; 
+            padding: 10px 15px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .nav-button:hover {
+            background-color: darkgray;
         }
     </style>
 </head>
 <body>
 
     <h1>Chọn Tập Phim</h1>
+    <div id="episodeMenu"></div>
 
-    <!-- Danh sách các tập phim -->
-    <div id="episodeMenu" class="episode-list"></div>
-
-    <!-- Nút quay lại danh sách tập và trang chủ -->
+    <!-- Nút Quay lại và Trang chủ -->
     <div class="button-container">
-        <button class="back-button" onclick="goBack()">Quay lại danh sách tập</button>
-        <button class="home-button" onclick="goHome()">Quay lại trang chủ</button>
+        <button class="nav-button" onclick="goBack()">Chọn Phim</button>
+        <button class="nav-button" onclick="goHome()">Trang Chủ</button>
     </div>
 
     <script>
-        // Lấy thông tin từ URL
         const urlParams = new URLSearchParams(window.location.search);
         const movie = urlParams.get('movie');
 
         function loadEpisodes() {
-            const episodeMenu = document.getElementById('episodeMenu');
-            episodeMenu.innerHTML = ''; // Xóa nội dung cũ
-
             fetch('links.txt')
                 .then(response => response.text())
                 .then(data => {
-                    const lines = data.trim().split("\n"); // Cắt từng dòng
+                    const lines = data.trim().split("\n");
                     let currentMovie = null;
-                    const movieLinks = [];
+                    let currentSeason = "Phần 1";
+                    const movieData = {};
 
-                    // Duyệt từng dòng trong links.txt
                     lines.forEach(line => {
                         line = line.trim();
                         if (line.startsWith("#")) {
-                            // Nếu là dòng chứa tên phim (# movie01kr)
-                            currentMovie = line.substring(1).trim(); // Bỏ dấu "#"
+                            currentMovie = line.substring(1).trim();
+                            movieData[currentMovie] = { "Phần 1": [] };
+                        } else if (currentMovie === movie && line.startsWith("*#")) {
+                            currentSeason = line.substring(2).trim();
+                            movieData[currentMovie][currentSeason] = [];
                         } else if (currentMovie === movie && line !== "") {
-                            // Nếu dòng này thuộc bộ phim đang được chọn và có link
-                            movieLinks.push(line);
+                            movieData[currentMovie][currentSeason].push(line);
                         }
                     });
 
-                    // Hiển thị danh sách tập
-                    if (movieLinks.length > 0) {
-                        movieLinks.forEach((link, index) => {
-                            const button = document.createElement('button');
-                            button.innerText = `Tập ${index + 1}`;
-                            button.onclick = () => window.location.href = `play.html?link=${encodeURIComponent(link)}`;
-                            episodeMenu.appendChild(button);
+                    const episodeMenu = document.getElementById('episodeMenu');
+                    episodeMenu.innerHTML = "";
+
+                    if (movieData[movie]) {
+                        Object.keys(movieData[movie]).forEach(season => {
+                            const seasonContainer = document.createElement("div");
+                            seasonContainer.classList.add("season-container");
+
+                            const seasonTitle = document.createElement("div");
+                            seasonTitle.innerText = season;
+                            seasonTitle.classList.add("season-title");
+                            seasonContainer.appendChild(seasonTitle);
+
+                            const episodeList = document.createElement("div");
+                            episodeList.classList.add("episode-list");
+
+                            movieData[movie][season].forEach((link, index) => {
+                                const button = document.createElement("button");
+                                button.innerText = `Tập ${index + 1}`;
+                                button.onclick = () => window.location.href = `play.html?link=${encodeURIComponent(link)}`;
+                                episodeList.appendChild(button);
+                            });
+
+                            seasonContainer.appendChild(episodeList);
+                            episodeMenu.appendChild(seasonContainer);
                         });
                     } else {
                         episodeMenu.innerHTML = "<p>Không tìm thấy tập phim.</p>";
@@ -117,19 +135,19 @@
                 })
                 .catch(error => {
                     console.error("Lỗi tải links.txt:", error);
-                    episodeMenu.innerHTML = "<p>Không thể tải danh sách tập phim.</p>";
+                    document.getElementById('episodeMenu').innerHTML = "<p>Không thể tải danh sách tập phim.</p>";
                 });
         }
 
         function goBack() {
-            window.history.back(); // Quay lại trang trước đó
+            window.location.href = 'index.html'; // Chuyển về trang chọn phim
         }
          
         function goHome() {
-            window.location.href = 'index.html'; // Chuyển hướng đến trang chủ
+            window.location.href = 'index.html'; // Chuyển về trang chủ
         }
 
-        window.onload = loadEpisodes; // Tải danh sách khi trang được tải
+        window.onload = loadEpisodes;
     </script>
 
 </body>
