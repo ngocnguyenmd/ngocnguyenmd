@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xem Video</title>
+    <!-- Tải thư viện minified nhẹ -->
     <script src="https://cdn.jsdelivr.net/npm/@vime/core/dist/vime.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vime/core@^5/themes/default.css">
     <style>
-        /* Đảm bảo trang luôn full chiều cao */
+        /* Cấu hình layout toàn màn hình và thân trang */
         html, body {
             height: 100%;
             margin: 0;
@@ -17,49 +18,42 @@
             background-color: #0a0a0a;
             color: white;
             font-family: Arial, sans-serif;
+            overflow-x: hidden; /* Ngăn không cho tràn màn hình */
         }
 
-        /* Header lấp đầy trên cùng */
+        /* Header trên cùng */
         .header {
             width: 100%;
             background: red;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
             font-weight: bold;
             color: white;
-            position: fixed; /* Giữ cố định trên cùng */
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
         }
 
-        /* Khoảng trống để tránh bị header che */
+        /* Khoảng trống bên dưới header */
         .main-container {
             flex: 1;
             display: flex;
-            flex-direction: row; /* Điều chỉnh để các sidebar và nội dung chính nằm ngang */
-            align-items: flex-start; /* Căn các phần tử lên trên */
+            flex-direction: column; /* Đảm bảo mỗi phần tử xếp thành cột */
+            align-items: center;
+            justify-content: center;
             width: 100%;
-            max-width: 1200px;
-            margin: auto;
-            padding: 80px 20px 20px; /* Đẩy nội dung xuống để không bị header che */
-        }
-
-        /* Đảm bảo nội dung chính chiếm đủ chiều cao */
-        .wrapper {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh; /* Chiếm đủ toàn bộ màn hình */
+            padding-top: 80px; /* Đẩy nội dung xuống dưới header */
         }
 
         /* Video Player */
         .video-frame {
             width: 100%;
-            max-width: 900px;
+            max-width: 720px;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
         }
 
         /* Sidebar */
@@ -70,7 +64,7 @@
             padding: 15px;
             border-radius: 8px;
             color: white;
-            margin: 10px; /* Điều chỉnh để tránh khoảng cách dưới */
+            margin: 10px;
         }
 
         /* Nút bấm */
@@ -103,7 +97,7 @@
             padding: 15px;
             border-radius: 8px;
             width: 90%;
-            max-width: 900px;
+            max-width: 720px;
             text-align: center;
         }
 
@@ -122,15 +116,10 @@
             color: white;
         }
 
-        @media (min-width: 768px) {
-            .main-container {
-                flex-direction: row;
-                justify-content: center;
-            }
-            
-            .sidebar {
-                width: 250px;
-                margin: 0 20px;
+        @media (max-width: 768px) {
+            /* Các điều chỉnh layout trên điện thoại */
+            .video-frame {
+                max-width: 100%; /* Tăng độ rộng cho video trên màn hình nhỏ */
             }
         }
     </style>
@@ -194,6 +183,7 @@
             }
         });
 
+        // Chỉ tải video khi thực sự cần thiết
         const urlParams = new URLSearchParams(window.location.search);
         const videoLink = urlParams.get('link');
         if (videoLink) {
@@ -203,6 +193,7 @@
             alert("Không có liên kết video.");
         }
 
+        // Tải phụ đề khi có tệp
         function uploadSubtitle() {
             const fileInput = document.getElementById('fileInput');
             const userSubtitleTrack = document.getElementById('userSubtitleTrack');
