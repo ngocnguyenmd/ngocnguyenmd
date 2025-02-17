@@ -7,58 +7,45 @@
     <script src="https://cdn.jsdelivr.net/npm/@vime/core/dist/vime.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vime/core@^5/themes/default.css">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #0a0a0a;
-            color: white;
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0a0a0a;
+            color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
         .header, .footer {
             width: 100%;
             background: red;
-            padding: 19px;
+            padding: 15px;
             text-align: center;
             font-weight: bold;
-            color: white;
         }
         .main-container {
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
-            align-items: flex-start;
             width: 100%;
             max-width: 1200px;
-            margin-top: 20px;
+            margin: 20px auto;
+            gap: 10px;
         }
         .sidebar {
             width: 200px;
             background: #1c1c1c;
             padding: 15px;
             border-radius: 8px;
-            color: white;
-            margin: 0 10px;
-        }
-        .suggestion img {
-            width: 95%;
-            border-radius: 5px;
-        }
-        .suggestion a {
-            color: #e50914;
-            text-decoration: none;
-        }
-        .sidebar textarea {
-            width: 100%;
-            border: none;
-            border-radius: 5px;
-            padding: 8px;
-            margin-top: 10px;
         }
         .content {
             flex: 1;
-           
+            min-width: 300px;
         }
         .video-frame {
             width: 100%;
@@ -73,16 +60,15 @@
             margin-top: 20px;
             display: flex;
             justify-content: center;
+            gap: 10px;
         }
         .btn {
             background-color: #e50914;
             color: white;
-            padding: 12px 18px;
+            padding: 10px 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 0 10px;
-            transition: 0.3s;
         }
         .btn:hover {
             background-color: #b20710;
@@ -92,8 +78,7 @@
             background: #1c1c1c;
             padding: 15px;
             border-radius: 8px;
-            width: 90%;
-            max-width: 900px;
+            text-align: center;
         }
         .light-mode {
             background-color: white;
@@ -106,41 +91,42 @@
             background-color: black;
             color: white;
         }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                text-align: center;
+            }
+            .main-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 80%;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="header">Xem Phim Vui Vẻ</div>
 
     <div class="main-container">
-        <!-- Sidebar trái -->
         <div class="sidebar">
-          <h3 style="
-    padding-left: 30px;">     🎬 Gợi ý phim</h3>
-            <div class="suggestion">
-                <img src="" alt="Bạch Nguyệt Phạn Tinh">
-                <p><a href="stream.html?movie=movie02">Xem Phim</a></p>
-            </div>
- <div class="suggestion">
-                <p>Tiên Đài Hữu Thụ</p>
-                <p><a href="stream.html?movie=movie03">Xem Phim</a></p>
-            </div>
- <div class="suggestion">
-                <p>Thục cẩm nhân gian</p>
-                <p><a href="stream.html?movie=movie04">Xem Phim</a></p>
-            </div>
-            <h3>ℹ️ Đang cập nhật</h3>
-            <p><strong>Không coi thì:</strong></p>
-            <button class="btn" onclick="goHome()">Đi ra đi mấy moá móa</button>
+            <h3>Gợi ý phim</h3>
+            <p>Đang cập nhật...</p>
+            <button class="btn" onclick="goHome()">Quay về</button>
         </div>
 
-        <!-- Nội dung chính -->
         <div class="content">
             <div class="video-frame">
                 <vm-player playsinline id="videoPlayer" preload="auto">
                     <vm-hls cross-origin="anonymous">
                         <source id="videoSource" type="application/x-mpegURL" />
                         <track kind="subtitles" id="userSubtitleTrack" srclang="vi" label="Phụ đề người dùng" />
-                        <track kind="subtitles" src="" srclang="vi" label="Tiếng Việt" default />
                     </vm-hls>
                     <vm-default-ui></vm-default-ui>
                 </vm-player>
@@ -158,18 +144,9 @@
             </div>
         </div>
 
-        <!-- Sidebar phải -->
         <div class="sidebar">
-            <h3 style="
-             padding-left: 20px;">
-            ⭐Chỉ có mượt⭐</h3>
-            <p>Yêu phim thì coi cho hết 
-            <h3>💬 Note / Text / Write</h3>
-            <textarea placeholder="Ghi chú ở đây..." rows="2"></textarea>
-            <button class="btn">Bấm làm chi cho tốn 2s cuộc đời</button>
-            <h3>📊 Thống kê</h3>
-            <p>👁‍🗨 Đang có : 11 phim</p>
-            <p>👍 Đóng góp: 1 cồng lừng</p>
+            <h3>Chỉ có mượt</h3>
+            <p>Yêu phim thì coi cho hết!</p>
         </div>
     </div>
 
@@ -180,32 +157,39 @@
         function goHome() { window.location.href = 'index.html'; }
 
         function toggleTheme() {
-            const body = document.body;
-            body.classList.toggle("light-mode");
-            localStorage.setItem("theme", body.classList.contains("light-mode") ? "light" : "dark");
+            document.body.classList.toggle("light-mode");
+            localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
         }
 
         document.addEventListener("DOMContentLoaded", () => {
             if (localStorage.getItem("theme") === "light") {
                 document.body.classList.add("light-mode");
             }
+            loadVideo();
         });
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const videoLink = urlParams.get('link');
-        if (videoLink) {
-            document.getElementById('videoSource').setAttribute('data-src', decodeURIComponent(videoLink));
-            document.getElementById('videoPlayer').load();
-        } else {
-            alert("Không có liên kết video.");
+        function loadVideo() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoLink = urlParams.get('link');
+            const videoSource = document.getElementById('videoSource');
+            const videoPlayer = document.getElementById('videoPlayer');
+
+            if (videoLink) {
+                videoSource.setAttribute('data-src', decodeURIComponent(videoLink));
+                videoPlayer.load();
+            } else {
+                alert("Không có liên kết video.");
+            }
         }
 
         function uploadSubtitle() {
             const fileInput = document.getElementById('fileInput');
             const userSubtitleTrack = document.getElementById('userSubtitleTrack');
+
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 const reader = new FileReader();
+
                 reader.onload = function(event) {
                     let vttContent = file.name.endsWith('.srt') ? convertSRTtoVTT(event.target.result) : event.target.result;
                     const blob = new Blob([vttContent], { type: 'text/vtt' });

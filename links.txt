@@ -322,7 +322,6 @@ https://vip.opstream15.com/20241221/45743_69e437ff/index.m3u8
 https://vip.opstream15.com/20241221/45744_418f995c/index.m3u8
 https://vip.opstream15.com/20241221/45745_3d738ba7/index.m3u8
 https://vip.opstream15.com/20241221/45746_88dc6aff/index.m3u8
-
 # movie05 
 https://vip.opstream12.com/20241101/24255_87be9679/index.m3u8
 https://vip.opstream12.com/20241101/24256_e62f08e8/index.m3u8
@@ -650,6 +649,8 @@ https://sundaythekingplays.xyz/hls/8eUc57Npy5-EeQT2VwUXestPjG2CM7C0YO7LGoyp21icW
 https://vip.opstream17.com/20240625/13566_23f9a43e/index.m3u8
 # anime10 
 https://sundaythekingplays.xyz/hls/dt4xt1-FLSyzYoPYuvSnv3A9qn7JzjLNt3Qs+wJrZN76fS8p3TOK+2SvlXBuTMoKUvUW4jQPtdKc5jNEkQtNBA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+# anime11
+https://sundaythekingplays.xyz/hls/uqAsm1f5dydaJLhiY7AnWMbE0W8X+rUJhtwctudtqFDiquMtZ19RLIeAom6E-xPMXD-+FkPtNuvwnF+2p1upzg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
 # us01 
 https://vip.opstream15.com/20250215/49323_ea26d763/index.m3u8
 # us02 
