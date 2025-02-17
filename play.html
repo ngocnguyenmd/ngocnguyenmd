@@ -7,106 +7,136 @@
     <script src="https://cdn.jsdelivr.net/npm/@vime/core/dist/vime.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vime/core@^5/themes/default.css">
     <style>
-        * {
-            box-sizing: border-box;
+        /* Đảm bảo trang luôn full chiều cao */
+        html, body {
+            height: 100%;
             margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
             background-color: #0a0a0a;
             color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Header */
+        .header {
+            width: 100%;
+            background: red;
+            padding: 19px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Bố cục chính */
+        .main-container {
+            flex: 1; /* Đẩy footer xuống dưới */
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-        }
-        .header, .footer {
-            width: 100%;
-            background: red;
-            padding: 15px;
-            text-align: center;
-            font-weight: bold;
-        }
-        .main-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
             width: 100%;
             max-width: 1200px;
-            margin: 20px auto;
-            gap: 10px;
+            margin: auto;
+            padding: 20px;
         }
-        .sidebar {
-            width: 200px;
-            background: #1c1c1c;
-            padding: 15px;
-            border-radius: 8px;
-        }
-        .content {
-            flex: 1;
-            min-width: 300px;
-        }
+
+        /* Video Player */
         .video-frame {
             width: 100%;
+            max-width: 900px;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
         }
+
         vm-player {
             width: 100%;
         }
+
+        /* Sidebar */
+        .sidebar {
+            width: 100%;
+            max-width: 300px;
+            background: #1c1c1c;
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            margin: 10px 0;
+        }
+
+        .suggestion img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        /* Nút bấm */
         .button-container {
             margin-top: 20px;
             display: flex;
             justify-content: center;
-            gap: 10px;
+            flex-wrap: wrap;
         }
+
         .btn {
             background-color: #e50914;
             color: white;
-            padding: 10px 15px;
+            padding: 12px 18px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin: 5px;
+            transition: 0.3s;
         }
+
         .btn:hover {
             background-color: #b20710;
         }
+
+        /* File Upload */
         .file-upload {
             margin-top: 20px;
             background: #1c1c1c;
             padding: 15px;
             border-radius: 8px;
+            width: 90%;
+            max-width: 900px;
             text-align: center;
         }
+
+        /* Footer luôn dưới cùng */
+        .footer {
+            width: 100%;
+            background: red;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: auto;
+        }
+
+        /* Giao diện sáng */
         .light-mode {
             background-color: white;
             color: black;
         }
+
         .light-mode .header, .light-mode .footer {
             background: #e50914;
         }
+
         .light-mode .btn {
             background-color: black;
             color: white;
         }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                text-align: center;
-            }
+        @media (min-width: 768px) {
             .main-container {
-                flex-direction: column;
-                align-items: center;
+                flex-direction: row;
+                justify-content: center;
             }
-            .button-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            .btn {
-                width: 80%;
+            
+            .sidebar {
+                width: 250px;
+                margin: 0 20px;
             }
         }
     </style>
@@ -115,18 +145,21 @@
     <div class="header">Xem Phim Vui Vẻ</div>
 
     <div class="main-container">
+        <!-- Sidebar trái -->
         <div class="sidebar">
             <h3>Gợi ý phim</h3>
             <p>Đang cập nhật...</p>
-            <button class="btn" onclick="goHome()">Quay về</button>
+            <button class="btn" onclick="goHome()">Trang chủ</button>
         </div>
 
+        <!-- Nội dung chính -->
         <div class="content">
             <div class="video-frame">
                 <vm-player playsinline id="videoPlayer" preload="auto">
                     <vm-hls cross-origin="anonymous">
                         <source id="videoSource" type="application/x-mpegURL" />
                         <track kind="subtitles" id="userSubtitleTrack" srclang="vi" label="Phụ đề người dùng" />
+                        <track kind="subtitles" src="" srclang="vi" label="Tiếng Việt" default />
                     </vm-hls>
                     <vm-default-ui></vm-default-ui>
                 </vm-player>
@@ -134,7 +167,7 @@
 
             <div class="button-container">
                 <button class="btn" onclick="goBack()">Tập khác</button>
-                <button class="btn" onclick="goHome()">Đăng xuất</button>
+                <button class="btn" onclick="goHome()">Trang chủ</button>
                 <button class="btn" onclick="toggleTheme()">Giao diện</button>
             </div>
 
@@ -144,9 +177,10 @@
             </div>
         </div>
 
+        <!-- Sidebar phải -->
         <div class="sidebar">
             <h3>Chỉ có mượt</h3>
-            <p>Yêu phim thì coi cho hết!</p>
+            <p>Yêu phim thì coi cho hết</p>
         </div>
     </div>
 
@@ -157,39 +191,32 @@
         function goHome() { window.location.href = 'index.html'; }
 
         function toggleTheme() {
-            document.body.classList.toggle("light-mode");
-            localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+            const body = document.body;
+            body.classList.toggle("light-mode");
+            localStorage.setItem("theme", body.classList.contains("light-mode") ? "light" : "dark");
         }
 
         document.addEventListener("DOMContentLoaded", () => {
             if (localStorage.getItem("theme") === "light") {
                 document.body.classList.add("light-mode");
             }
-            loadVideo();
         });
 
-        function loadVideo() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const videoLink = urlParams.get('link');
-            const videoSource = document.getElementById('videoSource');
-            const videoPlayer = document.getElementById('videoPlayer');
-
-            if (videoLink) {
-                videoSource.setAttribute('data-src', decodeURIComponent(videoLink));
-                videoPlayer.load();
-            } else {
-                alert("Không có liên kết video.");
-            }
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoLink = urlParams.get('link');
+        if (videoLink) {
+            document.getElementById('videoSource').setAttribute('data-src', decodeURIComponent(videoLink));
+            document.getElementById('videoPlayer').load();
+        } else {
+            alert("Không có liên kết video.");
         }
 
         function uploadSubtitle() {
             const fileInput = document.getElementById('fileInput');
             const userSubtitleTrack = document.getElementById('userSubtitleTrack');
-
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 const reader = new FileReader();
-
                 reader.onload = function(event) {
                     let vttContent = file.name.endsWith('.srt') ? convertSRTtoVTT(event.target.result) : event.target.result;
                     const blob = new Blob([vttContent], { type: 'text/vtt' });
