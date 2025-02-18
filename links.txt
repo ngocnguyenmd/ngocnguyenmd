@@ -213,81 +213,82 @@ https://vip.opstream15.com/20250212/49213_60466bdf/index.m3u8
 https://vip.opstream15.com/20250212/49214_f2752d78/index.m3u8
 https://vip.opstream15.com/20250212/49215_fa9032f8/index.m3u8
 # movie01
-https://sundaythekingplays.xyz/hls/xyZ5Lw7bq01uR4uS5E7ELWG77DjrfV2Ns4HJcysRYAqVgLWOMfK0RPndBlTpyx3sn9rWE0gJJSOfDxiH41Hziw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/QyaKtKBuoWURaOQYYgLU17rr5RM68EJ2D7O74zk+1Jl5gvH6EBcfgYHTwHCV2r0PDVnQRgFZLpuh4PNf5LovWA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/2JpBZ+RFFtmOfU7xpDyDnUQU1nF79Vh0SIQAJYgpQ9F9bsUlg6t7VRX6qI3ghbYmJj9MQGEjYTSfscXuOPvN9Q==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/1bmK6utiKUTtWt77coKXD85IhyHPeaxhxtsysnHgVAplQH1GiWKAqyiM2g3Q0JbiOqbQTGw4pJNhDpSRzDB6Sw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/djqw2q8KoRdp12mbQE3qxSMNTgvtBFdaGRxH6OohJVIspe1545wfWCfKKajueKHxWM41JytY2zKfo90GdUQYSg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/NMcegCwlRsU8iDcVrQL2F0+fM5hul11toSuod8d7AwkdQkSdjzti4InLJcn54Lhw5QmsocTG2tshS73kokLwWw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/5E0KldD2vSN-um11CPR3hXJh8JEJ1-D5V6T-fVCfr8hhJ+tXpCMMDYKs01kpl3qm6vKEVTPM5DHRMCuqhulM9A==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/sWliLagiyN1qd2Mj8q73Y98KDrd4-n+uJB0CWUI2lJmjlXtelX1-6WKFzcqsjHyjEm72amzTAVoPs8JbtT54KQ==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/13Y8WATEpvLKQafxEyfrJFFH0novmC3AO1C-wxS4nuckscgm3wcfS12VMAdOSDvdZYbXT5Agxyhueiopa69tDw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/+uqwMm0pOaX3Gh9cWen4-XskJ6Ats5Ifnm2nNdPdn-zWmW8x4Gr7ibwnnCGZUScYx23ozZLFxwWlHIYjosu+HQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/00HI9RTZGTqh8Jh4NAUpHCixYv288CLfhy85qnhNRb7Eym0k47N7odAD1jHTJ8ysmcv-D3bYkhCRfpAn2N0JoQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/tzVE8OF1mRLLOCCGXoMqYZmiPLCljGc2-FHxGN20ZAD1cL9LQOOVKBnaiyYu6WnhABEp+RgbJoJnljjTAP4tRQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/ErkErsPFW9OlELQtVv+WaGpUJg8dcrqnXDM1deW5w+2KhxJO-gCpHgyHKWusdIkLTtYy7dXW+9EASwY1cPaoiQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/iZFEC+ks6fYwlFxh3bxcl9KhcH2GKEReStpmzeYiccEaf4w2wTnnIh+FT+B3QDWSVnGtECjvERabSRNr0+U6dw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/rCgGThnOX53pzBwUCTSwPL-VNJ9ULN8O77qB42IHGgod-xp2Y3SjsUSA0TVFmai0qf85XCejyPicNbISeEM29w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/Fs1jtrOdBQ9W5h0Y5CZfUcq1CtS47oIy560CeEoYiGEh8PpMCkHWrrqb29XyOhOXhA--jYOTsoJWjCExxi8EXQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/wMmNSOP7pKMIm4jcMH2Irltwq4VmcKh5e-K5RznLkWLqo7GIrVhwiHiW+LQaFn1rAlGq-MQYrfXeza38phfmHA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/nCptKZcxin6o4QaRehE5sJW7JKXpQ6tYXJXSe7t4-a5FlIbik+wWflr01V0QtRPIE+T2leddI5vZ9vtUKV0imw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/BrVvhwypGsmaMf+1uL5GaYpgoy-DDqQLu2Dw4cRrZbR9MyQdpU4-Ty+7sZU6bOT1Ubv+noiFvY-V5GFyFCY7Cg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/ZqWT1q65usD9hLEQ0PKRU5G64uW8gxGe4gDlOleQA+pabPWNtuIh6xKD-oMLsqS+-OnaVmc710uIDLtb9HEr-w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/wO+CF-hEZcFGHsy9e1GT3Cy3BN+wqAOcbNOGxy-Q8SPIlRK9Ja7FOujScZ2rMiHpZnX-ktTdUEAUoPkL9o7U4Q==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/wiqCBg00ak1EU-s6frx-pwnuBFF6ALAnyk3udBmvFf3AX849qok+8PTsU7zPf8a4QVvkJ8i-SIvd5RyXHyqQBA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/vOCiyplbCgOegtRrrJYPVMeKYWaHZMNaHR-GJL8fU51OqFWO5z6rELvqdt+Yxn9LJkZQr3gjPKl+JFiWbxK9lA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/7LY6EEEg9xq1X7gpelrvf7FZjRwTWj16nm0yOKp9koPjDrkJFHPNXbtKgteOOHLKw1L3MZX-ax4Q6U0KW4sp6w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/fNOSOj9EINTOSUPqGuTuwjk-t7QNwEtrSuhLuZoSnUJvDyuEwukE3hSGa+4DyoYRgXXJxPuqq7FfAOhN9Vw1KQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/tEjDdxAyXdAF87eFI8KQcwQ3-b4Q7WdA18rT3j29y6zOi3OnrJTsX+QgXXmGoQC8EgqaaGgN9OqRhIxuPE+Sfg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/-XhBQiVCbNWujxTNNE6KQdf0pxsOsqU6xcz7QrfuaPTBuisKHdAuUz9RM8lW0OzPs962JsvXg3sJQWorbWaoWQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/ahh1T77eE9O8kVu0M7oFes3LDuEsVmGtnqWwJmiBLJtC0NsfUiTXMLxRD5qucWIXmPlvzl92+fV43MSmcB-tjA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/aJIeL8xl4QklZfB21t0iX23190VYOTCKPsfYFN0GU3-4cdRYNfkZHaHRZHHju6uo9teXUTv9aQXG0nmOlWMMjA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/IyZYxyINw8UkjPPkUfmFSJf7WJtghv60Oz8d1xW279TVhPgP4KNJTU4GrCTjW-eIrz3yeSno4V6P3pppldzfgA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/bhLRSC-4mMHmtOE45hX+FdSCqgXE3VxhKB3kk95Ypufkn12FjvUxipB9Ruk+6LruXMM8HvY26-2nFxijbeyr0g==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/osQIdZZp7a9tqiEl0WhrGJVdloz238VJRJboVqzwu+q+zWQ8VZT-SX96e7tjP3LJt42FzIv5BUnH4Sw8IaHyRw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://s4.phim1280.tv/20250203/TKFdwa6Y/index.m3u8
+https://s4.phim1280.tv/20250203/qWgwKD26/index.m3u8
+https://s4.phim1280.tv/20250130/nFrUobVh/index.m3u8
+https://s4.phim1280.tv/20250130/ANhrQXNI/index.m3u8
+https://s4.phim1280.tv/20250130/Z5J76V8Q/index.m3u8
+https://s4.phim1280.tv/20250125/sMbaE6LN/index.m3u8
+https://s4.phim1280.tv/20250124/mWZUMVD5/index.m3u8
+https://s5.phim1280.tv/20250123/hkREZtYE/index.m3u8
+https://s5.phim1280.tv/20250124/voSGapOJ/index.m3u8
+https://s5.phim1280.tv/20250124/jU1WrdGD/index.m3u8
+https://s5.phim1280.tv/20250124/yzn3y7ve/index.m3u8
+https://s5.phim1280.tv/20250122/OuDLr6T2/index.m3u8
+https://s5.phim1280.tv/20250122/p4Jv9gyY/index.m3u8
+https://s5.phim1280.tv/20250122/6QNv1xnH/index.m3u8
+https://s5.phim1280.tv/20250122/GjyFHhig/index.m3u8
+https://s5.phim1280.tv/20250122/jOsy8yau/index.m3u8
+https://s5.phim1280.tv/20250122/vkuKQYSE/index.m3u8
+https://s5.phim1280.tv/20250122/3RJSYSl2/index.m3u8
+https://s5.phim1280.tv/20250122/xGDAVLMI/index.m3u8
+https://s5.phim1280.tv/20250122/UFyDBPCG/index.m3u8
+https://s5.phim1280.tv/20250122/VVPsMtzv/index.m3u8
+https://s5.phim1280.tv/20250122/BsWEMEOw/index.m3u8
+https://s5.phim1280.tv/20250122/EawnVioL/index.m3u8
+https://s5.phim1280.tv/20250122/ZIG4HBOS/index.m3u8
+https://s5.phim1280.tv/20250122/r3898oCQ/index.m3u8
+https://s5.phim1280.tv/20250122/QU324Gr0/index.m3u8
+https://s5.phim1280.tv/20250122/IM32gOvI/index.m3u8
+https://s5.phim1280.tv/20250122/DgV65Gg0/index.m3u8
+https://s5.phim1280.tv/20250122/s3bUpmVR/index.m3u8
+https://s5.phim1280.tv/20250122/PcVaKLiJ/index.m3u8
+https://s5.phim1280.tv/20250122/yJc52Lth/index.m3u8
+https://s5.phim1280.tv/20250122/0adMf9sw/index.m3u8
 # movie02
-https://sundaythekingplays.xyz/hls/fnLzndLdInAQchppj58u2rkAtGYbdl4mSqQviq3no8HLO0HUHjuCSIGYHrSVvtULt0qC9D9SjmZPhSCtRkjBfA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8"},
-https://sundaythekingplays.xyz/hls/ZiOKjabw7VAqu5lJz8YYDtn0DdSZc+bdlo4y0f1gp28gVhqFfHJsEvE8bPCyW-W49ML51aCKyj7QUtxY9oAYnw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/38yjXGIDq-Uw-dgEUOPod8vV+59LUw3j+zv7v1HgxeG4m8iPyrNki6RtZHRNKz8We-cxuXtvtHRzumjp-d94xA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/3s+QFi6hCDENvHI8iMXUybGPZ4Qlndgez3F7JE6SFnLYYBHVq3miRdFcqLeT00Mh1FAsHffKxhq-Raxtle9N7Q==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/4liIbGqo36fmHyXjkHmbd42ta4YmkPHS4nVINZBF05kAEGalCdHu775ChUNX831eeAl+knXmLqzyjf7hMm7g7A==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/t1OqJLGX5prcJODgMNOLhE62NaP-LA0+iIncJTphxmRdZHUhywmctXvXrn9ynka4jYRUUvX9i83h4tK4eBoFfw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/lY3y7Wjw94vpWS9yngL14o7jGyFNZSRyvWm2TrmlFMRVGaOmRVTIJvyhqyPeepjwbl8gE7DvN2L43Qi3zZ00QA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/FqsVzhBvgX0e1ccJgCvEYTwfHMVbJ9BNniAo5fFTDX8k4kdvyqjPAPArmD7hRAOZD7TLeHoijSDvlkTog7zz3g==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/YnBEIjnRzxKRdqwFl6R532w280LH7rKvnDWxEtOSymhliP9Zs8WgaKKSWRVQqhM-9kmPoTithGmhiaTkufmTXw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/8izM5ONTAvsoDqvtS2d-5AcrSKvz38jkojarOUEmfVD6U3CnJZMjDOhJ5FohnBM1HS39+oaF+ae8SDLCtbrUcw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/Zwr8r52O17KRFpBCUERA+WMKOUqG0d97xz5J52RkzgBMcSfgPt49ulKlFjwlwFe4GSoiY0tj-ceU0YnTdYdS6Q==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/TilX2s+raWWPpJ5t5konWB+G-nEVkyoTv4ordy6EJYQdCZ3KrF6bs3-VDlnmtXNRMu9OkZwZaR6qF5dP6gVr+w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/Nqf2RpDx-GzvX6rMUCn5XCQsl66KAl2IgxgCIflcrRHJyMNPjnXpkkkzKqYi8PVO1cFZhcT0CekarQBTRSaHZA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/ASR5iYuYFbJdffyXWbLCyA0NLN6Rm6CeHa3jFfRk46-E0fENppttUYChndDWdNmw1awANWSAB3PzmhnIaX5DZQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/DluItZNlDIMojjO4vnPUaxgs0q5+uMayiSPrtqxI+lKaru+-uc1yLpjIhwdUIu9O-5lyk49JvqEAee9AMosugQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/+qrUXqPlZ5aTa-8diy-kusMSrTtS-PMKz79cNxhkeOSO6IpxHQZTCly8Fm-AUcxc63oHWmRENS6me9Wkwtu0OQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/yTTxuXOrWiJL9KRCPyqU+vIbVrD+31sUBoQm9g0BscDJBvFWpBH4Z9jlQ7jE8+OzfU8FA1Vh6zvh6k1CLO-1uw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/HtWk6u8tYoqQ64AvlDa7rLlF62--V+isjz971LGNBCX8t3Tj3nc-nhbh371m7eoWRkmi9+nppyHLbTXkQyWdWg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/xCBGV4ObRRskqlPu6l5Rst6T3Qx4x1YuM0hEusiRMZJYbnZbht3sMZg8bzixeZY8VxWeec6AgA5mjzR4yaMQEg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/uBdNY8v5Ah-A6svhatP3Z2T2uT6Ps7JjcAQ3U+tWKYw+aSY67kQpDVhMFCmFjRZgQoQuH4y3uGcBYOAOyC93AQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/uHHXmhdaNWHmcG4b+JfAiPvC-8aDCSh3Zo9risTDAHkYLrnunvsm7lJNCMSrIg7VDTArKATjqGTTK6Hcp162xA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/O8pr3l+fo7hWIrad6IoWzfhY1b+HSRt-IiPGTvarUcPfdn4knbzp7rMcVRiP9rrn8h6XWebESMmo9aHQ7KtDwg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/kJn+F7dgTE0EgcG9irM0jau0MTOUdh+wSxWBChsADXYRczX5V-978bcBvA2XNjdmlNK+eBbUaiA6PwMdi7dpmg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/PMGcXYUyuuJzof08EdqJOMyor+xI0tIj0NtM7iqPtBSBrEgoPHFyhqrWgP5UGGDM748JTE5LdCDt2QhrV7EJtA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/xEDfXVf10iX8U6N-CU1JLwMGLV+Dlb0kRkiQBEBXz4TmBg0l-KDUjsotcQ04XArTyEWnkQDtvtem-twtccqE7w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/JNhwzgwmjJ5p83Zp+n-8hY9A9XX8NukbpcydfmXP8JADuz9w6jVxvNlEh7-dVkhTXIRaIQpRYXy7-CAS8cmoww==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/ME+RbuSAhcdxA9rijjpA24wwpmgqB1Wrq4gmfIUdNOGQ0hIis4iUMOFTm2IJP1CNeQ2B1wQs2knqqHVgRxYk5w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/Xcb7Nh2e00D5qX0af6ETQVr-rZnB15Tr+CommJAJkTNAfRxMAAWZkkDkTN+Zy-oNq15XtZehZxm0vegTKoWduA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/egILtIIHN-+7wyNApPf3eM2VckSbjEl9J0WESI73ohG2cIPuDvt364QEP++1ZOVsa4iZLN5uJdcjwY2LtHPaWg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/eG8sNKlgPkrMEwmrzu97Ruhzq76uaKTKNNe2p-Gim3HRAY1YiCgHpT4W5SiHaZuYZlmm6cxTQ3HWaDsM+op6Mw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/kQPgyPgP2oxKW9Ofu0IwG+XnIsrGOJfpdkq3efXp0HNY0e176DzuCES5+Bkrm8n1AuQrZcaIF5U4D63cGWQ8Tg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/-VKq-pwEVwzOkUnrqrFVC3Gj8PyAkQB6N-IEf901Gq19fuIIV6mmeP3Q7JQxsgwMahQPJHjGge1sLjsLC6JqJQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/Adj5IehS9k2tK3QSXjo-DDglboVxyuESTidA22AkxxTO0UkjqTumqUMyYF0sgf39ZVMRjN+6QjNQ0w2Ne26QLA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/dOMw653DR-tyx21SrOH1KixHY3L0dworkaTktJ+tYG1BEoAGB6KFTWWellgQcgAcqVvHNyo1TOOMaNP8XqsUQg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/fjsNU5lnvCY8DdZxMI6Iwua00Q4vH4eVFGuP0O3VcKMNdKmNYoLYi0Bs61e1PML7pV973b2aRhu8BycsDO7Yvw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/ZYe-w6j523-dA8dbRAgooNUNINXvDzLhjfqo3HwUV-cZ9OOq7EAOe9lBK7c3RrDonpQApTx63GONzIwvRkXZvg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/hvqSGolJfNEl9ZeEnIvGxuW6Tz1tlSneWoFUbQv2qxfEVkWzIvaV25cm68Akox8sgNaEU0oqDQtu1vvkHDUBvQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/LbdKgqjGhGO9XJmDKR8VwjZZmVsGFem0RB31rdzqDchpU4JwxgVqzKjAK6KBv8zYCv-E4aLFmTlI4M9IUZpsNg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/7VUdHKB0NLUwAVwTMbUcloZZTWhHZETlFLTgpmIcEB2d-aehARPzskFeGy4JihmNxEcDqo-3-LM5VMJWrAwJfg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/kMcmZadj17grv9qk8ZehHrCSYb7qhsB5GMlMa2UukEpi8gifusZ6bYQBoXDLpBzBkeiuOvTIOSPyvdJma4bqzA==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/9dqQK00CAbWmtnv-xinjVCPxp6RzxMe+qle4x1v0v3lQT3qjw9MHIgmRXZuWmzBWZLmUBoTKX657jRfA9l88+Q==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8" },
-# movie03 
+https://s4.phim1280.tv/20250124/7gIainQR/index.m3u8
+https://s4.phim1280.tv/20250124/RmcQKkh6/index.m3u8
+https://s4.phim1280.tv/20250124/75skma3s/index.m3u8
+https://s4.phim1280.tv/20250124/SnssnBmm/index.m3u8
+https://s4.phim1280.tv/20250124/pam1VzvJ/index.m3u8
+https://s4.phim1280.tv/20250124/iLwRPjmo/index.m3u8
+https://s4.phim1280.tv/20250124/jm5S9TS5/index.m3u8
+https://s4.phim1280.tv/20250124/h7uLV8Q9/index.m3u8
+https://s5.phim1280.tv/20250123/1V7c2dVw/index.m3u8
+https://s5.phim1280.tv/20250123/RFb8iRMZ/index.m3u8
+https://s5.phim1280.tv/20250122/THOpydgJ/index.m3u8
+https://s5.phim1280.tv/20250121/VtyJuKmh/index.m3u8
+https://s5.phim1280.tv/20250120/5RegPlqu/index.m3u8
+https://s5.phim1280.tv/20250120/xNCnjfoL/index.m3u8
+https://s5.phim1280.tv/20250119/5BtI4RjN/index.m3u8
+https://s5.phim1280.tv/20250119/48BrtpZI/index.m3u8
+https://s4.phim1280.tv/20250118/3XKeFmKh/index.m3u8
+https://s4.phim1280.tv/20250118/6aCU3raG/index.m3u8
+https://s4.phim1280.tv/20250117/4lS7ea6r/index.m3u8
+https://s4.phim1280.tv/20250117/mTcwVe6I/index.m3u8
+https://s4.phim1280.tv/20250116/VoCarm2H/index.m3u8
+https://s4.phim1280.tv/20250116/CG0huxR6/index.m3u8
+https://s4.phim1280.tv/20250115/vddpITtj/index.m3u8
+https://s4.phim1280.tv/20250114/SHFBcOmt/index.m3u8
+https://s5.phim1280.tv/20250113/eWVM7d7I/index.m3u8
+https://s5.phim1280.tv/20250113/ts8tn4qR/index.m3u8
+https://s5.phim1280.tv/20250112/ECK6am53/index.m3u8
+https://s5.phim1280.tv/20250112/tNmlPfLG/index.m3u8
+https://s5.phim1280.tv/20250111/Hityb7Mu/index.m3u8
+https://s5.phim1280.tv/20250111/nI45EJH1/index.m3u8
+https://s5.phim1280.tv/20250110/XCCvtZHm/index.m3u8
+https://s5.phim1280.tv/20250110/mJvV1xPn/index.m3u8
+https://s4.phim1280.tv/20250109/0wuUEgSZ/index.m3u8
+https://s4.phim1280.tv/20250109/5Ln1zDQk/index.m3u8
+https://s5.phim1280.tv/20250108/qAlhaF8l/index.m3u8
+https://s5.phim1280.tv/20250108/WUYI6Wvj/index.m3u8
+https://s4.phim1280.tv/20250107/EWkNohrr/index.m3u8
+https://s4.phim1280.tv/20250107/hgvE0oHx/index.m3u8
+https://s4.phim1280.tv/20250107/3KwA7fl9/index.m3u8
+https://s4.phim1280.tv/20250107/sLbczEUN/index.m3u8
+https://s4.phim1280.tv/20250107/t6nnumgM/index.m3u8
+
+# movie03
 https://vip.opstream15.com/20250207/48933_3dbcf9f9/index.m3u8
 https://vip.opstream15.com/20250207/48934_086ebdae/index.m3u8
 https://vip.opstream15.com/20250207/48936_6c1b3d4b/index.m3u8
@@ -451,45 +452,44 @@ https://vip.opstream17.com/20240311/2448_de3c9d08/index.m3u8
 https://vip.opstream17.com/20240311/2449_cb0ce806/index.m3u8
 https://vip.opstream17.com/20240312/2492_1e25e026/index.m3u8
 # movie08 
-https://sundaythekingplays.xyz/hls/m816aTQHtgmTcCxYo-RDylnO8vh+2Kh5L+VLZCOLOjjRolBFVxo3BtZ9vefPrSLRyAI5-RP2Z7LeRCbYq6+ouA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/b9Qze6jyg9UkUn9y8-6qjlURIo4TecCUXD62eHY23nV6ajBs-2GvJ7ZatN68vS6Yk5FbqTMsPlBzfTUsmfKjyQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/aWJLCWqT3bvBqdeCJQJbOVZafIl4aU8baziCsVeVsuUsgY4CJ3+ZPwm0QllfjPLryjbF7eRzbk4jT0YxJuw5pw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/HlrX5fjiGnr5ybmf8eiI9N1WGAunijVm4nPtzr11xaQRdPQKxoakLBIJ2VMDrg38tkZCJFSkcsqKopMNZ9DBOw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/jWDIygUBuIq0NfGhugtFggSvem-y5Fth43A-EhNHP49BAv2XhCk8cMORzYDyCyhrp3z3mOjnZ9hkfwPSA3-rLg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/VjIG28lLfEOiDAkv7++UDBuIBV3NufX0Mt8H7bhNhWUiS-3BgvMZwu5blIKzIPdykx30fbYFTw0KFEiNilv8Hw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/B7vZUJQAfMIFNib0iBTiAg27qMDR0XyYMLC3E5ibjRbtrecMC4V0d6WbVFggl4DD821HGFrPsj6fbTFiLpm+bA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/L7tWIKR7T9ofy5LuMoN4mMDO7T45lpl-5--tgOXgdkdplF5MoZpkgPoZUticbv-aLWzvtuBBrtXnkzAi1edB6g==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/NCRIXaIS26HxP44L8NHu--ewPTd0t45+qwxCTVgM8NyFbwIJzvIkaVYq2zYSK5UwBxpILx-RwiUdXJ3bWYFb7A==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/YIf-2lCKxSi3no+0Qk0v23WtE63fl2odK3LzIattmJLo24itgTj5cfAFovyf-Sms-Bf-SHIsbjDXY7tiwKpNag==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/p-nv2b90LPYStTYkdMUFQJpTLwrzqiA-5fljTPrcXkiLG62emE96W-EeTTN06-04nAa-QWCJyMNMhIv2GzJR+g==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/7NLGDlvnpDsecnDbvQa0r8mNmYhxXekpfGRUt0Nur0ihT327VptNaLKXMR2qj3TN0176XN+Ltz3DesosUcd9rA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/xR6qq5wGbkEcr13ABHC2udaIXJ+xnYm+OTRB9KyKfqdLX5sFlE+TEbEjXJ0sZNKDWmRzqhr--C02hyYyzFIphQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/musS7Qcl-MteMPfHUmnSyX9seH5gkkh+60vTHjY4e0soRwqorTclmWSVr04AlED8l27u9wnpQ3U9Y17n5ac7LA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/QYOQ5CQBXnp1WcAb4v4XgImsjnfuVxhTg34yNjycqz28uFJZ2mD0uWYgXOlEP4pjEXLOw6hN48TMgJy5gOpTrA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/COMob5pD1VfRmEcKyNeTdlHcuH+hPr1YHUGxce36IyMWoeRtah59G8kSZHnmYS4-6yKXtYvfGYtHvU-M+wVxkg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/j7kd-0Q2KrHOIOcmlFlqpX8pac3ZI0LYpM7GNurMIXfE6U463ej3Z5+MyJ5QXQvI07FLtm8NiXUx+QDJn9tQpQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/IOtc+BF9PBg0w2yxJUEH6anktYzvbTrEPwmmE7c15XpZY0P06GpgiuqXIBqV-Lx+tRNX3XcDS4S8EU7PuDyuGw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/-FDN4WHuC+Iow0X-A-5TGi4ZilNHrsRAxOjIUBtELDMfFxLI2ZsYvzsxyAYs7OmqE2WfwMW9mLxYKl5zwaMUYw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/AhBnnMznZMYX6eKU9Z1EN6bM8NJe-x8CBRm7hx7RE6NguFJwN9hOd8VEU+R0xyRSHI4CsZ-qq1PJbJzfohsWkw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/bhMtoQRLtgthyzKr7UBp+iIWXrL5Ze5ezimFZerxbgoQoalLRUh1ThmgPNBxctcFEKpeEkbnYQc3EMXJYIV8IQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/fiuWz0j4uk0LNVxXSbXqFhL8H8QA6lCmYzimKiYBCoH-aLVLiz1tKgWAtxR3X5V-dh27yUrTWT2Bv9Z8lurRyg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/BgyqPwZXEgtMg0ERBL9coAcUJd5LJNrMKCWQ4AR6ZpqBSpucmXyBCa1tI+6dyrEf5r7XzbFA4ChrxMnB7yr1Mw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/+2IZd3OfH3FFSSr71x1+IJuiERlT7mWE0-8sk+75lEm2qzW9huZ4b8H-bLzT3HuEciZ+xoJKQGM+c5gcwgs15g==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/54xtFgCObt3auaHT4kgAMBLBbTZWfsGpw4YPc5SP417DvNdPCybCpnl4lc8-3iQ5hQyxNuL3QdmGemQ29rhbXA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/g84ML1b+9dbu5qT422kTsZ+ajRqANaek3G7SmvbEgYav2aCoGTIQr-PnqCjLZv+bf5mDvMoJyqCCjVkYTeeOKg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/ugd6n7aHTjzDK-FT91GUXH1Sf42hEOsGhHpgvl6cE+e1Ar88gOUKiMXarVNtsWbH-FgEAC8CUxXmtXlmsgkmYw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/4bEnkvGiKsfqUv2aOyW246kTDyjK0hA4FCCHhdTtrNVlL0hqh5im1N2SkAmrIdx+wnA-SSvAMPMg5X8cAdnjQg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/athcfvpBIGk7c73Rbzdcq4EmzBYw6MhnR7Sp-t3Rnl9Y2XdjZA5z+lCvFAvhZJRzdRwDCljJNbIv-t1oaOnIRw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/Z-UfH3yj3dMt5O6UEXxujI8UqVMIMJ1Zmm+afQ4+puHtcI7DRs1FWNOqMUJj6dBo+uRa0wbuwnLgqwglqf-JRA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/f4AsrpId2bHOJgq6Z6mUjJvN0ossBOx8-NwvA8BoXFgRkvM+GFyQPj7c-AHyLLm41HYvAJlCONllkxaEf2RUTA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/-z1t0itkcMQbZ7zM9xd3cpfnbzWXcCec6LydbIPTTYgz-Qyx3UiW7idUb2-6lJ8miTunytgpgna-XkzPPCgqYw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/QPve9vKBZEUeE-Elbi3bdlcYuhL9dsBjsaq83M+J2x7Wy61ugMR9NlFimSWVL9cYS8PI4WWstCNCQYOKn4aE6A==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/zPu3RrWGnHYeXbdlEwko0ypAEBk3mH7QrerqMifdr500VuY5Sn1+IOfHsiXVbHg-12bL4HAyLNweJZOdsSEMKA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/3D-XLtq2RavuARvCjsrb8TkFoJ1huxogQR-TC0SeqkJ2AasnqQBwfgptQdLNVJHFvz++sf3fckIArmi+ktaCdA==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/T8j5d0CNm9sSXybIj9-YhWpnNGHk4cOqJ+S8iReu355DEIob4Hs6RvKVunwGj5d12O1F-L2Egw81rB-HAyYbvA==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/nV2vt-sRnWGrfQUxwUuHg4Wq2+gKC8bI21nYVt3Vfd6xR8hhjpB3JvcjUYXgIcWn5x1YENjNoDri02etzoUr2A==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/OSYvdj1a5ebGhcefkSUV+xP9mhcPnmpvqDLAgssCQgEaiSEG6DcabjQrQfF-RwSg5tR0z9Abq-YVdhZdZFufRw==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8
-
+https://s5.phim1280.tv/20250208/isQF8qra/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/xVrDUmX8/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/7XLOK2XO/2000kb/hls/index.m3u8 
+https://s5.phim1280.tv/20250208/ppDt1MqV/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/jhgSAq7b/2000kb/hls/index.m3u8 
+https://s5.phim1280.tv/20250208/jPXNfoLB/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/mHfi2K6m/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/T9a2wHae/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/9niUvtiq/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/m2b5Zgzc/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/bc2RmcLx/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/ZgS1Txkt/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/wULhxMza/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/K2jbTCMv/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/NVE9YVbB/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/WTvqM4kR/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/L7JPjrLt/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/P2n6le82/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/iNg77Icd/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250208/ke5zYX6S/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250209/cBJGspaf/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250209/XACX1OAk/2000kb/hls/index.m3u8
+https://s4.phim1280.tv/20250210/eNw3raCO/2000kb/hls/index.m3u8
+https://s4.phim1280.tv/20250210/7zjYsPN8/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250211/xgxff9EI/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250211/w7f9p3nU/2000kb/hls/index.m3u8
+https://s4.phim1280.tv/20250212/ttBCYPSL/2000kb/hls/index.m3u8
+https://s4.phim1280.tv/20250212/B9C6DEs5/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250213/qvQpQxYb/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250213/r8YGMF8p/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250214/KRYG7C0s/2000kb/hls/index.m3u8
+https://s5.phim1280.tv/20250214/pDbij3oc/2000kb/hls/index.m3u8
+https://s4.phim1280.tv/20250215/c5gMkCtr/2000kb/hls/index.m3u8
+https://s4.phim1280.tv/20250215/rdI4U7sh/2000kb/hls/index.m3u8
+https://s4.phim1280.tv/20250215/WtVLDA55/2000kb/hls/index.m3u8
+https://s4.phim1280.tv/20250215/3J1nzCoS/2000kb/hls/index.m3u8
+https://s4.phim1280.tv/20250215/isVrqqTb/2000kb/hls/index.m3u8
+https://s4.phim1280.tv/20250215/tobOVogb/2000kb/hls/index.m3u8
 # movie09 
 https://vip.opstream15.com/20250112/47485_4bf9decb/index.m3u8https://sundaythekingplays.xyz/hls/jWDIygUBuIq0NfGhugtFggSvem-y5Fth43A-EhNHP49BAv2XhCk8cMORzYDyCyhrp3z3mOjnZ9hkfwPSA3-rLg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
 https://vip.opstream15.com/20250112/47486_9ad55466/index.m3u8
@@ -601,37 +601,46 @@ https://vip.opstream15.com/20250211/49195_a26c9661/index.m3u8
 https://vip.opstream15.com/20250211/49196_f611d5fb/index.m3u8
 https://vip.opstream15.com/20250211/49197_7c1abf44/index.m3u8
 # movie12 
-https://vip.opstream15.com/20250214/49271_46cdab6e/index.m3u8
-https://vip.opstream15.com/20250214/49272_790e2f99/index.m3u8
-https://vip.opstream15.com/20250214/49273_0c051e68/index.m3u8
-https://vip.opstream15.com/20250214/49274_f2bfe9ac/index.m3u8
-https://vip.opstream15.com/20250215/49327_c8097345/index.m3u8
-https://vip.opstream15.com/20250215/49328_6de5f0ac/index.m3u8
-https://vip.opstream15.com/20250216/49366_2bdabc31/index.m3u8
-https://vip.opstream15.com/20250216/49368_e9ae4d72/index.m3u8
-https://vip.opstream15.com/20250217/49414_e8c8be74/index.m3u8
-https://vip.opstream15.com/20250217/49416_0b12990a/index.m3u8
-https://vip.opstream15.com/20250218/49437_326548fd/index.m3u8
-https://vip.opstream15.com/20250218/49438_cca1adbb/index.m3u8
+https://s4.phim1280.tv/20250217/eo95ZoOf/index.m3u8
+https://s4.phim1280.tv/20250217/j92VO1R6/index.m3u8
+https://s5.phim1280.tv/20250216/NesV9IY6/index.m3u8
+https://s5.phim1280.tv/20250216/yF3pfMm9/index.m3u8
+https://s5.phim1280.tv/20250216/2pulF4Il/index.m3u8
+https://s5.phim1280.tv/20250216/Y4olzIDW/index.m3u8
+https://s5.phim1280.tv/20250216/4SQb2eXb/index.m3u8
+https://s5.phim1280.tv/20250216/ApGXO8WW/index.m3u8
+https://s5.phim1280.tv/20250216/LtZKwZaW/index.m3u8
+https://s5.phim1280.tv/20250216/131yhyUq/index.m3u8
+https://s5.phim1280.tv/20250214/qRS1embT/index.m3u8
+https://s5.phim1280.tv/20250214/eBBLmdel/index.m3u8
+https://s5.phim1280.tv/20250214/MeyTs0L2/index.m3u8
+https://s5.phim1280.tv/20250214/3eWNadzC/index.m3u8
+https://s5.phim1280.tv/20250214/MN3MvQKy/index.m3u8
+https://s5.phim1280.tv/20250214/UkpVLa8t/index.m3u8
+https://s5.phim1280.tv/20250214/6jiKQ2Kz/index.m3u8
+https://s5.phim1280.tv/20250214/9NLW2t9t/index.m3u8
+https://s5.phim1280.tv/20250214/DGynWPuE/index.m3u8
+https://s5.phim1280.tv/20250214/e24yzMcv/index.m3u8
+https://s5.phim1280.tv/20250214/wZA3iVlw/index.m3u8
+https://s5.phim1280.tv/20250214/aXVcTIuG/index.m3u8
 # anime01
-https://vip.opstream11.com/20241012/54743_82882629/index.m3u8
-https://vip.opstream11.com/20241021/55435_33457f8d/index.m3u8
-https://vip.opstream11.com/20241026/55732_03af645c/index.m3u8
-https://vip.opstream11.com/20241102/56274_84328fbe/index.m3u8
-https://vip.opstream11.com/20241110/57177_042a4b5e/index.m3u8
-https://vip.opstream11.com/20241116/57586_f8517a16/index.m3u8
-https://vip.opstream11.com/20241123/58125_eaff0e91/index.m3u8
-https://vip.opstream11.com/20241130/58740_d292aa67/index.m3u8
-https://vip.opstream15.com/20241207/44703_27ce438e/index.m3u8
-https://vip.opstream15.com/20241214/45261_63e50dd1/index.m3u8
-https://vip.opstream15.com/20241221/45732_b44d4a19/index.m3u8
-https://vip.opstream15.com/20241228/46320_2f20c482/index.m3u8
-https://vip.opstream15.com/20250111/47394_a95af315/index.m3u8
-https://vip.opstream15.com/20250118/47910_30eeae50/index.m3u8
-https://vip.opstream15.com/20250125/48323_9c975e80/index.m3u8
-https://vip.opstream15.com/20250201/48571_a42434c7/index.m3u8
-https://vip.opstream15.com/20250208/49027_6efa2f3c/index.m3u8
-https://vip.opstream15.com/20250215/49317_a7aa1c16/index.m3u8
+https://s5.phim1280.tv/20250214/7Otpyj7w/index.m3u8
+https://s5.phim1280.tv/20250208/8b1DwOPG/index.m3u8
+https://s4.phim1280.tv/20250201/bPw1HWCc/index.m3u8
+https://s4.phim1280.tv/20250124/balUcE0Q/index.m3u8
+https://s5.phim1280.tv/20250119/4tbIXeeJ/index.m3u8
+https://s5.phim1280.tv/20241231/TA5PsbKm/index.m3u8
+https://s4.phim1280.tv/20241227/s2UcWnM2/index.m3u8
+https://s4.phim1280.tv/20241221/q21X6nhZ/index.m3u8
+https://s4.phim1280.tv/20241213/B3L8gRW1/index.m3u8
+https://s5.phim1280.tv/20241206/gu0bJwys/index.m3u8
+https://s4.phim1280.tv/20241129/qkseRjnP/index.m3u8
+https://s5.phim1280.tv/20241123/l8k3HTmv/index.m3u8
+https://s5.phim1280.tv/20241116/SqvjOVih/index.m3u8
+https://s5.phim1280.tv/20241109/aBIr4m3U/index.m3u8
+https://s5.phim1280.tv/20241102/OO7mHapc/index.m3u8
+https://s4.phim1280.tv/20241021/2SR54vug/index.m3u8
+https://s5.phim1280.tv/20241013/jzvgsg3U/index.m3u8
 # movie13 
 https://vip.opstream15.com/20250216/49333_cf9113ad/index.m3u8
 https://vip.opstream15.com/20250216/49334_97e8a893/index.m3u8
@@ -707,60 +716,66 @@ https://vip.opstream16.com/20221116/26064_49d5faa2/index.m3u8
 # movie17 
 https://vip.opstream14.com/20220306/851_47689fd8/index.m3u8
 # anime02
-https://sundaythekingplays.xyz/hls/1Cyn7fUpku2Qm4LCK1jmBviyJzD-lJ2KL0GHYZegclP54eQzJAB3rbZ+FvZyMGa0ARBfukJ2XnJ4Dv04PFywlg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+https://s4.phim1280.tv/20240831/APPLTn13/index.m3u8
 # anime03
-https://vip.opstream15.com/20250112/47520_3b16ba31/index.m3u8
-https://vip.opstream15.com/20250211/49184_5290f86d/index.m3u8
-https://vip.opstream15.com/20250211/49185_622afa4a/index.m3u8
-https://vip.opstream15.com/20250211/49186_d52999d6/index.m3u8
-https://vip.opstream15.com/20250211/49187_4df8eccd/index.m3u8
+https://s5.phim1280.tv/20250216/IgyG8eIU/index.m3u8
+https://s5.phim1280.tv/20250209/PtdO0wzR/index.m3u8
+https://s5.phim1280.tv/20250202/3B61F3lh/index.m3u8
+https://s4.phim1280.tv/20250126/UKYMxisA/index.m3u8
+https://s5.phim1280.tv/20250119/lv9kwXfR/index.m3u8
+https://s5.phim1280.tv/20250112/WbEgQpct/index.m3u8
+
 # anime04
-https://sundaythekingplays.xyz/hls/rqHUzkeaLdJA6MizbwJT6SyODQbwKzRRkJI7AX8lTsZjDAKMzxb+rW1QPL9TbfwShhXGIeDVyVBCy020a+jw0g==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+https://s5.phim1280.tv/20240919/BQzsFrpw/index.m3u8
 # anime05 
-https://vip.opstream11.com/20231104/48909_5379f9a1/index.m3u8
-https://vip.opstream11.com/20231104/48910_611c7a6b/index.m3u8
-https://vip.opstream11.com/20231104/48911_b7d1b2fa/index.m3u8
-https://vip.opstream11.com/20231104/48912_b375a7b5/index.m3u8
-https://vip.opstream11.com/20231104/48913_5055bbd4/index.m3u8
-https://vip.opstream11.com/20231104/48907_96d7b4ff/index.m3u8
-https://vip.opstream11.com/20231104/48905_5d534b4f/index.m3u8
-https://vip.opstream11.com/20231104/48906_226caf17/index.m3u8
-https://vip.opstream11.com/20231104/48908_d2b4abae/index.m3u8
-https://vip.opstream16.com/20231113/37383_ada3b3e0/index.m3u8
-https://vip.opstream11.com/20231118/49259_869583e3/index.m3u8
-https://vip.opstream16.com/20231209/38881_ba7a6c92/index.m3u8
-https://vip.opstream16.com/20231209/38882_287135b5/index.m3u8
-https://hbo.opstream5.com/20231209/38883_dffb13cb/index.m3u8
-https://vip.opstream16.com/20240105/40257_6e46f5bd/index.m3u8
-https://vip.opstream16.com/20240105/40258_7f61731f/index.m3u8
-https://vip.opstream17.com/20240323/2997_d8f57eb0/index.m3u8
-https://vip.opstream17.com/20240323/2996_0f004613/index.m3u8
-https://vip.opstream17.com/20240323/2998_3a8bc396/index.m3u8
-https://vip.opstream17.com/20240323/2999_127edc26/index.m3u8
-https://vip.opstream17.com/20240323/3000_271f5ce1/index.m3u8
-https://vip.opstream17.com/20240323/3001_9e3de432/index.m3u8
-https://vip.opstream17.com/20240323/3002_8268941b/index.m3u8
-https://vip.opstream17.com/20240323/3003_1da2f577/index.m3u8
-https://vip.opstream17.com/20240323/3004_2900d8ba/index.m3u8
-https://vip.opstream17.com/20240323/3005_11a8762d/index.m3u8
-https://vip.opstream17.com/20240323/3006_a8539743/index.m3u8
-https://vip.opstream17.com/20240323/3007_ca7d0add/index.m3u8
+https://s3.phim1280.tv/20240323/OkRSVgpN/index.m3u8
+https://s3.phim1280.tv/20240319/wWsk9qlQ/index.m3u8
+https://s2.phim1280.tv/20240310/0sZWPn05/index.m3u8
+https://s2.phim1280.tv/20240304/bkIhjpH8/index.m3u8
+https://s2.phim1280.tv/20240304/3FeO2pEy/index.m3u8
+https://s2.phim1280.tv/20240304/hBDBGezo/index.m3u8
+https://s2.phim1280.tv/20240304/FJ28zhPG/index.m3u8
+https://s2.phim1280.tv/20240304/wOOoj0fK/index.m3u8
+https://s2.phim1280.tv/20240304/GBzApwUZ/index.m3u8
+https://s2.phim1280.tv/20240304/BTcF5iVq/index.m3u8
+https://s2.phim1280.tv/20240304/NbADUOwE/index.m3u8
+https://s2.phim1280.tv/20240304/PJPaWEjN/index.m3u8
+https://s2.phim1280.tv/20240304/CPtuguge/index.m3u8
+https://s2.phim1280.tv/20240304/T62gDofd/index.m3u8
+https://s2.phim1280.tv/20240304/rR49efXK/index.m3u8
+https://s2.phim1280.tv/20240304/yksRlhxV/index.m3u8
+https://s2.phim1280.tv/20240304/MkGbXyWC/index.m3u8
+https://s2.phim1280.tv/20240304/1CHuSoBn/index.m3u8
+https://s2.phim1280.tv/20240304/ofG8xoKD/index.m3u8
+https://s2.phim1280.tv/20240304/x3VqFtFQ/index.m3u8
+https://s2.phim1280.tv/20240304/H0LydTzz/index.m3u8
+https://s2.phim1280.tv/20240304/RiuwYlMs/index.m3u8
+https://s2.phim1280.tv/20240304/zvbONUwm/index.m3u8
+https://s2.phim1280.tv/20240304/gX5mobBr/index.m3u8
+https://s2.phim1280.tv/20240304/VFTL6rQj/index.m3u8
+https://s2.phim1280.tv/20240304/iusD3ef5/index.m3u8
+https://s2.phim1280.tv/20240304/eoRL87FI/index.m3u8
+https://s2.phim1280.tv/20240304/xOislcfx/index.m3u8
+
 # anime06
-https://vip.opstream15.com/20250110/47375_d91942b1/index.m3u8
-https://vip.opstream15.com/20250117/47862_652f459c/index.m3u8
-https://vip.opstream15.com/20250125/48357_f19a4a20/index.m3u8
-https://vip.opstream15.com/20250205/48834_b4904a2f/index.m3u8
-https://vip.opstream15.com/20250211/49180_048bb2f9/index.m3u8
+https://s4.phim1280.tv/20250213/rWlwm8Hl/index.m3u8
+https://s5.phim1280.tv/20250207/7xBUjj24/index.m3u8
+https://s4.phim1280.tv/20250201/ikDc60CY/index.m3u8
+https://s4.phim1280.tv/20250124/KZcN9e9W/index.m3u8
+https://s5.phim1280.tv/20250119/Hqdn2TFK/index.m3u8
+https://s5.phim1280.tv/20250111/orhVBWxp/index.m3u8
 # anime07
 https://vip.opstream17.com/20240802/16102_63cdb76a/index.m3u8
 # anime08
-https://sundaythekingplays.xyz/hls/8eUc57Npy5-EeQT2VwUXestPjG2CM7C0YO7LGoyp21icWSt996h1-byvzn77rBmMkiPmvRyVOQ9FZPzIe-NfGA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+https://s5.phim1280.tv/20240919/AaxuovEb/index.m3u8
 # anime09
 https://vip.opstream17.com/20240625/13566_23f9a43e/index.m3u8
 # anime10 
-https://sundaythekingplays.xyz/hls/dt4xt1-FLSyzYoPYuvSnv3A9qn7JzjLNt3Qs+wJrZN76fS8p3TOK+2SvlXBuTMoKUvUW4jQPtdKc5jNEkQtNBA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+https://s5.phim1280.tv/20250102/9CPD50vZ/index.m3u8
 # anime11
 https://sundaythekingplays.xyz/hls/uqAsm1f5dydaJLhiY7AnWMbE0W8X+rUJhtwctudtqFDiquMtZ19RLIeAom6E-xPMXD-+FkPtNuvwnF+2p1upzg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+*# mượt 
+https://s1.phim1280.tv/20231115/gF2ik4H1/index.m3u8
 # anime12
 https://vip.opstream15.com/20230707/40146_4c13a456/index.m3u8
 https://vip.opstream11.com/20230713/45777_79f28175/index.m3u8
