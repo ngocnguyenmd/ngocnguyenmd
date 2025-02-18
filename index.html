@@ -186,7 +186,7 @@
         </div>
         <div class="poster" data-title="Tiên Đài Hữu Thụ" onclick="window.location.href='stream.html?movie=movie03'">
             <img src="https://www.motchillso.com/webp/upload/images/phim/phim/tiendaicocay.webp" alt="Tiên Đài Hữu Thụ ">
-            <div class="poster-title">Tiên Đài Hữu Thụ 20/40 </div>
+            <div class="poster-title">Tiên Đài Hữu Thụ 26/40 </div>
         </div>
         <div class="poster" data-title="Thục cẩm nhân gia" onclick="window.location.href='stream.html?movie=movie04'">
             <img src="https://static.nutscdn.com/vimg/300-0/09c63bd009b8a32615b2d79716d52aad.jpg" alt="Thục cẩm nhân gia">
@@ -221,36 +221,78 @@
             <div class="poster-title">Ngũ Phúc Lâm Môn Full</div>
         </div> 
         <div class="poster" data-title="Ngũ Phúc Lâm Môn" onclick="window.location.href='stream.html?movie=movie12'">
-            <img src="https://motphim.bi/storage/images/man-thanh/motphim-man-thanh-thumb.jpg" alt="Mạn Thành">
-            <div class="poster-title">Mạn Thành</div>
+            <img src="https://pic6.iqiyipic.com/image/20250213/52/c4/a_100604993_m_601_vi_260_360.jpg" alt="Mạn Thành">
+            <div class="poster-title">Mạn Thành 12/22</div>
+        </div>
+        <div class="poster" data-title="Mỹ Nhân Trở Về" onclick="window.location.href='stream.html?movie=movie13'">
+            <img src="https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Fmy-nhan-tro-ve-thumb.jpg&w=256&q=75" alt="Mỹ Nhân Trở Về">
+            <div class="poster-title">Mỹ Nhân Trở Về 18/24</div>
+        </div>
+        <div class="poster" data-title="Sao Địch Nổi Sắc Đẹp Tuyệt Trần" onclick="window.location.href='stream.html?movie=movie14'">
+            <img src="https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Fsao-dich-noi-sac-dep-tuyet-tran-thumb.jpg&w=256&q=75" alt="Sao Địch Nổi Sắc Đẹp Tuyệt Trần">
+            <div class="poster-title">Sao Địch Nổi Sắc Đẹp Tuyệt Trần</div>
+        </div>
+        <div class="poster" data-title="Cảm ơn bác sĩ" onclick="window.location.href='stream.html?movie=movie15'">
+            <img src="https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Fcam-on-bac-si-thumb.jpg&w=256&q=75" alt="Cảm ơn bác sĩ">
+            <div class="poster-title">Cảm ơn bác sĩ</div>
         </div>
     </div>
 
     <p id="notFoundMessage" class="message"></p>
 
-    <script>
-        function searchMovie() {
-            const input = document.getElementById('searchInput').value.toLowerCase();
-            const posters = document.querySelectorAll('.poster');
-            let found = false;
+   <script>
+             async function loadMovies() {
+    try {
+        // Lấy tên trang hiện tại
+        const currentPage = window.location.pathname.split('/').pop(); // Lấy tên tệp hiện tại (index.html, anime.html, etc.)
 
-            document.getElementById('notFoundMessage').textContent = '';
+        // Dựng một đối tượng phân loại cho các trang
+        const categories = {
+            'index.html': 'index',  // Trang index hiển thị phim loại 'index'
+            'anime.html': 'anime',  // Trang anime hiển thị phim loại 'anime'
+            'usa.html': 'usa',      // Trang usa hiển thị phim loại 'usa'
+            'korea.html': 'korea',  // Trang korea hiển thị phim loại 'korea'
+            'any.html': 'any',  // Trang tổng hợp hiển thị tất cả các loại phim
+            'tv01.html': 'tv',     // Trang tv hiển thị phim loại 'tv'
+        };
 
-            posters.forEach(poster => {
-                const title = poster.getAttribute('data-title').toLowerCase();
-                if (title.includes(input)) {
-                    poster.style.display = 'block';
-                    found = true;
-                } else {
-                    poster.style.display = 'none';
-                }
-            });
+        const category = categories[currentPage];
 
-            if (!found) {
-                document.getElementById('notFoundMessage').textContent = 'Không tìm thấy phim!';
+        // Đọc tệp TXT (movies.txt)
+        const response = await fetch('movies.txt');
+        const text = await response.text();
+
+        // Chia dữ liệu thành từng dòng
+        const movies = text.split('\n').filter(line => line.trim() !== '');
+
+        let html = '';
+        
+        // Duyệt từng dòng để lọc và tạo danh sách phim
+        movies.forEach(movie => {
+            const [title, imageUrl, movieId, fileCategory] = movie.split('|');
+
+            // Kiểm tra nếu loại phim khớp với trang hiện tại
+            if (fileCategory.trim() === category || category === 'Tổng hợp') {
+                html += `
+                    <div class="poster" data-title="${title.trim()}" onclick="window.location.href='stream.html?movie=${movieId.trim()}'">
+                        <img src="${imageUrl.trim()}" alt="${title.trim()}">
+                        <div class="poster-title">${title.trim()}</div>
+                    </div>
+                `;
             }
-        }
-    </script>
+        });
 
+        // Thêm các poster vào trang
+        document.getElementById('movieGallery').innerHTML = html;
+    } catch (error) {
+        console.error('Lỗi khi tải danh sách phim:', error);
+    }
+}
+
+// Gọi hàm khi trang tải
+window.onload = loadMovies;
+
+
+</script>
 </body>
 </html>

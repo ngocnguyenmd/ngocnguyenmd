@@ -175,36 +175,64 @@
     <div class="gallery" id="movieGallery">
         <!-- Poster của phim -->
         <div class="poster" data-title="VTV1" onclick="window.location.href='stream.html?movie=tv01'">
-            <img src="https://pics.filmaffinity.com/cartoon_network_25_years-864051291-large.jpg" alt="CN">
-            <div class="poster-title">Cartoon</div>
+            <img src="https://cdn.pixabay.com/photo/2012/04/13/11/56/television-32080__340.png" alt="CN">
+            <div class="poster-title">VTV2</div>
         </div>
         </div>
     <p id="notFoundMessage" class="message"></p>
 
     <script>
-        function searchMovie() {
-            const input = document.getElementById('searchInput').value.toLowerCase();
-            const posters = document.querySelectorAll('.poster');
-            let found = false;
+     async function loadMovies() {
+    try {
+        // Lấy tên trang hiện tại
+        const currentPage = window.location.pathname.split('/').pop(); // Lấy tên tệp hiện tại (index.html, anime.html, etc.)
 
-            // Xóa thông báo cũ
-            const notFoundMessage = document.getElementById('notFoundMessage');
-            notFoundMessage.textContent = '';
+        // Dựng một đối tượng phân loại cho các trang
+        const categories = {
+            'index.html': 'index',  // Trang index hiển thị phim loại 'index'
+            'anime.html': 'anime',  // Trang anime hiển thị phim loại 'anime'
+            'usa.html': 'usa',      // Trang usa hiển thị phim loại 'usa'
+            'korea.html': 'korea',  // Trang korea hiển thị phim loại 'korea'
+            'any.html': 'any',  // Trang tổng hợp hiển thị tất cả các loại phim
+            'tv01.html': 'tv',     // Trang tv hiển thị phim loại 'tv'
+        };
 
-            posters.forEach(poster => {
-                const title = poster.getAttribute('data-title').toLowerCase();
-                if (title.includes(input)) {
-                    poster.style.display = 'block';
-                    found = true;
-                } else {
-                    poster.style.display = 'none';
-                }
-            });
+        const category = categories[currentPage];
 
-            if (!found) {
-                notFoundMessage.textContent = ' Không tìm thấy phim!';
+        // Đọc tệp TXT (movies.txt)
+        const response = await fetch('movies.txt');
+        const text = await response.text();
+
+        // Chia dữ liệu thành từng dòng
+        const movies = text.split('\n').filter(line => line.trim() !== '');
+
+        let html = '';
+        
+        // Duyệt từng dòng để lọc và tạo danh sách phim
+        movies.forEach(movie => {
+            const [title, imageUrl, movieId, fileCategory] = movie.split('|');
+
+            // Kiểm tra nếu loại phim khớp với trang hiện tại
+            if (fileCategory.trim() === category || category === 'Tổng hợp') {
+                html += `
+                    <div class="poster" data-title="${title.trim()}" onclick="window.location.href='stream.html?movie=${movieId.trim()}'">
+                        <img src="${imageUrl.trim()}" alt="${title.trim()}">
+                        <div class="poster-title">${title.trim()}</div>
+                    </div>
+                `;
             }
-        }
+        });
+
+        // Thêm các poster vào trang
+        document.getElementById('movieGallery').innerHTML = html;
+    } catch (error) {
+        console.error('Lỗi khi tải danh sách phim:', error);
+    }
+}
+
+// Gọi hàm khi trang tải
+window.onload = loadMovies;
+
     </script>
 
 </body>

@@ -34,22 +34,18 @@ https://vip.opstream15.com/20250214/49262_a3f0bf3b/index.m3u8
 https://vip.opstream15.com/20250214/49263_4ffd6130/index.m3u8
 https://vip.opstream15.com/20250214/49264_772b0bae/index.m3u8
 # movie05kr
-https://vip.opstream12.com/20220330/6637_243233f1/index.m3u8
-https://vip.opstream12.com/20220330/6638_0285fafd/index.m3u8
-https://vip.opstream12.com/20220330/6639_5aee5c27/index.m3u8
-https://vip.opstream12.com/20220330/6640_c56f488e/index.m3u8
-https://vip.opstream12.com/20220330/6641_2c5ace9c/index.m3u8
-https://vip.opstream12.com/20220330/6642_9c833619/index.m3u8
-https://vip.opstream12.com/20220330/6643_0983c4ab/index.m3u8
-https://vip.opstream12.com/20220330/6644_432f8de0/index.m3u8
-https://vip.opstream12.com/20220330/6645_9a7cbfda/index.m3u8
-https://vip.opstream12.com/20220330/6646_0519520b/index.m3u8
-https://vip.opstream12.com/20220330/6647_6da5ff23/index.m3u8
-https://vip.opstream12.com/20220330/6648_dabb8f78/index.m3u8
-https://vip.opstream12.com/20220330/6649_9c6d08e4/index.m3u8
-https://vip.opstream12.com/20220330/6650_790ba277/index.m3u8
-https://vip.opstream12.com/20220330/6651_1d99e861/index.m3u8
-https://vip.opstream12.com/20220330/6652_dcabc4f2/index.m3u8
+https://vip.opstream11.com/20241123/58062_243c7c0a/index.m3u8
+https://vip.opstream11.com/20241125/58297_182a44d6/index.m3u8
+https://vip.opstream15.com/20241130/44375_65f97a5d/index.m3u8
+https://vip.opstream15.com/20241201/44424_ff36b418/index.m3u8
+https://vip.opstream15.com/20241213/45190_0951c34d/index.m3u8
+https://vip.opstream15.com/20241215/45322_c5a8649b/index.m3u8
+https://vip.opstream15.com/20241221/45678_c4ded2b8/index.m3u8
+https://vip.opstream12.com/20241222/24668_70770f6b/index.m3u8
+https://vip.opstream16.com/20241227/41125_7c667fce/index.m3u8
+https://vip.opstream16.com/20241228/41126_f6b19256/index.m3u8
+https://vip.opstream17.com/20250103/17892_dbc1c85e/index.m3u8
+https://vip.opstream12.com/20250104/24730_5bf23052/index.m3u8
 # movie06kr
 https://vip.opstream11.com/20240128/50981_a5ecc1f2/index.m3u8
 https://vip.opstream11.com/20240129/50989_db6e2f45/index.m3u8
@@ -185,6 +181,37 @@ https://vip.opstream12.com/20250214/25155_2ad33598/index.m3u8
 https://vip.opstream12.com/20250214/25156_a9dbfcad/index.m3u8
 https://vip.opstream12.com/20250214/25157_2810641a/index.m3u8
 https://vip.opstream12.com/20250214/25158_856821bd/index.m3u8
+# movie08kr
+https://vip.opstream15.com/20250214/49276_31368683/index.m3u8
+https://vip.opstream15.com/20250214/49277_7b672a4e/index.m3u8
+https://vip.opstream15.com/20250214/49278_0e327f32/index.m3u8
+https://vip.opstream15.com/20250214/49279_4810e3ec/index.m3u8
+https://vip.opstream15.com/20250214/49280_06dc745e/index.m3u8
+https://vip.opstream15.com/20250214/49281_49dc7cd8/index.m3u8
+https://vip.opstream15.com/20250214/49282_f9d56e4d/index.m3u8
+https://vip.opstream15.com/20250214/49283_31b7dbeb/index.m3u8
+https://vip.opstream15.com/20250214/49284_ea79ec98/index.m3u8
+https://vip.opstream15.com/20250214/49285_d1558ccc/index.m3u8
+# movie09kr
+https://vip.opstream15.com/20250207/48924_146e3dc9/index.m3u8
+https://vip.opstream15.com/20250207/48925_1024cf4d/index.m3u8
+https://vip.opstream15.com/20250213/49258_0fcbf0a2/index.m3u8
+https://vip.opstream15.com/20250213/49259_9c8d31c0/index.m3u8
+# movie10kr 
+https://vip.opstream15.com/20250107/47226_a827ecd9/index.m3u8
+https://vip.opstream15.com/20250107/47227_3324e089/index.m3u8
+https://vip.opstream15.com/20250118/47931_871a240d/index.m3u8
+https://vip.opstream15.com/20250118/47932_95167ae2/index.m3u8
+https://vip.opstream15.com/20250122/48119_44942b82/index.m3u8
+https://vip.opstream15.com/20250124/48267_a76650df/index.m3u8
+https://vip.opstream15.com/20250129/48515_2458b931/index.m3u8
+https://vip.opstream15.com/20250129/48516_f97d788a/index.m3u8
+https://vip.opstream15.com/20250204/48808_0d8f9192/index.m3u8
+https://vip.opstream15.com/20250206/48875_3d325e5d/index.m3u8
+https://vip.opstream15.com/20250211/49098_29e11f0b/index.m3u8
+https://vip.opstream15.com/20250212/49213_60466bdf/index.m3u8
+https://vip.opstream15.com/20250212/49214_f2752d78/index.m3u8
+https://vip.opstream15.com/20250212/49215_fa9032f8/index.m3u8
 # movie01
 https://sundaythekingplays.xyz/hls/xyZ5Lw7bq01uR4uS5E7ELWG77DjrfV2Ns4HJcysRYAqVgLWOMfK0RPndBlTpyx3sn9rWE0gJJSOfDxiH41Hziw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
 https://sundaythekingplays.xyz/hls/QyaKtKBuoWURaOQYYgLU17rr5RM68EJ2D7O74zk+1Jl5gvH6EBcfgYHTwHCV2r0PDVnQRgFZLpuh4PNf5LovWA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
@@ -261,26 +288,32 @@ https://sundaythekingplays.xyz/hls/7VUdHKB0NLUwAVwTMbUcloZZTWhHZETlFLTgpmIcEB2d-
 https://sundaythekingplays.xyz/hls/kMcmZadj17grv9qk8ZehHrCSYb7qhsB5GMlMa2UukEpi8gifusZ6bYQBoXDLpBzBkeiuOvTIOSPyvdJma4bqzA==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8" },
 https://sundaythekingplays.xyz/hls/9dqQK00CAbWmtnv-xinjVCPxp6RzxMe+qle4x1v0v3lQT3qjw9MHIgmRXZuWmzBWZLmUBoTKX657jRfA9l88+Q==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8" },
 # movie03 
-https://sundaythekingplays.xyz/hls/DC0GtiaPtuEy7UL6DzQWQoy7Nblcnfs4N1+EQOMDfia-MeEM+wasb3L3IejhYUthv63jDAbA32hEDUXI6vvTYA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/k09q1k-VO-HEq9dxClYFFVk-GnyaEL2HpTz3BwywvoWHfJMKCTNVQ7SYVqVo8EgYcvd1415AmGYTPMSb2X735g==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/O-VwqgSbLTwLHCGDF8dxe6O1xpTkS7nH96UtlEwIh5-xLtB1FEEDdBB6eya2HT2DV7jZXcZpI4OMXDfuTKLQWQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/jTg6Hp0ybfnLo1iJKk9uwoANVDf5DSQA7Zwqwfg1BIUASo6Mjgjk-i211nNBE12PsBDQ+UZRuBjQYikQdxCFRA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/s41cg2OMcaaCWCMT-3L+iPjsZF2AVRyXNmyQMNVvoAlHJbqaOn6wzTlIz301jlnbq-8lQNT8DYBQheNAauhg0w==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/sNPuehNts2Cukr1TtDwQCsr7dqJuFjneSbMwvrje24TnGEckN5D7WbmMurOsI9v3PN7e7nkRdnPusbWAyqMDpw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/uP5afClxLq0VRoQTIByFIwp7PU8N9u5H3PtvCK6egIa95DiUMSIJc2cAQzvDjDotBm5jKZzeqnVo12gUhhVKpA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/eViT1FhySp92cL0HKy6Q0gZOaeU2-1I-21sClN30KnC302W8ujkYi4xPQyC9LuLtjTGktHe6PF0y-FYoYhVPXQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/I21N4WJWYBlhvkRdPjFDLKjvB+Oyym+QfuQvpvOff9oKHipD6uHGcUt5QmpDscjnBoIil9c7vz7Y7qqKHtNvBQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/NNSUFeuHyViNuRSGzMNvEdwXwHxuhiGe9xvQo3AlYa-XRQn4V4lISP79IOuH9OMdJs+svVlKKIh1HZIKA2Bslw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/XpzDRMzkl3VBlW7ft4xqbDC-rmJr3vohf5bm1EJzvY9SOjgFM5jELeLMEHGz1fJXKi8QkV+9Kq2zJf5Qfep9hQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/PovXQVcH-nMGkiIlOurjAB4aTBi41Q9zR9Ozf2AP8gRhB8QfbX9zpNPCUXnBcwOa9ZDViO61sB8SQc15c-TURQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/Y1YJKxoDw9dXwOG7PhU8aRytobGX7BynyXe6HqJs6Pvit3JZj5NNqjpa0VdYgxyzcqbtTvPbZObVIA9DjuS4KQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/xenNZkYfBWp2ZQz70zWkhSsksVCOdTqLmD3-iLD3PrbsefzzNXXYO0J23dMNnDihoAJx55FBkb2-gRR1GgmvDQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/fAzdQx4rU80ouGfJBfCDlzqZkeZ5kr2t8J6rG9CFMX7DBB2uuEVLh5ii3nysl5NXD0zLBbCPBZgNh12OnKLTRw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/4REHAwd262HxAUDb5i55ncOPo7Bl94egSQh4EljsI2CEWWrIOxSLImg4lqNrT3ASq7F875VwpN3zV1VamM9DoA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/x7QxG+aHuMqk5eUaG0C-BZ2LHXtEoMrEj99b5q-3JVh64zpHtIUSVKI7sGu3bc8OlEE3jlSgDlKKrpBHPmlc3g==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/GivwdSJ3sYm7jolzvy7x8XIAsM+7qUsOWAQ1h1p+Rv7RFaAIN8QY4fqSsELI8tucqRgg1UYopfeBtQ4B+uzeVA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/1xUeWxPdgdQbHvSewP963JOhrbfL3UKWHVwDEet1xfli59T3zeWZdyAjFkN1xWl+r+ouIXUBLjTd1qAcyhNMkg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
-https://sundaythekingplays.xyz/hls/Wg9x0xy0fuFLgmOyv3pXl4J0p9aHXUt0b8B-cRhhaZJzHGzL+qQIiNKV4YAhSc7TBkQaAXKMeE3x8pL4xn6I-Q==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8" },
+https://vip.opstream15.com/20250207/48933_3dbcf9f9/index.m3u8
+https://vip.opstream15.com/20250207/48934_086ebdae/index.m3u8
+https://vip.opstream15.com/20250207/48936_6c1b3d4b/index.m3u8
+https://vip.opstream15.com/20250207/48937_2fdc17ed/index.m3u8
+https://vip.opstream15.com/20250207/48938_e6f6dea5/index.m3u8
+https://vip.opstream15.com/20250207/48940_9d2f78b1/index.m3u8
+https://vip.opstream15.com/20250208/49039_0b99bbe4/index.m3u8
+https://vip.opstream15.com/20250208/49040_1a920815/index.m3u8
+https://vip.opstream15.com/20250209/49060_f46f61cd/index.m3u8
+https://vip.opstream15.com/20250209/49061_cd2cf001/index.m3u8
+https://vip.opstream15.com/20250210/49090_70851e02/index.m3u8
+https://vip.opstream15.com/20250210/49091_a46bf2e4/index.m3u8
+https://vip.opstream15.com/20250211/49202_3ce434b9/index.m3u8
+https://vip.opstream15.com/20250211/49203_cecbac81/index.m3u8
+https://vip.opstream15.com/20250213/49238_dbb500b2/index.m3u8
+https://vip.opstream15.com/20250213/49239_f99f66c4/index.m3u8
+https://vip.opstream15.com/20250213/49256_e34be3ab/index.m3u8
+https://vip.opstream15.com/20250213/49257_c7f32eb1/index.m3u8
+https://vip.opstream15.com/20250214/49309_bff56f62/index.m3u8
+https://vip.opstream15.com/20250214/49311_bf711043/index.m3u8
+https://vip.opstream15.com/20250217/49404_e1b7a495/index.m3u8
+https://vip.opstream15.com/20250217/49405_6f7af63e/index.m3u8
+https://vip.opstream15.com/20250217/49406_48388b43/index.m3u8
+https://vip.opstream15.com/20250217/49407_844a2a1b/index.m3u8
+https://vip.opstream15.com/20250217/49428_32fb0afb/index.m3u8
+https://vip.opstream15.com/20250217/49429_54267af4/index.m3u8
 # movie04 
 https://vip.opstream11.com/20241130/58741_e7e8f449/index.m3u8
 https://vip.opstream11.com/20241130/58743_ffc0e23e/index.m3u8
@@ -456,10 +489,7 @@ https://sundaythekingplays.xyz/hls/3D-XLtq2RavuARvCjsrb8TkFoJ1huxogQR-TC0SeqkJ2A
 https://sundaythekingplays.xyz/hls/T8j5d0CNm9sSXybIj9-YhWpnNGHk4cOqJ+S8iReu355DEIob4Hs6RvKVunwGj5d12O1F-L2Egw81rB-HAyYbvA==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8
 https://sundaythekingplays.xyz/hls/nV2vt-sRnWGrfQUxwUuHg4Wq2+gKC8bI21nYVt3Vfd6xR8hhjpB3JvcjUYXgIcWn5x1YENjNoDri02etzoUr2A==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8
 https://sundaythekingplays.xyz/hls/OSYvdj1a5ebGhcefkSUV+xP9mhcPnmpvqDLAgssCQgEaiSEG6DcabjQrQfF-RwSg5tR0z9Abq-YVdhZdZFufRw==/aW5kZXgtZjItdjEtYTEubTN1OA==.m3u8
-https://goplayer.biz/video/f1fc7823-136c-4126-83f8-e79244679017/master.m3u8?cdn=tt 
-https://goplayer.biz/video/6ad3cfbd-c529-4f99-87bf-68c25ecc784a/master.m3u8?cdn=tt
-https://goplayer.biz/video/263eb979-d69d-49b9-8fb4-75f3fbf84cd2/master.m3u8?cdn=tt
-https://goplayer.biz/video/d5b0ed95-da8f-4edb-8d91-ee18c4ec3dad/master.m3u8?cdn=tt
+
 # movie09 
 https://vip.opstream15.com/20250112/47485_4bf9decb/index.m3u8https://sundaythekingplays.xyz/hls/jWDIygUBuIq0NfGhugtFggSvem-y5Fth43A-EhNHP49BAv2XhCk8cMORzYDyCyhrp3z3mOjnZ9hkfwPSA3-rLg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
 https://vip.opstream15.com/20250112/47486_9ad55466/index.m3u8
@@ -577,6 +607,12 @@ https://vip.opstream15.com/20250214/49273_0c051e68/index.m3u8
 https://vip.opstream15.com/20250214/49274_f2bfe9ac/index.m3u8
 https://vip.opstream15.com/20250215/49327_c8097345/index.m3u8
 https://vip.opstream15.com/20250215/49328_6de5f0ac/index.m3u8
+https://vip.opstream15.com/20250216/49366_2bdabc31/index.m3u8
+https://vip.opstream15.com/20250216/49368_e9ae4d72/index.m3u8
+https://vip.opstream15.com/20250217/49414_e8c8be74/index.m3u8
+https://vip.opstream15.com/20250217/49416_0b12990a/index.m3u8
+https://vip.opstream15.com/20250218/49437_326548fd/index.m3u8
+https://vip.opstream15.com/20250218/49438_cca1adbb/index.m3u8
 # anime01
 https://vip.opstream11.com/20241012/54743_82882629/index.m3u8
 https://vip.opstream11.com/20241021/55435_33457f8d/index.m3u8
@@ -596,6 +632,80 @@ https://vip.opstream15.com/20250125/48323_9c975e80/index.m3u8
 https://vip.opstream15.com/20250201/48571_a42434c7/index.m3u8
 https://vip.opstream15.com/20250208/49027_6efa2f3c/index.m3u8
 https://vip.opstream15.com/20250215/49317_a7aa1c16/index.m3u8
+# movie13 
+https://vip.opstream15.com/20250216/49333_cf9113ad/index.m3u8
+https://vip.opstream15.com/20250216/49334_97e8a893/index.m3u8
+https://vip.opstream15.com/20250216/49335_c3449c7c/index.m3u8
+https://vip.opstream15.com/20250216/49336_f8df1051/index.m3u8
+https://vip.opstream15.com/20250216/49337_da8285d6/index.m3u8
+https://vip.opstream15.com/20250216/49338_79c57bf4/index.m3u8
+https://vip.opstream15.com/20250216/49339_e9a0c271/index.m3u8
+https://vip.opstream15.com/20250216/49340_d5ebe74a/index.m3u8
+https://vip.opstream15.com/20250216/49341_5624f178/index.m3u8
+https://vip.opstream15.com/20250216/49342_ae73c1f2/index.m3u8
+https://vip.opstream15.com/20250216/49343_9c28e4e9/index.m3u8
+https://vip.opstream15.com/20250216/49344_08dda5e6/index.m3u8
+https://vip.opstream15.com/20250216/49345_73751fa5/index.m3u8
+https://vip.opstream15.com/20250216/49346_6355333a/index.m3u8
+https://vip.opstream15.com/20250217/49408_32360cc3/index.m3u8
+https://vip.opstream15.com/20250217/49409_2771adc3/index.m3u8
+https://vip.opstream15.com/20250218/49439_1ed9b573/index.m3u8
+https://vip.opstream15.com/20250218/49440_53bf5a0b/index.m3u8
+# movie14
+https://vip.opstream15.com/20250213/49240_d374d0c1/index.m3u8
+https://vip.opstream15.com/20250213/49241_7a2831d5/index.m3u8
+https://vip.opstream15.com/20250213/49242_52c79bb4/index.m3u8
+https://vip.opstream15.com/20250213/49243_e1c3d70c/index.m3u8
+https://vip.opstream15.com/20250214/49307_882868f8/index.m3u8
+https://vip.opstream15.com/20250214/49310_0cf88020/index.m3u8
+https://vip.opstream15.com/20250216/49372_b7e35243/index.m3u8
+https://vip.opstream15.com/20250216/49373_1afb6bd0/index.m3u8
+https://vip.opstream15.com/20250217/49398_47110232/index.m3u8
+https://vip.opstream15.com/20250217/49399_b9bcce4d/index.m3u8
+https://vip.opstream15.com/20250217/49423_8f8ec9e6/index.m3u8
+# movie15 
+https://vip.opstream16.com/20221106/25511_7f2114f5/index.m3u8
+https://vip.opstream16.com/20221106/25508_c4032c9a/index.m3u8
+https://vip.opstream16.com/20221106/25507_79627ce8/index.m3u8
+https://vip.opstream16.com/20221106/25506_4e9b37a3/index.m3u8
+https://vip.opstream16.com/20221106/25505_e582ddc4/index.m3u8
+https://vip.opstream16.com/20221106/25504_9601293c/index.m3u8
+https://vip.opstream16.com/20221106/25503_b295d508/index.m3u8
+https://vip.opstream16.com/20221106/25502_74782e92/index.m3u8
+https://vip.opstream16.com/20221106/25501_8b214a6a/index.m3u8
+https://vip.opstream16.com/20221106/25510_f182216e/index.m3u8
+https://vip.opstream16.com/20221106/25509_2bf0876a/index.m3u8
+https://vip.opstream16.com/20221107/25524_636be799/index.m3u8
+https://vip.opstream16.com/20221107/25523_838941f0/index.m3u8
+https://vip.opstream16.com/20221107/25522_eb108955/index.m3u8
+https://vip.opstream16.com/20221109/25633_8bab6cb3/index.m3u8
+https://vip.opstream16.com/20221109/25632_68f87589/index.m3u8
+https://vip.opstream16.com/20221109/25631_a129f187/index.m3u8
+https://vip.opstream16.com/20221109/25676_7a8d559d/index.m3u8
+https://vip.opstream16.com/20221109/25675_eeb0bdff/index.m3u8
+https://vip.opstream16.com/20221109/25674_368e7eb9/index.m3u8
+https://vip.opstream15.com/20221110/28008_09687db2/index.m3u8
+https://vip.opstream15.com/20221111/28022_59b7e11a/index.m3u8
+https://vip.opstream15.com/20221111/28023_48b04e1c/index.m3u8
+https://vip.opstream11.com/20221111/37279_95596edc/index.m3u8
+https://vip.opstream11.com/20221111/37280_3b8d217a/index.m3u8
+https://vip.opstream11.com/20221111/37281_b70c7ec6/index.m3u8
+https://vip.opstream15.com/20221112/28085_afe0066f/index.m3u8
+https://vip.opstream15.com/20221112/28086_d0de9dbc/index.m3u8
+https://vip.opstream15.com/20221112/28087_b879e25b/index.m3u8
+https://vip.opstream15.com/20221114/28142_e3ff5760/index.m3u8
+https://vip.opstream15.com/20221114/28143_7e50a43b/index.m3u8
+https://vip.opstream15.com/20221114/28144_5fe38a54/index.m3u8
+https://vip.opstream15.com/20221114/28194_c31b162e/index.m3u8
+https://vip.opstream15.com/20221114/28195_07e12719/index.m3u8
+https://vip.opstream15.com/20221114/28196_37bcc146/index.m3u8
+https://vip.opstream15.com/20221115/28268_05f221d1/index.m3u8
+https://vip.opstream15.com/20221115/28269_c0c1d220/index.m3u8
+https://vip.opstream15.com/20221115/28270_026c33b7/index.m3u8
+https://vip.opstream16.com/20221116/26063_9261e151/index.m3u8
+https://vip.opstream16.com/20221116/26064_49d5faa2/index.m3u8
+# movie17 
+https://vip.opstream14.com/20220306/851_47689fd8/index.m3u8
 # anime02
 https://sundaythekingplays.xyz/hls/1Cyn7fUpku2Qm4LCK1jmBviyJzD-lJ2KL0GHYZegclP54eQzJAB3rbZ+FvZyMGa0ARBfukJ2XnJ4Dv04PFywlg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
 # anime03
@@ -651,6 +761,32 @@ https://vip.opstream17.com/20240625/13566_23f9a43e/index.m3u8
 https://sundaythekingplays.xyz/hls/dt4xt1-FLSyzYoPYuvSnv3A9qn7JzjLNt3Qs+wJrZN76fS8p3TOK+2SvlXBuTMoKUvUW4jQPtdKc5jNEkQtNBA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
 # anime11
 https://sundaythekingplays.xyz/hls/uqAsm1f5dydaJLhiY7AnWMbE0W8X+rUJhtwctudtqFDiquMtZ19RLIeAom6E-xPMXD-+FkPtNuvwnF+2p1upzg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+# anime12
+https://vip.opstream15.com/20230707/40146_4c13a456/index.m3u8
+https://vip.opstream11.com/20230713/45777_79f28175/index.m3u8
+https://vip.opstream15.com/20230726/40856_7d78e9ec/index.m3u8
+https://vip.opstream15.com/20230731/40965_cd26be3d/index.m3u8
+https://vip.opstream15.com/20230817/41370_ce5d50c5/index.m3u8
+https://vip.opstream15.com/20230817/41371_34973af0/index.m3u8
+https://vip.opstream15.com/20230817/41373_67f1becb/index.m3u8
+https://vip.opstream15.com/20230824/41604_155cfc00/index.m3u8
+https://vip.opstream15.com/20230831/41817_2a220c0c/index.m3u8
+https://vip.opstream15.com/20230907/42197_1f9184f3/index.m3u8
+https://vip.opstream11.com/20230914/47181_9ef2269c/index.m3u8
+https://vip.opstream11.com/20230920/47537_0a5c7740/index.m3u8
+*# Phần 2
+https://vip.opstream15.com/20250107/47197_7a33a60c/index.m3u8
+https://vip.opstream15.com/20250125/48358_5fe5b01f/index.m3u8
+https://vip.opstream15.com/20250125/48359_1f75fef4/index.m3u8
+https://vip.opstream15.com/20250205/48832_3dad4a16/index.m3u8
+https://vip.opstream15.com/20250205/48833_0916f1db/index.m3u8
+https://vip.opstream15.com/20250211/49179_b4e77839/index.m3u8
+# anime13
+https://vip.opstream14.com/20220301/182_fde20ef4/index.m3u8
+# anime14 
+https://s5.phim1280.tv/20240919/Y8aN5fBt/2000kb/hls/index.m3u8
+# anime15
+https://s5.phim1280.tv/20240919/Xnrev7QF/2000kb/hls/index.m3u8
 # us01 
 https://vip.opstream15.com/20250215/49323_ea26d763/index.m3u8
 # us02 
@@ -776,7 +912,9 @@ https://vip.opstream16.com/20221011/23695_be964243/index.m3u8
  
 # us10 
 https://vip.opstream14.com/20220320/1916_e9ddd1ce/index.m3u8
+# us11
+https://vip.opstream14.com/20220306/851_47689fd8/index.m3u8
 # any01 
 https://vip.opstream15.com/20250207/48932_4d42f4c2/index.m3u8
-# tv01 
+# tv00 
 https://live.fptplay53.net/fnxhd1/vtv2_vhls.smil/chunklist_b5000000.m3u8

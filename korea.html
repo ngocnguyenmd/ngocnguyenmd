@@ -189,11 +189,11 @@
         </div>
         <div class="poster" data-title="Đầu Gấu Học Nhóm" onclick="window.location.href='stream.html?movie=movie04kr'">
             <img src="https://static.nutscdn.com/vimg/300-0/955bb963617ffe081ecc2853f3df0f62.jpg" alt="Đầu Gấu Học Nhóm">
-            <div class="poster-title">Đầu Gấu Học Nhóm</div>
+            <div class="poster-title">Đầu Gấu Học Nhóm 8/?</div>
         </div>
-        <div class="poster" data-title="Khách Sạn Ma Quái" onclick="window.location.href='stream.html?movie=movie05kr'">
-            <img src="https://static.nutscdn.com/vimg/300-0/2345e753ed4b4ff22e4e31fc156295fc.jpg" alt="Khách Sạn Ma Quái">
-            <div class="poster-title">Khách Sạn Ma Quái Full</div>
+        <div class="poster" data-title="Khi điện thoại đổ chuông" onclick="window.location.href='stream.html?movie=movie05kr'">
+            <img src="https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Fkhi-dien-thoai-do-chuong-thumb.jpg&w=256&q=75" alt="Khi điện thoại đổ chuông">
+            <div class="poster-title">Khi điện thoại đổ chuông 5/5</div>
         </div>
         <div class="poster" data-title="Nốt Trầm Đời Bác Sĩ" onclick="window.location.href='stream.html?movie=movie06kr'">
             <img src="https://static.nutscdn.com/vimg/300-0/d83c23ba982e11716e8c59910acf8d7f.jpg" alt="Nốt Trầm Đời Bác Sĩ">
@@ -201,35 +201,76 @@
         </div>
         <div class="poster" data-title="Tình Yêu Của Eva" onclick="window.location.href='stream.html?movie=movie07kr'">
             <img src="https://s12919.cdn.mytvnet.vn/vimages/242x364/ba/a6/65/5d/d0/06/ba65d-ltinhyeucuaevad4009jpg-content-mytv.jpg" alt="Tình Yêu Của Eva">
-            <div class="poster-title">Tình Yêu Của Eva</div>
+            <div class="poster-title">Tình Yêu Của Eva 117/?</div>
+        </div>
+        <div class="poster" data-title="Tình Yêu Của Mu Bi" onclick="window.location.href='stream.html?movie=movie08kr'">
+            <img src="https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Ftinh-yeu-cua-mu-bi-thumb.jpg&w=256&q=75" alt="Tình Yêu Của Mu Bi">
+            <div class="poster-title">Tình Yêu Của Mu Bi 10/?</div>
+        </div>
+        <div class="poster" data-title="Tình Yêu Của Mu Bi" onclick="window.location.href='stream.html?movie=movie09kr'">
+            <img src="https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Ftinh-ai-chunhwa-thumb.jpg&w=256&q=75" alt="Tình Ái Chunhwa">
+            <div class="poster-title">Tình Ái Chunhwa 4/10</div>
+        </div>
+        <div class="poster" data-title="Vương Hậu Wongyeong" onclick="window.location.href='stream.html?movie=movie10kr'">
+            <img src="https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Fvuong-hau-wongyeong-thumb.jpg&w=256&q=75" alt="Vương Hậu Wongyeong">
+            <div class="poster-title">Vương Hậu Wongyeong 14/?</div>
         </div>
         </div>
+    
     <p id="notFoundMessage" class="message"></p>
 
     <script>
-        function searchMovie() {
-            const input = document.getElementById('searchInput').value.toLowerCase();
-            const posters = document.querySelectorAll('.poster');
-            let found = false;
+                async function loadMovies() {
+    try {
+        // Lấy tên trang hiện tại
+        const currentPage = window.location.pathname.split('/').pop(); // Lấy tên tệp hiện tại (index.html, anime.html, etc.)
 
-            // Xóa thông báo cũ
-            const notFoundMessage = document.getElementById('notFoundMessage');
-            notFoundMessage.textContent = '';
+        // Dựng một đối tượng phân loại cho các trang
+        const categories = {
+            'index.html': 'index',  // Trang index hiển thị phim loại 'index'
+            'anime.html': 'anime',  // Trang anime hiển thị phim loại 'anime'
+            'usa.html': 'usa',      // Trang usa hiển thị phim loại 'usa'
+            'korea.html': 'korea',  // Trang korea hiển thị phim loại 'korea'
+            'any.html': 'any',  // Trang tổng hợp hiển thị tất cả các loại phim
+            'tv01.html': 'tv',     // Trang tv hiển thị phim loại 'tv'
+        };
 
-            posters.forEach(poster => {
-                const title = poster.getAttribute('data-title').toLowerCase();
-                if (title.includes(input)) {
-                    poster.style.display = 'block';
-                    found = true;
-                } else {
-                    poster.style.display = 'none';
-                }
-            });
+        const category = categories[currentPage];
 
-            if (!found) {
-                notFoundMessage.textContent = ' Không tìm thấy phim!';
+        // Đọc tệp TXT (movies.txt)
+        const response = await fetch('movies.txt');
+        const text = await response.text();
+
+        // Chia dữ liệu thành từng dòng
+        const movies = text.split('\n').filter(line => line.trim() !== '');
+
+        let html = '';
+        
+        // Duyệt từng dòng để lọc và tạo danh sách phim
+        movies.forEach(movie => {
+            const [title, imageUrl, movieId, fileCategory] = movie.split('|');
+
+            // Kiểm tra nếu loại phim khớp với trang hiện tại
+            if (fileCategory.trim() === category || category === 'Tổng hợp') {
+                html += `
+                    <div class="poster" data-title="${title.trim()}" onclick="window.location.href='stream.html?movie=${movieId.trim()}'">
+                        <img src="${imageUrl.trim()}" alt="${title.trim()}">
+                        <div class="poster-title">${title.trim()}</div>
+                    </div>
+                `;
             }
-        }
+        });
+
+        // Thêm các poster vào trang
+        document.getElementById('movieGallery').innerHTML = html;
+    } catch (error) {
+        console.error('Lỗi khi tải danh sách phim:', error);
+    }
+}
+
+// Gọi hàm khi trang tải
+window.onload = loadMovies;
+
     </script>
 
 </body>
