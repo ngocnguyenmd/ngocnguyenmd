@@ -926,6 +926,17 @@ https://vip.opstream16.com/20221011/23692_fe06fceb/index.m3u8
 https://vip.opstream16.com/20221011/23693_73e88c9f/index.m3u8
 https://vip.opstream16.com/20221011/23694_a0c8635a/index.m3u8
 https://vip.opstream16.com/20221011/23695_be964243/index.m3u8 
+*# Phần 7
+https://s5.phim1280.tv/20240930/ZxU1NItm/index.m3u8
+https://s5.phim1280.tv/20240930/GmmNZcI8/index.m3u8
+https://s5.phim1280.tv/20240930/cxIvLJyz/index.m3u8
+https://s5.phim1280.tv/20240930/HUYeZShY/index.m3u8
+https://s5.phim1280.tv/20240930/GRfmFkM8/index.m3u8
+https://s5.phim1280.tv/20240930/xewv9IJ6/index.m3u8
+https://s5.phim1280.tv/20240930/RUJQ9ysR/index.m3u8
+https://s5.phim1280.tv/20240930/EuQeUUJa/index.m3u8
+https://s5.phim1280.tv/20240930/aAAuEPtG/index.m3u8
+https://s5.phim1280.tv/20240930/4rkN986w/index.m3u8
 # us10 
 https://vip.opstream14.com/20220320/1916_e9ddd1ce/index.m3u8
 # us11
