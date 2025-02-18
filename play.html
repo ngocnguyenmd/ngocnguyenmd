@@ -3,86 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xem Video</title>
-    <!-- Tải thư viện minified nhẹ -->
+    <title>Bánh Mì</title>
+
+    <!-- Thư viện video -->
     <script src="https://cdn.jsdelivr.net/npm/@vime/core/dist/vime.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vime/core@^5/themes/default.css">
+
     <style>
-        /* Cấu hình layout toàn màn hình và thân trang */
+        /* Toàn bộ trang */
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
-            background-color: #0a0a0a;
+            align-items: center;
+            background-color: #220303;
             color: white;
-            font-family: Arial, sans-serif;
-            overflow-x: hidden; /* Ngăn không cho tràn màn hình */
         }
 
-        /* Header trên cùng */
+        /* Header */
         .header {
             width: 100%;
-            background: #e50914; /* Đổi màu header cho dễ nhìn */
+            background: #e50914;
             padding: 15px;
             text-align: center;
+            font-size: 20px;
             font-weight: bold;
-            color: white;
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
             z-index: 1000;
         }
 
-        /* Khoảng trống bên dưới header */
+        /* Container chính */
         .main-container {
             flex: 1;
             display: flex;
-            flex-direction: column; /* Đảm bảo mỗi phần tử xếp thành cột */
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             width: 100%;
-            padding-top: 80px; /* Đẩy nội dung xuống dưới header */
+            margin-top: 70px; /* Để tránh bị che bởi header */
+            padding-bottom: 30px;
         }
 
-        /* Video Player */
+        /* Khung video */
         .video-frame {
-            width: 100%;
-            max-width: 720px;
+            width: 90%;
+            max-width: 800px;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 100%;
-            max-width: 300px;
-            background: #1c1c1c;
-            padding: 15px;
-            border-radius: 8px;
-            color: white;
-            margin: 10px;
+            box-shadow: 0 4px 10px rgba(88, 34, 34, 0.6);
         }
 
         /* Nút bấm */
         .button-container {
-            margin-top: 20px;
+            margin-top: 15px;
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
+            gap: 10px;
         }
 
         .btn {
             background-color: #e50914;
             color: white;
-            padding: 12px 18px;
+            padding: 10px 50px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 5px;
+            font-size: 16px;
             transition: 0.3s;
         }
 
@@ -90,14 +81,14 @@
             background-color: #b20710;
         }
 
-        /* File Upload */
+        /* Khung tải phụ đề */
         .file-upload {
-            margin-top: 20px;
-            background: #1c1c1c;
+            margin-top: 15px;
             padding: 15px;
             border-radius: 8px;
             width: 90%;
-            max-width: 720px;
+            max-width: 500px;
+            background: #831111;
             text-align: center;
         }
 
@@ -117,59 +108,53 @@
         }
 
         @media (max-width: 768px) {
-            /* Các điều chỉnh layout trên điện thoại */
             .video-frame {
-                max-width: 100%; /* Tăng độ rộng cho video trên màn hình nhỏ */
+                width: 100%;
+                max-width: 100%;
             }
         }
     </style>
 </head>
+
 <body>
-    <div class="header">Xem Phim Vui Vẻ</div>
+    <!-- Thanh tiêu đề -->
+    <div class="header">Bánh Mì</div>
 
+    <!-- Nội dung chính -->
     <div class="main-container">
-        <!-- Sidebar trái -->
-        <div class="sidebar">
-            <h3>Gợi ý phim</h3>
-            <p>Đang cập nhật...</p>
-            <button class="btn" onclick="goHome()">Trang chủ</button>
+        <div class="video-frame">
+            <vm-player playsinline id="videoPlayer" preload="metadata" autoplay>
+                <vm-hls cross-origin="anonymous">
+                    <source id="videoSource" type="application/x-mpegURL" />
+                    <track kind="subtitles" id="userSubtitleTrack" srclang="vi" label="Phụ đề người dùng" disabled />
+                    <track kind="subtitles" src="" srclang="vi" label="Tiếng Việt" default />
+                </vm-hls>
+                <vm-default-ui></vm-default-ui>
+            </vm-player>
         </div>
 
-        <!-- Nội dung chính -->
-        <div class="content">
-            <div class="video-frame">
-                <vm-player playsinline id="videoPlayer" preload="auto" autoplay>
-                    <vm-hls cross-origin="anonymous">
-                        <source id="videoSource" type="application/x-mpegURL" />
-                        <track kind="subtitles" id="userSubtitleTrack" srclang="vi" label="Phụ đề người dùng" />
-                        <track kind="subtitles" src="" srclang="vi" label="Tiếng Việt" default />
-                    </vm-hls>
-                    <vm-default-ui></vm-default-ui>
-                </vm-player>
-            </div>
-
-            <div class="button-container">
-                <button class="btn" onclick="goBack()">Tập khác</button>
-                <button class="btn" onclick="goHome()">Trang chủ</button>
-                <button class="btn" onclick="toggleTheme()">Giao diện</button>
-            </div>
-
-            <div class="file-upload">
-                <input type="file" id="fileInput" accept=".srt,.vtt" />
-                <button class="btn" onclick="uploadSubtitle()">Tải phụ đề</button>
-            </div>
+        <!-- Nút điều hướng -->
+        <div class="button-container">
+            <button class="btn" onclick="goBack()">◀ Tập khác</button>
+            <button class="btn" onclick="goHome()">🏠 Trang chủ</button>
+            <button class="btn" onclick="toggleTheme()">🌗 Giao diện</button>
         </div>
 
-        <!-- Sidebar phải -->
-        <div class="sidebar">
-            <h3>Chỉ có mượt</h3>
-            <p>Yêu phim thì coi cho hết</p>
+        <!-- Tải phụ đề -->
+        <div class="file-upload">
+            <input type="file" id="fileInput" accept=".srt,.vtt" />
+            <button class="btn" onclick="uploadSubtitle()">⬆️ Tải phụ đề</button>
         </div>
     </div>
 
     <script>
-        function goBack() { window.history.back(); }
-        function goHome() { window.location.href = 'index.html'; }
+        function goBack() {
+            window.history.back();
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
 
         function toggleTheme() {
             const body = document.body;
@@ -181,28 +166,29 @@
             if (localStorage.getItem("theme") === "light") {
                 document.body.classList.add("light-mode");
             }
+
+            // Chỉ tải video nếu có link
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoLink = urlParams.get('link');
+            if (videoLink) {
+                const videoSource = document.getElementById('videoSource');
+                videoSource.setAttribute('src', decodeURIComponent(videoLink));
+                const videoPlayer = document.getElementById('videoPlayer');
+                videoPlayer.load();
+                videoPlayer.play().catch(error => {
+                    console.error("Không thể phát video: ", error);
+                    alert("Lỗi khi cố gắng phát video.");
+                });
+            } else {
+                alert("Không có liên kết video.");
+            }
         });
 
-        // Chỉ tải video khi thực sự cần thiết
-        const urlParams = new URLSearchParams(window.location.search);
-        const videoLink = urlParams.get('link');
-        if (videoLink) {
-            const videoSource = document.getElementById('videoSource');
-            videoSource.setAttribute('src', decodeURIComponent(videoLink)); // Dùng "src" thay vì "data-src"
-            const videoPlayer = document.getElementById('videoPlayer');
-            videoPlayer.load();
-            videoPlayer.play().catch(error => {
-                console.error("Không thể phát video: ", error);
-                alert("Lỗi khi cố gắng phát video.");
-            });
-        } else {
-            alert("Không có liên kết video.");
-        }
-
-        // Tải phụ đề khi có tệp
+        // Xử lý tải phụ đề
         function uploadSubtitle() {
             const fileInput = document.getElementById('fileInput');
             const userSubtitleTrack = document.getElementById('userSubtitleTrack');
+
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 const reader = new FileReader();
