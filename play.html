@@ -217,25 +217,25 @@
         function convertSRTtoVTT(srt) {
             return "WEBVTT\n\n" + srt.replace(/(\d{2}):(\d{2}):(\d{2}),(\d{3})/g, '$1:$2:$3.$4');
         }
+    
         function updateSpeed() {
-           const tsUrl = "https://s4.phim1280.tv/20250124/mWZUMVD5/2000kb/hls/5BkXPzih.ts"; // Link file .ts
-           const startTime = performance.now(); // Lưu thời điểm bắt đầu tải
-           fetch(tsUrl, { method: 'GET', headers: { Range: "bytes=0-500000" } }) // Tải 500KB
-           .then(response => response.blob())
-           .then(blob => {
-           const duration = (performance.now() - startTime) / 1000; // Tính thời gian tải (giây)
-           const speedMbps = ((blob.size * 8) / (1024 * 1024) / duration).toFixed(2); // Chuyển sang Mbps
-           document.getElementById('networkSpeed').textContent = `Tốc độ mạng: ${speedMbps} Mbps`;
-        })
-        .catch(() => {
-            document.getElementById('networkSpeed').textContent = "Không đo được tốc độ mạng";
-        });
+   const tsUrl = "https://s4.phim1280.tv/20250124/mWZUMVD5/2000kb/hls/5BkXPzih.ts"; // Link file .ts
+   const startTime = performance.now(); // Lưu thời điểm bắt đầu tải
+   fetch(tsUrl, { method: 'GET', headers: { Range: "bytes=0-500000" } }) // Tải 500KB
+   .then(response => response.blob())
+   .then(blob => {
+       const duration = (performance.now() - startTime) / 1000; // Tính thời gian tải (giây)
+       const speedKBs = (blob.size / 1024 / duration).toFixed(2); // Chuyển sang KB/s
+       document.getElementById('networkSpeed').textContent = `Tốc độ mạng: ${speedKBs} KB/s`;
+   })
+   .catch(() => {
+       document.getElementById('networkSpeed').textContent = "Không đo được tốc độ mạng";
+   });
 }
 
-// Cập nhật tốc độ mỗi 5 giây
+// Cập nhật tốc độ mỗi giây
 setInterval(updateSpeed, 1000);
-     
 
-    </script>
+</script>
 </body>
 </html>
