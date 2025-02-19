@@ -44,7 +44,7 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            margin-top: 70px; /* Để tránh bị che bởi header */
+            margin-top: 70px;
             padding-bottom: 30px;
         }
 
@@ -90,6 +90,18 @@
             max-width: 500px;
             background: #831111;
             text-align: center;
+        }
+
+        /* Hiển thị tốc độ mạng */
+        .network-speed {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
         }
 
         /* Giao diện sáng */
@@ -147,6 +159,9 @@
         </div>
     </div>
 
+    <!-- Hiển thị tốc độ mạng -->
+    <div id="networkSpeed" class="network-speed">Tốc độ mạng: Đang đo...</div>
+
     <script>
         function goBack() {
             window.history.back();
@@ -167,24 +182,20 @@
                 document.body.classList.add("light-mode");
             }
 
-            // Chỉ tải video nếu có link
             const urlParams = new URLSearchParams(window.location.search);
             const videoLink = urlParams.get('link');
             if (videoLink) {
                 const videoSource = document.getElementById('videoSource');
                 videoSource.setAttribute('src', decodeURIComponent(videoLink));
-                const videoPlayer = document.getElementById('videoPlayer');
-                videoPlayer.load();
-                videoPlayer.play().catch(error => {
-                    console.error("Không thể phát video: ", error);
-                    alert("Lỗi khi cố gắng phát video.");
-                });
+                document.getElementById('videoPlayer').load();
             } else {
                 alert("Không có liên kết video.");
             }
+
+            // Đo tốc độ mạng khi tải video
+            setInterval(updateSpeed, 3000);
         });
 
-        // Xử lý tải phụ đề
         function uploadSubtitle() {
             const fileInput = document.getElementById('fileInput');
             const userSubtitleTrack = document.getElementById('userSubtitleTrack');
@@ -206,6 +217,25 @@
         function convertSRTtoVTT(srt) {
             return "WEBVTT\n\n" + srt.replace(/(\d{2}):(\d{2}):(\d{2}),(\d{3})/g, '$1:$2:$3.$4');
         }
+        function updateSpeed() {
+           const tsUrl = "https://s4.phim1280.tv/20250124/mWZUMVD5/2000kb/hls/5BkXPzih.ts"; // Link file .ts
+           const startTime = performance.now(); // Lưu thời điểm bắt đầu tải
+           fetch(tsUrl, { method: 'GET', headers: { Range: "bytes=0-500000" } }) // Tải 500KB
+           .then(response => response.blob())
+           .then(blob => {
+           const duration = (performance.now() - startTime) / 1000; // Tính thời gian tải (giây)
+           const speedMbps = ((blob.size * 8) / (1024 * 1024) / duration).toFixed(2); // Chuyển sang Mbps
+           document.getElementById('networkSpeed').textContent = `Tốc độ mạng: ${speedMbps} Mbps`;
+        })
+        .catch(() => {
+            document.getElementById('networkSpeed').textContent = "Không đo được tốc độ mạng";
+        });
+}
+
+// Cập nhật tốc độ mỗi 5 giây
+setInterval(updateSpeed, 1000);
+     
+
     </script>
 </body>
 </html>
