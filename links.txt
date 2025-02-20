@@ -1009,6 +1009,34 @@ https://s4.phim1280.tv/20250217/qpfnBspW/index.m3u8
 https://vip.opstream15.com/20250207/48932_4d42f4c2/index.m3u8
 # tv00 
 https://live.fptplay53.net/fnxhd1/vtv2_vhls.smil/chunklist_b5000000.m3u8
+# radio1 
+*# Pop 
+https://vnso-pt-51-tf-multi-playlist-zmp3.zmdcdn.me/JB2zPitWC-s/zhls/playback-realtime/audio/6ddadf76e3330a6d5322/audio.m3u8
+*# Xe buýt 
+https://vnso-zn-32-tf-multi-playlist-zmp3.zmdcdn.me/j20SDlO5EQk/zhls/playback-realtime/audio/59a2ee0ed24b3b15625a/audio.m3u8
+*# Nhạc us/uk 
+https://vnso-pt-7-tf-multi-playlist-zmp3.zmdcdn.me/5k37-bBNjIU/zhls/playback-realtime/audio/f49e38320477ed29b466/audio.m3u8
+*# bolero
+https://vnso-tt-17-tf-multi-playlist-zmp3.zmdcdn.me/BJ7DyJjfG_E/zhls/playback-realtime/audio/5bace800d4453d1b6454/audio.m3u8
+*# kpop 
+https://vnso-pt-47-tf-multi-playlist-zmp3.zmdcdn.me/XoQlAlw4O08/zhls/playback-realtime/audio/6600baac86e96fb736f8/audio.m3u8
+*# edm 
+https://vnso-zn-24-tf-multi-playlist-zmp3.zmdcdn.me/AkjPOEj66pI/zhls/playback-realtime/audio/7386bb2a876f6e31377e/audio.m3u8
+*# china 
+https://vnso-zn-26-tf-multi-playlist-zmp3.zmdcdn.me/nDOW7B2Y4NI/zhls/playback-realtime/audio/97b35e1f625a8b04d24b/audio.m3u8
+*# indie 
+https://vnso-zn-27-tf-multi-playlist-zmp3.zmdcdn.me/uma6ByWhxq4/zhls/playback-realtime/audio/eeff2a531616ff48a607/audio.m3u8
+*# GenZ 
+https://vnso-zn-32-tf-multi-playlist-zmp3.zmdcdn.me/7k45_gFb6I8/zhls/playback-realtime/audio/cef1015d3d18d4468d09/audio.m3u8
+*# acoustic
+https://vnso-ne-2-tf-multi-playlist-zmp3.zmdcdn.me/4TX5Vj5v__E/zhls/playback-realtime/audio/9b7b55d7699280ccd983/audio.m3u8
+# radio2
+*# 99.9
+https://strm.voh.com.vn/radio/channel3/chunklist_w309638320.m3u8
+*# 95.6
+https://strm.voh.com.vn/radio/channel1/chunklist_w762245272.m3u8
+*# 610hz
+https://strm.voh.com.vn/radio/channel2/chunklist_w78104839.m3u8
 
 # vn0 
 https://s4.phim1280.tv/20250128/paDfCaKU/index.m3u8

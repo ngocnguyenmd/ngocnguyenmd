@@ -66,8 +66,7 @@ người sói|https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/3/ima
 
 
 
-
-VTV 2|https://yt3.googleusercontent.com/ytc/AIdro_maGQrZHF5iyrVo-lrJqZ2jcSHUvqkT7QH9BMooMYbLsw=s900-c-k-c0x00ffffff-no-rj|tv00|tv01
+Truyền Hình|https://i.giphy.com/muL2iYJR1MNPCdXxHv.webp|tv00|tv01
 
 
 Hai muối|https://phimimg.com/upload/vod/20250128-1/ede258f75b02c54deeb80dd9f8d43565.jpg|vn0|vietnam
@@ -85,4 +84,8 @@ Vòng xoáy định mệnh|https://phimimg.com/upload/vod/20240207-1/64bc5d07684
 Ngược dòng thời..yêu anh|https://phimimg.com/upload/vod/20240207-1/7b649ff9a204f088d77272949f1614e7.jpg|tl2|thailand
 Thầy thuốc hoàng gia|https://phimimg.com/upload/vod/20241007-1/2fb472077f93f9bf6eea493bba1c0666.jpg|tl3|thailand   
 Làm dâu nhà giàu|https://phimimg.com/upload/vod/20231219-1/bbfb270b4bf7162e575251368f35a374.jpg|tl4|thailand
-Nàng vệ sĩ của tôi|https://phimimg.com/upload/vod/20240409-1/645d42e4e0056586679f43031da43468.jpg|tl5|thailand                
+Nàng vệ sĩ của tôi|https://phimimg.com/upload/vod/20240409-1/645d42e4e0056586679f43031da43468.jpg|tl5|thailand  
+
+
+Radio music|https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmFpNHo5bXdxNTBmd2J0NzVyNTM0dWR3NDBlMHNoZnlyMTZhMGk2NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jxdP4SNnmYiOrQxc99/giphy.gif|radio1|tv01 
+Radio VOH|https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnV1MzAxa2Zjdmt0cnZkcThzbXF0YjFkcmI4M2Rya3JidDAwZmFoNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o72FbPweVVttIxHTG/giphy.gif|radio2|tv01 
