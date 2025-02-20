@@ -322,6 +322,9 @@ https://s4.phim1280.tv/20250220/kbeh5l7F/index.m3u8
 https://s4.phim1280.tv/20250220/e2KK9BkM/index.m3u8
 https://s4.phim1280.tv/20250220/SxlLBMoe/index.m3u8
 https://s4.phim1280.tv/20250220/AHM5q4Qr/index.m3u8
+https://s4.phim1280.tv/20250220/sXnmhtvF/index.m3u8
+https://s4.phim1280.tv/20250220/jwVcHsJN/index.m3u8
+
 # movie04 
 https://vip.opstream11.com/20241130/58741_e7e8f449/index.m3u8
 https://vip.opstream11.com/20241130/58743_ffc0e23e/index.m3u8
