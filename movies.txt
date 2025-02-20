@@ -61,12 +61,12 @@ Vương Hậu Wongyeong full|https://ophim17.cc/_next/image?url=https%3A%2F%2Fim
 
 Hẻm núi|https://image.tmdb.org/t/p/w600_and_h900_bestv2/fRChc2N8kLZpDmol3eTGZnYyVen.jpg|us01|usa
 Tình báo tái xuất|https://m.media-amazon.com/images/M/MV5BMWQ4YWYxYTAtZTlhNC00Nzc3LWE3OWUtZjY5MThlNWNiYTBiXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg|us02|usa
-Bác sĩ thiên tài 6/?|https://image.tmdb.org/t/p/w500/2q1YM27w8MipMH6BccGvJWkn5T7.jpg|us03|usa
+Bác sĩ thiên tài 7/?|https://image.tmdb.org/t/p/w500/2q1YM27w8MipMH6BccGvJWkn5T7.jpg|us03|usa
 Người Về Từ Sao Hỏa|https://bizweb.dktcdn.net/100/064/189/products/martian2015-2.jpg?v=1461263525467|us10|usa
 Thám tử Pikachu|https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Fpokemon-tham-tu-pikachu-thumb.jpg&w=256&q=75|us11|usa 
 Captain America: Brave New World|https://phimimg.com/upload/vod/20250218-1/3ff8eee9f7443ddc826546772c9b6e4e.jpg|us12|usa 
-Những Cuộc Phiêu Lưu Rùng Rợn Của Sabrina|https://phimimg.com/upload/vod/20250109-1/af366c0bf6e4e566f457bce5860f88d4.jpg|us13|usa 
-Thám Tử Sherlock|https://phimimg.com/upload/vod/20241002-1/e302955758c62e03d07d76269bf47ddc.jpg|us14|usa 
+Những Cuộc Phiêu Lưu Rùng Rợn Của Sabrina 4/?|https://phimimg.com/upload/vod/20250109-1/af366c0bf6e4e566f457bce5860f88d4.jpg|us13|usa 
+Thám Tử Sherlock 4/?|https://phimimg.com/upload/vod/20241002-1/e302955758c62e03d07d76269bf47ddc.jpg|us14|usa 
 Sonic 3|https://phimimg.com/upload/vod/20250124-1/3f63def7ce3bc30c56063ca2c05a0cca.jpg|us15|usa 
 Paddington: Gấu Thủ Chu Du|https://phimimg.com/upload/vod/20250217-1/b9f71974631c16f3c9243d1073becbba.jpg|us16|usa 
 
@@ -82,17 +82,17 @@ Mai|https://phimimg.com/upload/vod/20240423-1/7b281d88350fd638d84dc9abb5b6b0a6.j
 Đất rừng phương nam|https://phimimg.com/upload/vod/20240319-1/72195bc6fd8ffa3063dc86ec088b6ffb.jpg|vn2|vietnam
 Người vợ cuối cùng|https://phimimg.com/upload/vod/20240205-1/67945e7f327a89d07fa2d75ee119c475.jpg|vn3|vietnam
 Nhà bà nữ|https://phimimg.com/upload/vod/20230922-1/8e7ee122a3ca993f858a005ab9b8211d.jpg|vn4|vietnam
-Cây táo nở hoa|https://phimimg.com/upload/vod/20241010-1/9050391ad6922527d8120bb13e93dcce.jpg|vn5|vietnam
+Cây táo nở hoa 80/80|https://phimimg.com/upload/vod/20241010-1/9050391ad6922527d8120bb13e93dcce.jpg|vn5|vietnam
 
 
 
 
-Nữ Hoàng Ayodhaya|https://phimimg.com/upload/vod/20241025-1/16eae9e04b39809452bebeb6db993636.jpg|tl0|thailand
-Vòng xoáy định mệnh|https://phimimg.com/upload/vod/20240207-1/64bc5d07684e464c33e471b17586ebfd.jpg|tl1|thailand
-Ngược dòng thời..yêu anh|https://phimimg.com/upload/vod/20240207-1/7b649ff9a204f088d77272949f1614e7.jpg|tl2|thailand
-Thầy thuốc hoàng gia|https://phimimg.com/upload/vod/20241007-1/2fb472077f93f9bf6eea493bba1c0666.jpg|tl3|thailand   
-Làm dâu nhà giàu|https://phimimg.com/upload/vod/20231219-1/bbfb270b4bf7162e575251368f35a374.jpg|tl4|thailand
-Nàng vệ sĩ của tôi|https://phimimg.com/upload/vod/20240409-1/645d42e4e0056586679f43031da43468.jpg|tl5|thailand  
+Nữ Hoàng Ayodhaya full|https://phimimg.com/upload/vod/20241025-1/16eae9e04b39809452bebeb6db993636.jpg|tl0|thailand
+Vòng xoáy định mệnh 34/34|https://phimimg.com/upload/vod/20240207-1/64bc5d07684e464c33e471b17586ebfd.jpg|tl1|thailand
+Ngược dòng thời..yêu anh 3/?|https://phimimg.com/upload/vod/20240207-1/7b649ff9a204f088d77272949f1614e7.jpg|tl2|thailand
+Thầy thuốc hoàng gia 44/44|https://phimimg.com/upload/vod/20241007-1/2fb472077f93f9bf6eea493bba1c0666.jpg|tl3|thailand   
+Làm dâu nhà giàu full |https://phimimg.com/upload/vod/20231219-1/bbfb270b4bf7162e575251368f35a374.jpg|tl4|thailand
+Nàng vệ sĩ của tôi full|https://phimimg.com/upload/vod/20240409-1/645d42e4e0056586679f43031da43468.jpg|tl5|thailand  
 
 
 Radio music|https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmFpNHo5bXdxNTBmd2J0NzVyNTM0dWR3NDBlMHNoZnlyMTZhMGk2NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jxdP4SNnmYiOrQxc99/giphy.gif|radio1|tv01 
