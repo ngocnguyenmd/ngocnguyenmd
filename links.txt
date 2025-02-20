@@ -840,6 +840,28 @@ https://s3.phim1280.tv/20240602/Fgq5KqpJ/index.m3u8
 https://s3.phim1280.tv/20240602/uvK1mr4W/index.m3u8
 https://s3.phim1280.tv/20240602/yKpTwTdE/index.m3u8
 https://s3.phim1280.tv/20240602/f6YTQtAp/index.m3u8
+# anime17
+https://s4.phim1280.tv/20250105/5c8S0WpL/index.m3u8
+https://s4.phim1280.tv/20250105/VyXIxSaW/index.m3u8
+https://s4.phim1280.tv/20250105/DWhZSgPJ/index.m3u8
+https://s4.phim1280.tv/20250105/mL2rChH8/index.m3u8
+https://s4.phim1280.tv/20250105/ZizmCDba/index.m3u8
+https://s4.phim1280.tv/20250105/3SWN11Qg/index.m3u8
+https://s4.phim1280.tv/20250105/3tnJQwYS/index.m3u8
+https://s4.phim1280.tv/20250105/XLInj7kd/index.m3u8
+https://s4.phim1280.tv/20250105/GxWhKO0t/index.m3u8
+https://s4.phim1280.tv/20250105/prHz1npE/index.m3u8
+https://s4.phim1280.tv/20250105/aOt9jUP4/index.m3u8
+https://s4.phim1280.tv/20250105/B7OwSz1c/index.m3u8
+https://s4.phim1280.tv/20250105/VPZnq9BL/index.m3u8
+https://s5.phim1280.tv/20250112/y09iw0vx/index.m3u8
+https://s5.phim1280.tv/20250119/USwXXsux/index.m3u8
+https://s4.phim1280.tv/20250126/AvF41BqZ/index.m3u8
+https://s5.phim1280.tv/20250209/fg3sRrFq/index.m3u8
+https://s5.phim1280.tv/20250209/ZPD6fPKl/index.m3u8
+https://s5.phim1280.tv/20250216/XWcq53YR/index.m3u8
+# anime18 
+https://s4.phim1280.tv/20250125/jI8qZLuH/index.m3u8
 
 # us01 
 https://vip.opstream15.com/20250215/49323_ea26d763/index.m3u8
