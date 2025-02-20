@@ -8,13 +8,12 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #000; /* Nền đen giống rạp phim */
+            background-color: #000;
             color: #ffffff;
             margin: 0;
             padding: 0;
         }
 
-        /* Tiêu đề */
         h1 {
             text-align: center;
             background: red;
@@ -24,7 +23,78 @@
             color: white;
         }
 
-        /* Nút bấm danh mục phim */
+        /* Thanh tìm kiếm */
+        .search-container {
+            text-align: center;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #searchInput {
+            width: 50%;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 50px;
+            border: 2px solid red;
+            outline: none;
+            background: black;
+            color: white;
+            padding-left: 20px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #searchInput::placeholder {
+            color: rgba(255, 0, 0, 0.7);
+            font-style: italic;
+        }
+
+        #searchInput:focus {
+            border-color: #ff1a1a;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+        }
+
+        #searchButton {
+            padding: 12px 18px;
+            background: red;
+            border: none;
+            border-radius: 50px;
+            margin-left: 10px;
+            cursor: pointer;
+            color: white;
+            font-size: 18px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #searchButton:hover {
+            background: #ff1a1a;
+            transform: scale(1.1);
+        }
+
+        /* Poster ngang */
+        .poster-large {
+            width: 700px;
+            height: 420px; /* Tỷ lệ A04 */
+            margin: 20px auto;
+            display: block;
+            border-radius: 10px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.5s ease, opacity 0.8s ease, box-shadow 0.5s ease;
+            opacity: 0;
+        }
+
+        .poster-large.show {
+            opacity: 1;
+        }
+
+        .poster-large:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 12px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Nút danh mục */
         .categories {
             display: flex;
             justify-content: center;
@@ -54,222 +124,183 @@
             box-shadow: 0px 6px 12px rgba(255, 0, 0, 0.6);
         }
 
-        /* Tìm kiếm phim */
-        .search-container {
-            text-align: center;
-            margin: 20px;
+        /* Danh sách phim */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .search-container input {
-            padding: 10px;
-            font-size: 16px;
-            width: 220px;
-            border-radius: 5px;
-            border: none;
-            outline: none;
-        }
-
-        .search-container button {
-            padding: 10px;
-            font-size: 16px;
+        .poster {
             cursor: pointer;
-            border: none;
-            background: #ff0000;
-            color: white;
-            border-radius: 5px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            max-width: 250px;
+            height: 350px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* Thư viện phim */
-        /* Căn chỉnh poster theo lưới */
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Cột linh hoạt, tối thiểu 200px */
-    gap: 20px; /* Khoảng cách giữa các poster */
-    justify-content: center;
-    padding: 20px;
-}
+        .poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
 
-/* Thiết kế poster */
-.poster {
-    cursor: pointer;
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-    width: 100%; /* Đảm bảo poster co giãn theo cột */
-    max-width: 250px; /* Giữ kích thước tối đa */
-    height: 350px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Hình ảnh trong poster */
-.poster img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Đảm bảo ảnh luôn vừa khít */
-    border-radius: 8px;
-}
-
-/* Tiêu đề phim */
-.poster-title {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(255, 0, 0, 0.8);
-    color: white;
-    text-align: center;
-    padding: 8px;
-    font-size: 13px;
-}
-
-/* Hover đẹp hơn */
-.poster:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 8px 16px rgba(255, 255, 255, 0.3);
-}
-
-/* Responsive - hiển thị đẹp trên mobile */
-@media (max-width: 768px) {
-    .gallery {
-        grid-template-columns: repeat(2, 1fr); /* 2 cột trên mobile */
-    }
-}
-
-@media (max-width: 480px) {
-    .gallery {
-        grid-template-columns: repeat(1, 1fr); /* 1 cột trên điện thoại nhỏ */
-    }
-}
-
-        /* Thông báo tìm kiếm */
-        .message {
+        .poster-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
             text-align: center;
-            color: red;
-            margin-top: 20px;
+            padding: 8px;
+            font-size: 13px;
+        }
+
+        .poster:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0px 8px 16px rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
 <body>
 
-    <h1> 🎭 Phim Hoạt Hình </h1>
-    <div style="text-align: center; margin-top: 20px;">
-        <div class="categories">
-            <button onclick="window.location.href='korea.html'">🎬 Phim Hàn Quốc</button>
-            <button onclick="window.location.href='usa.html'">🎬 Phim mỹ 🎬</button>
-            <button onclick="window.location.href='tv01.html'">📺 TV Online</button>
-            <button onclick="window.location.href='any.html'">📽️ Tổng hợp</button>
-            <button onclick="window.location.href='index.html'">🎥 Phim Trung Quốc</button>
-        </div>
-    </div>
-        </div>
-    </div> 
+    <h1>🎬 Phim Nhà Bánh Mì 🎬</h1>
+    
+    <!-- Poster ngang -->
+    <img id="mainPoster" class="poster-large" src="" alt="Poster phim" onclick="goToMovie()">
+
+    <!-- Thanh tìm kiếm -->
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Nhập tên phim...">
-        <button onclick="searchMovie()">Tìm kiếm phim</button>
+        <input type="text" id="searchInput" placeholder="🔍 Nhập tên phim..." onkeyup="searchMovies()">
+        <button id="searchButton"><i class="fas fa-search"></i></button>
     </div>
-   
-
-    <div class="gallery" id="movieGallery">
-        <!-- Poster của phim -->
-        <div class="poster" data-title="Dragon Ball Daima" onclick="window.location.href='stream.html?movie=anime01'">
-            <img src="https://cdn2.tuoitre.vn/471584752817336320/2024/10/20/edit-2a33cbe8-ae84-49eb-b39a-5182617ef8e0-17294134116312029028481.jpeg" alt="Dragon Ball Daima">
-            <div class="poster-title">Dragon Ball Daima</div>
-        </div>
-        <div class="poster" data-title="Nobita và Bản Giao Hưởng Địa Cầu" onclick="window.location.href='stream.html?movie=anime02'">
-            <img src="https://media-cdn-v2.laodong.vn/storage/newsportal/2024/4/15/1327585/Doraemon.jpg" alt="Nobita và Bản Giao Hưởng Địa Cầu">
-            <div class="poster-title">Nobita và Bản Giao Hưởng Địa Cầu</div>
-        </div>
-        <div class="poster" data-title="Hàng xóm của tôi là Totoro" onclick="window.location.href='stream.html?movie=anime04'">
-            <img src="https://static.nutscdn.com/vimg/300-0/bfb681b11eb5ddcfd564d562f80bd35e.jpg" alt="Hàng xóm của tôi là Totoro">
-            <div class="poster-title">Hàng xóm của tôi là Totoro</div>
-        </div>
-        <div class="poster" data-title="Ma ma ma ma cà rồng" onclick="window.location.href='stream.html?movie=anime03'">
-            <img src="https://upload.wikimedia.org/wikipedia/en/f/f8/Baban_Baban_Ban_Vampire_volume_1_cover.jpg" alt="Ma ma ma ma cà rồng">
-            <div class="poster-title">Ma ma ma ma cà rồng</div>
-        </div>
-        <div class="poster" data-title="Frieren - Pháp Sư Tiễn Táng" onclick="window.location.href='stream.html?movie=anime05'">
-            <img src="https://static.nutscdn.com/vimg/300-0/3f25e4863e1f86218725037f197ae63e.jpg" alt="Frieren - Pháp Sư Tiễn Táng">
-            <div class="poster-title">Frieren - Pháp Sư Tiễn Táng</div>
-        </div>
-        <div class="poster" data-title="Hồi Sinh Thế Giới" onclick="window.location.href='stream.html?movie=anime06'">
-            <img src="https://cdn.animenewsnetwork.com/hotlink/thumbnails/max450x450/cms/news.6/196419/stone.jpg" alt="Hồi Sinh Thế Giới">
-            <div class="poster-title">Hồi Sinh Thế Giới</div>
-        </div>
-        <div class="poster" data-title="Bikini Bottom" onclick="window.location.href='stream.html?movie=anime07'">
-            <img src="https://m.media-amazon.com/images/M/MV5BYTFmNDU1YjItZThmYi00NjM3LTk5OGEtODgyMDQ3ODFiYjZhXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Bikini Bottom">
-            <div class="poster-title">Bikini Bottom</div>
-        </div>
-        <div class="poster" data-title="Vùng Đất Linh Hồn" onclick="window.location.href='stream.html?movie=anime08'">
-            <img src="https://upload.wikimedia.org/wikipedia/vi/3/30/Spirited_Away_poster.JPG" alt="Vùng Đất Linh Hồn">
-            <div class="poster-title">Vùng Đất Linh Hồn</div>
-        </div>
-        <div class="poster" data-title="The Boy and the Heron" onclick="window.location.href='stream.html?movie=anime09'">
-            <img src="https://static.nutscdn.com/vimg/300-0/d6cd3cfb9cea3b706b37622ac07ac4fb.jpg" alt="The Boy and the Heron">
-            <div class="poster-title">The Boy and the Heron</div>
-        </div>
-        <div class="poster" data-title="Hành Trình Của Moana 2" onclick="window.location.href='stream.html?movie=anime10'">
-            <img src="https://upload.wikimedia.org/wikipedia/vi/7/73/Moana_2_poster.jpg" alt="Hành Trình Của Moana 2">
-            <div class="poster-title">Hành Trình Của Moana 2</div>
-        </div>
-        <div class="poster" data-title="Na tra 2019" onclick="window.location.href='stream.html?movie=anime11'">
-            <img src="https://kenh14cdn.com/2019/9/18/photo-4-15688181673081251140686.jpg" alt="Na tra 2019">
-            <div class="poster-title">Na tra 2019</div>
-        </div>
-        </div>
-    <p id="notFoundMessage" class="message"></p>
-
+    <div class="categories">
+        <button onclick="window.location.href='korea.html'">🎬 Phim Hàn Quốc</button>
+        <button onclick="window.location.href='anime.html'">🎭 Anime</button>
+        <button onclick="window.location.href='tv01.html'">📺 TV Online</button>
+        <button onclick="window.location.href='any.html'">📽️ Tổng hợp</button>
+        <button onclick="window.location.href='usa.html'">🎥 Phim Mỹ</button>
+        <button onclick="window.location.href='vietnam.html'">🎥 Phim Việt</button>
+        <button onclick="window.location.href='thailand.html'">🎥 Phim Thái </button>
+    </div>
+    <!-- Danh sách phim -->
+    <div class="gallery" id="movieGallery"></div>
     <script>
-           async function loadMovies() {
-    try {
-        // Lấy tên trang hiện tại
-        const currentPage = window.location.pathname.split('/').pop(); // Lấy tên tệp hiện tại (index.html, anime.html, etc.)
-
-        // Dựng một đối tượng phân loại cho các trang
-        const categories = {
-            'index.html': 'index',  // Trang index hiển thị phim loại 'index'
-            'anime.html': 'anime',  // Trang anime hiển thị phim loại 'anime'
-            'usa.html': 'usa',      // Trang usa hiển thị phim loại 'usa'
-            'korea.html': 'korea',  // Trang korea hiển thị phim loại 'korea'
-            'any.html': 'any',  // Trang tổng hợp hiển thị tất cả các loại phim
-            'tv01.html': 'tv',     // Trang tv hiển thị phim loại 'tv'
-        };
-
-        const category = categories[currentPage];
-
-        // Đọc tệp TXT (movies.txt)
-        const response = await fetch('movies.txt');
-        const text = await response.text();
-
-        // Chia dữ liệu thành từng dòng
-        const movies = text.split('\n').filter(line => line.trim() !== '');
-
-        let html = '';
-        
-        // Duyệt từng dòng để lọc và tạo danh sách phim
-        movies.forEach(movie => {
-            const [title, imageUrl, movieId, fileCategory] = movie.split('|');
-
-            // Kiểm tra nếu loại phim khớp với trang hiện tại
-            if (fileCategory.trim() === category || category === 'Tổng hợp') {
+        let posters = [];
+        let currentPosterIndex = 0;
+        let movieList = []; // Lưu danh sách phim để tìm kiếm
+    
+        // 🎬 Tải danh sách poster
+        async function loadPosters() {
+            try {
+                const response = await fetch('movieposter.txt');
+                if (!response.ok) throw new Error(`Không thể tải file movieposter.txt (HTTP ${response.status})`);
+    
+                const text = await response.text();
+                const lines = text.split('\n').filter(line => line.trim() !== '');
+    
+                posters = lines.map(line => line.split('|')).filter(data => data.length >= 2);
+    
+                if (posters.length > 0) {
+                    updatePoster();
+                    setInterval(updatePoster, 5000);
+                }
+            } catch (error) {
+                console.error('❌ Lỗi khi tải danh sách poster:', error);
+            }
+        }
+    
+        // 🔄 Chuyển đổi poster chính
+        function updatePoster() {
+            if (posters.length === 0) return;
+    
+            const mainPoster = document.getElementById('mainPoster');
+            mainPoster.classList.remove('show');
+    
+            setTimeout(() => {
+                const [imageUrl, movieId] = posters[currentPosterIndex];
+    
+                mainPoster.src = imageUrl.trim();
+                mainPoster.dataset.movieId = movieId.trim();
+                mainPoster.classList.add('show');
+    
+                currentPosterIndex = (currentPosterIndex + 1) % posters.length;
+            }, 500);
+        }
+    
+        // 🎥 Khi click vào poster chính, chuyển đến phim
+        function goToMovie() {
+            const movieId = document.getElementById('mainPoster').dataset.movieId;
+            if (movieId) {
+                window.location.href = `stream.html?movie=${movieId}`;
+            }
+        }
+    
+        // 📂 Tải danh sách phim
+        async function loadMovies() {
+            try {
+                const response = await fetch('movies.txt');
+                if (!response.ok) throw new Error(`Không thể tải file movies.txt (HTTP ${response.status})`);
+    
+                const text = await response.text();
+                const movies = text.split('\n').filter(line => line.trim() !== '');
+    
+                const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+    
+                movieList = []; // Reset danh sách phim trước khi thêm mới
+                let html = '';
+                movies.forEach(movie => {
+                    const [title, imageUrl, movieId, category] = movie.split('|').map(part => part.trim());
+    
+                    if (category === currentPage) {
+                        movieList.push({ title, imageUrl, movieId }); // Lưu vào danh sách để tìm kiếm
+                        html += `
+                            <div class="poster" onclick="window.location.href='stream.html?movie=${movieId}'">
+                                <img src="${imageUrl}" alt="${title}">
+                                <div class="poster-title">${title}</div>
+                            </div>
+                        `;
+                    }
+                });
+    
+                document.getElementById('movieGallery').innerHTML = html;
+            } catch (error) {
+                console.error('❌ Lỗi khi tải danh sách phim:', error);
+            }
+        }
+    
+        // 🔍 Chức năng tìm kiếm phim
+        function searchMovies() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const filteredMovies = movieList.filter(movie => movie.title.toLowerCase().includes(searchInput));
+    
+            let html = '';
+            filteredMovies.forEach(movie => {
                 html += `
-                    <div class="poster" data-title="${title.trim()}" onclick="window.location.href='stream.html?movie=${movieId.trim()}'">
-                        <img src="${imageUrl.trim()}" alt="${title.trim()}">
-                        <div class="poster-title">${title.trim()}</div>
+                    <div class="poster" onclick="window.location.href='stream.html?movie=${movie.movieId}'">
+                        <img src="${movie.imageUrl}" alt="${movie.title}">
+                        <div class="poster-title">${movie.title}</div>
                     </div>
                 `;
-            }
-        });
-
-        // Thêm các poster vào trang
-        document.getElementById('movieGallery').innerHTML = html;
-    } catch (error) {
-        console.error('Lỗi khi tải danh sách phim:', error);
-    }
-}
-
-// Gọi hàm khi trang tải
-window.onload = loadMovies;
+            });
+    
+            document.getElementById('movieGallery').innerHTML = html;
+        }
+    
+        // 🏁 Khi tải trang, tải dữ liệu
+        window.onload = function () {
+            loadPosters();
+            loadMovies();
+        };
     </script>
+    
 
 </body>
 </html>

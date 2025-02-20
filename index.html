@@ -23,56 +23,54 @@
             color: white;
         }
 
-        /* Thanh tìm kiếm đẹp + hiệu ứng phát sáng */
-.search-container {
-    text-align: center;
-    margin: 20px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        /* Thanh tìm kiếm */
+        .search-container {
+            text-align: center;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-#searchInput {
-    width: 50%;
-    padding: 12px;
-    font-size: 18px;
-    border-radius: 50px;
-    border: 2px solid red;
-    outline: none;
-    text-align: left;
-    background: black;
-    color: white;
-    padding-left: 20px;
-    transition: all 0.3s ease-in-out;
-}
+        #searchInput {
+            width: 50%;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 50px;
+            border: 2px solid red;
+            outline: none;
+            background: black;
+            color: white;
+            padding-left: 20px;
+            transition: all 0.3s ease-in-out;
+        }
 
-#searchInput::placeholder {
-    color: rgba(255, 0, 0, 0.7);
-    font-style: italic;
-}
+        #searchInput::placeholder {
+            color: rgba(255, 0, 0, 0.7);
+            font-style: italic;
+        }
 
-#searchInput:focus {
-    border-color: #ff1a1a;
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
-}
+        #searchInput:focus {
+            border-color: #ff1a1a;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+        }
 
-/* Nút tìm kiếm */
-#searchButton {
-    padding: 12px 18px;
-    background: red;
-    border: none;
-    border-radius: 50px;
-    margin-left: 10px;
-    cursor: pointer;
-    color: white;
-    font-size: 18px;
-    transition: all 0.3s ease-in-out;
-}
+        #searchButton {
+            padding: 12px 18px;
+            background: red;
+            border: none;
+            border-radius: 50px;
+            margin-left: 10px;
+            cursor: pointer;
+            color: white;
+            font-size: 18px;
+            transition: all 0.3s ease-in-out;
+        }
 
-#searchButton:hover {
-    background: #ff1a1a;
-    transform: scale(1.1);
-}
+        #searchButton:hover {
+            background: #ff1a1a;
+            transform: scale(1.1);
+        }
 
         /* Poster ngang */
         .poster-large {
@@ -174,17 +172,15 @@
 <body>
 
     <h1>🎬 Phim Nhà Bánh Mì 🎬</h1>
-
+    
     <!-- Poster ngang -->
     <img id="mainPoster" class="poster-large" src="" alt="Poster phim" onclick="goToMovie()">
 
-   <!-- Thanh tìm kiếm -->
-<div class="search-container">
-    <input type="text" id="searchInput" placeholder="🔍 Nhập tên phim..." onkeyup="searchMovies()">
-    <button id="searchButton"><i class="fas fa-search"></i></button>
-</div>
-
-    <!-- Nút danh mục -->
+    <!-- Thanh tìm kiếm -->
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="🔍 Nhập tên phim..." onkeyup="searchMovies()">
+        <button id="searchButton"><i class="fas fa-search"></i></button>
+    </div>
     <div class="categories">
         <button onclick="window.location.href='korea.html'">🎬 Phim Hàn Quốc</button>
         <button onclick="window.location.href='anime.html'">🎭 Anime</button>
@@ -194,24 +190,24 @@
         <button onclick="window.location.href='vietnam.html'">🎥 Phim Việt</button>
         <button onclick="window.location.href='thailand.html'">🎥 Phim Thái </button>
     </div>
-
     <!-- Danh sách phim -->
     <div class="gallery" id="movieGallery"></div>
-
     <script>
         let posters = [];
         let currentPosterIndex = 0;
-
+        let movieList = []; // Lưu danh sách phim để tìm kiếm
+    
+        // 🎬 Tải danh sách poster
         async function loadPosters() {
             try {
                 const response = await fetch('movieposter.txt');
                 if (!response.ok) throw new Error(`Không thể tải file movieposter.txt (HTTP ${response.status})`);
-
+    
                 const text = await response.text();
                 const lines = text.split('\n').filter(line => line.trim() !== '');
-
+    
                 posters = lines.map(line => line.split('|')).filter(data => data.length >= 2);
-
+    
                 if (posters.length > 0) {
                     updatePoster();
                     setInterval(updatePoster, 5000);
@@ -220,46 +216,51 @@
                 console.error('❌ Lỗi khi tải danh sách poster:', error);
             }
         }
-
+    
+        // 🔄 Chuyển đổi poster chính
         function updatePoster() {
             if (posters.length === 0) return;
-
+    
             const mainPoster = document.getElementById('mainPoster');
             mainPoster.classList.remove('show');
-
+    
             setTimeout(() => {
                 const [imageUrl, movieId] = posters[currentPosterIndex];
-
+    
                 mainPoster.src = imageUrl.trim();
                 mainPoster.dataset.movieId = movieId.trim();
                 mainPoster.classList.add('show');
-
+    
                 currentPosterIndex = (currentPosterIndex + 1) % posters.length;
             }, 500);
         }
-
+    
+        // 🎥 Khi click vào poster chính, chuyển đến phim
         function goToMovie() {
             const movieId = document.getElementById('mainPoster').dataset.movieId;
             if (movieId) {
                 window.location.href = `stream.html?movie=${movieId}`;
             }
         }
-
+    
+        // 📂 Tải danh sách phim
         async function loadMovies() {
             try {
                 const response = await fetch('movies.txt');
                 if (!response.ok) throw new Error(`Không thể tải file movies.txt (HTTP ${response.status})`);
-
+    
                 const text = await response.text();
                 const movies = text.split('\n').filter(line => line.trim() !== '');
-
+    
                 const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
-
+    
+                movieList = []; // Reset danh sách phim trước khi thêm mới
                 let html = '';
                 movies.forEach(movie => {
                     const [title, imageUrl, movieId, category] = movie.split('|').map(part => part.trim());
-
+    
                     if (category === currentPage) {
+                        movieList.push({ title, imageUrl, movieId }); // Lưu vào danh sách để tìm kiếm
                         html += `
                             <div class="poster" onclick="window.location.href='stream.html?movie=${movieId}'">
                                 <img src="${imageUrl}" alt="${title}">
@@ -268,18 +269,37 @@
                         `;
                     }
                 });
-
+    
                 document.getElementById('movieGallery').innerHTML = html;
             } catch (error) {
                 console.error('❌ Lỗi khi tải danh sách phim:', error);
             }
         }
-
+    
+        // 🔍 Chức năng tìm kiếm phim
+        function searchMovies() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const filteredMovies = movieList.filter(movie => movie.title.toLowerCase().includes(searchInput));
+    
+            let html = '';
+            filteredMovies.forEach(movie => {
+                html += `
+                    <div class="poster" onclick="window.location.href='stream.html?movie=${movie.movieId}'">
+                        <img src="${movie.imageUrl}" alt="${movie.title}">
+                        <div class="poster-title">${movie.title}</div>
+                    </div>
+                `;
+            });
+    
+            document.getElementById('movieGallery').innerHTML = html;
+        }
+    
+        // 🏁 Khi tải trang, tải dữ liệu
         window.onload = function () {
             loadPosters();
             loadMovies();
         };
     </script>
-
+    
 </body>
 </html>
