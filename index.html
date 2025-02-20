@@ -23,10 +23,61 @@
             color: white;
         }
 
+        /* Thanh tìm kiếm đẹp + hiệu ứng phát sáng */
+.search-container {
+    text-align: center;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#searchInput {
+    width: 50%;
+    padding: 12px;
+    font-size: 18px;
+    border-radius: 50px;
+    border: 2px solid red;
+    outline: none;
+    text-align: left;
+    background: black;
+    color: white;
+    padding-left: 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+#searchInput::placeholder {
+    color: rgba(255, 0, 0, 0.7);
+    font-style: italic;
+}
+
+#searchInput:focus {
+    border-color: #ff1a1a;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+}
+
+/* Nút tìm kiếm */
+#searchButton {
+    padding: 12px 18px;
+    background: red;
+    border: none;
+    border-radius: 50px;
+    margin-left: 10px;
+    cursor: pointer;
+    color: white;
+    font-size: 18px;
+    transition: all 0.3s ease-in-out;
+}
+
+#searchButton:hover {
+    background: #ff1a1a;
+    transform: scale(1.1);
+}
+
         /* Poster ngang */
         .poster-large {
-            width: 900px;
-            height: 500px;
+            width: 700px;
+            height: 420px; /* Tỷ lệ A04 */
             margin: 20px auto;
             display: block;
             border-radius: 10px;
@@ -127,6 +178,13 @@
     <!-- Poster ngang -->
     <img id="mainPoster" class="poster-large" src="" alt="Poster phim" onclick="goToMovie()">
 
+   <!-- Thanh tìm kiếm -->
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="🔍 Nhập tên phim..." onkeyup="searchMovies()">
+    <button id="searchButton"><i class="fas fa-search"></i></button>
+</div>
+
+    <!-- Nút danh mục -->
     <div class="categories">
         <button onclick="window.location.href='korea.html'">🎬 Phim Hàn Quốc</button>
         <button onclick="window.location.href='anime.html'">🎭 Anime</button>
@@ -137,7 +195,7 @@
         <button onclick="window.location.href='thailand.html'">🎥 Phim Thái </button>
     </div>
 
-    <!-- Danh sách phim, chỉ hiển thị nếu là index.html -->
+    <!-- Danh sách phim -->
     <div class="gallery" id="movieGallery"></div>
 
     <script>
@@ -189,24 +247,19 @@
 
         async function loadMovies() {
             try {
-                const currentPage = window.location.pathname.split('/').pop();
-
-                if (currentPage !== 'index.html' && currentPage !== '') {
-                    console.log('Không phải trang index, ẩn danh sách phim.');
-                    return;
-                }
-
                 const response = await fetch('movies.txt');
                 if (!response.ok) throw new Error(`Không thể tải file movies.txt (HTTP ${response.status})`);
 
                 const text = await response.text();
                 const movies = text.split('\n').filter(line => line.trim() !== '');
 
+                const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+
                 let html = '';
                 movies.forEach(movie => {
                     const [title, imageUrl, movieId, category] = movie.split('|').map(part => part.trim());
 
-                    if (category === 'index') {
+                    if (category === currentPage) {
                         html += `
                             <div class="poster" onclick="window.location.href='stream.html?movie=${movieId}'">
                                 <img src="${imageUrl}" alt="${title}">
