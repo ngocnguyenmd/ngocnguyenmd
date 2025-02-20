@@ -846,10 +846,10 @@ https://s3.phim1280.tv/20240602/uvK1mr4W/index.m3u8
 https://s3.phim1280.tv/20240602/yKpTwTdE/index.m3u8
 https://s3.phim1280.tv/20240602/f6YTQtAp/index.m3u8
 *# ep2 
-https://vod01-cdn.fptplay.net/POVOD/encoded/2023/12/16/spy-x-family-season-2-2023-jp-mtas-001-1702712029/subtitles/vi/media.m3u8
-https://vod01-cdn.fptplay.net/POVOD/encoded/2023/12/23/spy-x-family-season-2-2023-jp-mtas-002-1703347519/subtitles/vi/media.m3u8
-https://vod04-cdn.fptplay.net/POVOD/encoded/2023/12/30/spy-x-family-season-2-2023-jp-mtas-003-1703927164/subtitles/vi/media.m3u8
-https://vod06-cdn.fptplay.net/POVOD/encoded/2024/01/06/spy-x-family-season-2-2023-jp-mtas-004-1704551516/subtitles/vi/media.m3u8
+https://sundaythekingplays.xyz/hls/gj8o3n0XiqfSs4pDLBRdLGMNMLrkihtR16bVvBwd9SFn3bXcprg0if56lubl8+hgjCSXTexAyEJWatezZHFtJQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+https://sundaythekingplays.xyz/hls/MelP5Bh+pNu6+wGVEpZSBTxMDSZHMheFOomOAa6LPW4KWB6sA8MhqgN0t8LyNTSafHWwic48ry2+r9bD7oO5lA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+https://sundaythekingplays.site/hls/pSTBEPpckwrOABvsfS+p9YlmAfbE515zm5NdVok18VXBcilAK5WgEk-2GAh8ridJzRo8T0J2i-vFhRMjVBJGZg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+https://sundaythekingplays.site/hls/6bvRlk9EmcUmiOd+j04K-0avim10QbMqnX+dHFECdWAqAyDSlM7Buam+VpjHwr8wSuym-NpMRbg01XdNcO2a9g==/bWFzdGVyLm0zdTg=.m3u8
 https://sundaythekingplays.site/hls/wexKDi1G5SAzz78H487CmpMP8oHwqlSgQuUNciLxKm8EkmtqP5O23Zbscmn+HC9s2AxCHPg8rHsK+H1gPKs9Dw==/bWFzdGVyLm0zdTg=.m3u8
 https://sundaythekingplays.xyz/hls/3oHLOem-jQ2zZiBxfCuIkpKg+LDBa9pPAxTRodYUcuYyExhHdjkJVgs7Zi3bb+P4h+b69KIaWNVTv4e0IUJAxA==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
 https://sundaythekingplays.xyz/hls/ZDT9lf1SRaMX+VY1loSwyDeOeZhG2LX8epVsGd7sdTVeoIf3nY89EmjD1dXH5djOFiK1UlzsozNEY5rASnxmIg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
