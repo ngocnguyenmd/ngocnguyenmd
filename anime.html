@@ -74,17 +74,17 @@
 
         /* Poster ngang */
         .poster-large {
-            width: 700px;
-            height: 420px; /* Tỷ lệ A04 */
-            margin: 20px auto;
-            display: block;
-            border-radius: 10px;
-            object-fit: cover;
-            cursor: pointer;
-            transition: transform 0.5s ease, opacity 0.8s ease, box-shadow 0.5s ease;
-            opacity: 0;
-        }
-
+        width: 90%; /* Chiếm 90% màn hình để không quá to */
+        max-width: 700px; /* Giới hạn kích thước tối đa */
+        height: auto; /* Tự điều chỉnh chiều cao theo tỉ lệ */
+        margin: 20px auto;
+        display: block;
+        border-radius: 10px;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.5s ease, opacity 0.8s ease, box-shadow 0.5s ease;
+        opacity: 0;
+}
         .poster-large.show {
             opacity: 1;
         }
@@ -167,6 +167,13 @@
             transform: scale(1.05) translateY(-5px);
             box-shadow: 0px 8px 16px rgba(255, 255, 255, 0.3);
         }
+     @media screen and (max-width: 600px) {
+        .poster-large {
+            width: 100%; /* Chiếm toàn bộ chiều rộng màn hình */
+            max-width: 100%; /* Không giới hạn kích thước */
+            height: auto; /* Tự động giữ tỷ lệ */
+    }
+}
     </style>
 </head>
 <body>
@@ -182,13 +189,13 @@
         <button id="searchButton"><i class="fas fa-search"></i></button>
     </div>
     <div class="categories">
-        <button onclick="window.location.href='korea.html'">🎬 Phim Hàn Quốc</button>
-        <button onclick="window.location.href='anime.html'">🎭 Anime</button>
-        <button onclick="window.location.href='tv01.html'">📺 TV Online</button>
-        <button onclick="window.location.href='any.html'">📽️ Tổng hợp</button>
-        <button onclick="window.location.href='usa.html'">🎥 Phim Mỹ</button>
-        <button onclick="window.location.href='vietnam.html'">🎥 Phim Việt</button>
-        <button onclick="window.location.href='thailand.html'">🎥 Phim Thái </button>
+        <button onclick="window.location.href='korea.html'">🎬Phim Hàn Quốc</button>
+        <button onclick="window.location.href='index.html'">🎬Phim Trung Quốc</button>
+        <button onclick="window.location.href='tv01.html'">📺TV Online</button>
+        <button onclick="window.location.href='any.html'">📺Tổng hợp</button>
+        <button onclick="window.location.href='usa.html'">🎬Phim Mỹ</button>
+        <button onclick="window.location.href='vietnam.html'">🎬Phim Việt</button>
+        <button onclick="window.location.href='thailand.html'">🎬Phim Thái </button>
     </div>
     <!-- Danh sách phim -->
     <div class="gallery" id="movieGallery"></div>
@@ -300,7 +307,6 @@
             loadMovies();
         };
     </script>
-    
 
 </body>
 </html>
