@@ -680,6 +680,8 @@ https://vip.opstream15.com/20250219/49465_2cc76458/index.m3u8
 https://vip.opstream15.com/20250219/49466_84bc271b/index.m3u8
 https://vip.opstream15.com/20250220/49478_89146fe1/index.m3u8
 https://vip.opstream15.com/20250220/49479_a8c3d177/index.m3u8
+https://vip.opstream15.com/20250221/49544_79f8d92f/index.m3u8
+https://vip.opstream15.com/20250221/49545_2a018609/index.m3u8
 # movie14
 https://s5.phim1280.tv/20250214/o9bS40qx/index.m3u8
 https://s5.phim1280.tv/20250214/W4NzJm2r/index.m3u8
