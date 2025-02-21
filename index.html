@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -179,15 +180,6 @@
 <body>
 
     <h1>🎬 Phim Nhà Bánh Mì 🎬</h1>
-    
-    <!-- Poster ngang -->
-    <img id="mainPoster" class="poster-large" src="" alt="Poster phim" onclick="goToMovie()">
-
-    <!-- Thanh tìm kiếm -->
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="🔍 Nhập tên phim..." onkeyup="searchMovies()">
-        <button id="searchButton"><i class="fas fa-search"></i></button>
-    </div>
     <div class="categories">
         <button onclick="window.location.href='korea.html'">🎬 Phim Hàn Quốc</button>
         <button onclick="window.location.href='anime.html'">🎭 Anime</button>
@@ -197,6 +189,15 @@
         <button onclick="window.location.href='vietnam.html'">🎥 Phim Việt</button>
         <button onclick="window.location.href='thailand.html'">🎥 Phim Thái </button>
     </div>
+    <!-- Poster ngang -->
+    <img id="mainPoster" class="poster-large" src="" alt="Poster phim" onclick="goToMovie()">
+
+    <!-- Thanh tìm kiếm -->
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="🔍 Nhập tên phim..." onkeyup="searchMovies()">
+        <button id="searchButton"><i class="fas fa-search"></i></button>
+    </div>
+  
     <!-- Danh sách phim -->
     <div class="gallery" id="movieGallery"></div>
     <script>
