@@ -1,6 +1,6 @@
 Quốc Sắc Phương Hoa full|https://static.nutscdn.com/vimg/300-0/748fadff0d75a6aef4bf4bc371d536ee.jpg|movie01|index
 Bạch Nguyệt Phạn Tinh full|https://motchill.fm/wp-content/uploads/2025/01/0be1e197a92e490ddc9c56cd56057070.webp|movie02|index
-Tiên Đài Hữu Thụ 34/nonsub|https://www.motchillso.com/webp/upload/images/phim/phim/tiendaicocay.webp|movie03|index
+Tiên Đài Hữu Thụ 40/40|https://www.motchillso.com/webp/upload/images/phim/phim/tiendaicocay.webp|movie03|index
 Thục cẩm nhân gia full|https://static.nutscdn.com/vimg/300-0/09c63bd009b8a32615b2d79716d52aad.jpg|movie04|index
 Vĩnh Dạ Tinh Hà full|https://static.nutscdn.com/vimg/300-0/39279320cbcab41b5465a47cac6ae6a5.jpg|movie05|index
 Ninh An Như Mộng full|https://static.nutscdn.com/vimg/300-0/bbb0aea9551976453d757e8a88de37b5.jpg|movie06|index
@@ -14,8 +14,9 @@ Mỹ Nhân Trở Về 24/24|https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg
 Sao Địch Nổi Sắc Đẹp Tuyệt Trần 19/36|https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Fsao-dich-noi-sac-dep-tuyet-tran-thumb.jpg&w=256&q=75|movie14|index
 Cảm ơn bác sĩ full|https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Fcam-on-bac-si-thumb.jpg&w=256&q=75|movie15|index
 Yêu anh 120% full|https://phimimg.com/upload/vod/20250220-1/8c3266fe0592020204c3f1f5fb493400.jpg|movie16|index 
-Khó Dỗ Dành 11/32|https://phimimg.com/upload/vod/20250218-1/7812aa97a4c6bfdd29e1bc33386b72e1.jpg|movie17|index 
+Khó Dỗ Dành 12/32|https://phimimg.com/upload/vod/20250218-1/7812aa97a4c6bfdd29e1bc33386b72e1.jpg|movie17|index 
 Xạ thủ|https://phimimg.com/upload/vod/20250217-1/88b8d1acdfc70bc663c906ee4e668944.jpg|movie18|index 
+Triển Chiêu Thám Án|https://phimimg.com/upload/vod/20250223-1/c6d3d7cf423961285e80a64e96e17939.jpg|movie19|index 
 
 
 
@@ -27,7 +28,7 @@ Xạ thủ|https://phimimg.com/upload/vod/20250217-1/88b8d1acdfc70bc663c906ee4e6
 Dragon Ball Daima 19/?|https://phimimg.com/upload/vod/20241013-1/0fae7296f2e1a31e55deb61fe6db7a03.jpg|anime01|anime
 Nobita và Bản Giao Hưởng Địa Cầu|https://media-cdn-v2.laodong.vn/storage/newsportal/2024/4/15/1327585/Doraemon.jpg|anime02|anime 
 Hàng xóm của tôi là Totoro|https://static.nutscdn.com/vimg/300-0/bfb681b11eb5ddcfd564d562f80bd35e.jpg|anime04|anime 
-Ma ma ma ma cà rồng 6/12|https://upload.wikimedia.org/wikipedia/en/f/f8/Baban_Baban_Ban_Vampire_volume_1_cover.jpg|anime03|anime 
+Cuộc sống nông dân|https://phimimg.com/upload/vod/20250106-1/10b5710bb1e5a1a62b65d6dc61384b57.jpg|anime03|anime 
 Frieren - Pháp Sư Tiễn Táng full|https://static.nutscdn.com/vimg/300-0/3f25e4863e1f86218725037f197ae63e.jpg|anime05|anime 
 Hồi Sinh Thế Giới 7/24|https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Ftien-si-da-hoi-sinh-the-gioi-phan-4-thumb.jpg&w=256&q=75|anime06|anime 
 Bikini Bottom|https://m.media-amazon.com/images/M/MV5BYTFmNDU1YjItZThmYi00NjM3LTk5OGEtODgyMDQ3ODFiYjZhXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg|anime07|anime 
@@ -61,10 +62,10 @@ Tình Yêu Của Eva 117/?|https://s12919.cdn.mytvnet.vn/vimages/242x364/ba/a6/6
 Tình Yêu Của Mu Bi full|https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Ftinh-yeu-cua-mu-bi-thumb.jpg&w=256&q=75|movie08kr|korea
 Tình Ái Chunhwa 6/10|https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Ftinh-ai-chunhwa-thumb.jpg&w=256&q=75|movie09kr|korea 
 Vương Hậu Wongyeong full|https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Fvuong-hau-wongyeong-thumb.jpg&w=256&q=75|movie10kr|korea
-Hỏi Các Vì Sao 14/16|https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Fhoi-cac-vi-sao-thumb.jpg&w=256&q=75|movie11kr|korea                
+Hỏi Các Vì Sao 15/16|https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Fhoi-cac-vi-sao-thumb.jpg&w=256&q=75|movie11kr|korea                
 Bất động sản trừ tà|https://phimimg.com/upload/vod/20241013-1/1877026147aa8b107a357fdf24f694d5.jpg|movie12kr|korea
 Bạn bạn bè bè 8/16|https://phimimg.com/upload/vod/20250209-1/5e8b177251de0d57dc271e8b533f341c.jpg|movie13kr|korea 
-Dưới Tán Cây Có Ngôi Nhà Mái Đỏ 14/30|https://phimimg.com/upload/vod/20250216-1/402cda244905f77ef5693fa5ad499df9.jpg|movie14kr|korea 
+Dưới Tán Cây Có Ngôi Nhà Mái Đỏ 17/30|https://phimimg.com/upload/vod/20250216-1/402cda244905f77ef5693fa5ad499df9.jpg|movie20|index 
 Kẻ thù yêu dấu 2/12|https://phimimg.com/upload/vod/20250217-1/3102759f9632289009b73ad5158a51fc.jpg|movie15kr|korea 
 
 
@@ -93,7 +94,7 @@ Conan thám tử|https://phimimg.com/upload/vod/20240310-1/025424cf62248b9a7b542
 Doreamon đôi bạn thân 2|https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Fdoraemon-doi-ban-than-2-thumb.jpg&w=256&q=75|any05|any 
 Doreamon đôi bạn thân 1|https://phimimg.com/upload/vod/20231019-1/ac8da63b1beeec4aa854129f80e8f566.jpg|any04|any                                             
 Đảo hải tặc|https://phimimg.com/upload/vod/20240310-1/31e6c244a0673838a46732d3b4f0b190.jpg|any06|any 
-
+Cuộc sống nông dân|https://phimimg.com/upload/vod/20250106-1/10b5710bb1e5a1a62b65d6dc61384b57.jpg|
 
 
 
@@ -106,16 +107,21 @@ Mai|https://phimimg.com/upload/vod/20240423-1/7b281d88350fd638d84dc9abb5b6b0a6.j
 Người vợ cuối cùng|https://phimimg.com/upload/vod/20240205-1/67945e7f327a89d07fa2d75ee119c475.jpg|vn3|vietnam
 Nhà bà nữ|https://phimimg.com/upload/vod/20230922-1/8e7ee122a3ca993f858a005ab9b8211d.jpg|vn4|vietnam
 Cây táo nở hoa 80/80|https://phimimg.com/upload/vod/20241010-1/9050391ad6922527d8120bb13e93dcce.jpg|vn5|vietnam
+Nhà gia tiên coming soon|https://image.tmdb.org/t/p/original/yHdDgzEnFslwfwz2Hzc498lIhFx.jpg|vn7|vietnam
 
 
 
 
+Bí Ẩn Karawek|https://phimimg.com/upload/vod/20250211-1/0cc04040f18a0bed9040a3b67636ef53.jpg|tl16|thailand                           
+Thư ký kim|https://phimimg.com/upload/vod/20250125-1/d9de7b5ae71c94aa68ef74eba6a96d6a.jpg|tl17|thailand
 Nữ Hoàng Ayodhaya full|https://phimimg.com/upload/vod/20241025-1/16eae9e04b39809452bebeb6db993636.jpg|tl0|thailand
 Vòng xoáy định mệnh 34/34|https://phimimg.com/upload/vod/20240207-1/64bc5d07684e464c33e471b17586ebfd.jpg|tl1|thailand
 Ngược dòng thời..yêu anh 3/?|https://phimimg.com/upload/vod/20240207-1/7b649ff9a204f088d77272949f1614e7.jpg|tl2|thailand
 Thầy thuốc hoàng gia 44/44|https://phimimg.com/upload/vod/20241007-1/2fb472077f93f9bf6eea493bba1c0666.jpg|tl3|thailand   
 Làm dâu nhà giàu full |https://phimimg.com/upload/vod/20231219-1/bbfb270b4bf7162e575251368f35a374.jpg|tl4|thailand
 Nàng vệ sĩ của tôi full|https://phimimg.com/upload/vod/20240409-1/645d42e4e0056586679f43031da43468.jpg|tl5|thailand  
+
+
 
 
 Radio music|https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmFpNHo5bXdxNTBmd2J0NzVyNTM0dWR3NDBlMHNoZnlyMTZhMGk2NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jxdP4SNnmYiOrQxc99/giphy.gif|radio1|tv01 

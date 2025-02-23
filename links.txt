@@ -233,6 +233,7 @@ https://s5.phim1280.tv/20250209/pqjEhIfN/index.m3u8
 https://s5.phim1280.tv/20250210/HkTLYPGF/index.m3u8
 https://s5.phim1280.tv/20250210/HkTLYPGF/index.m3u8
 https://s4.phim1280.tv/20250217/d4L7Tz8b/index.m3u8
+https://s4.phim1280.tv/20250223/EIIEn3lw/index.m3u8
 
 
 
@@ -264,21 +265,24 @@ https://s4.phim1280.tv/20250220/fJy1QZna/index.m3u8
 https://s4.phim1280.tv/20250220/CB6lLHFQ/index.m3u8
 https://s4.phim1280.tv/20250220/EpFFqfDu/index.m3u8
 
-# movie14kr
-https://s5.phim1280.tv/20250216/vTkdSNun/index.m3u8
-https://s5.phim1280.tv/20250216/3EJ1y5FQ/index.m3u8
-https://s5.phim1280.tv/20250216/ZCeAP5Hc/index.m3u8
-https://s5.phim1280.tv/20250216/bxx7HGM1/index.m3u8
-https://s5.phim1280.tv/20250216/vQkUgdGn/index.m3u8
-https://s5.phim1280.tv/20250216/e3xkAFyp/index.m3u8
-https://s4.phim1280.tv/20250217/5bOvZJAN/index.m3u8
-https://s4.phim1280.tv/20250217/HPiANeXd/index.m3u8
-https://s4.phim1280.tv/20250218/5D7l8V92/index.m3u8
-https://s4.phim1280.tv/20250218/MY2ijAIC/index.m3u8
-https://s4.phim1280.tv/20250220/zxupvZGi/index.m3u8
-https://s4.phim1280.tv/20250220/5NAfkp5I/index.m3u8
-https://s4.phim1280.tv/20250220/89QiOlZo/index.m3u8
-https://s4.phim1280.tv/20250221/CFFPO6Ek/index.m3u8
+# movie 
+https://vip.opstream15.com/20250216/49374_1a54ed0d/index.m3u8
+https://vip.opstream15.com/20250216/49375_c8dcf5fe/index.m3u8
+https://vip.opstream15.com/20250216/49376_94ab15a9/index.m3u8
+https://vip.opstream15.com/20250216/49378_f2f3317a/index.m3u8
+https://vip.opstream15.com/20250217/49400_7d362ec0/index.m3u8
+https://vip.opstream15.com/20250217/49401_e176a36d/index.m3u8
+https://vip.opstream15.com/20250217/49424_4087e9b8/index.m3u8
+https://vip.opstream15.com/20250217/49425_d78e4f87/index.m3u8
+https://vip.opstream15.com/20250218/49455_8488edf1/index.m3u8
+https://vip.opstream15.com/20250219/49456_e4731d83/index.m3u8
+https://vip.opstream15.com/20250220/49496_506bcafd/index.m3u8
+https://vip.opstream15.com/20250220/49499_2685e061/index.m3u8
+https://vip.opstream15.com/20250220/49503_c1859757/index.m3u8
+https://vip.opstream15.com/20250221/49570_ff2b066f/index.m3u8
+https://vip.opstream15.com/20250221/49571_0c6ce35a/index.m3u8
+https://vip.opstream15.com/20250223/49655_ef8ff3bb/index.m3u8
+https://vip.opstream15.com/20250223/49656_e4e13c3f/index.m3u8
 # movie15kr 
 https://s4.phim1280.tv/20250218/YNeTRyTt/index.m3u8
 https://s4.phim1280.tv/20250218/EUUhfElH/index.m3u8
@@ -362,46 +366,46 @@ https://s4.phim1280.tv/20250124/RmcQKkh6/index.m3u8
 https://s4.phim1280.tv/20250124/7gIainQR/index.m3u8
 
 # movie03
-https://s4.phim1280.tv/20250220/sMsWy83Y/index.m3u8
-https://s4.phim1280.tv/20250220/kUBzWb9c/index.m3u8
-https://s4.phim1280.tv/20250220/uGiHuJ8s/index.m3u8
-https://s4.phim1280.tv/20250220/qfxsk6Rr/index.m3u8
-https://s4.phim1280.tv/20250220/LXbSgAzN/index.m3u8
-https://s4.phim1280.tv/20250220/nl5yD76n/index.m3u8
-https://s4.phim1280.tv/20250220/Vtu2E2sg/index.m3u8
-https://s4.phim1280.tv/20250220/GQcBhRok/index.m3u8
-https://s4.phim1280.tv/20250220/4phYXAWs/index.m3u8
-https://s4.phim1280.tv/20250220/kEwjHppf/index.m3u8
-https://s4.phim1280.tv/20250220/WwvBJmUl/index.m3u8
-https://s4.phim1280.tv/20250220/yLWsdE4W/index.m3u8
-https://s4.phim1280.tv/20250220/X3Gzp0a8/index.m3u8
-https://s4.phim1280.tv/20250220/i0sI5pDM/index.m3u8
-https://s4.phim1280.tv/20250220/InwsgXMj/index.m3u8
-https://s4.phim1280.tv/20250220/zAq6xbSY/index.m3u8
-https://s4.phim1280.tv/20250220/0TYPTHnS/index.m3u8
-https://s4.phim1280.tv/20250220/BcXtyc8f/index.m3u8
-https://s4.phim1280.tv/20250220/fu1gS3WH/index.m3u8
-https://s4.phim1280.tv/20250220/I2VM9ARD/index.m3u8
-https://s4.phim1280.tv/20250220/sqgePZrE/index.m3u8
-https://s4.phim1280.tv/20250220/s07Z5XOK/index.m3u8
-https://s4.phim1280.tv/20250220/DaYSAEI8/index.m3u8
-https://s4.phim1280.tv/20250220/EV5fWDHF/index.m3u8
-https://s4.phim1280.tv/20250220/1acS1INe/index.m3u8
-https://s4.phim1280.tv/20250220/5jpSrPvW/index.m3u8
-https://s4.phim1280.tv/20250220/kbeh5l7F/index.m3u8
-https://s4.phim1280.tv/20250220/e2KK9BkM/index.m3u8
-https://s4.phim1280.tv/20250220/SxlLBMoe/index.m3u8
-https://s4.phim1280.tv/20250220/AHM5q4Qr/index.m3u8
-https://s4.phim1280.tv/20250220/sXnmhtvF/index.m3u8
-https://s4.phim1280.tv/20250220/jwVcHsJN/index.m3u8
-https://s4.phim1280.tv/20250221/Vrm628E0/index.m3u8
-https://s4.phim1280.tv/20250221/9CSnpqlS/index.m3u8
-https://sundaythekingplays.site/hls/6t1vBdL-YQr3fQrKIE5TM2qLcmCKl6RY1K9bvAGRwmgbfa2rO2nM9Ee+hSqSXA3uwSOXk73zp-eH6mPYVtPaTg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.site/hls/JbmFs58uWtKWkXdl9bc+xoeTl7aLt4XWp+-7M8vRnspTMdkXtcLWJVhyvfikMtrpytNjV0fXLlolilM9y3uPWg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/GqfdYknPil-R9-P8dfQ5XCkGCYQJp9-Kljdn3Sw1td5eBu07VA2CDtGdQL98APcoHXyLNNKbHfPh4uGhbGAN6A==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.xyz/hls/6iTlgRbFZq0+qk1zjXfz5YdUM+Pp4yUiObJ6IE38jJF+2zrqdpQgq0QPWDQxeu60DO-DqsA8D5sTjDuE7ov0Qg==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.site/hls/J58Awtvd7BjQ9fk9H75DDEWGFD-iZA6vCcJbZ1c9CGilUkEMYXxdMpfO1fXrW6Bz9g0dgwBDUJA2pBn7P6+C2A==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-https://sundaythekingplays.site/hls/xmWJV-jan+6NSRtuAbGaImwAeDKULxavNLC1s3hZMytDLu0n7UqfrEX66+6ycA1y2p44ptS-LxR43DPYH1B5fQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+https://s5.phim1280.tv/20250207/Jk2ybLdC/index.m3u8
+https://s5.phim1280.tv/20250207/0T0lmULy/index.m3u8
+https://s5.phim1280.tv/20250207/CCSQAS3v/index.m3u8
+https://s5.phim1280.tv/20250207/ZwgKyENI/index.m3u8
+https://s5.phim1280.tv/20250207/mQ8WSgWX/index.m3u8
+https://s5.phim1280.tv/20250207/rwKyn32v/index.m3u8
+https://s5.phim1280.tv/20250208/z8B9MkJB/index.m3u8
+https://s5.phim1280.tv/20250208/bCCzgiSP/index.m3u8
+https://s5.phim1280.tv/20250209/5CemNOPh/index.m3u8
+https://s5.phim1280.tv/20250209/FZcQiaTc/index.m3u8
+https://s4.phim1280.tv/20250210/GZdRYu5z/index.m3u8
+https://s4.phim1280.tv/20250210/yYmkaKdO/index.m3u8
+https://s5.phim1280.tv/20250211/Afb11r4a/index.m3u8
+https://s5.phim1280.tv/20250211/IuIjRU1P/index.m3u8
+https://s4.phim1280.tv/20250212/tNDLIra6/index.m3u8
+https://s4.phim1280.tv/20250212/G5ZrPVQ4/index.m3u8
+https://s5.phim1280.tv/20250213/Ym4oL70T/index.m3u8
+https://s5.phim1280.tv/20250213/8Atynyr9/index.m3u8
+https://s5.phim1280.tv/20250214/IXSS0RQx/index.m3u8
+https://s5.phim1280.tv/20250214/swiSeRS6/index.m3u8
+https://s4.phim1280.tv/20250215/PG8AwyoK/index.m3u8
+https://s4.phim1280.tv/20250215/cGju8DyB/index.m3u8
+https://s5.phim1280.tv/20250216/XSZ48G9E/index.m3u8
+https://s5.phim1280.tv/20250216/b3E54N9f/index.m3u8
+https://s4.phim1280.tv/20250217/hZHRedVg/index.m3u8
+https://s4.phim1280.tv/20250217/u7EKDC2o/index.m3u8
+https://s4.phim1280.tv/20250218/0i8wHXpB/index.m3u8
+https://s4.phim1280.tv/20250218/BjFSGEn6/index.m3u8
+https://s4.phim1280.tv/20250220/4txaYqNq/index.m3u8
+https://s4.phim1280.tv/20250220/f36AWwn7/index.m3u8
+https://s4.phim1280.tv/20250220/Ht14ck4l/index.m3u8
+https://s4.phim1280.tv/20250220/9ljO8i8a/index.m3u8
+https://s4.phim1280.tv/20250221/DjDmDJ5C/index.m3u8
+https://s4.phim1280.tv/20250221/AXSzX00K/index.m3u8
+https://s4.phim1280.tv/20250222/W6WCxrWl/index.m3u8
+https://s4.phim1280.tv/20250222/2KW51DKx/index.m3u8
+https://s4.phim1280.tv/20250222/VmdHSoEA/index.m3u8
+https://s4.phim1280.tv/20250222/A3OgjHVB/index.m3u8
+https://s4.phim1280.tv/20250222/y4xApqo8/index.m3u8
+https://s4.phim1280.tv/20250222/AU9i8Gj4/index.m3u8
 
 
 
@@ -856,7 +860,9 @@ https://s4.phim1280.tv/20250220/0S05kiFh/index.m3u8
 https://s4.phim1280.tv/20250220/gZJlpbo8/index.m3u8
 https://s4.phim1280.tv/20250221/phd30jcp/index.m3u8
 https://s4.phim1280.tv/20250221/mQEZTaur/index.m3u8
-https://s5.phim1280.tv/20250222/lJVwE8My/index.m3u8
+https://s4.phim1280.tv/20250222/exUIIOZ9/index.m3u8
+https://s4.phim1280.tv/20250223/teLfxl2A/index.m3u8
+
 # movie18 
 https://s5.phim1280.tv/20250217/8W6mUExY/index.m3u8
 https://s5.phim1280.tv/20250217/f5IGwTpN/index.m3u8
@@ -916,16 +922,43 @@ https://s5.phim1280.tv/20250217/mjWsruiN/index.m3u8
 https://s5.phim1280.tv/20250217/UNxh9txU/index.m3u8
 https://s5.phim1280.tv/20250217/0QJG23OQ/index.m3u8
 
+# movie19 
+https://s4.phim1280.tv/20250223/pb4DdEpB/index.m3u8
+# movie20 
+https://vip.opstream15.com/20250216/49374_1a54ed0d/index.m3u8
+https://vip.opstream15.com/20250216/49375_c8dcf5fe/index.m3u8
+https://vip.opstream15.com/20250216/49376_94ab15a9/index.m3u8
+https://vip.opstream15.com/20250216/49378_f2f3317a/index.m3u8
+https://vip.opstream15.com/20250217/49400_7d362ec0/index.m3u8
+https://vip.opstream15.com/20250217/49401_e176a36d/index.m3u8
+https://vip.opstream15.com/20250217/49424_4087e9b8/index.m3u8
+https://vip.opstream15.com/20250217/49425_d78e4f87/index.m3u8
+https://vip.opstream15.com/20250218/49455_8488edf1/index.m3u8
+https://vip.opstream15.com/20250219/49456_e4731d83/index.m3u8
+https://vip.opstream15.com/20250220/49496_506bcafd/index.m3u8
+https://vip.opstream15.com/20250220/49499_2685e061/index.m3u8
+https://vip.opstream15.com/20250220/49503_c1859757/index.m3u8
+https://vip.opstream15.com/20250221/49570_ff2b066f/index.m3u8
+https://vip.opstream15.com/20250221/49571_0c6ce35a/index.m3u8
+https://vip.opstream15.com/20250223/49655_ef8ff3bb/index.m3u8
+https://vip.opstream15.com/20250223/49656_e4e13c3f/index.m3u8
+
+
 # anime02
 https://s4.phim1280.tv/20240831/APPLTn13/index.m3u8
 # anime03
-https://s5.phim1280.tv/20250112/WbEgQpct/index.m3u8
-https://s5.phim1280.tv/20250119/lv9kwXfR/index.m3u8
-https://s4.phim1280.tv/20250126/UKYMxisA/index.m3u8
-https://s5.phim1280.tv/20250202/3B61F3lh/index.m3u8
-https://s5.phim1280.tv/20250209/PtdO0wzR/index.m3u8
-https://s5.phim1280.tv/20250216/IgyG8eIU/index.m3u8
-
+https://s4.phim1280.tv/20250106/Ncg883Jm/index.m3u8
+https://s4.phim1280.tv/20250106/yZOSrB3e/index.m3u8
+https://s4.phim1280.tv/20250106/YdhAcBfY/index.m3u8
+https://s4.phim1280.tv/20250106/QrGoctcf/index.m3u8
+https://s4.phim1280.tv/20250106/M1faZCIf/index.m3u8
+https://s4.phim1280.tv/20250106/lIejMNkF/index.m3u8
+https://s4.phim1280.tv/20250106/OHsnrCi3/index.m3u8
+https://s4.phim1280.tv/20250106/hy0axI6d/index.m3u8
+https://s4.phim1280.tv/20250106/4JYp1bRn/index.m3u8
+https://s4.phim1280.tv/20250106/e7Fko8zG/index.m3u8
+https://s4.phim1280.tv/20250106/5Tp4Bc2K/index.m3u8
+https://s4.phim1280.tv/20250106/z27H1mJV/index.m3u8
 # anime04
 https://s5.phim1280.tv/20240919/BQzsFrpw/index.m3u8
 # anime05 
@@ -1065,6 +1098,15 @@ https://s4.phim1280.tv/20250126/AvF41BqZ/index.m3u8
 https://s5.phim1280.tv/20250209/fg3sRrFq/index.m3u8
 https://s5.phim1280.tv/20250209/ZPD6fPKl/index.m3u8
 https://s5.phim1280.tv/20250216/XWcq53YR/index.m3u8
+*# p2 
+https://vip.opstream15.com/20250105/47025_c334d1fb/index.m3u8
+https://vip.opstream15.com/20250112/47519_af52734b/index.m3u8
+https://vip.opstream15.com/20250119/48008_43034f3b/index.m3u8
+https://vip.opstream15.com/20250126/48451_c30a870d/index.m3u8
+https://vip.opstream15.com/20250202/48582_49bed02a/index.m3u8
+https://vip.opstream15.com/20250209/49052_f4435c4b/index.m3u8
+https://vip.opstream15.com/20250216/49393_942b6d88/index.m3u8
+https://vip.opstream15.com/20250223/49667_06c9a09e/index.m3u8
 # anime18 
 https://s4.phim1280.tv/20250125/jI8qZLuH/index.m3u8
 
@@ -4349,3 +4391,25 @@ https://s3.phim1280.tv/20240417/o1rayzwy/index.m3u8
 https://s3.phim1280.tv/20240417/Wz2UDKTE/index.m3u8
 https://s3.phim1280.tv/20240417/1wFBoY8M/index.m3u8
 https://s3.phim1280.tv/20240417/eJ3OO23p/index.m3u8
+# tl16 
+https://s5.phim1280.tv/20250211/cIaLiJiG/index.m3u8
+https://s5.phim1280.tv/20250212/EbzLGHRn/index.m3u8
+https://s4.phim1280.tv/20250213/KZCX547e/index.m3u8
+https://s5.phim1280.tv/20250214/vE8mb313/index.m3u8
+https://s4.phim1280.tv/20250215/vjwe1Kbg/index.m3u8
+https://s4.phim1280.tv/20250218/o7XfcvVm/index.m3u8
+https://s4.phim1280.tv/20250220/Gp9e6q0x/index.m3u8
+https://s4.phim1280.tv/20250220/7QM6IeJM/index.m3u8
+https://s4.phim1280.tv/20250221/pwzkU4t5/index.m3u8
+https://s4.phim1280.tv/20250222/x3qsxrFr/index.m3u8
+# tl17 
+https://s4.phim1280.tv/20250125/1HhD9QqG/index.m3u8
+https://s5.phim1280.tv/20250126/BAi7ogUv/index.m3u8
+https://s4.phim1280.tv/20250201/Hb0eNYhR/index.m3u8
+https://s4.phim1280.tv/20250202/FYfqLU6n/index.m3u8
+https://s5.phim1280.tv/20250208/j53oVr7v/index.m3u8
+https://s5.phim1280.tv/20250209/ydyhpMp1/index.m3u8
+https://s5.phim1280.tv/20250216/Z34I2drg/index.m3u8
+https://s5.phim1280.tv/20250216/l4mIGd3E/index.m3u8
+https://s4.phim1280.tv/20250222/A9rFrtEy/index.m3u8
+https://s4.phim1280.tv/20250223/JFhwm1RO/index.m3u8
