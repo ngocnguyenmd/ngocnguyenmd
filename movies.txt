@@ -51,14 +51,12 @@ Dòng chảy|https://phimimg.com/upload/vod/20250126-1/efb0f32a6a783e996829ddab2
 
 
 
-
-
-
 Thế Giới Mới 4/?|https://static.nutscdn.com/vimg/300-0/384e8bb5c571fab82e0a37158052b526.jpg|movie01kr|korea
 Chăm Sóc Chấn...8/8|https://static.nutscdn.com/vimg/300-0/5fa633f209a19efdb88687a05a69d8e4.jpg|movie02kr|korea
 Người thầy y đức 3|https://phimimg.com/upload/vod/20231004-1/de53ea7bc80015760ddeef97150cd8b1.jpg|movie17kr|korea
 Chàng Thư Ký Hoàn Hảo full|https://static.nutscdn.com/vimg/300-0/fdba883b80fc1ec899d304eab86f786f.jpg|movie03kr|korea
 Đầu Gấu Học Nhóm 10/?|https://static.nutscdn.com/vimg/300-0/955bb963617ffe081ecc2853f3df0f62.jpg|movie04kr|korea
+Chút Nắng Ấm Mỗi Ngày|https://image.tmdb.org/t/p/original/qeWsnJAnzM5HT7RDO2MU9Spa8Jt.jpg|movie18kr|korea
 Khi điện thoại đổ chuông 12/12|https://ophim17.cc/_next/image?url=https%3A%2F%2Fimg.ophim.live%2Fuploads%2Fmovies%2Fkhi-dien-thoai-do-chuong-thumb.jpg&w=192&q=75|movie05kr|korea
 Nốt Trầm Đời Bác Sĩ full|https://static.nutscdn.com/vimg/300-0/d83c23ba982e11716e8c59910acf8d7f.jpg|movie06kr|korea
 Tình Yêu Của Eva 117/?|https://s12919.cdn.mytvnet.vn/vimages/242x364/ba/a6/65/5d/d0/06/ba65d-ltinhyeucuaevad4009jpg-content-mytv.jpg|movie07kr|korea
@@ -70,7 +68,6 @@ Bất động sản trừ tà|https://phimimg.com/upload/vod/20241013-1/18770261
 Bạn bạn bè bè 8/16|https://phimimg.com/upload/vod/20250209-1/5e8b177251de0d57dc271e8b533f341c.jpg|movie13kr|korea 
 Kẻ thù yêu dấu 2/12|https://phimimg.com/upload/vod/20250217-1/3102759f9632289009b73ad5158a51fc.jpg|movie15kr|korea 
 Phải lòng nàng phù thủy 4/10|https://phimimg.com/upload/vod/20250217-1/c0d38d5e0677e75b8508ba6ba929f8c4.jpg|movie16kr|korea 
-
 
 
 
@@ -90,7 +87,6 @@ Cuộc Đào Tẩu Trên Không|https://phimimg.com/upload/vod/20250219-1/5ff601
 
 
 
-
 Ngôi sao 5 cánh triệu đô|https://phimimg.com/upload/vod/20241229-1/01a129f40195c588ebc3d00c225fa33c.jpg|any01|any 
 Khuyển dạ xoa 1,2|https://phimimg.com/upload/vod/20250126-1/8b8574b7e0155142ce19bb4b428c0158.jpg|any02|any 
 Conan thám tử|https://phimimg.com/upload/vod/20240310-1/025424cf62248b9a7b54279ef5416e26.jpg|any03|any 
@@ -100,9 +96,7 @@ Doreamon đôi bạn thân 1|https://phimimg.com/upload/vod/20231019-1/ac8da63b1
 Cuộc sống nông dân|https://phimimg.com/upload/vod/20250106-1/10b5710bb1e5a1a62b65d6dc61384b57.jpg|
 
 
-
 Truyền Hình|https://i.giphy.com/muL2iYJR1MNPCdXxHv.webp|tv00|tv01
-
 
 Hai muối|https://phimimg.com/upload/vod/20250128-1/ede258f75b02c54deeb80dd9f8d43565.jpg|vn0|vietnam
 Mai|https://phimimg.com/upload/vod/20240423-1/7b281d88350fd638d84dc9abb5b6b0a6.jpg|vn1|vietnam
@@ -111,8 +105,6 @@ Người vợ cuối cùng|https://phimimg.com/upload/vod/20240205-1/67945e7f327
 Nhà bà nữ|https://phimimg.com/upload/vod/20230922-1/8e7ee122a3ca993f858a005ab9b8211d.jpg|vn4|vietnam
 Cây táo nở hoa 80/80|https://phimimg.com/upload/vod/20241010-1/9050391ad6922527d8120bb13e93dcce.jpg|vn5|vietnam
 Nhà gia tiên coming soon|https://image.tmdb.org/t/p/original/yHdDgzEnFslwfwz2Hzc498lIhFx.jpg|vn7|vietnam
-
-
 
 
 Yêu vượt thời không 8/10|https://phimimg.com/upload/vod/20250106-1/6638d6c5fda6a7b93128eb55b9020bef.jpg|tl18|thailand
@@ -124,8 +116,6 @@ Ngược dòng thời..yêu anh 3/?|https://phimimg.com/upload/vod/20240207-1/7b
 Thầy thuốc hoàng gia 44/44|https://phimimg.com/upload/vod/20241007-1/2fb472077f93f9bf6eea493bba1c0666.jpg|tl3|thailand   
 Làm dâu nhà giàu full |https://phimimg.com/upload/vod/20231219-1/bbfb270b4bf7162e575251368f35a374.jpg|tl4|thailand
 Nàng vệ sĩ của tôi full|https://phimimg.com/upload/vod/20240409-1/645d42e4e0056586679f43031da43468.jpg|tl5|thailand  
-
-
 
 
 Radio music|https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmFpNHo5bXdxNTBmd2J0NzVyNTM0dWR3NDBlMHNoZnlyMTZhMGk2NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jxdP4SNnmYiOrQxc99/giphy.gif|radio1|tv01 
