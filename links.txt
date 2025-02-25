@@ -1110,7 +1110,11 @@ https://s4.phim1280.tv/20250221/Pq8Sn8eX/index.m3u8
 https://s4.phim1280.tv/20250222/FdPnvfqM/index.m3u8
 https://s4.phim1280.tv/20250224/PEoFklTI/index.m3u8
 https://s5.phim1280.tv/20250224/JwCSUfFf/index.m3u8
-
+# movie26 
+https://s5.phim1280.tv/20250225/oJokdhTB/index.m3u8
+https://s5.phim1280.tv/20250225/kdbhtAc1/index.m3u8
+https://s5.phim1280.tv/20250225/96iedZ8Q/index.m3u8
+https://s5.phim1280.tv/20250225/V7fszjh3/index.m3u8 
 
 
 # anime02
