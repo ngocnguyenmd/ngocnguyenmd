@@ -56,8 +56,8 @@
         }
 
         button {
-            background-color: #f44336;
-            color: white;
+            background-color: black;
+            color: rgb(221, 221, 189);
             padding: 8px 12px;
             border: none;
             border-radius: 5px;
@@ -68,7 +68,12 @@
         }
 
         button:hover {
-            background-color: #ff5722;
+            background-color: #000000;
+        }
+
+        button.selected {
+            background-color: #6974b3; /* Hồng khi được chọn */
+            color: rgb(255, 255, 255);
         }
 
         input[type="file"] {
@@ -176,7 +181,7 @@
                             movieData[movie][season].forEach((link, index) => {
                                 const button = document.createElement("button");
                                 button.innerText = `Tập ${index + 1}`;
-                                button.onclick = () => loadM3U8Player(link);
+                                button.onclick = () => loadM3U8Player(link, button); // Truyền button vào hàm
                                 episodeList.appendChild(button);
                             });
 
@@ -189,7 +194,7 @@
                 .catch(error => console.error("Lỗi tải links.txt:", error));
         }
 
-        function loadM3U8Player(link) {
+        function loadM3U8Player(link, buttonElement) {
             const videoPlayer = document.getElementById('videoPlayer');
 
             if (hlsInstance) {
@@ -205,6 +210,14 @@
                 videoPlayer.src = link;
                 videoPlayer.play();
             }
+
+            // Xóa lớp 'selected' khỏi tất cả các nút tập phim
+            document.querySelectorAll(".episode-container button").forEach(btn => {
+                btn.classList.remove("selected");
+            });
+
+            // Thêm lớp 'selected' vào nút được chọn
+            buttonElement.classList.add("selected");
         }
 
         function uploadSubtitles() {
@@ -238,15 +251,6 @@
                 statusText.innerText = "❌ Vui lòng chọn file SRT!";
                 statusText.style.color = "red";
             }
-        }
-
-        function convertSRTtoVTT(srtData) {
-            return "WEBVTT\n\n" + srtData.replace(/\r+/g, '').replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, '$1.$2').replace(/^\d+\s*\n/gm, '').trim();
-        }
-
-        function toggleSubtitles() {
-            const track = document.getElementById('subtitlesTrack').track;
-            track.mode = (track.mode === "showing") ? "hidden" : "showing";
         }
 
         function goBack() { window.location.href = 'index.html'; }

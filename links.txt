@@ -4247,13 +4247,6 @@ https://live.fptplay53.net/epzhd1/vtv8hd_vhls.smil/chunklist_b1800000.m3u8
 https://live.fptplay53.net/fnxhd1/vtv9_vhls.smil/chunklist_b5000000.m3u8
 
 *# HTV 
-https://1011337676.vnns.net/-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NDA1NDE3MzgsInVyaSI6IlwvaHR2Y1wvaHR2MS43MjBwLm5pbWJsZS5hZG0udG1zIiwiaXAiOiIifQ.BIp2bG4iCiLx3wRMOY3tiKb7hEee9anFHzzA3d5k89U-/htvc/htv1.720p.nimble.adm.tms/playlist.m3u8
-https://1011337676.vnns.net/-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NDA1NDE4NTAsInVyaSI6IlwvaHR2Y1wvaHR2Mi43MjBwLm5pbWJsZS5hZG0udG1zIiwiaXAiOiIifQ.ugIlaoehDOGUvNM2ZTSPQkSrkyrZ2Q7zcs0iKRILcMY-/htvc/htv2.720p.nimble.adm.tms/playlist.m3u8
-https://1011337676.vnns.net/-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NDA1NDE4NjUsInVyaSI6IlwvaHR2Y1wvaHR2My43MjBwLm5pbWJsZS5hZG0udG1zIiwiaXAiOiIifQ.9fEd9Idr8cRHPRLcjU3OA-ZNDoH3kT-H4FJ8eqjCicI-/htvc/htv3.720p.nimble.adm.tms/playlist.m3u8
-https://1011337676.vnns.net/-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NDA1NDE4ODEsInVyaSI6IlwvaHR2Y1wvaHR2NC43MjBwLm5pbWJsZS5hZG0udG1zIiwiaXAiOiIifQ.zPnuo1nXUeukMf56dZvSaIaloYh5S49X1YZLvRFgVSk-/htvc/htv4.720p.nimble.adm.tms/playlist.m3u8
-https://1011337676.vnns.net/-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NDA1NDE4ODksInVyaSI6IlwvaHR2Y1wvaHR2Ny4xMDgwcC5uaW1ibGUuYWRtLnRtcyIsImlwIjoiIn0.RDOjs5KEPX89Oc7bWl6Gk1DYST5-41u5Gkciqbdwd64-/htvc/htv7.1080p.nimble.adm.tms/playlist.m3u8
-https://1011337676.vnns.net/-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NDA1NDE4OTgsInVyaSI6IlwvaHR2Y1wvaHR2OS43MjBwLm5pbWJsZS5hZG0udG1zIiwiaXAiOiIifQ.dImlOo4XDPGAp_MOFEs42ybJQ6tIxCumoNvI-nAW24k-/htvc/htv9.720p.nimble.adm.tms/playlist.m3u8
-
 
 
 *# CARTOON
