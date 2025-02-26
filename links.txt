@@ -830,6 +830,7 @@ https://vip.opstream15.com/20250223/49653_ccacb872/index.m3u8
 https://vip.opstream15.com/20250223/49654_eaf72c29/index.m3u8
 https://vip.opstream15.com/20250224/49729_1cb5c375/index.m3u8
 https://vip.opstream15.com/20250224/49731_f2cf8a40/index.m3u8
+https://vip.opstream12.com/20250226/25416_383a2a1e/index.m3u8
 
 # movie15 
 https://vip.opstream16.com/20221106/25511_7f2114f5/index.m3u8
@@ -919,6 +920,7 @@ https://vip.opstream15.com/20250224/49733_b4bf04d0/index.m3u8
 https://vip.opstream15.com/20250224/49736_ed3b5b6f/index.m3u8
 https://vip.opstream15.com/20250224/49737_41bd5f38/index.m3u8
 https://vip.opstream15.com/20250225/49770_65c45582/index.m3u8
+https://vip.opstream12.com/20250226/25415_17c5dd53/index.m3u8
 
 # movie21 
 https://vip.opstream15.com/20250224/49695_4dc0e531/index.m3u8
@@ -955,6 +957,7 @@ https://vip.opstream15.com/20250222/49642_9012a1c7/index.m3u8
 https://vip.opstream15.com/20250223/49676_4763b9bf/index.m3u8
 https://vip.opstream15.com/20250224/49721_882ad87e/index.m3u8
 https://vip.opstream15.com/20250225/49755_f2137159/index.m3u8
+https://vip.opstream15.com/20250226/49800_7b5e5dd4/index.m3u8
 
 # movie23 
 https://vip.opstream15.com/20250204/48777_525f835e/index.m3u8
@@ -993,18 +996,22 @@ https://vip.opstream15.com/20250224/49739_8c277d51/index.m3u8
 
 
 # movie24 
-https://s4.phim1280.tv/20250224/pToMZr9i/index.m3u8
-https://s4.phim1280.tv/20250224/ptMjXKh9/index.m3u8
-https://s4.phim1280.tv/20250224/2unuKbKX/index.m3u8
-https://s4.phim1280.tv/20250224/2Nvl69ME/index.m3u8
-https://s5.phim1280.tv/20250225/0XFtTdMs/index.m3u8
-https://s5.phim1280.tv/20250225/AEajHWQK/index.m3u8
+https://vip.opstream12.com/20250226/25405_46c6a6c7/index.m3u8
+https://vip.opstream12.com/20250226/25398_31ea4d7f/index.m3u8
+https://vip.opstream12.com/20250226/25399_b2cea2ce/index.m3u8
+https://vip.opstream12.com/20250226/25400_c24c7713/index.m3u8
+https://vip.opstream12.com/20250226/25401_278308da/index.m3u8
+https://vip.opstream12.com/20250226/25402_8afb5804/index.m3u8
+https://vip.opstream12.com/20250226/25403_d268221f/index.m3u8
+https://vip.opstream12.com/20250226/25404_01b64625/index.m3u8
 # movie25 
 https://vip.opstream15.com/20250224/49724_56c39666/index.m3u8
 https://vip.opstream15.com/20250224/49725_0b46de31/index.m3u8
 https://vip.opstream15.com/20250224/49726_9910e0f9/index.m3u8
 https://vip.opstream15.com/20250225/49766_8d210ca2/index.m3u8
 https://vip.opstream15.com/20250225/49767_94342262/index.m3u8
+https://vip.opstream12.com/20250226/25413_53d49d48/index.m3u8
+https://vip.opstream12.com/20250226/25414_dedacf16/index.m3u8
  
 # movie26
 https://vip.opstream15.com/20250211/49099_32a53551/index.m3u8
@@ -1040,6 +1047,20 @@ https://vip.opstream15.com/20250225/49778_bcbcf8c3/index.m3u8
 https://vip.opstream15.com/20250225/49779_f5b7ddd5/index.m3u8
 https://vip.opstream12.com/20250226/25424_5534491f/index.m3u8
 https://vip.opstream12.com/20250226/25425_6f910b36/index.m3u8
+# movie28 
+https://vip.opstream15.com/20250221/49520_3cbb0709/index.m3u8
+https://vip.opstream15.com/20250221/49521_3cdd5d87/index.m3u8
+https://vip.opstream15.com/20250221/49522_e3154fc9/index.m3u8
+https://vip.opstream15.com/20250221/49523_116b8961/index.m3u8
+https://vip.opstream15.com/20250221/49524_32161d8c/index.m3u8
+https://vip.opstream15.com/20250221/49525_0527dc6a/index.m3u8
+https://vip.opstream15.com/20250223/49674_30380a80/index.m3u8
+https://vip.opstream15.com/20250223/49675_29ab8937/index.m3u8
+https://vip.opstream15.com/20250225/49751_86dbdd77/index.m3u8
+https://vip.opstream15.com/20250225/49752_6c8d4342/index.m3u8
+https://vip.opstream15.com/20250225/49753_f42b6fce/index.m3u8
+https://vip.opstream15.com/20250225/49754_f816fb5e/index.m3u8
+https://vip.opstream12.com/20250226/25422_976f3d77/index.m3u8
 
 # anime02
 https://s4.phim1280.tv/20240831/APPLTn13/index.m3u8
@@ -4229,7 +4250,15 @@ https://vip.opstream11.com/20240923/53395_98d10399/index.m3u8
 https://vip.opstream11.com/20241010/54533_27a9a0db/index.m3u8
 https://vip.opstream11.com/20241013/54778_ca443ef2/index.m3u8
 
-
+# any07 
+https://vip.opstream10.com/20250120/28731_45b36e5e/index.m3u8
+https://vip.opstream10.com/20250120/28732_4b84a4fb/index.m3u8
+https://vip.opstream10.com/20250120/28733_5d95e1b0/index.m3u8
+https://vip.opstream10.com/20250124/28754_fe53ff5f/index.m3u8
+https://vip.opstream10.com/20250203/28778_2c5f3e29/index.m3u8
+https://vip.opstream10.com/20250207/28796_e082709f/index.m3u8
+https://vip.opstream10.com/20250214/28836_fa5cca4a/index.m3u8
+https://vip.opstream10.com/20250221/28880_ae4dba17/index.m3u8
 
 # tv00 
 https://live.fptplay53.net/fnxhd1/vtv1hd_vhls.smil/chunklist_b5000000.m3u8
