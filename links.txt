@@ -1038,6 +1038,8 @@ https://vip.opstream15.com/20250225/49776_0eca5fa0/index.m3u8
 https://vip.opstream15.com/20250225/49777_85837c77/index.m3u8
 https://vip.opstream15.com/20250225/49778_bcbcf8c3/index.m3u8
 https://vip.opstream15.com/20250225/49779_f5b7ddd5/index.m3u8
+https://vip.opstream12.com/20250226/25424_5534491f/index.m3u8
+https://vip.opstream12.com/20250226/25425_6f910b36/index.m3u8
 
 # anime02
 https://s4.phim1280.tv/20240831/APPLTn13/index.m3u8
