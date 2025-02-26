@@ -6,19 +6,22 @@
     <title>Xem Phim</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: Arial, sans-serif;
             background-color: #121212;
             color: white;
             text-align: center;
+            transition: background-color 0.5s;
         }
-
+        body.dark-mode #toggleLightBtn {
+    background-color: rgb(0, 132, 255);   /* Màu nền sáng */
+    color: black;               /* Chữ đậm dễ nhìn */
+    font-weight: bold;
+    box-shadow: 0px 0px 10px 3px rgb(0, 132, 255); /* Hiệu ứng phát sáng */
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
         header {
             background-color: #222;
             color: #FFD700;
@@ -30,35 +33,40 @@
             width: 100%;
             z-index: 1000;
         }
-
-        main {
-            margin-top: 60px;
-            padding: 10px;
-        }
-
+        main { margin-top: 85px; padding: 30px; }
         #videoPlayerContainer {
             width: 90%;
             max-width: 600px;
             margin: auto;
-            background-color: black;
-            border: 3px solid #FFD700;
+            background-color: rgb(255, 255, 255);
+            border: 3px solid rgb(0, 132, 255);
             border-radius: 10px;
             overflow: hidden;
+            position: relative;
+            transition: box-shadow 0.5s;
         }
-
-        video {
-            width: 100%;
-            border-radius: 10px;
+        body.dark-mode #videoPlayerContainer {
+            box-shadow: 0px 0px 20px 5px #fdfdfd;
         }
+        video { width: 100%; border-radius: 10px; }
+        .controls-container {
+    margin-top: 20px; /* Dịch xuống */
+    display: flex;
+    justify-content: center;
+    gap: 40px; /* Khoảng cách giữa các nút */
+}
 
-        .upload-container, .controls-container, .episode-container {
-            margin-top: 15px;
-        }
 
+controls-container button {
+    /* padding: 10px 15px; */
+    /* font-size: 16px; */
+}
+
+        .hidden { opacity: 0.2; pointer-events: none; }
         button {
             background-color: black;
-            color: rgb(221, 221, 189);
-            padding: 8px 12px;
+            color: rgb(255, 255, 255);
+            padding: 5px 12px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -66,49 +74,29 @@
             margin: 5px;
             transition: 0.3s;
         }
-
-        button:hover {
-            background-color: #000000;
-        }
-
-        button.selected {
-            background-color: #6974b3; /* Hồng khi được chọn */
-            color: rgb(255, 255, 255);
-        }
-
-        input[type="file"] {
-            padding: 6px;
-            border-radius: 5px;
-            background-color: #444;
-            color: white;
-            border: none;
-        }
-
-        .season-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: yellow;
-            margin-top: 10px;
-        }
-
-        .episode-container {
+        button:hover { background-color: #333; }
+        .bottom-controls {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            gap: 5px;
+            gap: 40px;
         }
-
-        .status-text {
-            font-size: 14px;
-            margin-top: 5px;
-            color: #0f0;
+        .bottom-controls button {
+            padding: 5px 10px;
+            font-size: 12px;
         }
-
-        @media (max-width: 500px) {
-            button {
-                font-size: 12px;
-                padding: 6px 10px;
-            }
+        #toggleLightBtn {
+    background-color: rgb(0, 132, 255); /* Hoặc #ffeb3b để sáng hơn */
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    box-shadow: 0px 0px 0px 3px rgb(0, 132, 255); /* Tạo hiệu ứng sáng */
+}
+        .episode-button.active {
+            background-color:rgb(0, 132, 255);
+            color: black;
+            font-weight: bold;
+            margin-top: 30px;
         }
     </style>
 </head>
@@ -123,25 +111,47 @@
             </video>
         </div>
 
-        <div class="upload-container">
-            <input type="file" id="subtitlesFile" accept=".srt">
-            <button onclick="uploadSubtitles()">📜 Tải Phụ Đề</button>
-            <button onclick="toggleSubtitles()">🔄 Bật/Tắt Sub</button>
-            <p id="uploadStatus" class="status-text"></p>
+        <div class="bottom-controls">
+            <button id="prevEpisodeBtn">⏮︎ Tập Trước</button>
+            <button id="rewindBtn">⏪︎ Tua lui</button>
+            <button id="forwardBtn">⏩︎ Tua tới</button>
+            <button id="nextEpisodeBtn">⏭ Tập Sau</button>
+        </div>
+
+        <div class="controls-container">
+            <button id="toggleLightBtn">💡 Tắt Đèn</button>
+            <button onclick="goBack()">🕮 Chọn Phim</button>
+            <button onclick="goHome()">🚪 Trang Chủ</button>
         </div>
 
         <div id="episodeMenu"></div>
 
-        <div class="controls-container">
-            <button onclick="goBack()">🔙 Chọn Phim</button>
-            <button onclick="goHome()">🏠 Trang Chủ</button>
-        </div>
     </main>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const movie = urlParams.get('movie');
-        let hlsInstance = null; 
+        let hlsInstance = null;
+        let episodeList = [];
+        let currentEpisodeIndex = 0;
+        let isDarkMode = false;
+        let askedToSkip = false; // Đánh dấu chỉ hỏi 1 lần khi còn 30s
+
+        function toggleLights() {
+    isDarkMode = !isDarkMode;
+    document.body.classList.toggle("dark-mode");
+
+    const controls = document.querySelectorAll(".bottom-controls, .controls-container, #episodeMenu");
+    controls.forEach(el => {
+        if (el.id !== "toggleLightBtn") { 
+            el.classList.toggle("hidden", isDarkMode);
+        }
+    });
+
+    document.getElementById("toggleLightBtn").innerText = isDarkMode ? "💡 Bật Đèn" : "💡 Tắt Đèn";
+}
+
+        document.getElementById("toggleLightBtn").addEventListener("click", toggleLights);
 
         function loadEpisodes() {
             fetch('links.txt')
@@ -149,109 +159,81 @@
                 .then(data => {
                     const lines = data.trim().split("\n");
                     let currentMovie = null;
-                    let currentSeason = "Phần 1";
-                    const movieData = {};
+                    episodeList = [];
 
                     lines.forEach(line => {
                         line = line.trim();
                         if (line.startsWith("#")) {
                             currentMovie = line.substring(1).trim();
-                            movieData[currentMovie] = { "Phần 1": [] };
-                        } else if (currentMovie === movie && line.startsWith("*#")) {
-                            currentSeason = line.substring(2).trim();
-                            movieData[currentMovie][currentSeason] = [];
                         } else if (currentMovie === movie && line !== "") {
-                            movieData[currentMovie][currentSeason].push(line);
+                            episodeList.push(line);
                         }
                     });
 
                     const episodeMenu = document.getElementById('episodeMenu');
                     episodeMenu.innerHTML = "";
 
-                    if (movieData[movie]) {
-                        Object.keys(movieData[movie]).forEach(season => {
-                            const seasonTitle = document.createElement("div");
-                            seasonTitle.innerText = season;
-                            seasonTitle.classList.add("season-title");
-                            episodeMenu.appendChild(seasonTitle);
+                    episodeList.forEach((link, index) => {
+                        const button = document.createElement("button");
+                        button.innerText = `Tập ${index + 1}`;
+                        button.classList.add("episode-button");
+                        button.onclick = () => loadM3U8Player(index);
+                        episodeMenu.appendChild(button);
+                    });
 
-                            const episodeList = document.createElement("div");
-                            episodeList.classList.add("episode-container");
-
-                            movieData[movie][season].forEach((link, index) => {
-                                const button = document.createElement("button");
-                                button.innerText = `Tập ${index + 1}`;
-                                button.onclick = () => loadM3U8Player(link, button); // Truyền button vào hàm
-                                episodeList.appendChild(button);
-                            });
-
-                            episodeMenu.appendChild(episodeList);
-                        });
-                    } else {
-                        episodeMenu.innerHTML = "<p>Không tìm thấy tập phim.</p>";
+                    if (episodeList.length > 0) {
+                        loadM3U8Player(0);
                     }
                 })
                 .catch(error => console.error("Lỗi tải links.txt:", error));
         }
 
-        function loadM3U8Player(link, buttonElement) {
+        function loadM3U8Player(index) {
+            if (index < 0 || index >= episodeList.length) return;
+
             const videoPlayer = document.getElementById('videoPlayer');
+            currentEpisodeIndex = index;
+            askedToSkip = false;
 
             if (hlsInstance) {
-                hlsInstance.destroy(); 
+                hlsInstance.destroy();
             }
 
             if (Hls.isSupported()) {
                 hlsInstance = new Hls();
-                hlsInstance.loadSource(link);
+                hlsInstance.loadSource(episodeList[index]);
                 hlsInstance.attachMedia(videoPlayer);
                 hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => videoPlayer.play());
             } else {
-                videoPlayer.src = link;
+                videoPlayer.src = episodeList[index];
                 videoPlayer.play();
             }
 
-            // Xóa lớp 'selected' khỏi tất cả các nút tập phim
-            document.querySelectorAll(".episode-container button").forEach(btn => {
-                btn.classList.remove("selected");
-            });
+            videoPlayer.ontimeupdate = checkTimeRemaining;
 
-            // Thêm lớp 'selected' vào nút được chọn
-            buttonElement.classList.add("selected");
+            document.querySelectorAll(".episode-button").forEach((btn, i) => {
+                btn.classList.toggle("active", i === index);
+            });
         }
 
-        function uploadSubtitles() {
-            const fileInput = document.getElementById('subtitlesFile');
-            const track = document.getElementById('subtitlesTrack');
-            const statusText = document.getElementById('uploadStatus');
+        function checkTimeRemaining() {
+            const videoPlayer = document.getElementById('videoPlayer');
+            const remainingTime = videoPlayer.duration - videoPlayer.currentTime;
 
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-
-                if (!file.name.endsWith('.srt')) {
-                    statusText.innerText = "❌ Chỉ hỗ trợ file .srt!";
-                    statusText.style.color = "red";
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const vttData = convertSRTtoVTT(e.target.result);
-                    const blob = new Blob([vttData], { type: "text/vtt" });
-                    const vttURL = URL.createObjectURL(blob);
-
-                    track.src = vttURL;
-                    track.track.mode = "showing";
-
-                    statusText.innerText = "✅ Phụ đề đã tải lên!";
-                    statusText.style.color = "#0f0";
-                };
-                reader.readAsText(file);
-            } else {
-                statusText.innerText = "❌ Vui lòng chọn file SRT!";
-                statusText.style.color = "red";
+            if (remainingTime <= 80 && episodeList[currentEpisodeIndex + 1] && !askedToSkip) {
+                askedToSkip = true;
+                setTimeout(() => {
+                    if (confirm("Bạn có muốn chuyển sang tập tiếp theo không?")) {
+                        loadM3U8Player(currentEpisodeIndex + 1);
+                    }
+                }, 500);
             }
         }
+
+        document.getElementById("prevEpisodeBtn").addEventListener("click", () => loadM3U8Player(currentEpisodeIndex - 1));
+        document.getElementById("nextEpisodeBtn").addEventListener("click", () => loadM3U8Player(currentEpisodeIndex + 1));
+        document.getElementById("rewindBtn").addEventListener("click", () => videoPlayer.currentTime -= 10);
+        document.getElementById("forwardBtn").addEventListener("click", () => videoPlayer.currentTime += 10);
 
         function goBack() { window.location.href = 'index.html'; }
         function goHome() { window.location.href = 'index.html'; }
