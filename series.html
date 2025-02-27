@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xem Phim - Series</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #050403;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #af762f;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .source-label {
+            font-size: 0.8em;
+            padding: 2px 5px;
+            color: #fff;
+            border-radius: 3px;
+            margin-left: 10px;
+        }
+
+        .source-api {
+            background: #af762f;
+        }
+
+        .source-creator {
+            background: green;
+        }
+
+        .video-container {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .plyr {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .control-btn {
+            background: #af762f;
+            color: black;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: #af762f;
+            color: #ffffff;
+        }
+
+        .episode-list {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .episode-btn {
+            background: #af762f;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .episode-btn:hover,
+        .episode-btn.active {
+            background: #af762f;
+            color: black;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #af762f;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .next-prompt {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2b2727;
+            padding: 15px 25px;
+            border-radius: 5px;
+            display: none;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .next-prompt button {
+            background: #af762f;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .next-prompt button:hover {
+            background: #000000;
+            color: yellow;
+        }
+
+        @media (max-width: 600px) {
+            .video-container {
+                padding: 10px;
+            }
+            .control-btn, .episode-btn {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+            .next-prompt {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="seriesTitle">Loading...</h1>
+        <div class="video-container">
+            <video id="player" playsinline controls>
+                <source src="" type="application/x-mpegURL">
+            </video>
+            <div class="control-buttons">
+                <button class="control-btn" onclick="rewind()">⏪︎</button>
+                <button class="control-btn" onclick="playNextEpisode(false)">⏮︎</button>
+                <button class="control-btn" onclick="playNextEpisode(true)">⏭</button>
+                <button class="control-btn" onclick="fastForward()">⏩︎</button>
+            </div>
+            <div id="episodeList" class="episode-list"></div>
+            <div id="nextPrompt" class="next-prompt">
+                <span>Chuyển sang tập tiếp theo?</span><br>
+                <button onclick="playNextEpisode(true)">Có</button>
+                <button onclick="hidePrompt()">Không</button>
+            </div>
+        </div>
+        <a href="index.html" class="back-link">Ra xưởng bánh mì</a>
+    </div>
+
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        const video = document.getElementById('player');
+        let hls;
+        let currentEpisodeIndex = 0;
+        let episodes = [];
+        let promptShown = false;
+
+        function initializePlayer(source) {
+            if (Hls.isSupported()) {
+                if (hls) hls.destroy();
+                hls = new Hls({
+                    autoStartLoad: true,
+                    maxBufferLength: 30,
+                    maxMaxBufferLength: 60
+                });
+                hls.loadSource(source);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    video.play().catch(err => console.log('Lỗi phát video:', err));
+                    promptShown = false;
+                });
+                hls.on(Hls.Events.ERROR, (event, data) => console.log('Lỗi HLS:', data));
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = source;
+                video.play().catch(err => console.log('Lỗi phát video:', err));
+            }
+        }
+
+        const player = new Plyr(video, {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'fullscreen'],
+            speed: { selected: 1, options: [0.5, 1, 1.5, 2] }
+        });
+
+        function rewind() {
+            video.currentTime = Math.max(0, video.currentTime - 10);
+        }
+
+        function fastForward() {
+            video.currentTime = Math.min(video.duration, video.currentTime + 10);
+        }
+
+        video.addEventListener('loadedmetadata', () => {
+            console.log('Video duration:', video.duration);
+        });
+
+        video.addEventListener('timeupdate', () => {
+            if (!video.duration || isNaN(video.duration)) return;
+            const remaining = video.duration - video.currentTime;
+            const prompt = document.getElementById('nextPrompt');
+            if (remaining <= 30 && remaining > 0 && episodes.length > currentEpisodeIndex + 1 && !promptShown) {
+                video.pause();
+                prompt.style.display = 'block';
+                promptShown = true;
+                console.log('Video tạm dừng, hiển thị thông báo');
+            }
+        });
+
+        function playNextEpisode(isNext) {
+            const newIndex = isNext ? currentEpisodeIndex + 1 : currentEpisodeIndex - 1;
+            if (newIndex >= 0 && newIndex < episodes.length) {
+                currentEpisodeIndex = newIndex;
+                initializePlayer(episodes[currentEpisodeIndex].url);
+                updateActiveButton();
+                hidePrompt();
+            }
+        }
+
+        function updateActiveButton() {
+            document.querySelectorAll('.episode-btn').forEach((btn, idx) => {
+                btn.classList.toggle('active', idx === currentEpisodeIndex);
+            });
+        }
+
+        function hidePrompt() {
+            document.getElementById('nextPrompt').style.display = 'none';
+            promptShown = false;
+            video.play();
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const seriesId = urlParams.get('id');
+        const seriesData = JSON.parse(localStorage.getItem(seriesId)) || { title: 'Không tìm thấy', episodes: [], source: '' };
+
+        document.getElementById('seriesTitle').innerHTML = `${seriesData.title} <span class="source-label source-${seriesData.source}">${seriesData.source === '🎧' ? '🎧' : '🎧'}</span>`;
+        episodes = seriesData.episodes;
+
+        const episodeList = document.getElementById('episodeList');
+        episodes.forEach((episode, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'episode-btn';
+            btn.textContent = episode.title;
+            btn.onclick = () => {
+                currentEpisodeIndex = index;
+                initializePlayer(episode.url);
+                updateActiveButton();
+            };
+            episodeList.appendChild(btn);
+        });
+
+        if (episodes.length > 0) {
+            initializePlayer(episodes[0].url);
+            episodeList.children[0].classList.add('active');
+        }
+    </script>
+</body>
+</html>
