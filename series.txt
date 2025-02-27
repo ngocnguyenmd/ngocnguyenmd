@@ -18,7 +18,7 @@ Trăm sóc chấn thương|6|https://sundaythekingplays.xyz/hls/6VGrlVX8VwzE+mHF
 Trăm sóc chấn thương|7|https://sundaythekingplays.xyz/hls/6VGrlVX8VwzE+mHF3Xj90H047-QQH8yuTES++wu1idtlxv82hwhkao0VLUXTMkBNMA8t12T7AA2QiHhuFibifw==/bWFzdGVyLm0zdTg=.m3u8
 Trăm sóc chấn thương|8|https://sundaythekingplays.xyz/hls/6VGrlVX8VwzE+mHF3Xj90H047-QQH8yuTES++wu1idtlxv82hwhkao0VLUXTMkBNMA8t12T7AA2QiHhuFibifw==/bWFzdGVyLm0zdTg=.m3u8
 
-# TV 1 (tv.html, banh-mi)
+# TV 1 (TV.html, banhmi)
 TV 1||https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnhwYm5yejZvY2xkemtldDVoYzcwbHoybmV4ODFjaWF3a3ZhMXhldiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/qC5abwZ54KV6U/giphy.gif
 TV 1|1|https://live.fptplay53.net/fnxhd1/vtv1hd_vhls.smil/chunklist_b5000000.m3u8
 TV 1|2|https://live.fptplay53.net/fnxhd1/vtv2_vhls.smil/chunklist_b5000000.m3u8
@@ -29,7 +29,7 @@ TV 1|7|https://live.fptplay53.net/fnxhd1/vtv7hd_vhls.smil/chunklist_b5000000.m3u
 TV 1|8|https://live.fptplay53.net/epzhd1/vtv8hd_vhls.smil/chunklist.m3u8
 TV 1|9|https://live.fptplay53.net/fnxhd1/vtv9_vhls.smil/chunklist_b5000000.m3u8
 TV 1|a|https://cdn4.skygo.mn/live/disk1/Cartoon_Network/HLS-FTA/Cartoon_Network.m3u8
-TV 1|b|https://live.fptplay53.net/fnxhd2/davincihd_vhls.smil/chunklist_b5000000.m3u8
+TV 1|b|https://live.fptplay53.net/fnxhd2/davincihd_vhls.smil/chunklist.m3u8
 TV 1|c|https://newidco-rakutenviki-2-eu.rakuten.wurl.tv/playlist.m3u8
 TV 1|d|https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=14
 TV 1|e|https://stream.ads.ottera.tv/playlist.m3u8?network_id=425
