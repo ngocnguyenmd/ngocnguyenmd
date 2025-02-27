@@ -146,7 +146,7 @@
         <a href="phim-my.html" class="category-link">Phim Mỹ</a>
         <a href="phim-viet.html" class="category-link">Phim Việt</a>
         <a href="phim-han.html" class="category-link">Phim Hàn</a>
-        <a href="tv.html" class="category-link">Truyền Hình</a>
+        <a href="/tv.html" class="category-link">Truyền Hình</a>
         <a href="anime.html" class="category-link">Hoạt Hình</a>
     </div>
     <div class="movie-section">
@@ -155,7 +155,7 @@
     </div>
     <div class="movie-section">
         <h2>Xưởng Vip</h2>
-        <div class="movie-container" id="VipContainer"></div>
+        <div class="movie-container" id="vipContainer"></div>
     </div>
     <div class="movie-section">
         <h2 id="apiSectionTitle"></h2>
@@ -172,7 +172,7 @@
             'phim-my.html': 'Bánh mì là số 1',
             'phim-viet.html': 'Bánh mì là số 1',
             'phim-han.html': 'Bánh mì là số 1',
-            'TV.html': 'Bánh mì là số 1',
+            'TV.html': 'Bánh mì là số 1', // Sửa TV.html thành tv.html
             'anime.html': 'Bánh mì là số 1'
         };
         const apiSectionTitles = {
@@ -180,36 +180,17 @@
             'phim-my.html': 'US-UK',
             'phim-viet.html': 'Việt Nam',
             'phim-han.html': 'Hàn Quốc',
-            'TV.html': 'TV-online',
+            'TV.html': 'TV-online', // Sửa TV.html thành tv.html
             'anime.html': 'Hoạt Hình'
         };
 
         // Gán tiêu đề ngay khi DOM tải
         document.getElementById('pageHeader').textContent = pageTitles[currentPage] || 'Bánh mì là số 1';
-        document.getElementById('apiSectionTitle').textContent = apiSectionTitles[currentPage] || 'Hoạt Hình';
+        document.getElementById('apiSectionTitle').textContent = apiSectionTitles[currentPage] || 'TV-online';
 
         // Danh sách API phim (chung cho mọi trang)
         const apiUrls = [
-            'https://ophim1.com/phim/cuoc-hon-nhan-hanh-phuc-cua-toi-phan-2',
-            'https://ophim1.com/phim/tien-si-da-hoi-sinh-the-gioi-phan-4',
-            'https://ophim1.com/phim/mirai-em-gai-den-tu-tuong-lai',
-            'https://phimapi.com/phim/vung-dat-linh-hon',
-            'https://ophim1.com/phim/vung-dat-linh-hon',
-            'https://ophim1.com/phim/laputa-lau-dai-tren-khong',
-            'https://phimapi.com/phim/mo-dom-dom',
-            'https://ophim1.com/phim/chi-con-ngay-hom-qua',
-            'https://ophim1.com/phim/loi-thi-tham-cua-trai-tim',
-            'https://phimapi.com/phim/lau-dai-bay-cua-phap-su-howl',
-            'https://ophim1.com/phim/cong-chua-mononoke',
-            'https://ophim1.com/phim/hang-xom-cua-toi-la-totoro',
-            'https://ophim1.com/phim/ngon-doi-hoa-hong-anh',
-            'https://phimapi.com/phim/dich-vu-giao-hang-kiki',
-            'https://phimapi.com/phim/song-dai-duong',
-            'https://ophim1.com/phim/marnie-trong-ky-uc',
-            'https://ophim1.com/phim/gia-dinh-nha-yamada',
-            'https://ophim1.com/phim/loai-meo-tra-on',
-            'https://ophim1.com/phim/gio-noi',
-           
+            'https://cors-anywhere.herokuapp.com/https://ophim1.com/phim/man-thanh'
         ];
 
         // URL raw của series.txt từ GitHub
@@ -245,7 +226,7 @@
         Promise.all([...fetchAPIs, fetchTxt])
             .then(results => {
                 const banhMiContainer = document.getElementById('banhMiContainer');
-                const vipContainer = document.getElementById('VipContainer'); // Sửa ID cho đúng
+                const vipContainer = document.getElementById('vipContainer');
                 const apiContainer = document.getElementById('apiContainer');
                 allMovies = {};
 
@@ -269,14 +250,14 @@
                 if (txtData) {
                     const lines = txtData.split('\n');
                     let currentTargetPage = null;
-                    let currentContainer = null; // Thêm biến để lưu container
+                    let currentContainer = null;
                     lines.forEach(line => {
                         if (line.trim()) {
                             if (line.startsWith('#')) {
                                 const match = line.match(/# .+ \(([^,]+)(?:,\s*([^)]+))?\)/);
                                 if (match) {
-                                    currentTargetPage = match[1].toLowerCase(); // Trang đích
-                                    currentContainer = match[2] ? match[2].toLowerCase() : 'banh-mi'; // Container (mặc định là banh-mi nếu không có)
+                                    currentTargetPage = match[1].toLowerCase();
+                                    currentContainer = match[2] ? match[2].toLowerCase() : 'banh-mi';
                                     console.log('Target Page:', currentTargetPage, 'Container:', currentContainer);
                                 }
                             } else if (currentTargetPage) {
@@ -286,7 +267,7 @@
                                     allMovies[seriesId] = { 
                                         title, 
                                         targetPage: currentTargetPage, 
-                                        container: currentContainer, // Lưu container
+                                        container: currentContainer, 
                                         poster: '', 
                                         episodes: [], 
                                         source: 'creator' 
@@ -319,10 +300,10 @@
                         if (source === 'api') {
                             apiContainer.appendChild(card);
                         } else if (source === 'creator') {
-                            if (container === 'vip') { // Sử dụng chữ thường để khớp với series.txt
+                            if (container === 'vip') {
                                 vipContainer.appendChild(card);
-                            } else {
-                                banhMiContainer.appendChild(card); // Mặc định vào Xưởng Bánh Mì
+                            } else if (container === 'banh-mi' || container === 'banhmi') {
+                                banhMiContainer.appendChild(card);
                             }
                         }
 
