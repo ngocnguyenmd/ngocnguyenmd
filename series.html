@@ -177,7 +177,7 @@
     <div class="container">
         <h1 id="seriesTitle">Loading...</h1>
         <div class="video-container">
-            <video id="player" playsinline controls muted autoplay>
+            <video id="player" playsinline controls>
                 <source src="" type="application/x-mpegURL">
             </video>
             <div class="control-buttons">
@@ -255,18 +255,14 @@
                     abrEwmaSlowVoD: 6.0,
                     abrBandWidthFactor: 0.9,
                     abrBandWidthUpFactor: 0.6,
-                    startLevel: 0,         // Tự động chọn chất lượng tốt nhất
+                    startLevel: -1,         // Tự động chọn chất lượng tốt nhất
                     debug: false            // Tắt debug để tăng hiệu suất
                 });
 
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    // Không cần loadedmetadata, phát ngay khi manifest sẵn sàng
-                    video.play().catch(err => {
-                        console.log('Lỗi phát video:', err);
-                        setTimeout(() => video.play(), 800000); // Retry sau 1 giây
-                    });
+                    // Không tự động phát, chờ người dùng nhấn nút Play trên Plyr
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
                     console.log('Lỗi HLS:', data);
@@ -277,10 +273,7 @@
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = source;
-                video.play().catch(err => {
-                    console.log('Lỗi phát video:', err);
-                    setTimeout(() => video.play(), 1000); // Retry sau 1 giây
-                });
+                // Không tự động phát
             }
         }
 
@@ -361,7 +354,7 @@
         }
 
         // Bắt đầu đo tốc độ mạng với link .ts cụ thể
-        const tsUrl = 'https://cors-anywhere.herokuapp.com/https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
+        const tsUrl = 'https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
         measureNetworkSpeed(tsUrl);
     </script>
 </body>
