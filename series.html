@@ -142,6 +142,18 @@
             color: yellow;
         }
 
+        .speed-display {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            color: #f5cf8e;
+            z-index: 1000;
+        }
+
         @media (max-width: 600px) {
             .video-container {
                 padding: 10px;
@@ -153,6 +165,10 @@
             .next-prompt {
                 padding: 10px 15px;
                 font-size: 0.9em;
+            }
+            .speed-display {
+                font-size: 0.8em;
+                padding: 3px 8px;
             }
         }
     </style>
@@ -177,6 +193,7 @@
                 <button onclick="hidePrompt()">Không</button>
             </div>
         </div>
+        <div class="speed-display" id="speedDisplay">Tốc độ: 0 KB/s</div>
         <a href="index.html" class="back-link">Ra xưởng bánh mì</a>
     </div>
 
@@ -188,6 +205,38 @@
         let currentEpisodeIndex = 0;
         let episodes = [];
         let promptShown = false;
+        const speedDisplay = document.getElementById('speedDisplay');
+
+        // Đo tốc độ mạng với link .ts cụ thể
+        function measureNetworkSpeed(tsUrl) {
+            const xhr = new XMLHttpRequest();
+            const startTime = performance.now();
+
+            xhr.open('GET', tsUrl, true);
+            xhr.responseType = 'blob';
+
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    const endTime = performance.now();
+                    const duration = (endTime - startTime) / 1000; // Giây
+                    const bytesLoaded = xhr.response.size; // Byte
+                    const speedBytesPerSecond = bytesLoaded / duration; // Byte/giây
+                    const speedKBps = (speedBytesPerSecond / 204800).toFixed(2); // KB/s
+                    speedDisplay.textContent = `Tốc độ: ${speedKBps} KB/s`;
+                } else {
+                    speedDisplay.textContent = "Lỗi tải file .ts";
+                }
+            };
+
+            xhr.onerror = () => {
+                speedDisplay.textContent = "Lỗi mạng hoặc CORS";
+            };
+
+            xhr.send();
+
+            // Đo liên tục mỗi 2 giây
+            setTimeout(() => measureNetworkSpeed(tsUrl), 2000);
+        }
 
         function initializePlayer(source) {
             if (Hls.isSupported()) {
@@ -285,6 +334,10 @@
             initializePlayer(episodes[0].url);
             episodeList.children[0].classList.add('active');
         }
+
+        // Bắt đầu đo tốc độ mạng với link .ts cụ thể
+        const tsUrl = 'https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
+        measureNetworkSpeed(tsUrl);
     </script>
 </body>
 </html>
