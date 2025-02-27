@@ -49,7 +49,7 @@
         }
 
         .search-input::placeholder {
-            color:black;
+            color: black;
         }
 
         .category-menu {
@@ -82,9 +82,9 @@
             display: flex;
             flex-wrap: wrap;
             gap: 25px;
-            max-width: 1600px; /* 7 phim trên desktop */
+            max-width: 1600px;
             margin: 0 auto;
-            justify-content: flex-start; /* Trải đều nếu ít phim */
+            justify-content: space-between;
         }
 
         .movie-card {
@@ -137,8 +137,8 @@
 
         @media (max-width: 600px) {
             .movie-container {
-                max-width: 340px; /* 2 phim (150px) + gap (20px) = 320px + margin */
-                justify-content: space-between; /* Trải đều đẹp hơn trên mobile */
+                max-width: 340px;
+                justify-content: space-between;
             }
 
             .movie-card {
@@ -181,7 +181,7 @@
     </div>
 
     <script>
-        // Danh sách API phim
+        // Danh sách API phim với proxy CORS
         const apiUrls = [
             'https://ophim1.com/phim/yeu-em',
             'https://ophim1.com/phim/vu-ai-thien-kim',
@@ -197,11 +197,10 @@
             'https://ophim1.com/phim/tien-dai-co-cay',
             'https://ophim1.com/phim/quoc-sac-phuong-hoa',
             'https://ophim1.com/phim/kho-do-danh',
-
         ];
 
         // URL raw của series.txt từ GitHub
-        const seriesTxtUrl = 'https://raw.githubusercontent.com/ngocnguyenmd/ngocnguyenmd/refs/heads/main/series.txt'; // Thay bằng URL thật
+        const seriesTxtUrl = 'https://raw.githubusercontent.com/ngocnguyenmd/ngocnguyenmd/refs/heads/main/series.txt';
 
         // Tùy chỉnh tên nhãn nguồn
         const sourceLabels = {
@@ -248,30 +247,24 @@
                         url: ep.link_m3u8
                     }));
 
-                    allMovies[seriesId] = { title, poster, episodes, targetPage: 'index.html', source: 'api' };
+                    allMovies[seriesId] = { title, poster, episodes, source: 'api' };
                 });
 
                 // Xử lý dữ liệu từ series.txt
                 const txtData = results[results.length - 1];
                 if (txtData) {
                     const lines = txtData.split('\n');
-                    let currentTargetPage = '';
                     lines.forEach(line => {
-                        if (line.trim()) {
-                            if (line.startsWith('#')) {
-                                const match = line.match(/# .+ \((.+)\)/);
-                                if (match) currentTargetPage = match[1];
-                            } else {
-                                const [title, episodeTitle, url] = line.split('|');
-                                const seriesId = title.toLowerCase().replace(/\s+/g, '-');
-                                if (!allMovies[seriesId]) {
-                                    allMovies[seriesId] = { title, targetPage: currentTargetPage, poster: '', episodes: [], source: 'creator' };
-                                }
-                                if (!episodeTitle && url) {
-                                    allMovies[seriesId].poster = url;
-                                } else if (url) {
-                                    allMovies[seriesId].episodes.push({ title: episodeTitle, url });
-                                }
+                        if (line.trim() && !line.startsWith('#')) {
+                            const [title, episodeTitle, url] = line.split('|');
+                            const seriesId = title.toLowerCase().replace(/\s+/g, '-');
+                            if (!allMovies[seriesId]) {
+                                allMovies[seriesId] = { title, poster: '', episodes: [], source: 'creator' };
+                            }
+                            if (!episodeTitle && url) {
+                                allMovies[seriesId].poster = url;
+                            } else if (url) {
+                                allMovies[seriesId].episodes.push({ title: episodeTitle, url });
                             }
                         }
                     });
@@ -282,8 +275,9 @@
                     creatorContainer.innerHTML = '';
                     apiContainer.innerHTML = '';
                     Object.keys(allMovies).forEach(seriesId => {
-                        const { title, poster, targetPage, episodes, source } = allMovies[seriesId];
-                        if (targetPage === 'index.html' && title.toLowerCase().includes(filter.toLowerCase())) {
+                        const { title, poster, episodes, source } = allMovies[seriesId];
+                        // Chỉ hiển thị phim nếu có poster hợp lệ
+                        if (poster && title.toLowerCase().includes(filter.toLowerCase())) {
                             const card = document.createElement('a');
                             card.href = `series.html?id=${seriesId}`;
                             card.className = 'movie-card';
@@ -306,6 +300,14 @@
                             }));
                         }
                     });
+
+                    // Thông báo nếu không có phim
+                    if (creatorContainer.children.length === 0) {
+                        creatorContainer.innerHTML = '<p style="color: #af762f; text-align: center;">Chưa có phim từ Xưởng Bánh Mì</p>';
+                    }
+                    if (apiContainer.children.length === 0) {
+                        apiContainer.innerHTML = '<p style="color: #af762f; text-align: center;">Chưa có phim từ Trung Quốc</p>';
+                    }
                 }
 
                 // Hiển thị ban đầu

@@ -265,7 +265,7 @@
         const seriesId = urlParams.get('id');
         const seriesData = JSON.parse(localStorage.getItem(seriesId)) || { title: 'Không tìm thấy', episodes: [], source: '' };
 
-        document.getElementById('seriesTitle').innerHTML = `${seriesData.title} <span class="source-label source-${seriesData.source}">${seriesData.source === '🎧' ? '🎧' : '🎧'}</span>`;
+        document.getElementById('seriesTitle').innerHTML = `${seriesData.title} <span class="source-label source-${seriesData.source}">${seriesData.source === 'api' ? '🎧' : '🎧'}</span>`;
         episodes = seriesData.episodes;
 
         const episodeList = document.getElementById('episodeList');
