@@ -177,7 +177,7 @@
     <div class="container">
         <h1 id="seriesTitle">Loading...</h1>
         <div class="video-container">
-            <video id="player" playsinline controls muted preload="metadata">
+            <video id="player" playsinline controls muted autoplay>
                 <source src="" type="application/x-mpegURL">
             </video>
             <div class="control-buttons">
@@ -262,13 +262,11 @@
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    video.addEventListener('loadedmetadata', () => {
-                        video.play().catch(err => {
-                            console.log('Lỗi phát video:', err);
-                            // Retry phát tự động sau 1 giây nếu lỗi
-                            setTimeout(() => video.play(), 1000);
-                        });
-                    }, { once: true });
+                    // Không cần loadedmetadata, phát ngay khi manifest sẵn sàng
+                    video.play().catch(err => {
+                        console.log('Lỗi phát video:', err);
+                        setTimeout(() => video.play(), 1000); // Retry sau 1 giây
+                    });
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
                     console.log('Lỗi HLS:', data);
@@ -279,12 +277,10 @@
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = source;
-                video.addEventListener('loadedmetadata', () => {
-                    video.play().catch(err => {
-                        console.log('Lỗi phát video:', err);
-                        setTimeout(() => video.play(), 1000);
-                    });
-                }, { once: true });
+                video.play().catch(err => {
+                    console.log('Lỗi phát video:', err);
+                    setTimeout(() => video.play(), 1000); // Retry sau 1 giây
+                });
             }
         }
 
@@ -365,7 +361,7 @@
         }
 
         // Bắt đầu đo tốc độ mạng với link .ts cụ thể
-        const tsUrl = 'https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
+        const tsUrl = 'https://cors-anywhere.herokuapp.com/https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
         measureNetworkSpeed(tsUrl);
     </script>
 </body>
