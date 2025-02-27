@@ -255,7 +255,7 @@
                     abrEwmaSlowVoD: 6.0,
                     abrBandWidthFactor: 0.9,
                     abrBandWidthUpFactor: 0.6,
-                    startLevel: -1,         // Tự động chọn chất lượng tốt nhất
+                    startLevel: 0,         // Tự động chọn chất lượng tốt nhất
                     debug: false            // Tắt debug để tăng hiệu suất
                 });
 
@@ -265,7 +265,7 @@
                     // Không cần loadedmetadata, phát ngay khi manifest sẵn sàng
                     video.play().catch(err => {
                         console.log('Lỗi phát video:', err);
-                        setTimeout(() => video.play(), 1000); // Retry sau 1 giây
+                        setTimeout(() => video.play(), 800000); // Retry sau 1 giây
                     });
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
