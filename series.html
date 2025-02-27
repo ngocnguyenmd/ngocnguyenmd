@@ -78,22 +78,6 @@
             color: #ffffff;
         }
 
-        .play-btn {
-            background: #af762f;
-            color: black;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            margin: 10px auto;
-            display: block;
-        }
-
-        .play-btn:hover {
-            background: #f5cf8e;
-        }
-
         .episode-list {
             margin-top: 10px;
             display: flex;
@@ -178,10 +162,6 @@
                 padding: 8px 12px;
                 font-size: 0.9em;
             }
-            .play-btn {
-                padding: 8px 15px;
-                font-size: 0.9em;
-            }
             .next-prompt {
                 padding: 10px 15px;
                 font-size: 0.9em;
@@ -197,10 +177,9 @@
     <div class="container">
         <h1 id="seriesTitle">Loading...</h1>
         <div class="video-container">
-            <video id="player" playsinline controls preload="metadata">
+            <video id="player" playsinline controls>
                 <source src="" type="application/x-mpegURL">
             </video>
-            <button class="play-btn" id="playButton" onclick="startPlayback()">Phát</button>
             <div class="control-buttons">
                 <button class="control-btn" onclick="rewind()">⏪︎</button>
                 <button class="control-btn" onclick="playNextEpisode(false)">⏮︎</button>
@@ -222,7 +201,6 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         const video = document.getElementById('player');
-        const playButton = document.getElementById('playButton');
         let hls;
         let currentEpisodeIndex = 0;
         let episodes = [];
@@ -243,7 +221,7 @@
                     const duration = (endTime - startTime) / 1000; // Giây
                     const bytesLoaded = xhr.response.size; // Byte
                     const speedBytesPerSecond = bytesLoaded / duration; // Byte/giây
-                    const speedKBps = (speedBytesPerSecond / 1024).toFixed(2); // KB/s
+                    const speedKBps = (speedBytesPerSecond / 2048).toFixed(2); // KB/s
                     speedDisplay.textContent = `Tốc độ: ${speedKBps} KB/s`;
                 } else {
                     speedDisplay.textContent = "Lỗi tải file .ts";
@@ -256,51 +234,29 @@
 
             xhr.send();
 
-            // Đo liên tục mỗi 5 giây
-            setTimeout(() => measureNetworkSpeed(tsUrl), 5000);
+            // Đo liên tục mỗi 2 giây
+            setTimeout(() => measureNetworkSpeed(tsUrl), 2000);
         }
 
         function initializePlayer(source) {
             if (Hls.isSupported()) {
                 if (hls) hls.destroy();
                 hls = new Hls({
-                    autoStartLoad: false, // Tắt tự động tải
-                    maxBufferLength: 5,   // Buffer nhỏ hơn cho mobile
-                    maxMaxBufferLength: 10,
-                    liveSyncDuration: 3,  // Đồng bộ nhanh
-                    liveMaxLatencyDuration: 10,
-                    capLevelToPlayerSize: true,
-                    maxFragLookUpTolerance: 0.1,
-                    abrEwmaFastLive: 2.0,
-                    abrEwmaSlowLive: 6.0,
-                    abrEwmaFastVoD: 2.0,
-                    abrEwmaSlowVoD: 6.0,
-                    abrBandWidthFactor: 0.9,
-                    abrBandWidthUpFactor: 0.6
+                    autoStartLoad: true,
+                    maxBufferLength: 30,
+                    maxMaxBufferLength: 60
                 });
-
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    hls.startLoad(); // Bắt đầu tải sau khi manifest sẵn sàng
-                    playButton.style.display = 'block'; // Hiện nút Play
+                    video.play().catch(err => console.log('Lỗi phát video:', err));
+                    promptShown = false;
                 });
-                hls.on(Hls.Events.ERROR, (event, data) => {
-                    console.log('Lỗi HLS:', data);
-                    if (data.fatal) {
-                        hls.destroy();
-                        initializePlayer(source); // Retry khi lỗi
-                    }
-                });
+                hls.on(Hls.Events.ERROR, (event, data) => console.log('Lỗi HLS:', data));
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = source;
-                playButton.style.display = 'block';
+                video.play().catch(err => console.log('Lỗi phát video:', err));
             }
-        }
-
-        function startPlayback() {
-            video.play().catch(err => console.log('Lỗi phát video:', err));
-            playButton.style.display = 'none'; // Ẩn nút Play sau khi phát
         }
 
         const player = new Plyr(video, {
