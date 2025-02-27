@@ -1,5 +1,0 @@
-https://image.tmdb.org/t/p/original/sQNdXEM1uqwkxV0H3sdSTSDEFDM.jpg|vn09999|vietnam 
-https://image.tmdb.org/t/p/original/qTY8gpQGlvz5WeCNC4d8FxdhdGU.jpg|movie24|index 
-https://image.tmdb.org/t/p/original/AbFzxTJtMTQ2L8XdRJrSK73DDK9.jpg|movie17|index
-https://image.tmdb.org/t/p/original/ieA0fZIteWjXuUBXBYilabJAugq.jpg|movie13|index 
-https://pic8.iqiyipic.com/image/20250220/bc/87/v_179875637_m_601_vi_m1_1080_608.jpg|movie19|index
