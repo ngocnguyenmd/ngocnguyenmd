@@ -205,6 +205,7 @@
         let currentEpisodeIndex = 0;
         let episodes = [];
         let promptShown = false;
+        let hasPrompted = false; // Biến mới để chỉ hỏi 1 lần
         const speedDisplay = document.getElementById('speedDisplay');
 
         // Đo tốc độ mạng với link .ts cụ thể
@@ -234,7 +235,6 @@
 
             xhr.send();
 
-            // Đo liên tục mỗi 5 giây
             setTimeout(() => measureNetworkSpeed(tsUrl), 5000);
         }
 
@@ -262,12 +262,7 @@
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    video.addEventListener('loadedmetadata', () => {
-                        video.play().catch(err => {
-                            console.log('Lỗi phát video:', err);
-                            setTimeout(() => video.play(), 1000);
-                        });
-                    }, { once: true });
+                    // Không tự động phát
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
                     console.log('Lỗi HLS:', data);
@@ -278,12 +273,7 @@
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = source;
-                video.addEventListener('loadedmetadata', () => {
-                    video.play().catch(err => {
-                        console.log('Lỗi phát video:', err);
-                        setTimeout(() => video.play(), 1000);
-                    });
-                }, { once: true });
+                // Không tự động phát
             }
         }
 
@@ -308,11 +298,13 @@
             if (!video.duration || isNaN(video.duration)) return;
             const remaining = video.duration - video.currentTime;
             const prompt = document.getElementById('nextPrompt');
-            if (remaining <= 30 && remaining > 0 && episodes.length > currentEpisodeIndex + 1 && !promptShown) {
+            // Chỉ hiển thị thông báo 1 lần trong toàn bộ session
+            if (remaining <= 30 && remaining > 0 && episodes.length > currentEpisodeIndex + 1 && !promptShown && !hasPrompted) {
                 video.pause();
                 prompt.style.display = 'block';
                 promptShown = true;
-                console.log('Video tạm dừng, hiển thị thông báo');
+                hasPrompted = true; // Đánh dấu đã hỏi 1 lần
+                console.log('Video tạm dừng, hiển thị thông báo (lần đầu tiên)');
             }
         });
 
@@ -323,6 +315,7 @@
                 initializePlayer(episodes[currentEpisodeIndex].url);
                 updateActiveButton();
                 hidePrompt();
+                console.log('Chuyển sang tập tiếp theo:', currentEpisodeIndex);
             }
         }
 
@@ -336,8 +329,10 @@
             const prompt = document.getElementById('nextPrompt');
             prompt.style.display = 'none';
             promptShown = false;
-            video.play(); // Tiếp tục phát video hiện tại khi bấm "Không"
-            console.log('Tiếp tục phát video hiện tại');
+            video.play().catch(err => {
+                console.error('Lỗi khi tiếp tục phát video:', err);
+            });
+            console.log('Thông báo tắt, tiếp tục phát video hiện tại');
         }
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -366,7 +361,7 @@
         }
 
         // Bắt đầu đo tốc độ mạng với link .ts cụ thể
-        const tsUrl = 'https://cors-anywhere.herokuapp.com/https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
+        const tsUrl = 'https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
         measureNetworkSpeed(tsUrl);
     </script>
 </body>
