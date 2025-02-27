@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xem Phim - Trang Chủ</title>
+    <title>Xem Phim - Truyền Hình</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <style>
         body {
@@ -155,7 +155,7 @@
     </div>
     <div class="movie-section">
         <h2>Xưởng Vip</h2>
-        <div class="movie-container" id="VipContainer"></div>
+        <div class="movie-container" id="vipContainer"></div>
     </div>
     <div class="movie-section">
         <h2 id="apiSectionTitle"></h2>
@@ -190,30 +190,7 @@
 
         // Danh sách API phim (chung cho mọi trang)
         const apiUrls = [
-        'https://ophim1.com/phim/chang-quy-cua-toi',
-           'https://ophim1.com/phim/nghe-thuat-san-quy-va-nau-mi',
-           'https://ophim1.com/phim/nghe-thuat-san-quy-va-nau-mi-phan-2',
-           'https://ophim1.com/phim/cong-anh-ma-chay',
-           'https://ophim1.com/phim/alchemy-of-souls',
-           'https://ophim1.com/phim/hoan-hon-phan-2',
-           'https://ophim1.com/phim/bao-dong-khan-tinh-yeu-ha-canh',
-           'https://ophim1.com/phim/hen-ho-chon-cong-so',
-           'https://ophim1.com/phim/trung-tam-cham-soc-chan-thuong',
-           'https://ophim1.com/phim/nu-hoang-nuoc-mat',
-           'https://ophim1.com/phim/ban-trai-toi-la-ho-ly',
-           'https://ophim1.com/phim/tang-lop-itaewon',
-           'https://ophim1.com/phim/co-dau-thuy-than',
-           'https://ophim1.com/phim/mua-he-yeu-dau-cua-chung-ta',
-           'https://ophim1.com/phim/tan-the-gioi',
-           'https://ophim1.com/phim/quan-vuong-bat-diet',
-           'https://ophim1.com/phim/bac-si-ma',
-           'https://ophim1.com/phim/vien-da-bi-an',
-           'https://ophim1.com/phim/mot-ngay-no-ke-huy-diet-go-cua-nha-toi',
-           'https://ophim1.com/phim/tinh-ai-chunhwa',
-           '',
-           '',
-           '',
-           '',
+            'https://cors-anywhere.herokuapp.com/https://ophim1.com/phim/man-thanh'
         ];
 
         // URL raw của series.txt từ GitHub
@@ -249,7 +226,7 @@
         Promise.all([...fetchAPIs, fetchTxt])
             .then(results => {
                 const banhMiContainer = document.getElementById('banhMiContainer');
-                const vipContainer = document.getElementById('VipContainer'); // Sửa ID cho đúng
+                const vipContainer = document.getElementById('vipContainer');
                 const apiContainer = document.getElementById('apiContainer');
                 allMovies = {};
 
@@ -273,14 +250,14 @@
                 if (txtData) {
                     const lines = txtData.split('\n');
                     let currentTargetPage = null;
-                    let currentContainer = null; // Thêm biến để lưu container
+                    let currentContainer = null;
                     lines.forEach(line => {
                         if (line.trim()) {
                             if (line.startsWith('#')) {
                                 const match = line.match(/# .+ \(([^,]+)(?:,\s*([^)]+))?\)/);
                                 if (match) {
                                     currentTargetPage = match[1].toLowerCase(); // Trang đích
-                                    currentContainer = match[2] ? match[2].toLowerCase() : 'banh-mi'; // Container (mặc định là banh-mi nếu không có)
+                                    currentContainer = match[2] ? match[2].toLowerCase() : 'banh-mi'; // Container (mặc định là banh-mi)
                                     console.log('Target Page:', currentTargetPage, 'Container:', currentContainer);
                                 }
                             } else if (currentTargetPage) {
@@ -290,7 +267,7 @@
                                     allMovies[seriesId] = { 
                                         title, 
                                         targetPage: currentTargetPage, 
-                                        container: currentContainer, // Lưu container
+                                        container: currentContainer, 
                                         poster: '', 
                                         episodes: [], 
                                         source: 'creator' 
@@ -323,10 +300,10 @@
                         if (source === 'api') {
                             apiContainer.appendChild(card);
                         } else if (source === 'creator') {
-                            if (container === 'vip') { // Sử dụng chữ thường để khớp với series.txt
+                            if (container === 'vip') {
                                 vipContainer.appendChild(card);
-                            } else {
-                                banhMiContainer.appendChild(card); // Mặc định vào Xưởng Bánh Mì
+                            } else if (container === 'banh-mi' || container === 'banhmi') { // Hỗ trợ cả banhmi và banh-mi
+                                banhMiContainer.appendChild(card);
                             }
                         }
 
