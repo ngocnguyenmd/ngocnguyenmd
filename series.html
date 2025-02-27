@@ -205,7 +205,6 @@
         let currentEpisodeIndex = 0;
         let episodes = [];
         let promptShown = false;
-        let hasPrompted = false; // Biến mới để chỉ hỏi 1 lần
         const speedDisplay = document.getElementById('speedDisplay');
 
         // Đo tốc độ mạng với link .ts cụ thể
@@ -298,13 +297,12 @@
             if (!video.duration || isNaN(video.duration)) return;
             const remaining = video.duration - video.currentTime;
             const prompt = document.getElementById('nextPrompt');
-            // Chỉ hiển thị thông báo 1 lần trong toàn bộ session
-            if (remaining <= 30 && remaining > 0 && episodes.length > currentEpisodeIndex + 1 && !promptShown && !hasPrompted) {
+            // Hỏi ở mỗi tập khi còn 60 giây cuối
+            if (remaining <= 60 && remaining > 0 && episodes.length > currentEpisodeIndex + 1 && !promptShown) {
                 video.pause();
                 prompt.style.display = 'block';
                 promptShown = true;
-                hasPrompted = true; // Đánh dấu đã hỏi 1 lần
-                console.log('Video tạm dừng, hiển thị thông báo (lần đầu tiên)');
+                console.log('Video tạm dừng, hiển thị thông báo tại 60s cuối tập:', currentEpisodeIndex);
             }
         });
 
@@ -314,7 +312,9 @@
                 currentEpisodeIndex = newIndex;
                 initializePlayer(episodes[currentEpisodeIndex].url);
                 updateActiveButton();
-                hidePrompt();
+                promptShown = false; // Reset để hỏi lại ở tập mới
+                const prompt = document.getElementById('nextPrompt');
+                if (prompt) prompt.style.display = 'none'; // Đảm bảo tắt thông báo khi chuyển tập
                 console.log('Chuyển sang tập tiếp theo:', currentEpisodeIndex);
             }
         }
@@ -326,9 +326,14 @@
         }
 
         function hidePrompt() {
-            const prompt = document.getElementById('nextPrompt');
-            prompt.style.display = 'none';
-            promptShown = false;
+            const prompt = document.getElementById('nextPrompt'); // Lấy trực tiếp từ DOM
+            if (prompt) {
+                prompt.style.display = 'none'; // Ẩn thông báo
+                console.log('Thông báo đã được ẩn khi bấm Không');
+            } else {
+                console.error('Không tìm thấy phần tử nextPrompt');
+            }
+            promptShown = false; // Reset để hỏi lại ở tập sau
             video.play().catch(err => {
                 console.error('Lỗi khi tiếp tục phát video:', err);
             });
@@ -350,6 +355,9 @@
             btn.onclick = () => {
                 currentEpisodeIndex = index;
                 initializePlayer(episode.url);
+                promptShown = false; // Reset khi nhấp thủ công
+                const prompt = document.getElementById('nextPrompt');
+                if (prompt) prompt.style.display = 'none'; // Đảm bảo tắt thông báo
                 updateActiveButton();
             };
             episodeList.appendChild(btn);
@@ -361,7 +369,7 @@
         }
 
         // Bắt đầu đo tốc độ mạng với link .ts cụ thể
-        const tsUrl = 'https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
+        const tsUrl = 'https://cors-anywhere.herokuapp.com/https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
         measureNetworkSpeed(tsUrl);
     </script>
 </body>
