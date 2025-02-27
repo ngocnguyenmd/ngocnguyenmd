@@ -221,7 +221,7 @@
                     const duration = (endTime - startTime) / 1000; // Giây
                     const bytesLoaded = xhr.response.size; // Byte
                     const speedBytesPerSecond = bytesLoaded / duration; // Byte/giây
-                    const speedKBps = (speedBytesPerSecond / 204800).toFixed(2); // KB/s
+                    const speedKBps = (speedBytesPerSecond / 1024).toFixed(2); // KB/s
                     speedDisplay.textContent = `Tốc độ: ${speedKBps} KB/s`;
                 } else {
                     speedDisplay.textContent = "Lỗi tải file .ts";
@@ -234,28 +234,49 @@
 
             xhr.send();
 
-            // Đo liên tục mỗi 2 giây
-            setTimeout(() => measureNetworkSpeed(tsUrl), 2000);
+            // Đo liên tục mỗi 5 giây
+            setTimeout(() => measureNetworkSpeed(tsUrl), 5000);
         }
 
         function initializePlayer(source) {
             if (Hls.isSupported()) {
                 if (hls) hls.destroy();
                 hls = new Hls({
-                    autoStartLoad: true,
-                    maxBufferLength: 30,
-                    maxMaxBufferLength: 60
+                    autoStartLoad: false, // Tắt tự động tải
+                    maxBufferLength: 10, // Giảm buffer để mượt hơn
+                    maxMaxBufferLength: 20,
+                    liveSyncDuration: 5, // Đồng bộ nhanh hơn cho live stream
+                    maxFragLookUpTolerance: 0.2, // Tối ưu tìm kiếm đoạn
+                    capLevelToPlayerSize: true, // Tự chọn chất lượng dựa trên kích thước player
+                    abrEwmaFastLive: 3.0, // Điều chỉnh băng thông nhanh
+                    abrEwmaSlowLive: 9.0,
+                    abrEwmaFastVoD: 3.0,
+                    abrEwmaSlowVoD: 9.0,
+                    abrBandWidthFactor: 0.95, // Tối ưu chọn băng thông
+                    abrBandWidthUpFactor: 0.7
                 });
+
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    video.play().catch(err => console.log('Lỗi phát video:', err));
+                    hls.startLoad(); // Bắt đầu tải khi manifest sẵn sàng
+                    video.addEventListener('loadedmetadata', () => {
+                        video.play().catch(err => console.log('Lỗi phát video:', err));
+                    }, { once: true }); // Chỉ phát khi metadata tải xong
                     promptShown = false;
                 });
-                hls.on(Hls.Events.ERROR, (event, data) => console.log('Lỗi HLS:', data));
+                hls.on(Hls.Events.ERROR, (event, data) => {
+                    console.log('Lỗi HLS:', data);
+                    if (data.fatal) {
+                        hls.destroy();
+                        initializePlayer(source); // Thử lại khi lỗi nghiêm trọng
+                    }
+                });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = source;
-                video.play().catch(err => console.log('Lỗi phát video:', err));
+                video.addEventListener('loadedmetadata', () => {
+                    video.play().catch(err => console.log('Lỗi phát video:', err));
+                }, { once: true });
             }
         }
 
