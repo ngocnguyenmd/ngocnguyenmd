@@ -1,4 +1,4 @@
-# Yêu Em (index.html)
+# Yêu Em (index.html, banh-mi)
 Yêu em||https://phimimg.com/upload/vod/20250225-1/b99a2232b64a0692c456f2476c317f59.jpg
 Yêu em|1|https://sundaythekingplays.xyz/hls/Pnfev8IUZoRz9CRQhKo3RFjCe+zbGp71uyibiobrhmFfv4WQszV9tKPh-KKhJxmBhMSjvJQ8Zfqr-DOjXH4BWw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
 Yêu em|2|https://sundaythekingplays.xyz/hls/IhzciUJkhXmuBijVg1e36vttJmDPhaQ3Jb00UU1fK-CwCBSWdcjgJEmHahQQ8QOy7HsA1zYshtO9T7sJJboSeQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
@@ -6,7 +6,8 @@ Yêu em|3|https://sundaythekingplays.xyz/hls/hroFDxx0DfvzlEHpgQloIJ9GAiq9O0sOLe3
 Yêu em|4|https://sundaythekingplays.site/hls/BxuRFXwcYoAz1wscZvDYN2sQeOWgl+x6CmgRbH0jh+Zj-dcJYNRURU-BRTHmcmPMY7r0tbqUY+kVImfMVyk4Tw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
 Yêu em|5|https://sundaythekingplays.site/hls/njeXPOFBVQ4-JrKYn9XyP9v8HkpaFZM72WGPe+tWDC8SY-GqJzokiDp7KCTn5efWwU-HBPTYhwKUYBCYe4yGSQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
 Yêu em|6|https://sundaythekingplays.site/hls/hfF+-1r9EvtJ37PAQyQPglxjN3O9mRtlp2PSODWMxMvLbWs7OJU18hSzBnNoUIyida33sqPfbsNVeb5Rwq044Q==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
-# Trăm sóc chấn thương (phim-han.html)
+
+# Trăm sóc chấn thương (phim-han.html, Vip)
 Trăm sóc chấn thương||https://phimimg.com/upload/vod/20250125-1/3fb5a0e76bd15e648673727e110c7fc5.jpg
 Trăm sóc chấn thương|1|https://sundaythekingplays.xyz/hls/6VGrlVX8VwzE+mHF3Xj90H047-QQH8yuTES++wu1idtlxv82hwhkao0VLUXTMkBNMA8t12T7AA2QiHhuFibifw==/bWFzdGVyLm0zdTg=.m3u8
 Trăm sóc chấn thương|2|https://sundaythekingplays.xyz/hls/6VGrlVX8VwzE+mHF3Xj90H047-QQH8yuTES++wu1idtlxv82hwhkao0VLUXTMkBNMA8t12T7AA2QiHhuFibifw==/bWFzdGVyLm0zdTg=.m3u8
