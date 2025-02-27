@@ -242,38 +242,48 @@
             if (Hls.isSupported()) {
                 if (hls) hls.destroy();
                 hls = new Hls({
-                    startFragPrefetch: true, // Tải trước đoạn video
-                    maxBufferLength: 5,     // Buffer nhỏ để phản ứng nhanh
+                    startFragPrefetch: true,
+                    maxBufferLength: 5,
                     maxMaxBufferLength: 10,
-                    liveSyncDuration: 3,    // Đồng bộ nhanh
+                    liveSyncDuration: 3,
                     liveMaxLatencyDuration: 10,
-                    capLevelToPlayerSize: true, // Chọn chất lượng dựa trên kích thước
-                    maxFragLookUpTolerance: 0.1, // Tối ưu tìm kiếm đoạn
-                    abrEwmaFastLive: 2.0,   // Điều chỉnh băng thông nhanh
+                    capLevelToPlayerSize: true,
+                    maxFragLookUpTolerance: 0.1,
+                    abrEwmaFastLive: 2.0,
                     abrEwmaSlowLive: 6.0,
                     abrEwmaFastVoD: 2.0,
                     abrEwmaSlowVoD: 6.0,
                     abrBandWidthFactor: 0.9,
                     abrBandWidthUpFactor: 0.6,
-                    startLevel: -1,         // Tự động chọn chất lượng tốt nhất
-                    debug: false            // Tắt debug để tăng hiệu suất
+                    startLevel: -1,
+                    debug: false
                 });
 
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    // Không tự động phát, chờ người dùng nhấn nút Play trên Plyr
+                    video.addEventListener('loadedmetadata', () => {
+                        video.play().catch(err => {
+                            console.log('Lỗi phát video:', err);
+                            setTimeout(() => video.play(), 1000);
+                        });
+                    }, { once: true });
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
                     console.log('Lỗi HLS:', data);
                     if (data.fatal) {
                         hls.destroy();
-                        setTimeout(() => initializePlayer(source), 1000); // Retry sau 1 giây
+                        setTimeout(() => initializePlayer(source), 1000);
                     }
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = source;
-                // Không tự động phát
+                video.addEventListener('loadedmetadata', () => {
+                    video.play().catch(err => {
+                        console.log('Lỗi phát video:', err);
+                        setTimeout(() => video.play(), 1000);
+                    });
+                }, { once: true });
             }
         }
 
@@ -323,9 +333,11 @@
         }
 
         function hidePrompt() {
-            document.getElementById('nextPrompt').style.display = 'none';
+            const prompt = document.getElementById('nextPrompt');
+            prompt.style.display = 'none';
             promptShown = false;
-            video.play();
+            video.play(); // Tiếp tục phát video hiện tại khi bấm "Không"
+            console.log('Tiếp tục phát video hiện tại');
         }
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -354,7 +366,7 @@
         }
 
         // Bắt đầu đo tốc độ mạng với link .ts cụ thể
-        const tsUrl = 'https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
+        const tsUrl = 'https://cors-anywhere.herokuapp.com/https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
         measureNetworkSpeed(tsUrl);
     </script>
 </body>
