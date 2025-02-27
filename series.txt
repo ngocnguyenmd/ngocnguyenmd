@@ -1,8 +1,8 @@
 # Yêu Em (index.html)
 Yêu em||https://phimimg.com/upload/vod/20250225-1/b99a2232b64a0692c456f2476c317f59.jpg
-Yêu em|1|https://vip.opstream15.com/20250225/49776_0eca5fa0/index.m3u8
-Yêu em|2|https://vip.opstream15.com/20250225/49777_85837c77/index.m3u8
-Yêu em|3|https://vip.opstream15.com/20250225/49778_bcbcf8c3/index.m3u8
-Yêu em|4|https://vip.opstream15.com/20250225/49779_f5b7ddd5/index.m3u8
-Yêu em|5|https://vip.opstream12.com/20250226/25424_5534491f/index.m3u8
-Yêu em|6|https://vip.opstream12.com/20250226/25425_6f910b36/index.m3u8
+Yêu em|1|https://sundaythekingplays.xyz/hls/Pnfev8IUZoRz9CRQhKo3RFjCe+zbGp71uyibiobrhmFfv4WQszV9tKPh-KKhJxmBhMSjvJQ8Zfqr-DOjXH4BWw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+Yêu em|2|https://sundaythekingplays.xyz/hls/IhzciUJkhXmuBijVg1e36vttJmDPhaQ3Jb00UU1fK-CwCBSWdcjgJEmHahQQ8QOy7HsA1zYshtO9T7sJJboSeQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+Yêu em|3|https://sundaythekingplays.xyz/hls/hroFDxx0DfvzlEHpgQloIJ9GAiq9O0sOLe30KkDkSKZ9c6O4pnR3lcHVa9V1qL6WzfUGHXBHV41MAOEY6PyW5Q==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+Yêu em|4|https://sundaythekingplays.site/hls/BxuRFXwcYoAz1wscZvDYN2sQeOWgl+x6CmgRbH0jh+Zj-dcJYNRURU-BRTHmcmPMY7r0tbqUY+kVImfMVyk4Tw==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+Yêu em|5|https://sundaythekingplays.site/hls/njeXPOFBVQ4-JrKYn9XyP9v8HkpaFZM72WGPe+tWDC8SY-GqJzokiDp7KCTn5efWwU-HBPTYhwKUYBCYe4yGSQ==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
+Yêu em|6|https://sundaythekingplays.site/hls/hfF+-1r9EvtJ37PAQyQPglxjN3O9mRtlp2PSODWMxMvLbWs7OJU18hSzBnNoUIyida33sqPfbsNVeb5Rwq044Q==/aW5kZXgtZjEtdjEtYTEubTN1OA==.m3u8
