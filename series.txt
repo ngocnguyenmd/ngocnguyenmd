@@ -6,18 +6,3 @@ Yêu em|3|https://vip.opstream15.com/20250225/49778_bcbcf8c3/index.m3u8
 Yêu em|4|https://vip.opstream15.com/20250225/49779_f5b7ddd5/index.m3u8
 Yêu em|5|https://vip.opstream12.com/20250226/25424_5534491f/index.m3u8
 Yêu em|6|https://vip.opstream12.com/20250226/25425_6f910b36/index.m3u8
-
-
-
-
-
-'https://ophim1.com/phim/yeu-em',
-            'https://ophim1.com/phim/hoa-gian-nhat-khuynh-thanh',
-            'https://ophim1.com/phim/lu-kinh',
-            'https://ophim1.com/phim/rang-buoc-toi-loi',
-            'https://ophim1.com/phim/mot-ngay-trai-chu-mot-ngay-quan',
-            'https://ophim1.com/phim/chiem-huu-khuong-tay',
-            'https://ophim1.com/phim/my-nhan-tro-ve',
-            'https://ophim1.com/phim/duoi-tan-cay-co-ngoi-nha-mai-do',
-            'https://ophim1.com/phim/sao-dich-noi-sac-dep-tuyet-tran',
-            'https://ophim1.com/phim/tien-dai-co-cay',
