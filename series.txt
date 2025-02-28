@@ -40,3 +40,34 @@ TV 1|i|https://strm.voh.com.vn/radio/channel3/playlist.m3u8
 TV 1|j|https://strm.voh.com.vn/radio/channel1/playlist.m3u8
 TV 1|k|https://strm.voh.com.vn/radio/channel2/playlist.m3u8
 TV 1|l|https://nhkworld.webcdn.stream.ne.jp/www11/radiojapan/all/263949/live_s.m3u8
+
+
+# Ngược Dòng Thời Gian Để Yêu Anh (truyen-hinh, vip)
+Ngược Dòng Thời Gian Để Yêu Anh||https://phimimg.com/upload/vod/20240927-1/b3ad4656a3efecf7da4b5339672fc7a2.jpg
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 01|https://s5.phim1280.tv/20240927/XZwrCgby/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 02|https://s5.phim1280.tv/20240927/G7d6ZEfT/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 03|https://s5.phim1280.tv/20240927/lOmgzqQV/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 04|https://s5.phim1280.tv/20240927/oOIWfOdQ/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 05|https://s5.phim1280.tv/20240927/IrH5sGgd/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 06|https://s5.phim1280.tv/20240927/BMUOmAuu/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 07|https://s5.phim1280.tv/20240927/zVXx9Msg/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 08|https://s5.phim1280.tv/20240927/iHSFNEdF/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 09|https://s5.phim1280.tv/20240927/LSsATVVV/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 10|https://s5.phim1280.tv/20240927/wAUrArmL/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 11|https://s5.phim1280.tv/20240927/CYAiFLmV/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 12|https://s5.phim1280.tv/20240927/HKeqLYS4/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 13|https://s5.phim1280.tv/20240927/Nxqs8Rf9/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 14|https://s5.phim1280.tv/20240927/E6ex4w6f/index.m3u8
+Ngược Dòng Thời Gian Để Yêu Anh|Tập 15|https://s5.phim1280.tv/20240927/iMzYsesH/index.m3u8
+
+
+
+
+
+
+
+
+
+
+
+
