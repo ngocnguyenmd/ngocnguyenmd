@@ -187,7 +187,6 @@
             text-shadow: 1px 1px 2px black;
         }
 
-        /* Màu vàng cho Sub 1, xanh lá cho Sub 2 sẽ được áp dụng qua JS */
         @media (max-width: 600px) {
             .video-container {
                 padding: 10px;
@@ -249,7 +248,7 @@
         let hls;
         let currentEpisodeIndex = 0;
         let episodes = [];
-        let promptShown = false;
+        let promptShown = false; // Chỉ reset khi chuyển tập
         const speedDisplay = document.getElementById('speedDisplay');
         let subtitleURLs = { 1: null, 2: null }; // Lưu trữ URL phụ đề
 
@@ -288,6 +287,7 @@
             while (video.getElementsByTagName('track').length > 0) {
                 video.removeChild(video.getElementsByTagName('track')[0]);
             }
+            promptShown = false; // Reset khi khởi tạo video mới
 
             if (Hls.isSupported()) {
                 if (hls) hls.destroy();
@@ -366,7 +366,6 @@
                 currentEpisodeIndex = newIndex;
                 initializePlayer(episodes[currentEpisodeIndex].url);
                 updateActiveButton();
-                promptShown = false;
                 const prompt = document.getElementById('nextPrompt');
                 if (prompt) prompt.style.display = 'none';
                 console.log('Chuyển sang tập tiếp theo:', currentEpisodeIndex);
@@ -387,7 +386,7 @@
             } else {
                 console.error('Không tìm thấy phần tử nextPrompt');
             }
-            promptShown = false;
+            // Không reset promptShown ở đây để không hỏi lại trong cùng tập
             video.play().catch(err => {
                 console.error('Lỗi khi tiếp tục phát video:', err);
             });
@@ -418,20 +417,20 @@
                 track2.src = subtitleURLs[2];
                 video.appendChild(track2);
             }
-            // Áp dụng màu sắc trực tiếp qua JS
+            // Áp dụng màu sắc qua JS
             setTimeout(() => {
                 const captions = document.querySelectorAll('.plyr__captions span');
                 captions.forEach(span => {
-                    if (span.textContent === video.textTracks[0]?.activeCues?.[0]?.text) {
+                    if (video.textTracks[0] && span.textContent === video.textTracks[0].activeCues?.[0]?.text) {
                         span.style.color = 'yellow';
-                    } else if (span.textContent === video.textTracks[1]?.activeCues?.[0]?.text) {
+                    } else if (video.textTracks[1] && span.textContent === video.textTracks[1].activeCues?.[0]?.text) {
                         span.style.color = 'lime';
                     }
                 });
-            }, 100); // Delay nhỏ để đảm bảo phụ đề được render
+            }, 100); // Delay để đảm bảo phụ đề render
             console.log('Đã áp dụng phụ đề:', Array.from(video.textTracks));
             Array.from(video.textTracks).forEach(track => {
-                track.mode = 'showing'; // Đảm bảo cả hai sub đều hiển thị
+                track.mode = 'showing'; // Đảm bảo cả hai sub hiển thị
                 console.log(`Track ${track.label}: mode = ${track.mode}`);
             });
         }
@@ -484,7 +483,6 @@
             btn.onclick = () => {
                 currentEpisodeIndex = index;
                 initializePlayer(episode.url);
-                promptShown = false;
                 const prompt = document.getElementById('nextPrompt');
                 if (prompt) prompt.style.display = 'none';
                 updateActiveButton();
