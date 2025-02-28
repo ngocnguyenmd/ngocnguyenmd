@@ -223,10 +223,8 @@
                 <button class="control-btn" onclick="fastForward()">⏩︎</button>
             </div>
             <div class="subtitle-controls">
-                <label for="subtitle1">Tải phụ đề 1</label>
-                <input type="file" id="subtitle1" accept=".srt,.vtt" onchange="loadSubtitle(1)">
-                <label for="subtitle2">Tải phụ đề 2</label>
-                <input type="file" id="subtitle2" accept=".srt,.vtt" onchange="loadSubtitle(2)">
+                <label for="subtitle">Tải phụ đề</label>
+                <input type="file" id="subtitle" accept=".srt,.vtt" onchange="loadSubtitle()">
                 <button class="check-sub-btn" onclick="checkSubtitles()">Kiểm tra phụ đề</button>
             </div>
             <div id="episodeList" class="episode-list"></div>
@@ -247,9 +245,8 @@
         let hls;
         let currentEpisodeIndex = 0;
         let episodes = [];
-        let promptShown = false;
         const speedDisplay = document.getElementById('speedDisplay');
-        let subtitleURLs = { 1: null, 2: null };
+        let subtitleURL = null;
 
         function measureNetworkSpeed(tsUrl) {
             const xhr = new XMLHttpRequest();
@@ -284,7 +281,6 @@
             while (video.getElementsByTagName('track').length > 0) {
                 video.removeChild(video.getElementsByTagName('track')[0]);
             }
-            promptShown = false;
 
             if (Hls.isSupported()) {
                 if (hls) hls.destroy();
@@ -349,10 +345,9 @@
             if (!video.duration || isNaN(video.duration)) return;
             const remaining = video.duration - video.currentTime;
             const prompt = document.getElementById('nextPrompt');
-            if (remaining <= 60 && remaining > 0 && episodes.length > currentEpisodeIndex + 1 && !promptShown) {
+            if (remaining <= 60 && remaining > 0 && episodes.length > currentEpisodeIndex + 1) {
                 video.pause();
                 prompt.style.display = 'block';
-                promptShown = true;
                 console.log('Video paused, showing prompt at last 60s of episode:', currentEpisodeIndex);
             }
         });
@@ -383,6 +378,7 @@
             } else {
                 console.error('Could not find nextPrompt element');
             }
+            // Không reset promptShown để không hiện lại trong cùng tập
             video.play().catch(err => {
                 console.error('Error resuming video:', err);
             });
@@ -394,33 +390,24 @@
                 video.removeChild(video.getElementsByTagName('track')[0]);
             }
 
-            if (subtitleURLs[1]) {
-                const track1 = document.createElement('track');
-                track1.kind = 'captions';
-                track1.label = 'Phụ đề 1';
-                track1.srclang = 'vi';
-                track1.src = subtitleURLs[1];
-                track1.default = true;
-                video.appendChild(track1);
+            if (subtitleURL) {
+                const track = document.createElement('track');
+                track.kind = 'captions';
+                track.label = 'Phụ đề';
+                track.srclang = 'vi';
+                track.src = subtitleURL;
+                track.default = true;
+                video.appendChild(track);
             }
 
-            if (subtitleURLs[2]) {
-                const track2 = document.createElement('track');
-                track2.kind = 'captions';
-                track2.label = 'Phụ đề 2';
-                track2.srclang = 'en';
-                track2.src = subtitleURLs[2];
-                video.appendChild(track2);
+            if (video.textTracks[0]) {
+                video.textTracks[0].mode = 'showing';
+                console.log(`Track: mode = ${video.textTracks[0].mode}`);
             }
-
-            Array.from(video.textTracks).forEach(track => {
-                track.mode = 'showing';
-                console.log(`Track ${track.label}: mode = ${track.mode}`);
-            });
         }
 
-        function loadSubtitle(trackNumber) {
-            const input = document.getElementById(`subtitle${trackNumber}`);
+        function loadSubtitle() {
+            const input = document.getElementById('subtitle');
             const file = input.files[0];
             if (!file) return;
 
@@ -428,26 +415,24 @@
             reader.onload = function(e) {
                 const subtitleText = e.target.result;
                 const blob = new Blob([subtitleText], { type: 'text/vtt' });
-                const url = URL.createObjectURL(blob);
-                subtitleURLs[trackNumber] = url;
+                subtitleURL = URL.createObjectURL(blob);
                 applySubtitles();
-                console.log(`Loaded subtitle ${trackNumber}:`, file.name);
+                console.log(`Loaded subtitle:`, file.name);
             };
             reader.readAsText(file);
         }
 
         function checkSubtitles() {
             console.log('Checking subtitle status:');
-            console.log('Sub 1:', subtitleURLs[1] ? `Loaded (${subtitleURLs[1]})` : 'Not loaded');
-            console.log('Sub 2:', subtitleURLs[2] ? `Loaded (${subtitleURLs[2]})` : 'Not loaded');
-            Array.from(video.textTracks).forEach(track => {
-                console.log(`Track ${track.label}: mode = ${track.mode}`);
-                if (track.mode === 'showing') {
-                    console.log(`Subtitle ${track.label} is displayed on video`);
+            console.log('Subtitle:', subtitleURL ? `Loaded (${subtitleURL})` : 'Not loaded');
+            if (video.textTracks[0]) {
+                console.log(`Track: mode = ${video.textTracks[0].mode}`);
+                if (video.textTracks[0].mode === 'showing') {
+                    console.log(`Subtitle is displayed on video`);
                 } else {
-                    console.log(`Subtitle ${track.label} is not displayed`);
+                    console.log(`Subtitle is not displayed`);
                 }
-            });
+            }
         }
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -481,4 +466,4 @@
         measureNetworkSpeed(tsUrl);
     </script>
 </body>
-</html>
+</html> 
