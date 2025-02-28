@@ -182,7 +182,6 @@
             color: #ffffff;
         }
 
-        /* Tùy chỉnh màu chữ phụ đề */
         .plyr__captions span {
             text-shadow: 1px 1px 2px black;
         }
@@ -228,7 +227,7 @@
                 <input type="file" id="subtitle1" accept=".srt,.vtt" onchange="loadSubtitle(1)">
                 <label for="subtitle2">Tải phụ đề 2</label>
                 <input type="file" id="subtitle2" accept=".srt,.vtt" onchange="loadSubtitle(2)">
-                <button class="check-sub-btn" onclick="checkSubtitles()">Check Subtitles</button>
+                <button class="check-sub-btn" onclick="checkSubtitles()">Kiểm tra phụ đề</button>
             </div>
             <div id="episodeList" class="episode-list"></div>
             <div id="nextPrompt" class="next-prompt">
@@ -248,11 +247,10 @@
         let hls;
         let currentEpisodeIndex = 0;
         let episodes = [];
-        let promptShown = false; // Chỉ reset khi chuyển tập
+        let promptShown = false;
         const speedDisplay = document.getElementById('speedDisplay');
-        let subtitleURLs = { 1: null, 2: null }; // Lưu trữ URL phụ đề
+        let subtitleURLs = { 1: null, 2: null };
 
-        // Đo tốc độ mạng với link .ts cụ thể
         function measureNetworkSpeed(tsUrl) {
             const xhr = new XMLHttpRequest();
             const startTime = performance.now();
@@ -283,11 +281,10 @@
         }
 
         function initializePlayer(source) {
-            // Xóa các track cũ trước khi khởi tạo
             while (video.getElementsByTagName('track').length > 0) {
                 video.removeChild(video.getElementsByTagName('track')[0]);
             }
-            promptShown = false; // Reset khi khởi tạo video mới
+            promptShown = false;
 
             if (Hls.isSupported()) {
                 if (hls) hls.destroy();
@@ -312,11 +309,11 @@
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    applySubtitles(); // Áp dụng phụ đề sau khi HLS tải xong
+                    applySubtitles();
                     console.log('HLS manifest parsed, video ready');
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
-                    console.log('Lỗi HLS:', data);
+                    console.log('HLS error:', data);
                     if (data.fatal) {
                         hls.destroy();
                         setTimeout(() => initializePlayer(source), 1000);
@@ -333,7 +330,7 @@
         const player = new Plyr(video, {
             controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'fullscreen'],
             speed: { selected: 1, options: [0.5, 1, 1.5, 2] },
-            captions: { active: true, update: true } // Bật phụ đề ngay khi có
+            captions: { active: true, update: true }
         });
 
         function rewind() {
@@ -356,7 +353,7 @@
                 video.pause();
                 prompt.style.display = 'block';
                 promptShown = true;
-                console.log('Video tạm dừng, hiển thị thông báo tại 60s cuối tập:', currentEpisodeIndex);
+                console.log('Video paused, showing prompt at last 60s of episode:', currentEpisodeIndex);
             }
         });
 
@@ -368,7 +365,7 @@
                 updateActiveButton();
                 const prompt = document.getElementById('nextPrompt');
                 if (prompt) prompt.style.display = 'none';
-                console.log('Chuyển sang tập tiếp theo:', currentEpisodeIndex);
+                console.log('Switching to next episode:', currentEpisodeIndex);
             }
         }
 
@@ -382,20 +379,17 @@
             const prompt = document.getElementById('nextPrompt');
             if (prompt) {
                 prompt.style.display = 'none';
-                console.log('Thông báo đã được ẩn khi bấm Không');
+                console.log('Prompt hidden after clicking No');
             } else {
-                console.error('Không tìm thấy phần tử nextPrompt');
+                console.error('Could not find nextPrompt element');
             }
-            // Không reset promptShown ở đây để không hỏi lại trong cùng tập
             video.play().catch(err => {
-                console.error('Lỗi khi tiếp tục phát video:', err);
+                console.error('Error resuming video:', err);
             });
-            console.log('Thông báo tắt, tiếp tục phát video hiện tại');
+            console.log('Prompt closed, resuming current video');
         }
 
-        // Hàm áp dụng phụ đề từ subtitleURLs
         function applySubtitles() {
-            // Xóa các track cũ
             while (video.getElementsByTagName('track').length > 0) {
                 video.removeChild(video.getElementsByTagName('track')[0]);
             }
@@ -409,6 +403,7 @@
                 track1.default = true;
                 video.appendChild(track1);
             }
+
             if (subtitleURLs[2]) {
                 const track2 = document.createElement('track');
                 track2.kind = 'captions';
@@ -417,25 +412,13 @@
                 track2.src = subtitleURLs[2];
                 video.appendChild(track2);
             }
-            // Áp dụng màu sắc qua JS
-            setTimeout(() => {
-                const captions = document.querySelectorAll('.plyr__captions span');
-                captions.forEach(span => {
-                    if (video.textTracks[0] && span.textContent === video.textTracks[0].activeCues?.[0]?.text) {
-                        span.style.color = 'yellow';
-                    } else if (video.textTracks[1] && span.textContent === video.textTracks[1].activeCues?.[0]?.text) {
-                        span.style.color = 'lime';
-                    }
-                });
-            }, 100); // Delay để đảm bảo phụ đề render
-            console.log('Đã áp dụng phụ đề:', Array.from(video.textTracks));
+
             Array.from(video.textTracks).forEach(track => {
-                track.mode = 'showing'; // Đảm bảo cả hai sub hiển thị
+                track.mode = 'showing';
                 console.log(`Track ${track.label}: mode = ${track.mode}`);
             });
         }
 
-        // Hàm tải và hiển thị phụ đề
         function loadSubtitle(trackNumber) {
             const input = document.getElementById(`subtitle${trackNumber}`);
             const file = input.files[0];
@@ -448,22 +431,21 @@
                 const url = URL.createObjectURL(blob);
                 subtitleURLs[trackNumber] = url;
                 applySubtitles();
-                console.log(`Đã tải phụ đề ${trackNumber}:`, file.name);
+                console.log(`Loaded subtitle ${trackNumber}:`, file.name);
             };
             reader.readAsText(file);
         }
 
-        // Hàm kiểm tra trạng thái phụ đề
         function checkSubtitles() {
-            console.log('Kiểm tra trạng thái phụ đề:');
-            console.log('Sub 1:', subtitleURLs[1] ? `Đã tải (${subtitleURLs[1]})` : 'Chưa tải');
-            console.log('Sub 2:', subtitleURLs[2] ? `Đã tải (${subtitleURLs[2]})` : 'Chưa tải');
+            console.log('Checking subtitle status:');
+            console.log('Sub 1:', subtitleURLs[1] ? `Loaded (${subtitleURLs[1]})` : 'Not loaded');
+            console.log('Sub 2:', subtitleURLs[2] ? `Loaded (${subtitleURLs[2]})` : 'Not loaded');
             Array.from(video.textTracks).forEach(track => {
                 console.log(`Track ${track.label}: mode = ${track.mode}`);
                 if (track.mode === 'showing') {
-                    console.log(`Phụ đề ${track.label} đang hiển thị trên video`);
+                    console.log(`Subtitle ${track.label} is displayed on video`);
                 } else {
-                    console.log(`Phụ đề ${track.label} chưa hiển thị`);
+                    console.log(`Subtitle ${track.label} is not displayed`);
                 }
             });
         }
@@ -495,7 +477,6 @@
             episodeList.children[0].classList.add('active');
         }
 
-        // Bắt đầu đo tốc độ mạng với link .ts cụ thể
         const tsUrl = 'https://cors-anywhere.herokuapp.com/https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
         measureNetworkSpeed(tsUrl);
     </script>
