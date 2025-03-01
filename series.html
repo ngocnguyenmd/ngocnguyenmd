@@ -396,20 +396,26 @@
         }
 
         function loadSubtitle(number) {
-            const input = document.getElementById(`subtitle${number}`);
-            const file = input.files[0];
-            if (!file) return;
+    const input = document.getElementById(`subtitle${number}`);
+    const file = input.files[0];
+    if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const subtitleText = e.target.result;
-                const vttText = convertSrtToVtt(subtitleText);
-                subtitleContents[number] = 'data:text/vtt;base64,' + btoa(vttText);
-                console.log(`Subtitles ${number} loaded and converted`);
-            };
-            reader.readAsText(file);
-        }
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const subtitleText = e.target.result;
+        const vttText = convertSrtToVtt(subtitleText);
+        subtitleContents[number] = 'data:text/vtt;base64,' + encodeBase64(vttText);
+        console.log(`Subtitles ${number} loaded and converted`);
+    };
+    reader.readAsText(file);
+}
 
+// Hàm mã hóa Base64 an toàn cho Unicode
+function encodeBase64(str) {
+    let bytes = new TextEncoder().encode(str); // Chuyển đổi chuỗi thành mảng byte
+    let binary = Array.from(bytes).map(b => String.fromCharCode(b)).join('');
+    return btoa(binary); // Mã hóa Base64
+}
         function convertSrtToVtt(srt) {
             const vtt = "WEBVTT\n\n" + srt
                 .replace(/\{\\([ibu])\}/g, '</$1>')
