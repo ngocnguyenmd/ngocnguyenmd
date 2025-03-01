@@ -211,7 +211,7 @@
                 <label for="subtitle2">Tải phụ đề 2</label>
                 <input type="file" id="subtitle2" accept=".srt,.vtt" onchange="loadSubtitle(2)">
                 <button class="check-sub-btn" onclick="checkSubtitles()">Kiểm tra phụ đề</button>
-                <button class="apply-sub-btn" id="applyButton" onclick="applySubtitles()">Áp dụng phụ đề</button>
+                <button class="apply-sub-btn" id="applyButton" onclick="toggleSubtitles()">Áp dụng phụ đề</button>
             </div>
             <div id="episodeList" class="episode-list"></div>
             <div id="nextPrompt" class="next-prompt">
@@ -233,7 +233,7 @@
         let episodes = [];
         const speedDisplay = document.getElementById('speedDisplay');
         let subtitleContents = { 1: null, 2: null };
-        let currentSubtitle = null;
+        let subtitlesApplied = false;
         let promptShown = false;
 
         function measureNetworkSpeed(tsUrl) {
@@ -374,26 +374,51 @@
             console.log('Prompt closed, resuming current video');
         }
 
-        function applySubtitles() {
-            while (video.getElementsByTagName('track').length > 0) {
-                video.removeChild(video.getElementsByTagName('track')[0]);
+        function toggleSubtitles() {
+            if (subtitlesApplied) {
+                removeSubtitles();
+                document.getElementById('applyButton').classList.remove('applied');
+                document.getElementById('applyButton').textContent = 'Áp dụng phụ đề';
+            } else {
+                applySubtitles();
+                document.getElementById('applyButton').classList.add('applied');
+                document.getElementById('applyButton').textContent = 'Phụ đề đã áp dụng';
             }
+            subtitlesApplied = !subtitlesApplied;
+        }
 
-            if (currentSubtitle) {
-                const track = document.createElement('track');
-                track.kind = 'captions';
-                track.label = 'Phụ đề';
-                track.srclang = 'vi';
-                track.src = currentSubtitle;
-                track.default = true;
-                video.appendChild(track);
-                const applyBtn = document.getElementById('applyButton');
-                applyBtn.classList.add('applied');
-                applyBtn.textContent = 'Phụ đề đã áp dụng';
+        function applySubtitles() {
+            if (subtitleContents[1]) {
+                const track1 = document.createElement('track');
+                track1.kind = 'captions';
+                track1.label = 'Phụ đề 1';
+                track1.srclang = 'vi';
+                track1.src = subtitleContents[1];
+                track1.default = true;
+                video.appendChild(track1);
+            }
+            if (subtitleContents[2]) {
+                const track2 = document.createElement('track');
+                track2.kind = 'captions';
+                track2.label = 'Phụ đề 2';
+                track2.srclang = 'vi';
+                track2.src = subtitleContents[2];
+                track2.default = false;
+                video.appendChild(track2);
             }
             if (video.textTracks[0]) {
                 video.textTracks[0].mode = 'showing';
-                console.log(`Track: mode = ${video.textTracks[0].mode}`);
+                console.log(`Track 1: mode = ${video.textTracks[0].mode}`);
+            }
+            if (video.textTracks[1]) {
+                video.textTracks[1].mode = 'showing';
+                console.log(`Track 2: mode = ${video.textTracks[1].mode}`);
+            }
+        }
+
+        function removeSubtitles() {
+            while (video.getElementsByTagName('track').length > 0) {
+                video.removeChild(video.getElementsByTagName('track')[0]);
             }
         }
 
@@ -408,7 +433,6 @@
                 const vttText = convertSrtToVtt(subtitleText);
                 subtitleContents[number] = 'data:text/vtt;base64,' + encodeBase64(vttText);
                 console.log(`Subtitles ${number} loaded and converted`);
-                currentSubtitle = subtitleContents[number];
             };
             reader.readAsText(file);
         }
