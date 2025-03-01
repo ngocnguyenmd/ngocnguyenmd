@@ -168,16 +168,15 @@
             background: #000000;
             color: #ffffff;
         }
-        /* Custom styles for captions */
-        .caption-track-0 {
-            color: yellow;
-            position: absolute;
-            bottom: 10%;
+        .plyr__captions span {
+            text-shadow: 1px 1px 2px black;
+            font-size: 1em; /* Adjust font size */
         }
-        .caption-track-1 {
-            color: lime;
-            position: absolute;
-            bottom: 20%;
+        .yellow {
+            color: yellow; /* Subtitle 1 color */
+        }
+        .green {
+            color: lime; /* Subtitle 2 color */
         }
         @media (max-width: 600px) {
             .video-container {
@@ -436,9 +435,10 @@
                             if (!cues[i].text.startsWith('- ')) {
                                 cues[i].text = '- ' + cues[i].text;
                             }
-                            cues[i].line = 1; // Position subtitle
+                            cues[i].line = 90; // Position subtitle
+                            cues[i].align = 'center';
+                            cues[i].position = 50;
                         }
-                        applyCustomStyleToCaptions(0);
                     };
                     console.log(`Track 1: mode = ${video.textTracks[0].mode}`);
                 }
@@ -450,23 +450,14 @@
                             if (!cues[i].text.startsWith('+ ')) {
                                 cues[i].text = '+ ' + cues[i].text;
                             }
-                            cues[i].line = 2; // Position subtitle
+                            cues[i].line = 80; // Position subtitle
+                            cues[i].align = 'center';
+                            cues[i].position = 50;
                         }
-                        applyCustomStyleToCaptions(1);
                     };
                     console.log(`Track 2: mode = ${video.textTracks[1].mode}`);
                 }
             }, 200);
-        }
-
-        function applyCustomStyleToCaptions(trackIndex) {
-            const trackEls = video.textTracks[trackIndex].cues;
-            for (let i = 0; i < trackEls.length; i++) {
-                if (trackEls[i].displayState) {
-                    trackEls[i].displayState.classList.remove('caption-track-0', 'caption-track-1');
-                    trackEls[i].displayState.classList.add(`caption-track-${trackIndex}`);
-                }
-            }
         }
 
         function removeSubtitles() {
