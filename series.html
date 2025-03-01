@@ -218,7 +218,6 @@
 
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="https://cdn.jsdelivr.net/gh/kanasimi/SRT-to-VTT/SRTtoVTT.js"></script>
     <script>
         const video = document.getElementById('player');
         let hls;
@@ -394,10 +393,19 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const subtitleText = e.target.result;
-                subtitleContent = 'data:text/vtt;base64,' + btoa(SRTtoVTT(subtitleText));
+                const vttText = convertSrtToVtt(subtitleText);
+                subtitleContent = 'data:text/vtt;base64,' + btoa(vttText);
                 console.log('Subtitles loaded and converted');
             };
             reader.readAsText(file);
+        }
+
+        function convertSrtToVtt(srt) {
+            const vtt = "WEBVTT\n\n" + srt
+                .replace(/\{\\([ibu])\}/g, '</$1>')
+                .replace(/\{\\([ibu])1\}/g, '<$1>')
+                .replace(/(\d+:\d+:\d+),(\d+)/g, '$1.$2');
+            return vtt;
         }
 
         function checkSubtitles() {
@@ -440,7 +448,7 @@
             episodeList.children[0].classList.add('active');
         }
 
-        const tsUrl = 'https://https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
+        const tsUrl = 'https://cors-anywhere.herokuapp.com/https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
         measureNetworkSpeed(tsUrl);
     </script>
 </body>
