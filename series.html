@@ -211,7 +211,7 @@
                 <label for="subtitle2">Tải phụ đề 2</label>
                 <input type="file" id="subtitle2" accept=".srt,.vtt" onchange="loadSubtitle(2)">
                 <button class="check-sub-btn" onclick="checkSubtitles()">Kiểm tra phụ đề</button>
-                <button class="apply-sub-btn" onclick="applySubtitles()">Áp dụng phụ đề</button>
+                <button class="apply-sub-btn" id="applyButton" onclick="applySubtitles()">Áp dụng phụ đề</button>
             </div>
             <div id="episodeList" class="episode-list"></div>
             <div id="nextPrompt" class="next-prompt">
@@ -346,7 +346,7 @@
             const newIndex = isNext ? currentEpisodeIndex + 1 : currentEpisodeIndex - 1;
             if (newIndex >= 0 && newIndex < episodes.length) {
                 currentEpisodeIndex = newIndex;
-                initializePlayer(episodes[currentEpisodeIndex].url);
+                initializePlayer(episodes[newIndex].url);
                 updateActiveButton();
                 const prompt = document.getElementById('nextPrompt');
                 if (prompt) prompt.style.display = 'none';
@@ -387,7 +387,9 @@
                 track.src = currentSubtitle;
                 track.default = true;
                 video.appendChild(track);
-                document.querySelector('.apply-sub-btn').classList.add('applied');
+                const applyBtn = document.getElementById('applyButton');
+                applyBtn.classList.add('applied');
+                applyBtn.textContent = 'Phụ đề đã áp dụng';
             }
             if (video.textTracks[0]) {
                 video.textTracks[0].mode = 'showing';
@@ -396,26 +398,28 @@
         }
 
         function loadSubtitle(number) {
-    const input = document.getElementById(`subtitle${number}`);
-    const file = input.files[0];
-    if (!file) return;
+            const input = document.getElementById(`subtitle${number}`);
+            const file = input.files[0];
+            if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const subtitleText = e.target.result;
-        const vttText = convertSrtToVtt(subtitleText);
-        subtitleContents[number] = 'data:text/vtt;base64,' + encodeBase64(vttText);
-        console.log(`Subtitles ${number} loaded and converted`);
-    };
-    reader.readAsText(file);
-}
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const subtitleText = e.target.result;
+                const vttText = convertSrtToVtt(subtitleText);
+                subtitleContents[number] = 'data:text/vtt;base64,' + encodeBase64(vttText);
+                console.log(`Subtitles ${number} loaded and converted`);
+                currentSubtitle = subtitleContents[number];
+            };
+            reader.readAsText(file);
+        }
 
-// Hàm mã hóa Base64 an toàn cho Unicode
-function encodeBase64(str) {
-    let bytes = new TextEncoder().encode(str); // Chuyển đổi chuỗi thành mảng byte
-    let binary = Array.from(bytes).map(b => String.fromCharCode(b)).join('');
-    return btoa(binary); // Mã hóa Base64
-}
+        // Hàm mã hóa Base64 an toàn cho Unicode
+        function encodeBase64(str) {
+            let bytes = new TextEncoder().encode(str); // Chuyển đổi chuỗi thành mảng byte
+            let binary = Array.from(bytes).map(b => String.fromCharCode(b)).join('');
+            return btoa(binary); // Mã hóa Base64
+        }
+
         function convertSrtToVtt(srt) {
             const vtt = "WEBVTT\n\n" + srt
                 .replace(/\{\\([ibu])\}/g, '</$1>')
