@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xem Phim - Series</title>
-    <link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" />
     <style>
         body {
             margin: 0;
@@ -25,31 +24,18 @@
             text-align: center;
             position: relative;
         }
-        .source-label {
-            font-size: 0.8em;
-            padding: 2px 5px;
-            color: #fff;
-            border-radius: 3px;
-            margin-left: 10px;
-        }
-        .source-api {
-            background: #af762f;
-        }
-        .source-creator {
-            background: green;
-        }
         .video-container {
             background: #1a1a1a;
             padding: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             position: relative;
+            text-align: center;
         }
-        .video-js {
-            border-radius: 8px;
-            overflow: hidden;
+        #player {
             width: 100%;
             height: auto;
+            border-radius: 8px;
         }
         .control-buttons {
             display: flex;
@@ -102,30 +88,6 @@
         .back-link:hover {
             text-decoration: underline;
         }
-        .next-prompt {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #2b2727;
-            padding: 15px 25px;
-            border-radius: 5px;
-            display: none;
-            z-index: 10;
-            text-align: center;
-        }
-        .next-prompt button {
-            background: #af762f;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            margin: 5px;
-            cursor: pointer;
-        }
-        .next-prompt button:hover {
-            background: #000000;
-            color: yellow;
-        }
         .speed-display {
             position: fixed;
             bottom: 10px;
@@ -145,24 +107,19 @@
                 padding: 8px 12px;
                 font-size: 0.9em;
             }
-            .next-prompt {
-                padding: 10px 15px;
-                font-size: 0.9em;
-            }
             .speed-display {
                 font-size: 0.8em;
                 padding: 3px 8px;
             }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
 </head>
 <body>
     <div class="container">
         <h1 id="seriesTitle">Loading...</h1>
         <div class="video-container">
-            <video-js id="player" class="video-js vjs-default-skin" controls preload="auto">
-                <source src="" type="application/x-mpegURL">
-            </video-js>
+            <div id="player"></div>
             <div class="control-buttons">
                 <button class="control-btn" onclick="rewind()">⏪︎</button>
                 <button class="control-btn" onclick="playNextEpisode(false)">⏮︎</button>
@@ -170,19 +127,19 @@
                 <button class="control-btn" onclick="fastForward()">⏩︎</button>
             </div>
             <div id="episodeList" class="episode-list"></div>
-            <div id="nextPrompt" class="next-prompt">
-                <span>Chuyển sang tập tiếp theo?</span><br>
-                <button onclick="playNextEpisode(true)">Có</button>
-                <button onclick="hidePrompt()">Không</button>
-            </div>
         </div>
         <div class="speed-display" id="speedDisplay">Tốc độ: 0 KB/s</div>
         <a href="index.html" class="back-link">Ra xưởng bánh mì</a>
     </div>
 
-    <script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
     <script>
-        const player = videojs('player');
+        let player = new Clappr.Player({
+            parentId: "#player",
+            width: "100%",
+            height: "100%",
+            autoPlay: false
+        });
+
         let currentEpisodeIndex = 0;
         let episodes = [];
         const speedDisplay = document.getElementById('speedDisplay');
@@ -218,23 +175,21 @@
         }
 
         function initializePlayer(source) {
-            player.src({ type: 'application/x-mpegURL', src: source });
+            player.load(source);
         }
 
         function rewind() {
-            player.currentTime(Math.max(0, player.currentTime() - 10));
+            player.seek(Math.max(0, player.getCurrentTime() - 10));
         }
 
         function fastForward() {
-            player.currentTime(Math.min(player.duration(), player.currentTime() + 10));
+            player.seek(Math.min(player.getDuration(), player.getCurrentTime() + 10));
         }
 
-        player.on('timeupdate', () => {
-            const remaining = player.duration() - player.currentTime();
-            const prompt = document.getElementById('nextPrompt');
+        player.on(Clappr.Events.PLAYER_TIMEUPDATE, function() {
+            const remaining = player.getDuration() - player.getCurrentTime();
             if (remaining <= 60 && remaining > 0 && episodes.length > currentEpisodeIndex + 1 && !promptShown) {
                 player.pause();
-                prompt.style.display = 'block';
                 promptShown = true;
                 console.log('Video paused, showing prompt at last 60s of episode:', currentEpisodeIndex);
             }
@@ -246,9 +201,6 @@
                 currentEpisodeIndex = newIndex;
                 initializePlayer(episodes[newIndex].url);
                 updateActiveButton();
-                const prompt = document.getElementById('nextPrompt');
-                if (prompt) prompt.style.display = 'none';
-                console.log('Switching to next episode:', currentEpisodeIndex);
             }
         }
 
@@ -256,20 +208,6 @@
             document.querySelectorAll('.episode-btn').forEach((btn, idx) => {
                 btn.classList.toggle('active', idx === currentEpisodeIndex);
             });
-        }
-
-        function hidePrompt() {
-            const prompt = document.getElementById('nextPrompt');
-            if (prompt) {
-                prompt.style.display = 'none';
-                console.log('Prompt hidden after clicking No');
-            } else {
-                console.error('Could not find nextPrompt element');
-            }
-            player.play().catch(err => {
-                console.error('Error resuming video:', err);
-            });
-            console.log('Prompt closed, resuming current video');
         }
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -287,8 +225,6 @@
             btn.onclick = () => {
                 currentEpisodeIndex = index;
                 initializePlayer(episode.url);
-                const prompt = document.getElementById('nextPrompt');
-                if (prompt) prompt.style.display = 'none';
                 updateActiveButton();
             };
             episodeList.appendChild(btn);
