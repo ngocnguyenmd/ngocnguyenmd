@@ -394,7 +394,7 @@
             reader.onload = function(e) {
                 const subtitleText = e.target.result;
                 const vttText = convertSrtToVtt(subtitleText);
-                subtitleContent = 'data:text/vtt;base64,' + btoa(vttText);
+                subtitleContent = 'data:text/vtt;base64,' + btoa(unescape(encodeURIComponent(vttText)));
                 console.log('Subtitles loaded and converted');
             };
             reader.readAsText(file);
