@@ -432,7 +432,9 @@
                     video.textTracks[0].oncuechange = () => {
                         const cues = video.textTracks[0].activeCues;
                         for (let i = 0; i < cues.length; i++) {
-                            cues[i].text = '- ' + cues[i].text;
+                            if (!cues[i].text.startsWith('- ')) {
+                                cues[i].text = '- ' + cues[i].text;
+                            }
                         }
                         styleCaptions('yellow');
                     };
@@ -443,7 +445,9 @@
                     video.textTracks[1].oncuechange = () => {
                         const cues = video.textTracks[1].activeCues;
                         for (let i = 0; i < cues.length; i++) {
-                            cues[i].text = '+ ' + cues[i].text;
+                            if (!cues[i].text.startsWith('+ ')) {
+                                cues[i].text = '+ ' + cues[i].text;
+                            }
                         }
                         styleCaptions('green');
                     };
