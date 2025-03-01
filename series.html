@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xem Phim - Series</title>
-    <link rel="stylesheet" href="https://releases.flowplayer.org/7.2.7/skin/skin.css">
+    <link rel="stylesheet" href="https://unpkg.com/@vime/core@latest/themes/default.css">
     <style>
         body {
             margin: 0;
@@ -33,10 +33,9 @@
             position: relative;
             text-align: center;
         }
-        .flowplayer {
+        vime-player {
             width: 100%;
-            height: 0;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            height: auto;
             border-radius: 8px;
             overflow: hidden;
         }
@@ -116,17 +115,18 @@
             }
         }
     </style>
-    <script src="https://releases.flowplayer.org/7.2.7/flowplayer.min.js"></script>
+    <script type="module" src="https://unpkg.com/@vime/core@latest"></script>
 </head>
 <body>
     <div class="container">
         <h1 id="seriesTitle">Loading...</h1>
         <div class="video-container">
-            <div id="player" class="flowplayer">
-                <video>
-                    <source type="application/x-mpegurl" src=""> <!-- Thay thế bằng nguồn video của bạn -->
-                </video>
-            </div>
+            <vime-player id="player">
+                <vime-hls>
+                    <source data-src="" type="application/x-mpegURL"> <!-- Thay thế bằng nguồn video của bạn -->
+                </vime-hls>
+                <vime-controls></vime-controls>
+            </vime-player>
             <div class="control-buttons">
                 <button class="control-btn" onclick="rewind()">⏪︎</button>
                 <button class="control-btn" onclick="playNextEpisode(false)">⏮︎</button>
@@ -143,26 +143,22 @@
         let currentEpisodeIndex = 0;
         let episodes = [];
         const speedDisplay = document.getElementById('speedDisplay');
-        let promptShown = false;
 
         function initializePlayer(source) {
-            flowplayer("#player", {
-                clip: {
-                    sources: [
-                        { type: "application/x-mpegurl", src: source }
-                    ]
-                }
-            });
+            const player = document.querySelector('vime-player');
+            const hls = player.querySelector('vime-hls');
+            hls.src = source;
+            player.play();
         }
 
         function rewind() {
-            const player = flowplayer("#player");
-            player.currentTime(Math.max(0, player.currentTime() - 10));
+            const player = document.querySelector('vime-player');
+            player.currentTime = Math.max(0, player.currentTime - 10);
         }
 
         function fastForward() {
-            const player = flowplayer("#player");
-            player.currentTime(Math.min(player.duration(), player.currentTime() + 10));
+            const player = document.querySelector('vime-player');
+            player.currentTime = Math.min(player.duration, player.currentTime + 10);
         }
 
         function playNextEpisode(isNext) {
