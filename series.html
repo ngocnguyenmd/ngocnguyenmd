@@ -170,11 +170,12 @@
         }
         .plyr__captions span {
             text-shadow: 1px 1px 2px black;
+            font-size: 1em; /* Adjust font size */
         }
-        .plyr__captions .yellow {
+        .yellow {
             color: yellow; /* Subtitle 1 color */
         }
-        .plyr__captions .green {
+        .green {
             color: lime; /* Subtitle 2 color */
         }
         @media (max-width: 600px) {
@@ -425,22 +426,38 @@
                 track2.default = false;
                 video.appendChild(track2);
             }
-            if (video.textTracks[0]) {
-                video.textTracks[0].mode = 'showing';
-                video.textTracks[0].oncuechange = () => {
-                    const trackEls = document.querySelectorAll('.plyr__captions span');
-                    trackEls.forEach(el => el.classList.add('yellow'));
-                };
-                console.log(`Track 1: mode = ${video.textTracks[0].mode}`);
-            }
-            if (bilingualMode && video.textTracks[1]) {
-                video.textTracks[1].mode = 'showing';
-                video.textTracks[1].oncuechange = () => {
-                    const trackEls = document.querySelectorAll('.plyr__captions span');
-                    trackEls.forEach(el => el.classList.add('green'));
-                };
-                console.log(`Track 2: mode = ${video.textTracks[1].mode}`);
-            }
+            setTimeout(() => {
+                if (video.textTracks[0]) {
+                    video.textTracks[0].mode = 'showing';
+                    video.textTracks[0].oncuechange = () => {
+                        const cues = video.textTracks[0].activeCues;
+                        for (let i = 0; i < cues.length; i++) {
+                            cues[i].text = '- ' + cues[i].text;
+                        }
+                        styleCaptions('yellow');
+                    };
+                    console.log(`Track 1: mode = ${video.textTracks[0].mode}`);
+                }
+                if (bilingualMode && video.textTracks[1]) {
+                    video.textTracks[1].mode = 'showing';
+                    video.textTracks[1].oncuechange = () => {
+                        const cues = video.textTracks[1].activeCues;
+                        for (let i = 0; i < cues.length; i++) {
+                            cues[i].text = '+ ' + cues[i].text;
+                        }
+                        styleCaptions('green');
+                    };
+                    console.log(`Track 2: mode = ${video.textTracks[1].mode}`);
+                }
+            }, 200);
+        }
+
+        function styleCaptions(colorClass) {
+            const trackEls = document.querySelectorAll('.plyr__captions span');
+            trackEls.forEach(el => {
+                el.classList.remove('yellow', 'green');
+                el.classList.add(colorClass);
+            });
         }
 
         function removeSubtitles() {
