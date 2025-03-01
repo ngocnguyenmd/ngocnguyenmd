@@ -40,7 +40,7 @@
         }
         .video-container {
             background: #1a1a1a;
-            padding: 20px;
+            padding: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             position: relative;
@@ -48,6 +48,8 @@
         .video-js {
             border-radius: 8px;
             overflow: hidden;
+            width: 100%;
+            height: auto;
         }
         .control-buttons {
             display: flex;
@@ -135,52 +137,9 @@
             color: #f5cf8e;
             z-index: 1000;
         }
-        .subtitle-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .subtitle-controls input[type="file"] {
-            display: none;
-        }
-        .subtitle-controls label,
-        .check-sub-btn,
-        .apply-sub-btn,
-        .toggle-sub-btn {
-            background: #af762f;
-            color: black;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            border: none;
-        }
-        .subtitle-controls label:hover,
-        .check-sub-btn:hover,
-        .apply-sub-btn:hover,
-        .toggle-sub-btn:hover {
-            background: #000000;
-            color: #ffffff;
-        }
-        .apply-sub-btn.applied,
-        .toggle-sub-btn.active {
-            background: #000000;
-            color: #ffffff;
-        }
-        .vjs-text-track-cue {
-            text-shadow: 1px 1px 2px black;
-            font-size: 1em;
-        }
-        .yellow {
-            color: yellow;
-        }
-        .green {
-            color: lime;
-        }
         @media (max-width: 600px) {
             .video-container {
-                padding: 10px;
+                padding: 5px;
             }
             .control-btn, .episode-btn {
                 padding: 8px 12px;
@@ -194,10 +153,6 @@
                 font-size: 0.8em;
                 padding: 3px 8px;
             }
-            .subtitle-controls label, .check-sub-btn, .apply-sub-btn, .toggle-sub-btn {
-                padding: 6px 10px;
-                font-size: 0.9em;
-            }
         }
     </style>
 </head>
@@ -205,7 +160,7 @@
     <div class="container">
         <h1 id="seriesTitle">Loading...</h1>
         <div class="video-container">
-            <video-js id="player" class="video-js vjs-default-skin" controls preload="auto" width="640" height="264">
+            <video-js id="player" class="video-js vjs-default-skin" controls preload="auto">
                 <source src="" type="application/x-mpegURL">
             </video-js>
             <div class="control-buttons">
@@ -213,15 +168,6 @@
                 <button class="control-btn" onclick="playNextEpisode(false)">⏮︎</button>
                 <button class="control-btn" onclick="playNextEpisode(true)">⏭</button>
                 <button class="control-btn" onclick="fastForward()">⏩︎</button>
-            </div>
-            <div class="subtitle-controls">
-                <label for="subtitle1">Tải phụ đề 1</label>
-                <input type="file" id="subtitle1" accept=".srt,.vtt" onchange="loadSubtitle(1)">
-                <label for="subtitle2">Tải phụ đề 2</label>
-                <input type="file" id="subtitle2" accept=".srt,.vtt" onchange="loadSubtitle(2)">
-                <button class="check-sub-btn" onclick="checkSubtitles()">Kiểm tra phụ đề</button>
-                <button class="apply-sub-btn" id="applyButton" onclick="toggleSubtitles()">Áp dụng phụ đề</button>
-                <button class="toggle-sub-btn" id="toggleButton" onclick="toggleBilingual()">Chế độ song ngữ</button>
             </div>
             <div id="episodeList" class="episode-list"></div>
             <div id="nextPrompt" class="next-prompt">
@@ -237,9 +183,6 @@
     <script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
     <script>
         const player = videojs('player');
-        let subtitleContents = { 1: null, 2: null };
-        let subtitlesApplied = false;
-        let bilingualMode = false;
         let currentEpisodeIndex = 0;
         let episodes = [];
         const speedDisplay = document.getElementById('speedDisplay');
@@ -276,9 +219,6 @@
 
         function initializePlayer(source) {
             player.src({ type: 'application/x-mpegURL', src: source });
-            player.on('loadedmetadata', () => {
-                applySubtitles();
-            });
         }
 
         function rewind() {
@@ -330,123 +270,6 @@
                 console.error('Error resuming video:', err);
             });
             console.log('Prompt closed, resuming current video');
-        }
-
-        function toggleSubtitles() {
-            if (subtitlesApplied) {
-                removeSubtitles();
-                document.getElementById('applyButton').classList.remove('applied');
-                document.getElementById('applyButton').textContent = 'Áp dụng phụ đề';
-            } else {
-                applySubtitles();
-                document.getElementById('applyButton').classList.add('applied');
-                document.getElementById('applyButton').textContent = 'Phụ đề đã áp dụng';
-            }
-            subtitlesApplied = !subtitlesApplied;
-        }
-
-        function toggleBilingual() {
-            bilingualMode = !bilingualMode;
-            const toggleBtn = document.getElementById('toggleButton');
-            toggleBtn.classList.toggle('active', bilingualMode);
-            toggleBtn.textContent = bilingualMode ? 'Tắt chế độ song ngữ' : 'Chế độ song ngữ';
-            applySubtitles();
-        }
-
-        function applySubtitles() {
-            removeSubtitles();
-            if (subtitleContents[1]) {
-                const track1 = document.createElement('track');
-                track1.kind = 'captions';
-                track1.label = 'Phụ đề 1';
-                track1.srclang = 'vi';
-                track1.src = subtitleContents[1];
-                track1.default = true;
-                player.el().appendChild(track1);
-            }
-            if (bilingualMode && subtitleContents[2]) {
-                const track2 = document.createElement('track');
-                track2.kind = 'captions';
-                track2.label = 'Phụ đề 2';
-                track2.srclang = 'vi';
-                track2.src = subtitleContents[2];
-                track2.default = false;
-                player.el().appendChild(track2);
-            }
-            setTimeout(() => {
-                if (player.textTracks()[0]) {
-                    player.textTracks()[0].mode = 'showing';
-                    styleCaptions(player.textTracks()[0], 'yellow', 90);
-                }
-                if (bilingualMode && player.textTracks()[1]) {
-                    player.textTracks()[1].mode = 'showing';
-                    styleCaptions(player.textTracks()[1], 'green', 80);
-                }
-            }, 200);
-        }
-
-        function styleCaptions(track, colorClass, linePos) {
-            track.on('cuechange', () => {
-                const cues = track.activeCues;
-                for (let i = 0; i < cues.length; i++) {
-                    if (!cues[i].text.startsWith(colorClass === 'yellow' ? '- ' : '+ ')) {
-                        cues[i].text = (colorClass === 'yellow' ? '- ' : '+ ') + cues[i].text;
-                    }
-                    cues[i].line = linePos;
-                    cues[i].align = 'center';
-                    cues[i].position = 50;
-                }
-            });
-        }
-
-        function removeSubtitles() {
-            while (player.el().getElementsByTagName('track').length > 0) {
-                player.el().removeChild(player.el().getElementsByTagName('track')[0]);
-            }
-        }
-
-        function loadSubtitle(number) {
-            const input = document.getElementById(`subtitle${number}`);
-            const file = input.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const subtitleText = e.target.result;
-                const vttText = convertSrtToVtt(subtitleText);
-                subtitleContents[number] = 'data:text/vtt;base64,' + encodeBase64(vttText);
-                console.log(`Subtitles ${number} loaded and converted`);
-            };
-            reader.readAsText(file);
-        }
-
-        function encodeBase64(str) {
-            let bytes = new TextEncoder().encode(str);
-            let binary = Array.from(bytes).map(b => String.fromCharCode(b)).join('');
-            return btoa(binary);
-        }
-
-        function convertSrtToVtt(srt) {
-            const vtt = "WEBVTT\n\n" + srt
-                .replace(/\{\\([ibu])\}/g, '</$1>')
-                .replace(/\{\\([ibu])1\}/g, '<$1>')
-                .replace(/(\d+:\d+:\d+),(\d+)/g, '$1.$2');
-            return vtt;
-        }
-
-        function checkSubtitles() {
-            console.log('Checking subtitle status:');
-            for (const key in subtitleContents) {
-                console.log(`Subtitle ${key}:`, subtitleContents[key] ? 'Loaded and ready' : 'Not loaded');
-            }
-            player.textTracks().forEach((track, index) => {
-                console.log(`Track ${index}: mode = ${track.mode}`);
-                if (track.mode === 'showing') {
-                    console.log('Subtitle is displayed on video');
-                } else {
-                    console.log('Subtitle is not displayed');
-                }
-            });
         }
 
         const urlParams = new URLSearchParams(window.location.search);
