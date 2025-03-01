@@ -117,33 +117,25 @@
 </head>
 <body>
     <div class="container">
-        <h1 id="seriesTitle">Loading...</h1>
+        <h1>Xem Phim - Series</h1>
         <div class="video-container">
             <div id="player"></div>
-            <div class="control-buttons">
-                <button class="control-btn" onclick="rewind()">⏪︎</button>
-                <button class="control-btn" onclick="playNextEpisode(false)">⏮︎</button>
-                <button class="control-btn" onclick="playNextEpisode(true)">⏭</button>
-                <button class="control-btn" onclick="fastForward()">⏩︎</button>
-            </div>
-            <div id="episodeList" class="episode-list"></div>
         </div>
         <div class="speed-display" id="speedDisplay">Tốc độ: 0 KB/s</div>
         <a href="index.html" class="back-link">Ra xưởng bánh mì</a>
     </div>
 
     <script>
-        let player = new Clappr.Player({
-            parentId: "#player",
-            width: "100%",
-            height: "100%",
+        const player = new Clappr.Player({
+            source: '', // Thay thế bằng URL video của bạn
+            parentId: '#player',
+            width: '100%',
+            height: '360px',
             autoPlay: false
         });
 
-        let currentEpisodeIndex = 0;
-        let episodes = [];
-        const speedDisplay = document.getElementById('speedDisplay');
-        let promptShown = false;
+        const tsUrl = 'https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
+        measureNetworkSpeed(tsUrl);
 
         function measureNetworkSpeed(tsUrl) {
             const xhr = new XMLHttpRequest();
@@ -159,84 +151,20 @@
                     const bytesLoaded = xhr.response.size;
                     const speedBytesPerSecond = bytesLoaded / duration;
                     const speedKBps = (speedBytesPerSecond / 1024).toFixed(2);
-                    speedDisplay.textContent = `Tốc độ: ${speedKBps} KB/s`;
+                    document.getElementById('speedDisplay').textContent = `Tốc độ: ${speedKBps} KB/s`;
                 } else {
-                    speedDisplay.textContent = "Lỗi tải file .ts";
+                    document.getElementById('speedDisplay').textContent = "Lỗi tải file .ts";
                 }
             };
 
             xhr.onerror = () => {
-                speedDisplay.textContent = "Lỗi mạng hoặc CORS";
+                document.getElementById('speedDisplay').textContent = "Lỗi mạng hoặc CORS";
             };
 
             xhr.send();
 
             setTimeout(() => measureNetworkSpeed(tsUrl), 5000);
         }
-
-        function initializePlayer(source) {
-            player.load(source);
-        }
-
-        function rewind() {
-            player.seek(Math.max(0, player.getCurrentTime() - 10));
-        }
-
-        function fastForward() {
-            player.seek(Math.min(player.getDuration(), player.getCurrentTime() + 10));
-        }
-
-        player.on(Clappr.Events.PLAYER_TIMEUPDATE, function() {
-            const remaining = player.getDuration() - player.getCurrentTime();
-            if (remaining <= 60 && remaining > 0 && episodes.length > currentEpisodeIndex + 1 && !promptShown) {
-                player.pause();
-                promptShown = true;
-                console.log('Video paused, showing prompt at last 60s of episode:', currentEpisodeIndex);
-            }
-        });
-
-        function playNextEpisode(isNext) {
-            const newIndex = isNext ? currentEpisodeIndex + 1 : currentEpisodeIndex - 1;
-            if (newIndex >= 0 && newIndex < episodes.length) {
-                currentEpisodeIndex = newIndex;
-                initializePlayer(episodes[newIndex].url);
-                updateActiveButton();
-            }
-        }
-
-        function updateActiveButton() {
-            document.querySelectorAll('.episode-btn').forEach((btn, idx) => {
-                btn.classList.toggle('active', idx === currentEpisodeIndex);
-            });
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const seriesId = urlParams.get('id');
-        const seriesData = JSON.parse(localStorage.getItem(seriesId)) || { title: 'Không tìm thấy', episodes: [], source: '' };
-
-        document.getElementById('seriesTitle').innerHTML = `${seriesData.title} <span class="source-label source-${seriesData.source}">${seriesData.source === 'api' ? '🎧' : '🎧'}</span>`;
-        episodes = seriesData.episodes;
-
-        const episodeList = document.getElementById('episodeList');
-        episodes.forEach((episode, index) => {
-            const btn = document.createElement('button');
-            btn.className = 'episode-btn';
-            btn.textContent = episode.title;
-            btn.onclick = () => {
-                currentEpisodeIndex = index;
-                initializePlayer(episode.url);
-                updateActiveButton();
-            };
-            episodeList.appendChild(btn);
-        });
-
-        if (episodes.length > 0) {
-            initializePlayer(episodes[0].url);
-            episodeList.children[0].classList.add('active');
-        }
-
-        const tsUrl = 'https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
-        measureNetworkSpeed(tsUrl);
     </script>
 </body>
 </html>
