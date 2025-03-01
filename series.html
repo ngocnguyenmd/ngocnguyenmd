@@ -146,7 +146,8 @@
         }
         .subtitle-controls label,
         .check-sub-btn,
-        .apply-sub-btn {
+        .apply-sub-btn,
+        .toggle-sub-btn {
             background: #af762f;
             color: black;
             padding: 8px 15px;
@@ -157,17 +158,24 @@
         }
         .subtitle-controls label:hover,
         .check-sub-btn:hover,
-        .apply-sub-btn:hover {
+        .apply-sub-btn:hover,
+        .toggle-sub-btn:hover {
             background: #000000;
             color: #ffffff;
         }
-        .apply-sub-btn.applied {
+        .apply-sub-btn.applied,
+        .toggle-sub-btn.active {
             background: #000000;
             color: #ffffff;
         }
         .plyr__captions span {
             text-shadow: 1px 1px 2px black;
-            color: yellow; /* Change subtitle text color */
+        }
+        .plyr__captions .yellow {
+            color: yellow; /* Subtitle 1 color */
+        }
+        .plyr__captions .green {
+            color: lime; /* Subtitle 2 color */
         }
         @media (max-width: 600px) {
             .video-container {
@@ -185,7 +193,7 @@
                 font-size: 0.8em;
                 padding: 3px 8px;
             }
-            .subtitle-controls label, .check-sub-btn, .apply-sub-btn {
+            .subtitle-controls label, .check-sub-btn, .apply-sub-btn, .toggle-sub-btn {
                 padding: 6px 10px;
                 font-size: 0.9em;
             }
@@ -212,6 +220,7 @@
                 <input type="file" id="subtitle2" accept=".srt,.vtt" onchange="loadSubtitle(2)">
                 <button class="check-sub-btn" onclick="checkSubtitles()">Kiểm tra phụ đề</button>
                 <button class="apply-sub-btn" id="applyButton" onclick="toggleSubtitles()">Áp dụng phụ đề</button>
+                <button class="toggle-sub-btn" id="toggleButton" onclick="toggleBilingual()">Chế độ song ngữ</button>
             </div>
             <div id="episodeList" class="episode-list"></div>
             <div id="nextPrompt" class="next-prompt">
@@ -234,6 +243,7 @@
         const speedDisplay = document.getElementById('speedDisplay');
         let subtitleContents = { 1: null, 2: null };
         let subtitlesApplied = false;
+        let bilingualMode = false;
         let promptShown = false;
 
         function measureNetworkSpeed(tsUrl) {
@@ -387,7 +397,16 @@
             subtitlesApplied = !subtitlesApplied;
         }
 
+        function toggleBilingual() {
+            bilingualMode = !bilingualMode;
+            const toggleBtn = document.getElementById('toggleButton');
+            toggleBtn.classList.toggle('active', bilingualMode);
+            toggleBtn.textContent = bilingualMode ? 'Tắt chế độ song ngữ' : 'Chế độ song ngữ';
+            applySubtitles();
+        }
+
         function applySubtitles() {
+            removeSubtitles();
             if (subtitleContents[1]) {
                 const track1 = document.createElement('track');
                 track1.kind = 'captions';
@@ -397,7 +416,7 @@
                 track1.default = true;
                 video.appendChild(track1);
             }
-            if (subtitleContents[2]) {
+            if (bilingualMode && subtitleContents[2]) {
                 const track2 = document.createElement('track');
                 track2.kind = 'captions';
                 track2.label = 'Phụ đề 2';
@@ -408,10 +427,18 @@
             }
             if (video.textTracks[0]) {
                 video.textTracks[0].mode = 'showing';
+                video.textTracks[0].oncuechange = () => {
+                    const trackEls = document.querySelectorAll('.plyr__captions span');
+                    trackEls.forEach(el => el.classList.add('yellow'));
+                };
                 console.log(`Track 1: mode = ${video.textTracks[0].mode}`);
             }
-            if (video.textTracks[1]) {
+            if (bilingualMode && video.textTracks[1]) {
                 video.textTracks[1].mode = 'showing';
+                video.textTracks[1].oncuechange = () => {
+                    const trackEls = document.querySelectorAll('.plyr__captions span');
+                    trackEls.forEach(el => el.classList.add('green'));
+                };
                 console.log(`Track 2: mode = ${video.textTracks[1].mode}`);
             }
         }
