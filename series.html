@@ -168,17 +168,14 @@
             background: #000000;
             color: #ffffff;
         }
-        .plyr__captions span {
-            text-shadow: 1px 1px 2px black;
-            font-size: 1em; /* Adjust font size */
-        }
-        .yellow {
-            color: yellow; /* Subtitle 1 color */
+        /* Custom styles for captions */
+        .caption-track-0 {
+            color: yellow;
             position: absolute;
             bottom: 10%;
         }
-        .green {
-            color: lime; /* Subtitle 2 color */
+        .caption-track-1 {
+            color: lime;
             position: absolute;
             bottom: 20%;
         }
@@ -439,8 +436,9 @@
                             if (!cues[i].text.startsWith('- ')) {
                                 cues[i].text = '- ' + cues[i].text;
                             }
+                            cues[i].line = 1; // Position subtitle
                         }
-                        styleCaptions('yellow', 0);
+                        applyCustomStyleToCaptions(0);
                     };
                     console.log(`Track 1: mode = ${video.textTracks[0].mode}`);
                 }
@@ -452,19 +450,22 @@
                             if (!cues[i].text.startsWith('+ ')) {
                                 cues[i].text = '+ ' + cues[i].text;
                             }
+                            cues[i].line = 2; // Position subtitle
                         }
-                        styleCaptions('green', 1);
+                        applyCustomStyleToCaptions(1);
                     };
                     console.log(`Track 2: mode = ${video.textTracks[1].mode}`);
                 }
             }, 200);
         }
 
-        function styleCaptions(colorClass, trackIndex) {
-            const trackEls = video.textTracks[trackIndex].activeCues;
+        function applyCustomStyleToCaptions(trackIndex) {
+            const trackEls = video.textTracks[trackIndex].cues;
             for (let i = 0; i < trackEls.length; i++) {
-                trackEls[i].displayState.classList.remove('yellow', 'green');
-                trackEls[i].displayState.classList.add(colorClass);
+                if (trackEls[i].displayState) {
+                    trackEls[i].displayState.classList.remove('caption-track-0', 'caption-track-1');
+                    trackEls[i].displayState.classList.add(`caption-track-${trackIndex}`);
+                }
             }
         }
 
