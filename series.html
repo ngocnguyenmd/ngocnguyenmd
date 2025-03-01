@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xem Phim - Series</title>
+    <link rel="stylesheet" href="https://releases.flowplayer.org/7.2.7/skin/skin.css">
     <style>
         body {
             margin: 0;
@@ -32,10 +33,12 @@
             position: relative;
             text-align: center;
         }
-        #player {
+        .flowplayer {
             width: 100%;
-            height: auto;
+            height: 0;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
             border-radius: 8px;
+            overflow: hidden;
         }
         .control-buttons {
             display: flex;
@@ -113,26 +116,94 @@
             }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
+    <script src="https://releases.flowplayer.org/7.2.7/flowplayer.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Xem Phim - Series</h1>
+        <h1 id="seriesTitle">Loading...</h1>
         <div class="video-container">
-            <div id="player"></div>
+            <div id="player" class="flowplayer">
+                <video>
+                    <source type="application/x-mpegurl" src=""> <!-- Thay thế bằng nguồn video của bạn -->
+                </video>
+            </div>
+            <div class="control-buttons">
+                <button class="control-btn" onclick="rewind()">⏪︎</button>
+                <button class="control-btn" onclick="playNextEpisode(false)">⏮︎</button>
+                <button class="control-btn" onclick="playNextEpisode(true)">⏭</button>
+                <button class="control-btn" onclick="fastForward()">⏩︎</button>
+            </div>
+            <div id="episodeList" class="episode-list"></div>
         </div>
         <div class="speed-display" id="speedDisplay">Tốc độ: 0 KB/s</div>
         <a href="index.html" class="back-link">Ra xưởng bánh mì</a>
     </div>
 
     <script>
-        const player = new Clappr.Player({
-            source: '', // Thay thế bằng URL video của bạn
-            parentId: '#player',
-            width: '100%',
-            height: '360px',
-            autoPlay: false
+        let currentEpisodeIndex = 0;
+        let episodes = [];
+        const speedDisplay = document.getElementById('speedDisplay');
+        let promptShown = false;
+
+        function initializePlayer(source) {
+            flowplayer("#player", {
+                clip: {
+                    sources: [
+                        { type: "application/x-mpegurl", src: source }
+                    ]
+                }
+            });
+        }
+
+        function rewind() {
+            const player = flowplayer("#player");
+            player.currentTime(Math.max(0, player.currentTime() - 10));
+        }
+
+        function fastForward() {
+            const player = flowplayer("#player");
+            player.currentTime(Math.min(player.duration(), player.currentTime() + 10));
+        }
+
+        function playNextEpisode(isNext) {
+            const newIndex = isNext ? currentEpisodeIndex + 1 : currentEpisodeIndex - 1;
+            if (newIndex >= 0 && newIndex < episodes.length) {
+                currentEpisodeIndex = newIndex;
+                initializePlayer(episodes[newIndex].url);
+                updateActiveButton();
+            }
+        }
+
+        function updateActiveButton() {
+            document.querySelectorAll('.episode-btn').forEach((btn, idx) => {
+                btn.classList.toggle('active', idx === currentEpisodeIndex);
+            });
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const seriesId = urlParams.get('id');
+        const seriesData = JSON.parse(localStorage.getItem(seriesId)) || { title: 'Không tìm thấy', episodes: [], source: '' };
+
+        document.getElementById('seriesTitle').innerHTML = `${seriesData.title} <span class="source-label source-${seriesData.source}">${seriesData.source === 'api' ? '🎧' : '🎧'}</span>`;
+        episodes = seriesData.episodes;
+
+        const episodeList = document.getElementById('episodeList');
+        episodes.forEach((episode, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'episode-btn';
+            btn.textContent = episode.title;
+            btn.onclick = () => {
+                currentEpisodeIndex = index;
+                initializePlayer(episode.url);
+                updateActiveButton();
+            };
+            episodeList.appendChild(btn);
         });
+
+        if (episodes.length > 0) {
+            initializePlayer(episodes[0].url);
+            episodeList.children[0].classList.add('active');
+        }
 
         const tsUrl = 'https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
         measureNetworkSpeed(tsUrl);
@@ -151,14 +222,14 @@
                     const bytesLoaded = xhr.response.size;
                     const speedBytesPerSecond = bytesLoaded / duration;
                     const speedKBps = (speedBytesPerSecond / 1024).toFixed(2);
-                    document.getElementById('speedDisplay').textContent = `Tốc độ: ${speedKBps} KB/s`;
+                    speedDisplay.textContent = `Tốc độ: ${speedKBps} KB/s`;
                 } else {
-                    document.getElementById('speedDisplay').textContent = "Lỗi tải file .ts";
+                    speedDisplay.textContent = "Lỗi tải file .ts";
                 }
             };
 
             xhr.onerror = () => {
-                document.getElementById('speedDisplay').textContent = "Lỗi mạng hoặc CORS";
+                speedDisplay.textContent = "Lỗi mạng hoặc CORS";
             };
 
             xhr.send();
