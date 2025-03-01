@@ -370,29 +370,35 @@
     video.addEventListener('loadedmetadata', () => {
       console.log('Video duration:', video.duration);
     });
+    let promptedEpisodes = {};
 
-    video.addEventListener('timeupdate', () => {
-      if (!video.duration || isNaN(video.duration)) return;
-      const remaining = video.duration - video.currentTime;
-      const prompt = document.getElementById('nextPrompt');
-      if (remaining <= 60 && remaining > 0 && episodes.length > currentEpisodeIndex + 1) {
-        video.pause();
-        prompt.style.display = 'block';
-        console.log('Video paused, showing prompt at last 60s of episode:', currentEpisodeIndex);
-      }
-      updateCustomCaptions();
-    });
+video.addEventListener('timeupdate', () => {
+  if (!video.duration || isNaN(video.duration)) return;
+  const remaining = video.duration - video.currentTime;
+  const prompt = document.getElementById('nextPrompt');
 
-    function playNextEpisode(isNext) {
-      const newIndex = isNext ? currentEpisodeIndex + 1 : currentEpisodeIndex - 1;
-      if (newIndex >= 0 && newIndex < episodes.length) {
-        currentEpisodeIndex = newIndex;
-        initializePlayer(episodes[newIndex].url);
-        updateActiveButton();
-        document.getElementById('nextPrompt').style.display = 'none';
-        console.log('Switching to next episode:', currentEpisodeIndex);
-      }
-    }
+  // Kiểm tra: nếu tập hiện tại chưa được hỏi, thời gian còn <= 60s và còn tập tiếp theo
+  if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 60 && remaining > 0 && episodes.length > currentEpisodeIndex + 1) {
+    video.pause();
+    prompt.style.display = 'block';
+    promptedEpisodes[currentEpisodeIndex] = true; // Đánh dấu tập này đã được hỏi
+    console.log('Đã hiển thị prompt cho tập:', currentEpisodeIndex);
+  }
+  updateCustomCaptions();
+});
+
+function playNextEpisode(isNext) {
+  const newIndex = isNext ? currentEpisodeIndex + 1 : currentEpisodeIndex - 1;
+  if (newIndex >= 0 && newIndex < episodes.length) {
+    currentEpisodeIndex = newIndex;
+    initializePlayer(episodes[newIndex].url);
+    updateActiveButton();
+    document.getElementById('nextPrompt').style.display = 'none';
+    // Không cần reset promptedEpisodes cho tập mới nếu bạn muốn mỗi tập luôn chỉ hỏi 1 lần duy nhất
+    console.log('Chuyển sang tập mới:', currentEpisodeIndex);
+  }
+}
+   
 
     function updateActiveButton() {
       document.querySelectorAll('.episode-btn').forEach((btn, idx) => {
