@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xem Phim - Series</title>
-    <!-- Video.js CSS for video functionality -->
     <link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" />
     <style>
         body {
@@ -25,6 +24,19 @@
             margin-bottom: 20px;
             text-align: center;
             position: relative;
+        }
+        .source-label {
+            font-size: 0.8em;
+            padding: 2px 5px;
+            color: #fff;
+            border-radius: 3px;
+            margin-left: 10px;
+        }
+        .source-api {
+            background: #af762f;
+        }
+        .source-creator {
+            background: green;
         }
         .video-container {
             background: #1a1a1a;
@@ -55,6 +67,73 @@
         .control-btn:hover {
             background: #000000;
             color: #ffffff;
+        }
+        .episode-list {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .episode-btn {
+            background: #000000;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .episode-btn:hover,
+        .episode-btn.active {
+            background: #af762f;
+            color: black;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #af762f;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .next-prompt {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2b2727;
+            padding: 15px 25px;
+            border-radius: 5px;
+            display: none;
+            z-index: 10;
+            text-align: center;
+        }
+        .next-prompt button {
+            background: #af762f;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .next-prompt button:hover {
+            background: #000000;
+            color: yellow;
+        }
+        .speed-display {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            color: #f5cf8e;
+            z-index: 1000;
         }
         .subtitle-controls {
             display: flex;
@@ -91,6 +170,7 @@
         }
         .vjs-text-track-cue {
             text-shadow: 1px 1px 2px black;
+            font-size: 1em;
         }
         .yellow {
             color: yellow;
@@ -98,16 +178,26 @@
         .green {
             color: lime;
         }
-        .speed-display {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.9em;
-            color: #f5cf8e;
-            z-index: 1000;
+        @media (max-width: 600px) {
+            .video-container {
+                padding: 10px;
+            }
+            .control-btn, .episode-btn {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+            .next-prompt {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+            .speed-display {
+                font-size: 0.8em;
+                padding: 3px 8px;
+            }
+            .subtitle-controls label, .check-sub-btn, .apply-sub-btn, .toggle-sub-btn {
+                padding: 6px 10px;
+                font-size: 0.9em;
+            }
         }
     </style>
 </head>
@@ -133,47 +223,29 @@
                 <button class="apply-sub-btn" id="applyButton" onclick="toggleSubtitles()">Áp dụng phụ đề</button>
                 <button class="toggle-sub-btn" id="toggleButton" onclick="toggleBilingual()">Chế độ song ngữ</button>
             </div>
+            <div id="episodeList" class="episode-list"></div>
+            <div id="nextPrompt" class="next-prompt">
+                <span>Chuyển sang tập tiếp theo?</span><br>
+                <button onclick="playNextEpisode(true)">Có</button>
+                <button onclick="hidePrompt()">Không</button>
+            </div>
         </div>
         <div class="speed-display" id="speedDisplay">Tốc độ: 0 KB/s</div>
+        <a href="index.html" class="back-link">Ra xưởng bánh mì</a>
     </div>
 
-    <!-- Video.js library -->
     <script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
     <script>
         const player = videojs('player');
         let subtitleContents = { 1: null, 2: null };
         let subtitlesApplied = false;
         let bilingualMode = false;
+        let currentEpisodeIndex = 0;
+        let episodes = [];
+        const speedDisplay = document.getElementById('speedDisplay');
+        let promptShown = false;
 
-        function measureNetworkSpeed() {
-            const videoSrc = player.currentSource().src;
-
-            if (!videoSrc) {
-                alert('Please provide a valid video source.');
-                return;
-            }
-
-            fetch(videoSrc)
-                .then(response => response.text())
-                .then(data => {
-                    const tsUrl = extractTsUrl(data);
-                    if (tsUrl) {
-                        downloadAndMeasure(tsUrl);
-                    } else {
-                        alert('No .ts URL found in the playlist.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching playlist:', error);
-                });
-        }
-
-        function extractTsUrl(playlist) {
-            const lines = playlist.split('\n');
-            return lines.find(line => line.endsWith('.ts'));
-        }
-
-        function downloadAndMeasure(tsUrl) {
+        function measureNetworkSpeed(tsUrl) {
             const xhr = new XMLHttpRequest();
             const startTime = performance.now();
 
@@ -187,22 +259,27 @@
                     const bytesLoaded = xhr.response.size;
                     const speedBytesPerSecond = bytesLoaded / duration;
                     const speedKBps = (speedBytesPerSecond / 1024).toFixed(2);
-                    document.getElementById('speedDisplay').textContent = `Tốc độ: ${speedKBps} KB/s`;
+                    speedDisplay.textContent = `Tốc độ: ${speedKBps} KB/s`;
                 } else {
-                    document.getElementById('speedDisplay').textContent = "Lỗi tải file .ts";
+                    speedDisplay.textContent = "Lỗi tải file .ts";
                 }
             };
 
             xhr.onerror = () => {
-                document.getElementById('speedDisplay').textContent = "Lỗi mạng hoặc CORS";
+                speedDisplay.textContent = "Lỗi mạng hoặc CORS";
             };
 
             xhr.send();
+
+            setTimeout(() => measureNetworkSpeed(tsUrl), 5000);
         }
 
-        player.ready(() => {
-            measureNetworkSpeed();
-        });
+        function initializePlayer(source) {
+            player.src({ type: 'application/x-mpegURL', src: source });
+            player.on('loadedmetadata', () => {
+                applySubtitles();
+            });
+        }
 
         function rewind() {
             player.currentTime(Math.max(0, player.currentTime() - 10));
@@ -212,27 +289,47 @@
             player.currentTime(Math.min(player.duration(), player.currentTime() + 10));
         }
 
-        function loadSubtitle(number) {
-            const input = document.getElementById(`subtitle${number}`);
-            const file = input.files[0];
-            if (!file) return;
+        player.on('timeupdate', () => {
+            const remaining = player.duration() - player.currentTime();
+            const prompt = document.getElementById('nextPrompt');
+            if (remaining <= 60 && remaining > 0 && episodes.length > currentEpisodeIndex + 1 && !promptShown) {
+                player.pause();
+                prompt.style.display = 'block';
+                promptShown = true;
+                console.log('Video paused, showing prompt at last 60s of episode:', currentEpisodeIndex);
+            }
+        });
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const subtitleText = e.target.result;
-                const vttText = convertSrtToVtt(subtitleText);
-                subtitleContents[number] = vttText;
-                console.log(`Subtitles ${number} loaded and converted`);
-            };
-            reader.readAsText(file);
+        function playNextEpisode(isNext) {
+            const newIndex = isNext ? currentEpisodeIndex + 1 : currentEpisodeIndex - 1;
+            if (newIndex >= 0 && newIndex < episodes.length) {
+                currentEpisodeIndex = newIndex;
+                initializePlayer(episodes[newIndex].url);
+                updateActiveButton();
+                const prompt = document.getElementById('nextPrompt');
+                if (prompt) prompt.style.display = 'none';
+                console.log('Switching to next episode:', currentEpisodeIndex);
+            }
         }
 
-        function convertSrtToVtt(srt) {
-            const vtt = "WEBVTT\n\n" + srt
-                .replace(/\{\\([ibu])\}/g, '</$1>')
-                .replace(/\{\\([ibu])1\}/g, '<$1>')
-                .replace(/(\d+:\d+:\d+),(\d+)/g, '$1.$2');
-            return vtt;
+        function updateActiveButton() {
+            document.querySelectorAll('.episode-btn').forEach((btn, idx) => {
+                btn.classList.toggle('active', idx === currentEpisodeIndex);
+            });
+        }
+
+        function hidePrompt() {
+            const prompt = document.getElementById('nextPrompt');
+            if (prompt) {
+                prompt.style.display = 'none';
+                console.log('Prompt hidden after clicking No');
+            } else {
+                console.error('Could not find nextPrompt element');
+            }
+            player.play().catch(err => {
+                console.error('Error resuming video:', err);
+            });
+            console.log('Prompt closed, resuming current video');
         }
 
         function toggleSubtitles() {
@@ -259,48 +356,82 @@
         function applySubtitles() {
             removeSubtitles();
             if (subtitleContents[1]) {
-                const track1 = player.addRemoteTextTrack({
-                    kind: 'captions',
-                    src: URL.createObjectURL(new Blob([subtitleContents[1]], { type: 'text/vtt' })),
-                    srclang: 'vi',
-                    label: 'Phụ đề 1',
-                    default: true
-                }).track;
-                track1.mode = 'showing';
-                styleCaptions(track1, 'yellow');
+                const track1 = document.createElement('track');
+                track1.kind = 'captions';
+                track1.label = 'Phụ đề 1';
+                track1.srclang = 'vi';
+                track1.src = subtitleContents[1];
+                track1.default = true;
+                player.el().appendChild(track1);
             }
             if (bilingualMode && subtitleContents[2]) {
-                const track2 = player.addRemoteTextTrack({
-                    kind: 'captions',
-                    src: URL.createObjectURL(new Blob([subtitleContents[2]], { type: 'text/vtt' })),
-                    srclang: 'en',
-                    label: 'Phụ đề 2',
-                    default: false
-                }).track;
-                track2.mode = 'showing';
-                styleCaptions(track2, 'green');
+                const track2 = document.createElement('track');
+                track2.kind = 'captions';
+                track2.label = 'Phụ đề 2';
+                track2.srclang = 'vi';
+                track2.src = subtitleContents[2];
+                track2.default = false;
+                player.el().appendChild(track2);
             }
+            setTimeout(() => {
+                if (player.textTracks()[0]) {
+                    player.textTracks()[0].mode = 'showing';
+                    styleCaptions(player.textTracks()[0], 'yellow', 90);
+                }
+                if (bilingualMode && player.textTracks()[1]) {
+                    player.textTracks()[1].mode = 'showing';
+                    styleCaptions(player.textTracks()[1], 'green', 80);
+                }
+            }, 200);
         }
 
-        function styleCaptions(track, colorClass) {
-            track.oncuechange = () => {
+        function styleCaptions(track, colorClass, linePos) {
+            track.on('cuechange', () => {
                 const cues = track.activeCues;
                 for (let i = 0; i < cues.length; i++) {
                     if (!cues[i].text.startsWith(colorClass === 'yellow' ? '- ' : '+ ')) {
                         cues[i].text = (colorClass === 'yellow' ? '- ' : '+ ') + cues[i].text;
                     }
-                    cues[i].line = colorClass === 'yellow' ? 90 : 80;
-                    cues[i].position = 50;
+                    cues[i].line = linePos;
                     cues[i].align = 'center';
+                    cues[i].position = 50;
                 }
-            };
+            });
         }
 
         function removeSubtitles() {
-            const tracks = player.remoteTextTracks();
-            while (tracks.length > 0) {
-                player.removeRemoteTextTrack(tracks[0]);
+            while (player.el().getElementsByTagName('track').length > 0) {
+                player.el().removeChild(player.el().getElementsByTagName('track')[0]);
             }
+        }
+
+        function loadSubtitle(number) {
+            const input = document.getElementById(`subtitle${number}`);
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const subtitleText = e.target.result;
+                const vttText = convertSrtToVtt(subtitleText);
+                subtitleContents[number] = 'data:text/vtt;base64,' + encodeBase64(vttText);
+                console.log(`Subtitles ${number} loaded and converted`);
+            };
+            reader.readAsText(file);
+        }
+
+        function encodeBase64(str) {
+            let bytes = new TextEncoder().encode(str);
+            let binary = Array.from(bytes).map(b => String.fromCharCode(b)).join('');
+            return btoa(binary);
+        }
+
+        function convertSrtToVtt(srt) {
+            const vtt = "WEBVTT\n\n" + srt
+                .replace(/\{\\([ibu])\}/g, '</$1>')
+                .replace(/\{\\([ibu])1\}/g, '<$1>')
+                .replace(/(\d+:\d+:\d+),(\d+)/g, '$1.$2');
+            return vtt;
         }
 
         function checkSubtitles() {
@@ -308,7 +439,45 @@
             for (const key in subtitleContents) {
                 console.log(`Subtitle ${key}:`, subtitleContents[key] ? 'Loaded and ready' : 'Not loaded');
             }
+            player.textTracks().forEach((track, index) => {
+                console.log(`Track ${index}: mode = ${track.mode}`);
+                if (track.mode === 'showing') {
+                    console.log('Subtitle is displayed on video');
+                } else {
+                    console.log('Subtitle is not displayed');
+                }
+            });
         }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const seriesId = urlParams.get('id');
+        const seriesData = JSON.parse(localStorage.getItem(seriesId)) || { title: 'Không tìm thấy', episodes: [], source: '' };
+
+        document.getElementById('seriesTitle').innerHTML = `${seriesData.title} <span class="source-label source-${seriesData.source}">${seriesData.source === 'api' ? '🎧' : '🎧'}</span>`;
+        episodes = seriesData.episodes;
+
+        const episodeList = document.getElementById('episodeList');
+        episodes.forEach((episode, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'episode-btn';
+            btn.textContent = episode.title;
+            btn.onclick = () => {
+                currentEpisodeIndex = index;
+                initializePlayer(episode.url);
+                const prompt = document.getElementById('nextPrompt');
+                if (prompt) prompt.style.display = 'none';
+                updateActiveButton();
+            };
+            episodeList.appendChild(btn);
+        });
+
+        if (episodes.length > 0) {
+            initializePlayer(episodes[0].url);
+            episodeList.children[0].classList.add('active');
+        }
+
+        const tsUrl = 'https://vip.opstream15.com/20250225/49776_0eca5fa0/3000k/hls/31d96b8d5a75522515cd08b129713af1.ts';
+        measureNetworkSpeed(tsUrl);
     </script>
 </body>
 </html>
