@@ -436,7 +436,7 @@
                                 cues[i].text = '- ' + cues[i].text;
                             }
                         }
-                        styleCaptions('yellow');
+                        styleCaptions('yellow', 0);
                     };
                     console.log(`Track 1: mode = ${video.textTracks[0].mode}`);
                 }
@@ -449,19 +449,19 @@
                                 cues[i].text = '+ ' + cues[i].text;
                             }
                         }
-                        styleCaptions('green');
+                        styleCaptions('green', 1);
                     };
                     console.log(`Track 2: mode = ${video.textTracks[1].mode}`);
                 }
             }, 200);
         }
 
-        function styleCaptions(colorClass) {
-            const trackEls = document.querySelectorAll('.plyr__captions span');
-            trackEls.forEach(el => {
-                el.classList.remove('yellow', 'green');
-                el.classList.add(colorClass);
-            });
+        function styleCaptions(colorClass, trackIndex) {
+            const trackEls = video.textTracks[trackIndex].activeCues;
+            for (let i = 0; i < trackEls.length; i++) {
+                trackEls[i].displayState.classList.remove('yellow', 'green');
+                trackEls[i].displayState.classList.add(colorClass);
+            }
         }
 
         function removeSubtitles() {
