@@ -183,11 +183,8 @@
         document.getElementById('pageHeader').textContent = pageTitles[currentPage] || 'Bánh mì là số 1';
         document.getElementById('apiSectionTitle').textContent = apiSectionTitles[currentPage] || 'Trung Quốc';
 
-        const apiSource = currentPage === 'anime.html' ? 'apiAnime.json' :
-                         currentPage === 'phim-han.html' ? 'apiHan.json' :
-                         currentPage === 'truyen-hinh.html' ? 'tv.json' :
-                         currentPage === 'phim-my.html' ? 'apiUsa.json' :
-                         currentPage === 'phim-viet.html' ? 'apiVn.json' : 'apiUrls.json';
+        const apiSource = 
+                         currentPage === 'phim-han.html' ? 'apiHan.json' :'';
         const seriesTxtUrl = 'https://raw.githubusercontent.com/ngocnguyenmd/ngocnguyenmd/main/series.txt';
         const sourceLabels = { api: 'Vip', creator: 'HD+' };
 
