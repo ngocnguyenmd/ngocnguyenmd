@@ -6,52 +6,66 @@
     <title>Xem Phim - Trang Chủ</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <style>
+        :root {
+            --primary-color: #543a7e;
+            --secondary-color: #0b3a44;
+            --bg-color: #05071a;
+            --card-bg: #191b24;
+            --text-color: #e4e4e4;
+        }
+        
         body {
             margin: 0;
             padding: 5px;
-            background: #05071a;
+            background: var(--bg-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #e4e4e4;
+            color: var(--text-color);
             overflow-x: hidden;
         }
+        
         h1 {
             text-align: center;
             font-size: 1.5em;
             margin-bottom: 10px;
-            color: #543a7e;
+            color: var(--primary-color);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+        
         h2 {
             font-size: 1.1em;
             color: #b8b8b8;
             margin: 10px 0 5px;
             text-align: center;
-            background: linear-gradient(90deg, #543a7e, #0b3a44);
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
             padding: 6px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
         }
+        
         .search-container {
             display: flex;
             justify-content: center;
             margin-bottom: 10px;
         }
+        
         .search-input {
             width: 100%;
             max-width: 300px;
             padding: 8px 12px;
             font-size: 0.9em;
-            border: 2px solid #543a7e;
+            border: 2px solid var(--primary-color);
             border-radius: 20px;
-            background-color: #191b24;
-            color: #e4e4e4;
+            background-color: var(--card-bg);
+            color: var(--text-color);
             outline: none;
             transition: border-color 0.3s ease;
         }
+        
         .search-input:focus {
-            border-color: #0b3a44;
+            border-color: var(--secondary-color);
         }
+        
         .category-menu {
             display: flex;
             justify-content: center;
@@ -59,12 +73,13 @@
             margin-bottom: 10px;
             flex-wrap: wrap;
         }
+        
         .category-link {
-            color: #e4e4e4;
+            color: var(--text-color);
             text-decoration: none;
             font-size: 0.9em;
             padding: 8px 12px;
-            border: 2px solid #543a7e;
+            border: 2px solid var(--primary-color);
             border-radius: 20px;
             background-color: transparent;
             transition: all 0.3s ease;
@@ -72,146 +87,177 @@
             max-width: 200px;
             text-align: center;
         }
+        
         .category-link:hover {
-            background-color: #543a7e;
+            background-color: var(--primary-color);
             color: #fff;
             transform: scale(1.05);
         }
+        
         .category-link:active {
             transform: scale(0.98);
         }
+        
         .movie-section {
             margin-bottom: 10px;
         }
+        
         .movie-container {
             display: flex;
             gap: 10px;
             justify-content: flex-start;
             overflow-x: auto;
             padding-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) var(--bg-color);
         }
-        /* Chỉ áp dụng wrap cho Danh Sách Phim */
+        
+        .movie-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .movie-container::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+        
         #danhSachContainer {
             flex-wrap: wrap;
             max-width: 720px;
             margin: 0 auto;
             justify-content: center;
             gap: 20px;
-            overflow-x: hidden; /* Ngăn cuộn ngang cho Danh Sách Phim */
+            overflow-x: hidden;
         }
+        
         .scrolling-container {
-            animation: scrollPosters 90s linear infinite;
+            animation: scrollPosters 60s linear infinite; /* Reduced from 90s to 60s */
             width: max-content;
         }
+        
         @keyframes scrollPosters {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
+        
         .movie-card {
-            flex: 0 0 200px; /* Tăng từ 100px lên 200px */
+            flex: 0 0 200px;
             max-width: 200px;
             text-decoration: none;
             color: inherit;
-            transition: transform 0.3s ease;
+            transition: transform 0.2s ease; /* Reduced from 0.3s to 0.2s */
             position: relative;
             display: flex;
             flex-direction: column;
         }
-        /* Giữ kích thước nhỏ hơn cho các section cuộn ngang */
+        
         #banhMiContainer .movie-card,
-        #vipContainer .movie-card,
+        #VipContainer .movie-card,
         #apiContainer .movie-card {
             flex: 0 0 100px;
             max-width: 100px;
         }
+        
         .movie-poster {
             width: 100%;
-            height: 300px; /* Tăng từ 150px lên 300px */
-            border: 2px solid #543a7e;
+            height: 300px;
+            border: 2px solid var(--primary-color);
             border-radius: 8px;
             object-fit: cover;
-            background: #191b24;
-            transition: opacity 0.3s ease-in;
+            background: var(--card-bg);
             opacity: 0;
+            transition: opacity 0.2s ease-in; /* Reduced from 0.3s to 0.2s */
         }
-        /* Giữ kích thước nhỏ hơn cho các section cuộn ngang */
+        
         #banhMiContainer .movie-poster,
-        #vipContainer .movie-poster,
+        #VipContainer .movie-poster,
         #apiContainer .movie-poster {
             height: 150px;
         }
+        
         .movie-poster.loaded {
             opacity: 1;
         }
+        
         .movie-title {
-            padding: 5px 0; /* Tăng từ 3px lên 5px */
-            font-size: 1em; /* Tăng từ 0.8em lên 1em */
+            padding: 5px 0;
+            font-size: 1em;
             font-weight: bold;
             text-align: center;
-            color: #e4e4e4;
+            color: var(--text-color);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        /* Giữ font nhỏ hơn cho các section cuộn ngang */
+        
         #banhMiContainer .movie-title,
-        #vipContainer .movie-title,
+        #VipContainer .movie-title,
         #apiContainer .movie-title {
             font-size: 0.8em;
             padding: 3px 0;
         }
+        
         .source-label {
             position: absolute;
-            top: 5px; /* Tăng từ 3px lên 5px */
+            top: 5px;
             right: 5px;
-            padding: 3px 6px; /* Tăng từ 2px 4px lên 3px 6px */
-            font-size: 0.7em; /* Tăng từ 0.6em lên 0.7em */
+            padding: 3px 6px;
+            font-size: 0.7em;
             color: #fff;
             border-radius: 3px;
         }
-        /* Giữ nhãn nhỏ hơn cho các section cuộn ngang */
+        
         #banhMiContainer .source-label,
-        #vipContainer .source-label,
+        #VipContainer .source-label,
         #apiContainer .source-label {
             top: 3px;
             right: 3px;
             padding: 2px 4px;
             font-size: 0.6em;
         }
-        .source-api { background: #191b24; }
-        .source-creator { background: #543a7e; }
+        
+        .source-api { background: var(--card-bg); }
+        .source-creator { background: var(--primary-color); }
+        
         .movie-card:hover {
             transform: scale(1.05);
         }
+        
         @media (max-width: 720px) {
             .category-link {
                 font-size: 0.8em;
                 padding: 6px 10px;
             }
+            
             .movie-card {
-                flex: 0 0 180px; /* Tăng từ 90px lên 180px cho Danh Sách Phim */
+                flex: 0 0 180px;
                 max-width: 180px;
             }
+            
             #banhMiContainer .movie-card,
-            #vipContainer .movie-card,
+            #VipContainer .movie-card,
             #apiContainer .movie-card {
-                flex: 0 0 90px; /* Giữ kích thước nhỏ cho cuộn ngang */
+                flex: 0 0 90px;
                 max-width: 90px;
             }
+            
             .movie-poster {
-                height: 270px; /* Tăng từ 135px lên 270px cho Danh Sách Phim */
+                height: 270px;
             }
+            
             #banhMiContainer .movie-poster,
-            #vipContainer .movie-poster,
+            #VipContainer .movie-poster,
             #apiContainer .movie-poster {
-                height: 135px; /* Giữ kích thước nhỏ cho cuộn ngang */
+                height: 135px;
             }
+            
             .search-input {
                 max-width: 100%;
             }
-            #danhSachContainer {
-                max-width: 720px; /* Giữ nguyên để vừa màn hình */
-            }
+        }
+        
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -250,30 +296,53 @@
     </div>
 
     <script>
+        // Cấu hình và biến toàn cục
+        const config = {
+            pageMapping: {
+                'index.html': { title: 'Bánh mì là số 1', apiSection: 'Trung Quốc' },
+                'phim-my.html': { title: 'Phim Mỹ - Bánh mì là số 1', apiSection: 'Phim Mỹ' },
+                'phim-viet.html': { title: 'Phim Việt - Bánh mì là số 1', apiSection: 'Phim Việt' },
+                'phim-han.html': { title: 'Phim Hàn - Bánh mì là số 1', apiSection: 'Phim Hàn' },
+                'truyen-hinh.html': { title: 'Truyền Hình - Bánh mì là số 1', apiSection: 'Truyền Hình' },
+                'anime.html': { title: 'Hoạt Hình - Bánh mì là số 1', apiSection: 'Hoạt Hình' },
+                'tv.html': { title: 'TV - Bánh mì là số 1', apiSection: 'TV' }
+            },
+            sourceLabels: { 
+                api: 'Vip', 
+                creator: 'HD+' 
+            },
+            seriesTxtUrl: 'https://raw.githubusercontent.com/ngocnguyenmd/ngocnguyenmd/main/series.txt'
+        };
+        
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        const pageTitles = {
-            'index.html': 'Bánh mì là số 1',
-            'phim-my.html': 'Phim Mỹ - Bánh mì là số 1',
-            'phim-viet.html': 'Phim Việt - Bánh mì là số 1',
-            'phim-han.html': 'Phim Hàn - Bánh mì là số 1',
-            'truyen-hinh.html': 'Truyền Hình - Bánh mì là số 1',
-            'anime.html': 'Hoạt Hình - Bánh mì là số 1',
-            'tv.html': 'TV - Bánh mì là số 1'
-        };
-        const apiSectionTitles = {
-            'index.html': 'Trung Quốc',
-            'phim-my.html': 'Phim Mỹ',
-            'phim-viet.html': 'Phim Việt',
-            'phim-han.html': 'Phim Hàn',
-            'truyen-hinh.html': 'Truyền Hình',
-            'anime.html': 'Hoạt Hình',
-            'tv.html': 'TV'
-        };
-
-        document.getElementById('pageHeader').textContent = pageTitles[currentPage] || 'Bánh mì là số 1';
-        document.getElementById('apiSectionTitle').textContent = apiSectionTitles[currentPage] || 'Trung Quốc';
-
+        const pageConfig = config.pageMapping[currentPage] || config.pageMapping['index.html'];
         let allMovies = {};
+        let apiCache = {};
+        
+        // Thiết lập tiêu đề trang
+        document.getElementById('pageHeader').textContent = pageConfig.title;
+        document.getElementById('apiSectionTitle').textContent = pageConfig.apiSection;
+        
+        // Lấy các phần tử DOM
+        const elements = {
+            vipContainer: document.getElementById('VipContainer'),
+            apiContainer: document.getElementById('apiContainer'),
+            banhMiContainer: document.getElementById('banhMiContainer'),
+            danhSachContainer: document.getElementById('danhSachContainer'),
+            searchInput: document.getElementById('searchInput')
+        };
+        
+        // Khởi tạo IntersectionObserver cho lazy loading
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.add('loaded');
+                    observer.unobserve(img);
+                }
+            });
+        }, { rootMargin: '200px', threshold: 0.1 });
 
         // Hàm phân loại phim từ API dựa trên tiêu đề
         function categorizeMovie(title) {
@@ -289,168 +358,245 @@
             } else if (lowerTitle.includes('truyền hình') || lowerTitle.includes('tv')) {
                 return 'truyen-hinh.html';
             } else {
-                return 'index.html'; // Mặc định là Trung Quốc hoặc Trang Chủ
+                return 'index.html';
             }
         }
-
-        fetch('apiUrls.json')
-            .then(response => response.json())
-            .then(data => {
-                const apiUrls = data.urls || [];
-                const fetchAPIs = apiUrls.map(url => 
+        
+        // Tạo thẻ phim
+        function createMovieCard(seriesId, movieData) {
+            const { title, poster, source } = movieData;
+            const card = document.createElement('a');
+            card.href = `series.html?id=${seriesId}`;
+            card.className = 'movie-card';
+            card.innerHTML = `
+                <img data-src="${poster}" class="movie-poster lazyload" alt="${title}" loading="lazy">
+                <div class="movie-title">${title}</div>
+                <span class="source-label source-${source}">${config.sourceLabels[source]}</span>
+            `;
+            return card;
+        }
+        
+        // Hiển thị phim theo bộ lọc
+        function displayMovies(filter = '') {
+            // Xóa nội dung hiện tại
+            Object.values(elements).forEach(container => {
+                if (container !== elements.searchInput) {
+                    container.innerHTML = '';
+                }
+            });
+            
+            // Lọc và hiển thị phim
+            const filterLower = filter.toLowerCase();
+            let apiMovies = '';
+            
+            Object.entries(allMovies).forEach(([seriesId, movie]) => {
+                const { title, targetPage, container, source } = movie;
+                const shouldDisplay = (
+                    (source === 'api' && targetPage === currentPage) ||
+                    (source === 'creator' && (
+                        (currentPage === 'index.html' && targetPage === 'all') ||
+                        targetPage === currentPage ||
+                        (currentPage === 'truyen-hinh.html' && targetPage === 'tv.html') ||
+                        (currentPage === 'tv.html' && targetPage === 'truyen-hinh.html')
+                    ))
+                );
+                
+                const matchesSearch = title.toLowerCase().includes(filterLower);
+                
+                if (shouldDisplay && matchesSearch) {
+                    const card = createMovieCard(seriesId, movie);
+                    
+                    // Thêm thẻ vào container tương ứng
+                    if (container === 'vip') {
+                        elements.vipContainer.appendChild(card);
+                    } else if (container === 'danh-sach') {
+                        elements.danhSachContainer.appendChild(card);
+                    } else if (source === 'api') {
+                        // Thu thập HTML cho container API để nhân đôi sau đó
+                        apiMovies += card.outerHTML;
+                    } else {
+                        elements.banhMiContainer.appendChild(card);
+                    }
+                }
+            });
+            
+            // Nhân đôi phim API cho hiệu ứng cuộn vô hạn
+            if (apiMovies) {
+                elements.apiContainer.innerHTML = apiMovies + apiMovies;
+            }
+            
+            // Khởi tạo lazy loading
+            const lazyloadImages = document.querySelectorAll('img.lazyload');
+            lazyloadImages.forEach(img => imageObserver.observe(img));
+        }
+        
+        // Lưu trữ dữ liệu phim vào localStorage
+        function saveMoviesToStorage() {
+            try {
+                localStorage.setItem('allMovies', JSON.stringify(allMovies));
+                localStorage.setItem('lastUpdate', Date.now().toString());
+            } catch (e) {
+                console.error('Lỗi khi lưu dữ liệu vào localStorage:', e);
+            }
+        }
+        
+        // Tải dữ liệu phim từ localStorage
+        function loadMoviesFromStorage() {
+            try {
+                const storedMovies = localStorage.getItem('allMovies');
+                const lastUpdate = localStorage.getItem('lastUpdate');
+                
+                // Kiểm tra xem dữ liệu có và không quá cũ (1 giờ)
+                if (storedMovies && lastUpdate && (Date.now() - parseInt(lastUpdate)) < 3600000) {
+                    allMovies = JSON.parse(storedMovies);
+                    return true;
+                }
+            } catch (e) {
+                console.error('Lỗi khi đọc dữ liệu từ localStorage:', e);
+            }
+            return false;
+        }
+        
+        // Xử lý dữ liệu từ series.txt
+        function processTxtData(txtData) {
+            const lines = txtData.split('\n');
+            let currentTargetPage = null;
+            let currentContainer = null;
+            
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+                
+                if (line.startsWith('#')) {
+                    const match = line.match(/# .+ \(([^,]+)(?:,\s*([^)]+))?\)/);
+                    if (match) {
+                        currentTargetPage = match[1].toLowerCase() + '.html';
+                        currentContainer = match[2] ? match[2].toLowerCase() : 'trung-quoc';
+                    }
+                } else if (currentTargetPage) {
+                    const parts = line.split('|');
+                    if (parts.length < 2) return;
+                    
+                    const title = parts[0].trim();
+                    const seriesId = title.toLowerCase().replace(/\s+/g, '-');
+                    
+                    if (!allMovies[seriesId]) {
+                        allMovies[seriesId] = {
+                            title,
+                            targetPage: currentTargetPage,
+                            container: currentContainer,
+                            poster: '',
+                            episodes: [],
+                            source: 'creator'
+                        };
+                    }
+                    
+                    if (parts.length === 2) {
+                        // Dòng poster
+                        allMovies[seriesId].poster = parts[1].trim();
+                    } else if (parts.length >= 3) {
+                        // Dòng tập phim
+                        allMovies[seriesId].episodes.push({
+                            title: parts[1].trim(),
+                            url: parts[2].trim()
+                        });
+                    }
+                }
+            });
+        }
+        
+        // Xử lý dữ liệu từ API
+        function processApiData(data, index) {
+            if (!data || !data.status || !data.movie) return;
+            
+            const movie = data.movie;
+            const title = movie.name;
+            const poster = movie.poster_url;
+            const seriesId = movie.slug;
+            
+            const episodes = data.episodes[0]?.server_data?.map(ep => ({
+                title: `Tập ${ep.name}`,
+                url: ep.link_m3u8
+            })) || [];
+            
+            const targetPage = categorizeMovie(title);
+            const container = index % 2 === 0 ? 'api' : 'danh-sach';
+            
+            allMovies[seriesId] = {
+                title,
+                poster,
+                episodes,
+                targetPage,
+                source: 'api',
+                container
+            };
+        }
+        
+        // Tải dữ liệu từ tất cả các nguồn
+        async function loadAllData() {
+            // Kiểm tra cache đầu tiên
+            if (loadMoviesFromStorage()) {
+                displayMovies();
+                // Vẫn tải dữ liệu mới ở nền
+                fetchDataInBackground();
+                return;
+            }
+            
+            try {
+                // Tải apiUrls.json
+                const apiUrlsResponse = await fetch('apiUrls.json');
+                const apiUrlsData = await apiUrlsResponse.json();
+                const apiUrls = apiUrlsData.urls || [];
+                
+                // Tải dữ liệu từ tất cả các API
+                const apiPromises = apiUrls.map((url, index) => 
                     fetch(url)
                         .then(response => response.json())
-                        .catch(err => {
-                            console.error(`Lỗi khi gọi API ${url}:`, err);
-                            return null;
-                        })
+                        .then(data => processApiData(data, index))
+                        .catch(err => console.error(`Lỗi khi gọi API ${url}:`, err))
                 );
-
-                const seriesTxtUrl = 'https://raw.githubusercontent.com/ngocnguyenmd/ngocnguyenmd/main/series.txt';
-                const sourceLabels = { api: 'Vip', creator: 'HD+' };
-
-                const fetchTxt = fetch(seriesTxtUrl)
+                
+                // Tải dữ liệu từ series.txt
+                const txtPromise = fetch(config.seriesTxtUrl)
                     .then(response => response.text())
-                    .catch(err => {
-                        console.error('Lỗi khi tải series.txt:', err);
-                        return '';
-                    });
-
-                Promise.all([...fetchAPIs, fetchTxt])
-                    .then(results => {
-                        const vipContainer = document.getElementById('VipContainer');
-                        const apiContainer = document.getElementById('apiContainer');
-                        const banhMiContainer = document.getElementById('banhMiContainer');
-                        const danhSachContainer = document.getElementById('danhSachContainer');
-                        allMovies = {};
-
-                        // Xử lý dữ liệu từ API
-                        results.slice(0, -1).forEach((data, index) => {
-                            if (!data || !data.status || !data.movie) return;
-                            const movie = data.movie;
-                            const title = movie.name;
-                            const poster = movie.poster_url;
-                            const seriesId = movie.slug;
-                            const episodes = data.episodes[0].server_data.map(ep => ({
-                                title: `Tập ${ep.name}`,
-                                url: ep.link_m3u8
-                            }));
-
-                            const targetPage = categorizeMovie(title);
-                            const container = index % 2 === 0 ? 'api' : 'danh-sach';
-
-                            allMovies[seriesId] = { title, poster, episodes, targetPage, source: 'api', container };
-                        });
-
-                        // Xử lý dữ liệu từ series.txt
-                        const txtData = results[results.length - 1];
-                        if (txtData) {
-                            const lines = txtData.split('\n');
-                            let currentTargetPage = null;
-                            let currentContainer = null;
-                            lines.forEach(line => {
-                                if (line.trim()) {
-                                    if (line.startsWith('#')) {
-                                        const match = line.match(/# .+ \(([^,]+)(?:,\s*([^)]+))?\)/);
-                                        if (match) {
-                                            currentTargetPage = match[1].toLowerCase() + '.html'; 
-                                            currentContainer = match[2] ? match[2].toLowerCase() : 'trung-quoc';
-                                        }
-                                    } else if (currentTargetPage) {
-                                        const [title, episodeTitle, url] = line.split('|');
-                                        const seriesId = title.toLowerCase().replace(/\s+/g, '-');
-                                        if (!allMovies[seriesId]) {
-                                            allMovies[seriesId] = { 
-                                                title, 
-                                                targetPage: currentTargetPage, 
-                                                container: currentContainer, 
-                                                poster: '', 
-                                                episodes: [], 
-                                                source: 'creator' 
-                                            };
-                                        }
-                                        if (!episodeTitle && url) {
-                                            allMovies[seriesId].poster = url;
-                                        } else if (url) {
-                                            allMovies[seriesId].episodes.push({ title: episodeTitle, url });
-                                        }
-                                    }
-                                }
-                            });
-                        }
-
-                        function displayMovies(filter = '') {
-                            vipContainer.innerHTML = '';
-                            apiContainer.innerHTML = '';
-                            banhMiContainer.innerHTML = '';
-                            danhSachContainer.innerHTML = '';
-
-                            Object.keys(allMovies).forEach(seriesId => {
-                                const { title, poster, targetPage, episodes, source, container } = allMovies[seriesId];
-                                const shouldDisplay = (
-                                    (source === 'api' && targetPage === currentPage) ||
-                                    (source === 'creator' && (
-                                        (currentPage === 'index.html' && targetPage === 'all') ||
-                                        targetPage === currentPage ||
-                                        (currentPage === 'truyen-hinh.html' && targetPage === 'tv.html') ||
-                                        (currentPage === 'tv.html' && targetPage === 'truyen-hinh.html')
-                                    ))
-                                );
-                                const matchesSearch = title.toLowerCase().includes(filter.toLowerCase());
-
-                                if (shouldDisplay && matchesSearch) {
-                                    const card = document.createElement('a');
-                                    card.href = `series.html?id=${seriesId}`;
-                                    card.className = 'movie-card';
-                                    card.innerHTML = `
-                                        <img data-src="${poster}" class="movie-poster lazyload" alt="${title}" loading="lazy">
-                                        <div class="movie-title">${title}</div>
-                                        <span class="source-label source-${source}">${sourceLabels[source]}</span>
-                                    `;
-                                    if (container === 'vip') {
-                                        vipContainer.appendChild(card);
-                                    } else if (container === 'danh-sach') {
-                                        danhSachContainer.appendChild(card);
-                                    } else if (source === 'api') {
-                                        apiContainer.appendChild(card);
-                                    } else {
-                                        banhMiContainer.appendChild(card);
-                                    }
-                                }
-                            });
-
-                            const apiCards = apiContainer.innerHTML;
-                            apiContainer.innerHTML = apiCards + apiCards;
-
-                            const lazyloadImages = document.querySelectorAll('img.lazyload');
-                            const imageObserver = new IntersectionObserver((entries, observer) => {
-                                entries.forEach(entry => {
-                                    if (entry.isIntersecting) {
-                                        const img = entry.target;
-                                        img.src = img.dataset.src;
-                                        img.classList.add('loaded');
-                                        observer.unobserve(img);
-                                    }
-                                });
-                            }, { rootMargin: '100px' });
-                            lazyloadImages.forEach(img => imageObserver.observe(img));
-                        }
-
+                    .then(data => processTxtData(data))
+                    .catch(err => console.error('Lỗi khi tải series.txt:', err));
+                
+                // Đợi tất cả hoàn thành
+                await Promise.all([...apiPromises, txtPromise]);
+                
+                // Lưu vào localStorage và hiển thị
+                saveMoviesToStorage();
+                displayMovies();
+                
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu:', error);
+            }
+        }
+        
+        // Tải dữ liệu ở nền sau khi đã hiển thị từ cache
+        function fetchDataInBackground() {
+            setTimeout(() => {
+                loadAllData().then(() => {
+                    // Hiển thị lại với dữ liệu mới nếu không có bộ lọc
+                    if (!elements.searchInput.value) {
                         displayMovies();
-
-                        const searchInput = document.getElementById('searchInput');
-                        searchInput.addEventListener('input', (e) => {
-                            const searchTerm = e.target.value.trim();
-                            displayMovies(searchTerm);
-                        });
-
-                        Object.keys(allMovies).forEach(seriesId => {
-                            localStorage.setItem(seriesId, JSON.stringify(allMovies[seriesId]));
-                        });
-                    })
-                    .catch(console.error);
-            })
-            .catch(console.error);
+                    }
+                });
+            }, 2000); // Delay 2 giây
+        }
+        
+        // Khởi tạo trang
+        loadAllData();
+        
+        // Thiết lập bộ lọc tìm kiếm với debounce
+        let searchTimeout;
+        elements.searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                displayMovies(e.target.value.trim());
+            }, 300);
+        });
     </script>
 </body>
 </html>
