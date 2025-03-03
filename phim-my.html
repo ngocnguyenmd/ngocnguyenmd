@@ -2,53 +2,54 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Xem Phim - Trang Chủ</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <style>
         body {
             margin: 0;
-            padding: 10px;
+            padding: 5px; /* Giảm padding từ 10px xuống 5px */
             background: #05071a;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #e4e4e4;
+            overflow-x: hidden; /* Ngăn cuộn ngang ngoài ý muốn */
         }
         h1 {
             text-align: center;
-            font-size: 1.8em;
-            margin-bottom: 15px;
+            font-size: 1.5em; /* Giảm từ 1.8em xuống 1.5em */
+            margin-bottom: 10px; /* Giảm từ 15px xuống 10px */
             color: #543a7e;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         h2 {
-            font-size: 1.3em;
+            font-size: 1.1em; /* Giảm từ 1.3em xuống 1.1em */
             color: #b8b8b8;
-            margin: 15px 0 10px;
+            margin: 10px 0 5px; /* Giảm margin */
             text-align: center;
             background: linear-gradient(90deg, #543a7e, #0b3a44);
-            padding: 8px;
+            padding: 6px; /* Giảm từ 8px xuống 6px */
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
         }
         .category-menu {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 5px; /* Giảm từ 10px xuống 5px */
+            margin-bottom: 10px; /* Giảm từ 20px xuống 10px */
             flex-wrap: wrap;
         }
         .category-link {
             color: #e4e4e4;
             text-decoration: none;
-            font-size: 1.1em;
-            padding: 12px 20px;
+            font-size: 0.9em; /* Giảm từ 1.1em xuống 0.9em */
+            padding: 8px 12px; /* Giảm từ 12px 20px xuống 8px 12px */
             border: 2px solid #543a7e;
-            border-radius: 25px;
+            border-radius: 20px; /* Giảm từ 25px xuống 20px */
             background-color: transparent;
             transition: all 0.3s ease;
-            flex: 1 1 45%;
-            max-width: 300px;
+            flex: 1 1 30%; /* Giảm từ 45% xuống 30% */
+            max-width: 200px; /* Giảm từ 300px xuống 200px */
             text-align: center;
         }
         .category-link:hover {
@@ -60,18 +61,18 @@
             transform: scale(0.98);
         }
         .movie-section {
-            margin-bottom: 15px;
+            margin-bottom: 10px; /* Giảm từ 15px xuống 10px */
         }
         .movie-container {
             display: flex;
-            gap: 15px;
+            gap: 10px; /* Giảm từ 15px xuống 10px */
             justify-content: flex-start;
             overflow-x: auto;
-            padding-bottom: 15px;
+            padding-bottom: 10px; /* Giảm từ 15px xuống 10px */
         }
         .movie-card {
-            flex: 0 0 140px;
-            max-width: 140px;
+            flex: 0 0 100px; /* Giảm từ 140px xuống 100px */
+            max-width: 100px;
             text-decoration: none;
             color: inherit;
             transition: transform 0.3s ease;
@@ -81,7 +82,7 @@
         }
         .movie-poster {
             width: 100%;
-            height: 200px;
+            height: 150px; /* Giảm từ 200px xuống 150px */
             border: 2px solid #543a7e;
             border-radius: 8px;
             object-fit: cover;
@@ -93,8 +94,8 @@
             opacity: 1;
         }
         .movie-title {
-            padding: 5px 0;
-            font-size: 0.9em;
+            padding: 3px 0; /* Giảm từ 5px xuống 3px */
+            font-size: 0.8em; /* Giảm từ 0.9em xuống 0.8em */
             font-weight: bold;
             text-align: center;
             color: #e4e4e4;
@@ -104,10 +105,10 @@
         }
         .source-label {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            padding: 2px 5px;
-            font-size: 0.7em;
+            top: 3px; /* Giảm từ 5px xuống 3px */
+            right: 3px;
+            padding: 2px 4px; /* Giảm từ 2px 5px xuống 2px 4px */
+            font-size: 0.6em; /* Giảm từ 0.7em xuống 0.6em */
             color: #fff;
             border-radius: 3px;
         }
@@ -118,15 +119,15 @@
         }
         @media (max-width: 720px) {
             .category-link {
-                font-size: 1em;
-                padding: 10px 15px;
+                font-size: 0.8em;
+                padding: 6px 10px;
             }
             .movie-card {
-                flex: 0 0 130px;
-                max-width: 130px;
+                flex: 0 0 90px; /* Giảm từ 130px xuống 90px */
+                max-width: 90px;
             }
             .movie-poster {
-                height: 180px;
+                height: 135px; /* Giảm từ 180px xuống 135px */
             }
         }
     </style>
@@ -178,7 +179,8 @@
         const apiSource = currentPage === 'anime.html' ? 'apiAnime.json' :
                          currentPage === 'phim-han.html' ? 'apiHan.json' :
                          currentPage === 'truyen-hinh.html' ? 'tv.json' :
-                         currentPage === 'phim-my.html' ? 'apiUsa.json' : 'apiUrls.json';
+                         currentPage === 'phim-my.html' ? 'apiUsa.json' :
+                         currentPage === 'phim-viet.html' ? 'apiVn.json' : 'apiUrls.json';
         const seriesTxtUrl = 'https://raw.githubusercontent.com/ngocnguyenmd/ngocnguyenmd/main/series.txt';
         const sourceLabels = { api: 'Vip', creator: 'HD+' };
 
