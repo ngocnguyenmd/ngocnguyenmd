@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông Tin Phim</title>
+    <title>Thông Tin Phim Series</title>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <style>
         body {
@@ -66,7 +66,7 @@
         .watch-button {
             background-color: #af762f;
             color: white;
-            font-size: 1em; /* Giảm kích thước nút xem phim */
+            font-size: 1em;
             padding: 8px 16px;
             border-radius: 5px;
             margin-top: 20px;
@@ -168,12 +168,11 @@
             background: #af762f;
         }
 
-        /* Nút quay lại trang chủ */
         .back-to-home {
             background-color: #f5cf8e;
             color: white;
             font-size: 1.2em;
-            padding: 8px 16px; /* Giảm kích thước nút quay lại */
+            padding: 8px 16px;
             border-radius: 5px;
             width: 100%;
             text-align: center;
@@ -184,46 +183,6 @@
 
         .back-to-home:hover {
             background-color: #af762f;
-        }
-
-        /* Các nút điều khiển video */
-        .control-buttons {
-            display: flex;
-            justify-content: center; /* Căn giữa các nút theo chiều ngang */
-            align-items: center; /* Căn giữa các nút theo chiều dọc */
-            margin-top: 15px;
-            gap: 15px; /* Khoảng cách giữa các nút */
-        }
-
-        .control-btn {
-            background-color: #222;
-            color: #fff;
-            font-size: 1.5em; /* Giảm kích thước các nút điều khiển */
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .control-btn:hover {
-            background-color: #af762f;
-        }
-
-        /* Mô tả nằm dưới cùng */
-        .description-container {
-            display: flex;
-            flex-direction: column;
-            margin-top: 20px;
-        }
-
-        .description-container p {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.2em;
         }
     </style>
 </head>
@@ -243,19 +202,10 @@
         <video id="player" controls>
             <source id="videoSource" src="" type="application/x-mpegURL">
         </video>
-
-        <!-- Các nút điều khiển video -->
-        <div class="control-buttons">
-            <button class="control-btn" onclick="rewind()">⏪︎</button>
-            <button class="control-btn" onclick="playNextEpisode(false)">⏮︎</button>
-            <button class="control-btn" onclick="playNextEpisode(true)">⏭</button>
-            <button class="control-btn" onclick="fastForward()">⏩︎</button>
-        </div>
     </div>
 
     <div class="episodes" id="episodeList"></div>
 
-    <!-- Mô tả phim nằm dưới danh sách tập -->
     <div class="description-container">
         <h2>Mô tả phim</h2>
         <div id="movieDescriptionContainer">
@@ -279,9 +229,11 @@
     const urlParams = new URLSearchParams(window.location.search);
     const movieId = urlParams.get('id');
     const apiUrl = `https://ophim1.com/phim/${movieId}`;
+    const txtUrl = 'https://raw.githubusercontent.com/ngocnguyenmd/ngocnguyenmd/main/series.txt';  // Đường dẫn tới tệp TXT
 
     document.getElementById('loadingMessage').style.display = 'block';
 
+    // Fetch từ API
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
@@ -292,6 +244,7 @@
                 return;
             }
 
+            // Cập nhật thông tin phim
             document.getElementById("movieTitle").innerText = data.movie.name;
             document.getElementById("moviePoster").src = data.movie.poster_url;
 
@@ -315,6 +268,33 @@
         .catch(err => {
             console.error("Lỗi tải phim:", err);
             document.getElementById('loadingMessage').innerText = 'Lỗi khi tải dữ liệu.';
+        });
+
+    // Fetch từ tệp TXT
+    fetch(txtUrl)
+        .then(response => response.text())
+        .then(txtData => {
+            const episodeList = document.getElementById("episodeList");
+            const lines = txtData.split('\n');
+
+            lines.forEach((line, index) => {
+                // Giả sử mỗi dòng chứa tên phim và URL của tập (có thể điều chỉnh lại tùy theo cấu trúc tệp của bạn)
+                const parts = line.split('|'); // Chia dữ liệu theo ký tự '|' (hoặc điều chỉnh theo cấu trúc của tệp .txt)
+                if (parts.length === 2) {
+                    const title = parts[0].trim();
+                    const url = parts[1].trim();
+
+                    let epItem = document.createElement("div");
+                    epItem.className = "episode";
+                    epItem.innerText = title;
+                    epItem.onclick = () => playEpisode(url, title, epItem);
+                    episodeList.appendChild(epItem);
+                }
+            });
+        })
+        .catch(err => {
+            console.error("Lỗi khi tải tệp TXT:", err);
+            document.getElementById('loadingMessage').innerText = 'Lỗi khi tải tệp TXT.';
         });
 
     let currentPlayer = null;
@@ -360,17 +340,6 @@
     function fastForward() {
         const video = document.getElementById("player");
         video.currentTime += 10;
-    }
-
-    function playNextEpisode(isNext) {
-        const allEpisodes = document.querySelectorAll(".episode");
-        const currentIndex = Array.from(allEpisodes).findIndex(ep => ep.classList.contains('active'));
-
-        if (isNext && currentIndex < allEpisodes.length - 1) {
-            allEpisodes[currentIndex + 1].click();
-        } else if (!isNext && currentIndex > 0) {
-            allEpisodes[currentIndex - 1].click();
-        }
     }
 
     function skipToNext() {
