@@ -8,48 +8,48 @@
     <style>
         body {
             margin: 0;
-            padding: 5px; /* Giảm padding từ 10px xuống 5px */
+            padding: 5px;
             background: #05071a;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #e4e4e4;
-            overflow-x: hidden; /* Ngăn cuộn ngang ngoài ý muốn */
+            overflow-x: hidden;
         }
         h1 {
             text-align: center;
-            font-size: 1.5em; /* Giảm từ 1.8em xuống 1.5em */
-            margin-bottom: 10px; /* Giảm từ 15px xuống 10px */
+            font-size: 1.5em;
+            margin-bottom: 10px;
             color: #543a7e;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         h2 {
-            font-size: 1.1em; /* Giảm từ 1.3em xuống 1.1em */
+            font-size: 1.1em;
             color: #b8b8b8;
-            margin: 10px 0 5px; /* Giảm margin */
+            margin: 10px 0 5px;
             text-align: center;
             background: linear-gradient(90deg, #543a7e, #0b3a44);
-            padding: 6px; /* Giảm từ 8px xuống 6px */
+            padding: 6px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
         }
         .category-menu {
             display: flex;
             justify-content: center;
-            gap: 5px; /* Giảm từ 10px xuống 5px */
-            margin-bottom: 10px; /* Giảm từ 20px xuống 10px */
+            gap: 5px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
         }
         .category-link {
             color: #e4e4e4;
             text-decoration: none;
-            font-size: 0.9em; /* Giảm từ 1.1em xuống 0.9em */
-            padding: 8px 12px; /* Giảm từ 12px 20px xuống 8px 12px */
+            font-size: 0.9em;
+            padding: 8px 12px;
             border: 2px solid #543a7e;
-            border-radius: 20px; /* Giảm từ 25px xuống 20px */
+            border-radius: 20px;
             background-color: transparent;
             transition: all 0.3s ease;
-            flex: 1 1 30%; /* Giảm từ 45% xuống 30% để vừa màn hình */
-            max-width: 200px; /* Giảm từ 300px xuống 200px */
+            flex: 1 1 30%;
+            max-width: 200px;
             text-align: center;
         }
         .category-link:hover {
@@ -61,18 +61,19 @@
             transform: scale(0.98);
         }
         .movie-section {
-            margin-bottom: 10px; /* Giảm từ 15px xuống 10px */
+            margin-bottom: 10px;
         }
         .movie-container {
             display: flex;
-            gap: 10px; /* Giảm từ 15px xuống 10px */
-            justify-content: flex-start;
-            overflow-x: auto;
-            padding-bottom: 10px; /* Giảm từ 15px xuống 10px */
+            flex-wrap: wrap; /* Chuyển sang wrap để xuống hàng */
+            gap: 20px; /* Khoảng cách vừa phải */
+            justify-content: center;
+            max-width: 720px; /* Tối đa bằng chiều rộng màn hình A04 */
+            margin: 0 auto;
         }
         .movie-card {
-            flex: 0 0 100px; /* Giảm từ 140px xuống 100px */
-            max-width: 100px;
+            flex: 0 0 200px; /* Tăng từ 100px lên 200px */
+            max-width: 200px;
             text-decoration: none;
             color: inherit;
             transition: transform 0.3s ease;
@@ -82,7 +83,7 @@
         }
         .movie-poster {
             width: 100%;
-            height: 150px; /* Giảm từ 200px xuống 150px */
+            height: 300px; /* Tăng từ 150px lên 300px */
             border: 2px solid #543a7e;
             border-radius: 8px;
             object-fit: cover;
@@ -94,8 +95,8 @@
             opacity: 1;
         }
         .movie-title {
-            padding: 3px 0; /* Giảm từ 5px xuống 3px */
-            font-size: 0.8em; /* Giảm từ 0.9em xuống 0.8em */
+            padding: 5px 0; /* Tăng từ 3px lên 5px */
+            font-size: 1em; /* Tăng từ 0.8em lên 1em */
             font-weight: bold;
             text-align: center;
             color: #e4e4e4;
@@ -105,10 +106,10 @@
         }
         .source-label {
             position: absolute;
-            top: 3px; /* Giảm từ 5px xuống 3px */
-            right: 3px;
-            padding: 2px 4px; /* Giảm từ 2px 5px xuống 2px 4px */
-            font-size: 0.6em; /* Giảm từ 0.7em xuống 0.6em */
+            top: 5px; /* Tăng từ 3px lên 5px */
+            right: 5px;
+            padding: 3px 6px; /* Tăng từ 2px 4px lên 3px 6px */
+            font-size: 0.7em; /* Tăng từ 0.6em lên 0.7em */
             color: #fff;
             border-radius: 3px;
         }
@@ -123,11 +124,14 @@
                 padding: 6px 10px;
             }
             .movie-card {
-                flex: 0 0 90px; /* Giảm từ 130px xuống 90px */
-                max-width: 90px;
+                flex: 0 0 180px; /* Tăng từ 90px lên 180px */
+                max-width: 180px;
             }
             .movie-poster {
-                height: 135px; /* Giảm từ 180px xuống 135px */
+                height: 270px; /* Tăng từ 135px lên 270px */
+            }
+            .movie-container {
+                max-width: 720px; /* Giữ nguyên để vừa màn hình */
             }
         }
     </style>
@@ -148,7 +152,7 @@
     </div>
     <div class="movie-section">
         <h2>Xưởng Vip</h2>
-        <div class="movie-container" id="VipContainer"></div>
+        <div class="movie-container" id="vipContainer"></div>
     </div>
     <div class="movie-section">
         <h2 id="apiSectionTitle"></h2>
@@ -182,9 +186,9 @@
         const apiSource = currentPage === 'anime.html' ? 'apiAnime.json' :
                          currentPage === 'phim-han.html' ? 'apiHan.json' :
                          currentPage === 'truyen-hinh.html' ? 'tv.json' :
-                         currentPage === 'phim-viet.html' ? 'apiVn.json' :
-                         currentPage === 'phim-my.html' ? 'apiUsa.json' : 'apiUrls.json';
-        const seriesTxtUrl = 'https://raw.githubusercontent.com/ngocnguyenmd/ngocnguyenmd/main/series.txt';
+                         currentPage === 'phim-my.html' ? 'apiUsa.json' :
+                         currentPage === 'phim-viet.html' ? 'apiVn.json' : 'apiUrls.json';
+        const seriesTxtUrl = 'https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/ngocnguyenmd/ngocnguyenmd/main/series.txt';
         const sourceLabels = { api: 'Vip', creator: 'HD+' };
 
         let allMovies = {};
@@ -212,7 +216,7 @@
                 Promise.all([...fetchAPIs, fetchTxt])
                     .then(results => {
                         const banhMiContainer = document.getElementById('banhMiContainer');
-                        const vipContainer = document.getElementById('VipContainer');
+                        const vipContainer = document.getElementById('vipContainer');
                         const apiContainer = document.getElementById('apiContainer');
                         allMovies = {};
 
@@ -234,6 +238,7 @@
                         // Xử lý dữ liệu từ series.txt
                         const txtData = results[results.length - 1];
                         if (txtData) {
+                            console.log('Dữ liệu series.txt:', txtData);
                             const lines = txtData.split('\n');
                             let currentTargetPage = null;
                             let currentContainer = null;
@@ -248,6 +253,7 @@
                                         }
                                     } else if (currentTargetPage) {
                                         const [title, episodeTitle, url] = line.split('|');
+                                        console.log('Parsed Line:', { title, episodeTitle, url });
                                         const seriesId = title.toLowerCase().replace(/\s+/g, '-');
                                         if (!allMovies[seriesId]) {
                                             allMovies[seriesId] = { 
@@ -267,9 +273,9 @@
                                     }
                                 }
                             });
+                            console.log('allMovies sau series.txt:', allMovies);
                         }
 
-                        // Hiển thị phim
                         Object.keys(allMovies).forEach(seriesId => {
                             const { title, poster, targetPage, episodes, source, container } = allMovies[seriesId];
                             const shouldDisplay = source === 'api' || targetPage === currentPage;
@@ -304,7 +310,6 @@
                             }
                         });
 
-                        // Lazy loading cho ảnh
                         const lazyloadImages = document.querySelectorAll('img.lazyload');
                         const imageObserver = new IntersectionObserver((entries, observer) => {
                             entries.forEach(entry => {
