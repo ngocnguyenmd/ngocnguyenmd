@@ -1,1 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xem Phim - Trang Chủ</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <style>
+        /* Giữ nguyên phần CSS */
+    </style>
+</head>
+<body>
+    <h1 id="pageHeader">Bánh mì là số 1</h1>
+    <div class="category-menu">
+        <a href="index.html" class="category-link">Trang Chủ</a>
+        <a href="phim-my.html" class="category-link">Phim Mỹ</a>
+        <a href="phim-viet.html" class="category-link">Phim Việt</a>
+        <a href="phim-han.html" class="category-link">Phim Hàn</a>
+        <a href="truyen-hinh" class="category-link">Truyền Hình</a>
+        <a href="anime.html" class="category-link">Hoạt Hình</a>
+    </div>
+    <div class="movie-section">
+        <h2>Xưởng Bánh Mì</h2>
+        <div class="movie-container" id="banhMiContainer"></div>
+    </div>
+    <div class="movie-section">
+        <h2>Xưởng Vip</h2>
+        <div class="movie-container" id="VipContainer"></div>
+    </div>
+    <div class="movie-section">
+        <h2 id="apiSectionTitle"></h2>
+        <div class="movie-container" id="apiContainer"></div>
+    </div>
 
+    <script>
+        // Lấy tên trang hiện tại từ URL
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        console.log('Current Page:', currentPage);
+
+        const pageTitles = {
+            'index.html': 'Bánh mì là số 1',
+            'phim-my.html': 'Bánh mì là số 1',
+            'phim-viet.html': 'Bánh mì là số 1',
+            'phim-han.html': 'Bánh mì là số 1',
+            'truyen-hinh.html': 'Bánh mì là số 1',
+            'anime.html': 'Bánh mì là số 1'
+        };
+        const apiSectionTitles = {
+            'index.html': 'Trung Quốc',
+            'phim-my.html': 'US-UK',
+            'phim-viet.html': 'Việt Nam',
+            'phim-han.html': 'Hàn Quốc',
+            'truyen-hinh.html': 'TV-online',
+            'anime.html': 'Hoạt Hình'
+        };
+
+        // Gán tiêu đề ngay khi DOM tải
+        document.getElementById('pageHeader').textContent = pageTitles[currentPage] || 'Bánh mì là số 1';
+        document.getElementById('apiSectionTitle').textContent = apiSectionTitles[currentPage] || 'Trung Quốc';
+
+        // URL raw của series.txt từ GitHub
+        const seriesTxtUrl = 'https://raw.githubusercontent.com/ngocnguyenmd/ngocnguyenmd/main/series.txt';
+
+        // Tùy chỉnh tên nhãn nguồn
+        const sourceLabels = {
+            api: 'Vip',
+            creator: 'HD+'
+        };
+
+        // Fetch danh sách API từ file apiurls.json
+        const fetchApiUrls = fetch('./apiurls.json') // Đảm bảo đường dẫn đúng với vị trí file
+            .then(response => response.json())
+            .catch(err => {
+                console.error('Lỗi khi tải apiurls.json:', err);
+                return [];
+            });
+
+        // Fetch dữ liệu từ series.txt
+        const fetchTxt = fetch(seriesTxtUrl)
+            .then(response => response.text())
+            .catch(err => {
+                console.error('Lỗi khi tải series.txt:', err);
+                return '';
+            });
+
+        let allMovies = {};
+
+        // Gộp dữ liệu từ cả API và txt
+        Promise.all([fetchApiUrls, fetchTxt])
+            .then(([apiUrls, txtData]) => {
+                const banhMiContainer = document.getElementById('banhMiContainer');
+                const vipContainer = document.getElementById('VipContainer');
+                const apiContainer = document.getElementById('apiContainer');
+                allMovies = {};
+
+                // Fetch dữ liệu từ các URL trong apiUrls
+                const fetchAPIs = apiUrls.map(url => 
+                    fetch(url)
+                        .then(response => response.json())
+                        .catch(err => {
+                            console.error(`Lỗi khi gọi API ${url}:`, err);
+                            return null;
+                        })
+                );
+
+                return Promise.all(fetchAPIs).then(apiResults => ({ apiResults, txtData }));
+            })
+            .then(({ apiResults, txtData }) => {
+                const banhMiContainer = document.getElementById('banhMiContainer');
+                const vipContainer = document.getElementById('VipContainer');
+                const apiContainer = document.getElementById('apiContainer');
+
+                // Xử lý dữ liệu từ API (hiển thị trên mọi trang)
+                apiResults.forEach(data => {
+                    if (!data || !data.status || !data.movie) return;
+                    const movie = data.movie;
+                    const title = movie.name;
+                    const poster = movie.poster_url;
+                    const seriesId = movie.slug;
+                    const episodes = data.episodes[0].server_data.map(ep => ({
+                        title: `Tập ${ep.name}`,
+                        url: ep.link_m3u8
+                    }));
+
+                    allMovies[seriesId] = { title, poster, episodes, targetPage: 'all', source: 'api' };
+                });
+
+                // Xử lý dữ liệu từ series.txt (lọc theo targetPage và container)
+                if (txtData) {
+                    const lines = txtData.split('\n');
+                    let currentTargetPage = null;
+                    let currentContainer = null;
+                    lines.forEach(line => {
+                        if (line.trim()) {
+                            if (line.startsWith('#')) {
+                                const match = line.match(/# .+ \(([^,]+)(?:,\s*([^)]+))?\)/);
+                                if (match) {
+                                    currentTargetPage = match[1].toLowerCase();
+                                    currentContainer = match[2] ? match[2].toLowerCase() : 'banh-mi';
+                                    console.log('Target Page:', currentTargetPage, 'Container:', currentContainer);
+                                }
+                            } else if (currentTargetPage) {
+                                const [title, episodeTitle, url] = line.split('|');
+                                const seriesId = title.toLowerCase().replace(/\s+/g, '-');
+                                if (!allMovies[seriesId]) {
+                                    allMovies[seriesId] = { 
+                                        title, 
+                                        targetPage: currentTargetPage, 
+                                        container: currentContainer,
+                                        poster: '', 
+                                        episodes: [], 
+                                        source: 'creator' 
+                                    };
+                                }
+                                if (!episodeTitle && url) {
+                                    allMovies[seriesId].poster = url;
+                                } else if (url) {
+                                    allMovies[seriesId].episodes.push({ title: episodeTitle, url });
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Hiển thị phim theo source, targetPage và container
+                Object.keys(allMovies).forEach(seriesId => {
+                    const { title, poster, targetPage, episodes, source, container } = allMovies[seriesId];
+                    const shouldDisplay = source === 'api' || (targetPage && targetPage.toLowerCase() === currentPage.toLowerCase());
+                    console.log(`Series: ${title}, Target Page: ${targetPage}, Container: ${container || 'N/A'}, Should Display: ${shouldDisplay}`);
+                    if (shouldDisplay) {
+                        const card = document.createElement('a');
+                        card.href = `series.html?id=${seriesId}`;
+                        card.className = 'movie-card';
+                        card.innerHTML = `
+                            <img src="${poster}" class="movie-poster" alt="${title}">
+                            <div class="movie-title">${title}</div>
+                            <span class="source-label source-${source}">${sourceLabels[source]}</span>
+                        `;
+                        if (source === 'api') {
+                            apiContainer.appendChild(card);
+                        } else if (source === 'creator') {
+                            if (container === 'vip') {
+                                vipContainer.appendChild(card);
+                            } else {
+                                banhMiContainer.appendChild(card);
+                            }
+                        }
+
+                        localStorage.setItem(seriesId, JSON.stringify({
+                            title,
+                            poster,
+                            episodes,
+                            source,
+                            targetPage,
+                            container
+                        }));
+                    }
+                });
+            })
+            .catch(error => console.error('Lỗi khi tải dữ liệu:', error));
+    </script>
+</body>
+</html>
