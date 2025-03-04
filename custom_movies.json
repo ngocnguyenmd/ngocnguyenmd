@@ -69,7 +69,7 @@
     ],
     "hanquoc": [
         {
-            "title": "Phim Hàn Tự Tạo",
+            "title": "Phim Hàn 1",
             "image": "https://via.placeholder.com/200x250",
             "episodes": [
                 {
@@ -77,7 +77,7 @@
                     "m3u8": "https://example.com/custom-han-ep1.m3u8"
                 }
             ],
-            "description": "Phim Hàn tự tạo",
+            "description": "Phim Hàn cot",
             "episode_current": "Tập 1",
             "episode_total": "16"
         }
