@@ -357,7 +357,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const movieData = urlParams.get('movie');
         const movie = JSON.parse(decodeURIComponent(movieData));
-        document.getElementById('seriesTitle').innerHTML = `${movie.title} <span class="source-label source-${movie.source}">${movie.source === 'api' ? 'API' : 'Creator'}</span>`;
+        document.getElementById('seriesTitle').innerHTML = `${movie.title} <span class="source-label source-${movie.source}">${movie.source === 'api' ? 'Bánh Mì' : 'Xưởng bánh mì'}</span>`;
         episodes = movie.episodes.map(ep => ({
             title: ep.episode,
             url: ep.m3u8
