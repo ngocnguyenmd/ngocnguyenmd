@@ -12,13 +12,13 @@
         }
         body {
             background: #2c1e38;
-            font-family: 'Segoe UI', sans-serif; /* Giảm tải font trên thiết bị yếu */
+            font-family: 'Segoe UI', sans-serif;
             color: #e0e0e0;
             overflow-x: hidden;
         }
         header {
             background-color: #1a1a1a;
-            padding: 8px 0; /* Giảm padding để tiết kiệm không gian */
+            padding: 8px 0;
             position: fixed;
             width: 100%;
             top: 0;
@@ -30,14 +30,14 @@
             display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
-            gap: 3px; /* Giảm gap để gọn hơn */
+            gap: 3px;
         }
         nav a {
             color: #e0e0e0;
             text-decoration: none;
-            font-size: 0.9rem; /* Giảm font-size cho mobile */
-            padding: 6px 8px; /* Giảm padding */
-            transition: background 0.2s; /* Giảm thời gian transition */
+            font-size: 0.9rem;
+            padding: 6px 8px;
+            transition: background 0.2s;
             cursor: pointer;
         }
         nav a:hover {
@@ -50,8 +50,8 @@
             border-radius: 5px;
         }
         .container {
-            margin-top: 60px; /* Đủ để tránh che bởi header */
-            padding: 5px; /* Giảm padding */
+            margin-top: 100px; /* Tăng margin-top để cách xa header */
+            padding: 5px;
             max-width: 100vw;
             margin-left: auto;
             margin-right: auto;
@@ -59,27 +59,25 @@
         .search-bar {
             display: flex;
             justify-content: center;
-            margin-bottom: 15px; /* Giảm margin-bottom */
-            position: sticky;
-            top: 45px; /* Điều chỉnh để ngay dưới header trên A04 */
-            z-index: 900;
+            margin-bottom: 15px;
+            /* Xóa position: sticky để nằm trong luồng nội dung */
             background: #2c1e38;
         }
         .search-bar input {
-            width: 65%; /* Giảm width để vừa màn hình nhỏ */
-            max-width: 300px; /* Giới hạn chiều rộng tối đa */
-            padding: 6px; /* Giảm padding */
-            font-size: 0.9rem; /* Giảm font-size */
+            width: 65%;
+            max-width: 300px;
+            padding: 6px;
+            font-size: 0.9rem;
             border: none;
             border-radius: 5px 0 0 5px;
             background: #3a2a4a;
             color: #e0e0e0;
             outline: none;
-            transition: border 0.2s; /* Giảm transition */
+            transition: border 0.2s;
         }
         .search-bar input:focus {
-            border: 1px solid #4a90e2; /* Giảm độ dày border */
-            box-shadow: none; /* Xóa shadow để giảm tải GPU */
+            border: 1px solid #4a90e2;
+            box-shadow: none;
         }
         .search-bar button {
             padding: 6px 10px;
@@ -95,13 +93,13 @@
             background: #4a90e2;
         }
         h1 {
-            font-size: 1.3rem; /* Giảm font-size */
+            font-size: 1.3rem;
             text-align: center;
-            margin-bottom: 8px; /* Giảm margin */
+            margin-bottom: 8px;
             color: #4a90e2;
         }
         .movie-section {
-            margin-bottom: 20px; /* Giảm margin */
+            margin-bottom: 20px;
             position: relative;
         }
         .movie-section h2 {
@@ -112,8 +110,8 @@
         }
         .movie-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Giảm kích thước tối thiểu */
-            gap: 8px; /* Giảm gap */
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
             position: relative;
         }
         .movie-card {
@@ -122,16 +120,16 @@
             border-radius: 5px;
             text-align: center;
             cursor: pointer;
-            transition: transform 0.1s; /* Giảm thời gian transition */
-            box-shadow: none; /* Xóa shadow để giảm tải */
+            transition: transform 0.1s;
+            box-shadow: none;
             position: relative;
         }
         .movie-card:hover {
-            transform: scale(1.03); /* Giảm mức scale */
+            transform: scale(1.03);
         }
         .movie-card img {
             width: 100%;
-            height: 160px; /* Giảm chiều cao ảnh */
+            height: 160px;
             object-fit: cover;
             border-radius: 5px;
         }
@@ -173,7 +171,7 @@
             visibility: visible;
         }
         .movie-grid {
-            row-gap: 15px; /* Giảm row-gap */
+            row-gap: 15px;
         }
         .movie-card:nth-child(9n) {
             margin-bottom: 15px;
@@ -187,7 +185,7 @@
             height: 3px;
             background: linear-gradient(to right, #6b48a3, #4a90e2);
             border-radius: 2px;
-            animation: slideIn 0.3s ease-in-out; /* Giảm thời gian animation */
+            animation: slideIn 0.3s ease-in-out;
         }
         @keyframes slideIn {
             from { width: 0; }
@@ -226,24 +224,23 @@
             header { padding: 5px 0; }
             nav a { font-size: 0.8rem; padding: 5px 8px; }
             .container { 
-                margin-top: 55px; /* Giảm nhẹ để vừa với màn hình nhỏ */
+                margin-top: 90px; /* Tăng margin-top để cách xa header trên mobile */
                 padding: 5px;
             }
             .search-bar { 
-                top: 40px; /* Điều chỉnh để ngay dưới header trên A04 */
                 margin-bottom: 10px;
             }
             .search-bar input { width: 60%; padding: 5px; font-size: 0.8rem; }
             .search-bar button { padding: 5px 8px; font-size: 0.8rem; }
             h1 { font-size: 1.1rem; }
             .movie-section h2 { font-size: 0.9rem; }
-            .movie-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; } /* Giảm số cột để vừa màn hình 720p */
+            .movie-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
             .movie-card { padding: 4px; }
             .movie-card img { height: 140px; }
             .movie-card h3 { font-size: 0.7rem; }
             .episode-tag { font-size: 0.5rem; padding: 2px 3px; }
             .movie-card:nth-child(9n)::after { content: none; }
-            .movie-card:nth-child(6n) { margin-bottom: 10px; } /* Điều chỉnh cho 3 cột */
+            .movie-card:nth-child(6n) { margin-bottom: 10px; }
             .movie-card:nth-child(6n)::after {
                 content: '';
                 position: absolute;
@@ -384,8 +381,8 @@
             apiMovieList.innerHTML = '';
             customMovieList.innerHTML = '';
 
-            const itemsPerRow = window.innerWidth <= 720 ? 3 : 3; /* Đặt mặc định 3 cột cho A04 */
-            const rowsPerGroup = 2; /* Giảm số hàng để tải ít nội dung hơn */
+            const itemsPerRow = window.innerWidth <= 720 ? 3 : 3;
+            const rowsPerGroup = 2;
             const itemsPerGroup = itemsPerRow * rowsPerGroup;
 
             function createMovieCard(movie, list) {
@@ -465,7 +462,7 @@
             };
             xhr.onerror = () => document.getElementById('speedDisplay').textContent = "Lỗi mạng";
             xhr.send();
-            setTimeout(measureNetworkSpeed, 10000); /* Tăng khoảng cách để giảm tải */
+            setTimeout(measureNetworkSpeed, 10000);
         }
 
         window.onload = async () => {
