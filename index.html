@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Trang Chủ Phim</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #2c1e38;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        header {
+            background-color: #1a1a1a;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        nav {
+            max-width: 100vw;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        nav a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 8px 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        nav a:hover {
+            background-color: #4a90e2;
+            border-radius: 5px;
+        }
+        nav a.active {
+            font-weight: bold;
+            background-color: #6b48a3;
+            border-radius: 5px;
+        }
+        .container {
+            margin-top: 60px;
+            padding: 10px;
+            max-width: 100vw;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .search-bar input {
+            width: 70%;
+            max-width: 400px;
+            padding: 8px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            background: #3a2a4a;
+            color: #e0e0e0;
+            outline: none;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        .search-bar input:focus {
+            border: 2px solid #4a90e2;
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+        }
+        .search-bar button {
+            padding: 8px 12px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background: #6b48a3;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .search-bar button:hover {
+            background: #4a90e2;
+        }
+        h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #4a90e2;
+        }
+        .movie-section {
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .movie-section h2 {
+            font-size: 1.2rem;
+            color: #e0e0e0;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            position: relative;
+        }
+        .movie-card {
+            background: #3a2a4a;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        .movie-card:hover {
+            transform: scale(1.05);
+        }
+        .movie-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .movie-card h3 {
+            font-size: 0.9rem;
+            margin: 5px 0;
+            color: #e0e0e0;
+        }
+        .episode-tag {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            z-index: 10;
+        }
+        .movie-card::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #e0e0e0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+        .movie-card:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+        .movie-grid {
+            row-gap: 20px;
+        }
+        .movie-card:nth-child(9n) {
+            margin-bottom: 20px;
+        }
+        .movie-card:nth-child(9n)::after {
+            content: '';
+            position: absolute;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            height: 4px;
+            background: linear-gradient(to right, #6b48a3, #4a90e2);
+            border-radius: 2px;
+            animation: slideIn 0.5s ease-in-out;
+        }
+        @keyframes slideIn {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        #custom-movies::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, #6b48a3, #4a90e2);
+            border-radius: 2px;
+            animation: slideIn 0.5s ease-in-out;
+        }
+        .speed-display {
+            position: fixed;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            color: #4a90e2;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s;
+        }
+        .speed-display.slow { color: #ff6b6b; }
+        .speed-display.good { color: #4a90e2; }
+        .speed-display.fast { color: #6b48a3; }
+        .speed-display::before { content: '📡'; }
+        @media (max-width: 720px) {
+            header { padding: 5px 0; }
+            nav a { font-size: 0.9rem; padding: 6px 10px; }
+            .container { margin-top: 50px; padding: 5px; }
+            .search-bar input { width: 60%; padding: 6px; font-size: 0.9rem; }
+            .search-bar button { padding: 6px 10px; font-size: 0.9rem; }
+            h1 { font-size: 1.2rem; }
+            .movie-section h2 { font-size: 1rem; }
+            .movie-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+            .movie-card { padding: 5px; }
+            .movie-card img { height: 150px; }
+            .movie-card h3 { font-size: 0.8rem; }
+            .episode-tag { font-size: 0.6rem; padding: 2px 4px; }
+            .movie-card:nth-child(9n)::after { content: none; }
+            .movie-card:nth-child(12n) { margin-bottom: 15px; }
+            .movie-card:nth-child(12n)::after {
+                content: '';
+                position: absolute;
+                left: -5px;
+                right: -5px;
+                bottom: -7px;
+                height: 3px;
+                background: linear-gradient(to right, #6b48a3, #4a90e2);
+                border-radius: 1px;
+                animation: slideIn 0.5s ease-in-out;
+            }
+            #custom-movies::before { top: -10px; height: 3px; }
+            .speed-display { font-size: 0.7rem; padding: 2px 6px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a onclick="loadMovies('trungquoc')" id="trungquoc">Phim Trung Quốc</a>
+            <a onclick="loadMovies('hanquoc')" id="hanquoc">Phim Hàn Quốc</a>
+            <a onclick="loadMovies('my')" id="my">Phim Mỹ</a>
+            <a onclick="loadMovies('vietnam')" id="vietnam">Phim Việt</a>
+            <a onclick="loadMovies('truyenhinh')" id="truyenhinh">Truyền Hình</a>
+            <a onclick="loadMovies('hoathinh')" id="hoathinh">Hoạt Hình</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Tìm kiếm phim...">
+            <button onclick="searchMovies()">Tìm</button>
+        </div>
+        <h1 id="categoryTitle">Phim Trung Quốc</h1>
+        <div class="movie-section" id="api-movies">
+            <h2>Phim Nhà Bánh Mì</h2>
+            <div class="movie-grid" id="apiMovieList"></div>
+        </div>
+        <div class="movie-section" id="custom-movies">
+            <h2>Xưởng bánh mì</h2>
+            <div class="movie-grid" id="customMovieList"></div>
+        </div>
+        <div class="speed-display" id="speedDisplay">Tốc độ: 0 KB/s</div>
+    </div>
+
+    <script>
+        let apiUrls = {};
+        let customMovies = {};
+        let allMovies = { apiMovies: [], customMovies: [] };
+
+        async function loadApiUrls() {
+            try {
+                const response = await fetch('apiurl.json');
+                apiUrls = await response.json();
+            } catch (error) {
+                console.error('Error loading apiurls.json:', error);
+                apiUrls = { trungquoc: ["https://ophim1.com/phim/yeu-em"] };
+            }
+        }
+
+        async function loadCustomMovies() {
+            try {
+                const response = await fetch('custom_movies.json');
+                customMovies = await response.json();
+            } catch (error) {
+                console.error('Error loading custom_movies.json:', error);
+                customMovies = { trungquoc: [], hanquoc: [], my: [], vietnam: [], truyenhinh: [], hoathinh: [] };
+            }
+        }
+
+        async function fetchMovie(url) {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.status && data.movie) {
+                    const categoryMap = { 'yeu-em': 'trungquoc' };
+                    const slug = url.split('/').pop();
+                    return {
+                        title: data.movie.name,
+                        image: data.movie.thumb_url,
+                        description: data.movie.content,
+                        episode_current: data.movie.episode_current,
+                        episode_total: data.movie.episode_total,
+                        episodes: data.episodes[0].server_data.map(ep => ({
+                            episode: ep.name,
+                            m3u8: ep.link_m3u8
+                        })),
+                        source: 'api',
+                        category: categoryMap[slug] || 'trungquoc'
+                    };
+                }
+                return null;
+            } catch (error) {
+                console.error('Error fetching movie:', error);
+                return null;
+            }
+        }
+
+        async function fetchMovies(category) {
+            const urls = apiUrls[category] || [];
+            const apiMoviePromises = urls.map(url => fetchMovie(url));
+            const apiMovies = await Promise.all(apiMoviePromises);
+            const validApiMovies = apiMovies.filter(movie => movie !== null);
+            const customCategoryMovies = (customMovies[category] || []).map(movie => ({
+                ...movie,
+                source: 'creator',
+                tag: movie.tag || 'HD',
+                category: category
+            }));
+            return { apiMovies: validApiMovies, customMovies: customCategoryMovies };
+        }
+
+        function highlightCategory(category) {
+            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+            const activeLink = document.getElementById(category);
+            if (activeLink) activeLink.classList.add('active');
+        }
+
+        async function loadMovies(category) {
+            const categoryTitle = document.getElementById('categoryTitle');
+            categoryTitle.textContent = {
+                trungquoc: 'Phim Trung Quốc',
+                hanquoc: 'Phim Hàn Quốc',
+                my: 'Phim Mỹ',
+                vietnam: 'Phim Việt',
+                truyenhinh: 'Truyền Hình',
+                hoathinh: 'Hoạt Hình'
+            }[category];
+            highlightCategory(category);
+            allMovies = await fetchMovies(category);
+            displayMovies(allMovies.apiMovies, allMovies.customMovies);
+            document.getElementById('searchInput').placeholder = `Tìm kiếm trong ${categoryTitle.textContent}...`;
+        }
+
+        function displayMovies(apiMovies, customMovies) {
+            const apiMovieList = document.getElementById('apiMovieList');
+            const customMovieList = document.getElementById('customMovieList');
+            apiMovieList.innerHTML = '';
+            customMovieList.innerHTML = '';
+
+            const itemsPerRow = window.innerWidth <= 720 ? 4 : 3;
+            const rowsPerGroup = 3;
+            const itemsPerGroup = itemsPerRow * rowsPerGroup;
+
+            function createMovieCard(movie, list) {
+                const movieCard = document.createElement('div');
+                movieCard.className = 'movie-card';
+                movieCard.innerHTML = `
+                    <img src="${movie.image}" alt="${movie.title}" loading="lazy">
+                    <span class="episode-tag">${movie.source === 'api' ? movie.episode_current : movie.tag}</span>
+                    <h3>${movie.title}</h3>
+                `;
+                movieCard.setAttribute('data-tooltip', movie.description.slice(0, 50) + '...');
+                movieCard.onclick = () => {
+                    const movieData = encodeURIComponent(JSON.stringify(movie));
+                    window.location.href = `detail.html?movie=${movieData}`;
+                };
+                list.appendChild(movieCard);
+                return movieCard;
+            }
+
+            apiMovies.forEach((movie, index) => {
+                const movieCard = createMovieCard(movie, apiMovieList);
+                if ((index + 1) % itemsPerGroup === 0 && index + 1 < apiMovies.length) {
+                    const divider = document.createElement('div');
+                    divider.style.gridColumn = '1 / -1';
+                    divider.style.height = '4px';
+                    divider.style.background = 'linear-gradient(to right, #6b48a3, #4a90e2)';
+                    divider.style.borderRadius = '2px';
+                    divider.style.margin = '20px 0';
+                    apiMovieList.appendChild(divider);
+                }
+            });
+
+            customMovies.forEach((movie, index) => {
+                const movieCard = createMovieCard(movie, customMovieList);
+                if ((index + 1) % itemsPerGroup === 0 && index + 1 < customMovies.length) {
+                    const divider = document.createElement('div');
+                    divider.style.gridColumn = '1 / -1';
+                    divider.style.height = '4px';
+                    divider.style.background = 'linear-gradient(to right, #6b48a3, #4a90e2)';
+                    divider.style.borderRadius = '2px';
+                    divider.style.margin = '20px 0';
+                    customMovieList.appendChild(divider);
+                }
+            });
+
+            document.getElementById('api-movies').style.display = apiMovies.length ? 'block' : 'none';
+            document.getElementById('custom-movies').style.display = customMovies.length ? 'block' : 'none';
+        }
+
+        function searchMovies() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filteredApiMovies = allMovies.apiMovies.filter(movie => movie.title.toLowerCase().includes(query));
+            const filteredCustomMovies = allMovies.customMovies.filter(movie => movie.title.toLowerCase().includes(query));
+            displayMovies(filteredApiMovies, filteredCustomMovies);
+        }
+
+        function measureNetworkSpeed() {
+            const testUrl = 'https://vip.opstream15.com/20250214/49271_46cdab6e/index.m3u8';
+            const xhr = new XMLHttpRequest();
+            const startTime = performance.now();
+            const tsUrlWithNoCache = testUrl + '?nocache=' + Date.now();
+            xhr.open('GET', tsUrlWithNoCache, true);
+            xhr.responseType = 'blob';
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    const endTime = performance.now();
+                    const duration = (endTime - startTime) / 1000;
+                    const bytesLoaded = xhr.response.size;
+                    const speedKBps = (bytesLoaded / duration / 1).toFixed(2);
+                    const speedDisplay = document.getElementById('speedDisplay');
+                    speedDisplay.textContent = `Tốc độ: ${speedKBps} KB/s`;
+                    speedDisplay.className = 'speed-display';
+                    if (speedKBps < 10) speedDisplay.classList.add('slow');
+                    else if (speedKBps > 1500) speedDisplay.classList.add('fast');
+                    else speedDisplay.classList.add('good');
+                }
+            };
+            xhr.onerror = () => document.getElementById('speedDisplay').textContent = "Lỗi mạng";
+            xhr.send();
+            setTimeout(measureNetworkSpeed, 6000);
+        }
+
+        window.onload = async () => {
+            await Promise.all([loadApiUrls(), loadCustomMovies()]);
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category') || 'trungquoc';
+            loadMovies(category);
+            measureNetworkSpeed();
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') searchMovies();
+            });
+        };
+    </script>
+</body>
+</html>

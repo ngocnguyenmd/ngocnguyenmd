@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Chi Tiết Phim</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #2c1e38; /* Tím đậm nhẹ nhàng */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e0e0e0; /* Trắng nhạt */
+            overflow-x: hidden;
+        }
+        header {
+            background-color: #1a1a1a; /* Xám đậm đồng bộ với watch.html */
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        nav {
+            max-width: 100vw;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        nav a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 8px 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        nav a:hover {
+            background-color: #4a90e2; /* Xanh nước nhạt */
+            border-radius: 5px;
+        }
+        nav a.active {
+            font-weight: bold;
+            background-color: #6b48a3; /* Tím nhạt */
+            border-radius: 5px;
+        }
+        .container {
+            margin-top: 60px;
+            padding: 10px;
+            max-width: 100vw;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #4a90e2; /* Xanh nước nhạt */
+        }
+        .movie-detail {
+            background: #3a2a4a; /* Tím đậm nhạt */
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .movie-detail::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(58, 42, 74, 0.7); /* Tím nhạt trong suốt */
+            filter: blur(5px);
+            z-index: 0;
+        }
+        .movie-poster {
+            flex: 0 0 auto;
+            text-align: center;
+            z-index: 1;
+        }
+        .movie-poster img {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            border-radius: 5px;
+            display: block;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        .movie-info {
+            flex: 1;
+            z-index: 1;
+        }
+        .movie-info h2 {
+            font-size: 1.2rem;
+            color: #e0e0e0; /* Trắng nhạt */
+            margin-bottom: 10px;
+        }
+        .movie-info p {
+            font-size: 0.9rem;
+            color: #d0d0d0; /* Xám nhạt hơn trắng */
+            margin-bottom: 10px;
+        }
+        .watch-btn {
+            background: #6b48a3; /* Tím nhạt */
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .watch-btn:hover {
+            background: #4a90e2; /* Xanh nước nhạt */
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #4a90e2; /* Xanh nước nhạt */
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 720px) {
+            header {
+                padding: 5px 0;
+            }
+            nav a {
+                font-size: 0.9rem;
+                padding: 6px 10px;
+            }
+            .container {
+                margin-top: 50px;
+                padding: 5px;
+            }
+            h1 {
+                font-size: 1.2rem;
+            }
+            .movie-detail {
+                flex-direction: column;
+                padding: 10px;
+            }
+            .movie-poster img {
+                max-width: 150px;
+            }
+            .movie-info h2 {
+                font-size: 1rem;
+            }
+            .movie-info p {
+                font-size: 0.8rem;
+            }
+            .watch-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            .back-link {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a onclick="loadMovies('trungquoc')" id="trungquoc">Phim Trung Quốc</a>
+            <a onclick="loadMovies('hanquoc')" id="hanquoc">Phim Hàn Quốc</a>
+            <a onclick="loadMovies('my')" id="my">Phim Mỹ</a>
+            <a onclick="loadMovies('vietnam')" id="vietnam">Phim Việt</a>
+            <a onclick="loadMovies('truyenhinh')" id="truyenhinh">Truyền Hình</a>
+            <a onclick="loadMovies('hoathinh')" id="hoathinh">Hoạt Hình</a>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>Chi Tiết Phim</h1>
+        <div class="movie-detail" id="movieDetail">
+            <div class="movie-poster"></div>
+            <div class="movie-info"></div>
+        </div>
+        <a href="index.html" class="back-link">Quay lại trang chủ</a>
+    </div>
+
+    <script>
+        let apiUrls = {};
+        let customMovies = {};
+
+        async function loadApiUrls() {
+            try {
+                const response = await fetch('apiurl.json');
+                apiUrls = await response.json();
+            } catch (error) {
+                console.error('Error loading apiurls.json:', error);
+                apiUrls = { trungquoc: ["https://ophim1.com/phim/yeu-em"] };
+            }
+        }
+
+        async function loadCustomMovies() {
+            try {
+                const response = await fetch('custom_movies.json');
+                customMovies = await response.json();
+            } catch (error) {
+                console.error('Error loading custom_movies.json:', error);
+                customMovies = { trungquoc: [], hanquoc: [], my: [], vietnam: [], truyenhinh: [], hoathinh: [] };
+            }
+        }
+
+        async function fetchMovie(url) {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.status && data.movie) {
+                    const categoryMap = {
+                        'yeu-em': 'trungquoc',
+                        // Thêm ánh xạ nếu cần
+                    };
+                    const slug = url.split('/').pop();
+                    return {
+                        title: data.movie.name,
+                        image: data.movie.thumb_url,
+                        description: data.movie.content,
+                        episode_current: data.movie.episode_current,
+                        episode_total: data.movie.episode_total,
+                        episodes: data.episodes[0].server_data.map(ep => ({
+                            episode: ep.name,
+                            m3u8: ep.link_m3u8
+                        })),
+                        source: 'api',
+                        category: categoryMap[slug] || 'trungquoc'
+                    };
+                }
+                return null;
+            } catch (error) {
+                console.error('Error fetching movie:', error);
+                return null;
+            }
+        }
+
+        async function fetchMovies(category) {
+            const urls = apiUrls[category] || [];
+            const apiMoviePromises = urls.map(url => fetchMovie(url));
+            const apiMovies = await Promise.all(apiMoviePromises);
+            const validApiMovies = apiMovies.filter(movie => movie !== null);
+            const customCategoryMovies = (customMovies[category] || []).map(movie => ({
+                ...movie,
+                source: 'creator',
+                tag: movie.tag || 'HD',
+                category: category
+            }));
+            return { apiMovies: validApiMovies, customMovies: customCategoryMovies };
+        }
+
+        function highlightCategory(category) {
+            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+            const activeLink = document.getElementById(category);
+            if (activeLink) activeLink.classList.add('active');
+        }
+
+        function loadMovies(category) {
+            window.location.href = `index.html?category=${category}`;
+        }
+
+        // Hiển thị phim hiện tại
+        const urlParams = new URLSearchParams(window.location.search);
+        const movieData = urlParams.get('movie');
+        const movie = JSON.parse(decodeURIComponent(movieData));
+
+        const movieDetail = document.getElementById('movieDetail');
+        const posterContainer = movieDetail.querySelector('.movie-poster');
+        const infoContainer = movieDetail.querySelector('.movie-info');
+
+        movieDetail.style.backgroundImage = `url('${movie.image}')`;
+        posterContainer.innerHTML = `
+            <img src="${movie.image}" alt="${movie.title}">
+            <button class="watch-btn" onclick="watchMovie()">Xem phim</button>
+        `;
+        infoContainer.innerHTML = `
+            <h2>${movie.title}</h2>
+            <p>${movie.description}</p>
+            <p>Tập hiện tại: ${movie.episode_current} / ${movie.episode_total}</p>
+        `;
+        highlightCategory(movie.category);
+
+        function watchMovie() {
+            const movieData = encodeURIComponent(JSON.stringify(movie));
+            window.location.href = `watch.html?movie=${movieData}`;
+        }
+
+        window.onload = async () => {
+            await Promise.all([loadApiUrls(), loadCustomMovies()]);
+        };
+    </script>
+</body>
+</html>
