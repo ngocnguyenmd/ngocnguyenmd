@@ -42,7 +42,7 @@
         nav a.active { font-weight: bold; background-color: #6b48a3; border-radius: 5px; }
         .container {
             max-width: 100vw;
-            margin: 70px auto 0; /* Tăng margin-top để tránh che tiêu đề */
+            margin: 70px auto 0;
             padding: 5px;
             position: relative;
         }
@@ -267,13 +267,18 @@
             header { padding: 3px 0; }
             nav a { font-size: 0.8rem; padding: 5px 6px; }
             .container { 
-                margin-top: 60px; /* Tăng margin-top trên mobile để tránh che */
+                margin-top: 60px;
                 padding: 3px; 
             }
             h1 { font-size: 1rem; margin-bottom: 8px; }
             .video-container { padding: 3px; }
             .control-btn { padding: 5px 8px; font-size: 0.8rem; min-width: 35px; }
-            .episode-list { grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 5px; max-height: 120px; }
+            .episode-list { 
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); 
+                gap: 5px; 
+                padding: 5px; 
+                max-height: 120px; 
+            }
             .episode-btn { padding: 6px; font-size: 0.8rem; min-height: 40px; }
             .next-prompt { padding: 6px 10px; font-size: 0.7rem; }
             .subtitle-controls label,
@@ -356,26 +361,33 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const movieData = urlParams.get('movie');
-        const movie = JSON.parse(decodeURIComponent(movieData));
+        let movie;
+        try {
+            movie = JSON.parse(decodeURIComponent(movieData));
+            if (!movie || !movie.title) throw new Error('Invalid movie data');
+        } catch (error) {
+            console.error('Error parsing movie data:', error);
+            movie = { title: 'Phim không khả dụng', episodes: [], source: 'creator', category: 'trungquoc' };
+        }
         document.getElementById('seriesTitle').innerHTML = `${movie.title} <span class="source-label source-${movie.source}">${movie.source === 'api' ? 'Bánh Mì' : 'Xưởng bánh mì'}</span>`;
-        episodes = movie.episodes.map(ep => ({
+        episodes = (movie.episodes && movie.episodes.length) ? movie.episodes.map(ep => ({
             title: ep.episode,
             url: ep.m3u8
-        }));
+        })) : [];
 
         function measureNetworkSpeed() {
-            const testUrl = 'https://vip.opstream15.com/20250214/49271_46cdab6e/index.m3u8';
+            if (!episodes.length) return;
+            const testUrl = episodes[0].url;
             const xhr = new XMLHttpRequest();
             const startTime = performance.now();
-            const tsUrlWithNoCache = testUrl + '?nocache=' + Date.now();
-            xhr.open('GET', tsUrlWithNoCache, true);
+            xhr.open('GET', testUrl + '?nocache=' + Date.now(), true);
             xhr.responseType = 'blob';
             xhr.onload = () => {
                 if (xhr.status === 200) {
                     const endTime = performance.now();
                     const duration = (endTime - startTime) / 1000;
                     const bytesLoaded = xhr.response.size;
-                    const speedKBps = (bytesLoaded / duration / 1).toFixed(2);
+                    const speedKBps = (bytesLoaded / duration / 1024).toFixed(2);
                     speedDisplay.textContent = `Tốc độ: ${speedKBps} KB/s`;
                     speedDisplay.className = 'speed-display';
                     if (speedKBps < 50) speedDisplay.classList.add('slow');
@@ -385,7 +397,7 @@
             };
             xhr.onerror = () => speedDisplay.textContent = "Lỗi mạng";
             xhr.send();
-            setTimeout(measureNetworkSpeed, 10000);
+            setTimeout(measureNetworkSpeed, 15000);
         }
 
         function initializePlayer(source) {
@@ -393,8 +405,8 @@
             if (Hls.isSupported()) {
                 hls = new Hls({
                     lowLatencyMode: true,
-                    maxBufferLength: 10,
-                    maxMaxBufferLength: 15,
+                    maxBufferLength: 5,
+                    maxMaxBufferLength: 10,
                     liveSyncDuration: 5,
                     liveMaxLatencyDuration: 10,
                     capLevelToPlayerSize: true,
@@ -404,7 +416,7 @@
                     abrEwmaSlowLive: 5.0,
                     abrBandWidthFactor: 0.7,
                     abrBandWidthUpFactor: 0.4,
-                    backBufferLength: 10,
+                    backBufferLength: 5,
                     debug: false
                 });
                 hls.loadSource(source);
@@ -476,6 +488,7 @@
             const newIndex = isNext ? currentEpisodeIndex + 1 : currentEpisodeIndex - 1;
             if (newIndex >= 0 && newIndex < episodes.length) {
                 currentEpisodeIndex = newIndex;
+                removeSubtitles();
                 initializePlayer(episodes[newIndex].url);
                 updateActiveButton();
                 document.getElementById('nextPrompt').style.display = 'none';
@@ -614,25 +627,27 @@
         });
 
         const episodeList = document.getElementById('episodeList');
-        episodes.forEach((episode, index) => {
-            const btn = document.createElement('button');
-            btn.className = 'episode-btn';
-            btn.textContent = `T${index + 1}`;
-            btn.onclick = () => {
-                currentEpisodeIndex = index;
-                initializePlayer(episode.url);
-                document.getElementById('nextPrompt').style.display = 'none';
-                updateActiveButton();
-            };
-            episodeList.appendChild(btn);
-        });
-
         if (episodes.length > 0) {
+            episodes.forEach((episode, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'episode-btn';
+                btn.textContent = `T${index + 1}`;
+                btn.onclick = () => {
+                    currentEpisodeIndex = index;
+                    removeSubtitles();
+                    initializePlayer(episode.url);
+                    document.getElementById('nextPrompt').style.display = 'none';
+                    updateActiveButton();
+                };
+                episodeList.appendChild(btn);
+            });
             initializePlayer(episodes[0].url);
             episodeList.children[0].classList.add('active');
             measureNetworkSpeed();
-            highlightCategory(movie.category);
+        } else {
+            episodeList.innerHTML = '<p style="color: #e0e0e0; text-align: center;">Không có tập nào để phát.</p>';
         }
+        highlightCategory(movie.category);
 
         document.getElementById('backToDetail').onclick = () => {
             const movieData = encodeURIComponent(JSON.stringify(movie));
