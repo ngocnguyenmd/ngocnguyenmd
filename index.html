@@ -14,11 +14,10 @@
         nav a.active { background: #6b48a3; border-radius: 5px; font-weight: bold; }
         .container { margin-top: 60px; padding: 5px; max-width: 100vw; }
         .search-bar {
-    display: flex
-;
-    justify-content: center;
-    margin-top: 35px;
-}
+            display: flex;
+            justify-content: center;
+            margin-top: 35px;
+        }
         .search-bar input { width: 65%; max-width: 300px; padding: 6px; font-size: 0.9rem; border: none; border-radius: 5px 0 0 5px; background: #3a2a4a; color: #e0e0e0; outline: none; }
         .search-bar button { padding: 6px 10px; font-size: 0.9rem; border: none; border-radius: 0 5px 5px 0; background: #6b48a3; color: #fff; cursor: pointer; }
         .search-bar button:hover { background: #3d1570; }
@@ -90,16 +89,21 @@
             try {
                 const response = await fetch('custom_movies.txt');
                 const text = await response.text();
-                customMovies = text.split('\n').reduce((acc, line) => {
-                    const [category, title, image, urls, tag] = line.split('|');
-                    if (!acc[category]) acc[category] = [];
-                    const episodes = urls.split(';').map((url, index) => ({
-                        episode: `Tập ${index + 1}`,
-                        m3u8: url
-                    }));
-                    acc[category].push({ title, image, episodes, tag, source: 'creator' });
-                    return acc;
-                }, {});
+                customMovies = {};
+                let currentCategory, currentMovie;
+                text.split('\n').forEach(line => {
+                    line = line.trim();
+                    if (!line) return; // Bỏ qua dòng trống
+                    if (line.includes('|')) {
+                        const [category, title, image, tag] = line.split('|');
+                        currentCategory = category;
+                        if (!customMovies[category]) customMovies[category] = [];
+                        currentMovie = { title, image, episodes: [], tag, source: 'creator' };
+                        customMovies[category].push(currentMovie);
+                    } else if (currentMovie && line.startsWith('http')) {
+                        currentMovie.episodes.push({ episode: `Tập ${currentMovie.episodes.length + 1}`, m3u8: line });
+                    }
+                });
             } catch (error) {
                 customMovies = { trungquoc: [], hanquoc: [], my: [], vietnam: [], truyenhinh: [], hoathinh: [] };
             }

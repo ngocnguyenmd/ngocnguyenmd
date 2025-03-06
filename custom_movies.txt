@@ -1,2 +1,44 @@
-trungquoc|Yêu Em|https://phimimg.com/upload/vod/20250225-1/b99a2232b64a0692c456f2476c317f59.jpg|https://s5.phim1280.tv/20250227/ZvzNARKa/index.m3u8;https://s5.phim1280.tv/20250227/shoDHz3Q/index.m3u8;https://s5.phim1280.tv/20250227/HsLCJbkJ/index.m3u8;https://s5.phim1280.tv/20250227/RPWE80u6/index.m3u8;https://s5.phim1280.tv/20250227/EaH4eVZh/index.m3u8;https://s5.phim1280.tv/20250227/qHn7H27t/index.m3u8;https://s5.phim1280.tv/20250227/nE9jiZj4/index.m3u8;https://s5.phim1280.tv/20250227/ASdgEsZg/index.m3u8;https://s4.phim1280.tv/20250301/YVx8WkON/index.m3u8;https://s4.phim1280.tv/20250301/Rq2sOyBn/index.m3u8;https://s4.phim1280.tv/20250302/WN9rDvE7/index.m3u8;https://s4.phim1280.tv/20250302/CSfRSUqq/index.m3u8;https://s4.phim1280.tv/20250303/4b6jFWRD/index.m3u8;https://s4.phim1280.tv/20250303/NJQrb97n/index.m3u8;https://s4.phim1280.tv/20250304/DBlJkaYS/index.m3u8;https://s4.phim1280.tv/20250304/5m9LqPoH/index.m3u8;https://s4.phim1280.tv/20250305/b2cMLFEN/index.m3u8;https://s4.phim1280.tv/20250305/H7n3vMAc/index.m3u8|HD
-truyenhinh|VTV|https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTF0dHd1cGRjdHVqdW9icWFwY2Q0YnpmZDA1bTl5ajQyZmhtNTZiaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/muL2iYJR1MNPCdXxHv/giphy.gif|https://live.fptplay53.net/fnxhd1/vtv1hd_vhls.smil/chunklist_b5000000.m3u8;https://live.fptplay53.net/fnxhd1/vtv2_vhls.smil/chunklist_b5000000.m3u8;https://live.fptplay53.net/fnxhd1/vtv3hd_vhls.smil/chunklist_b5000000.m3u8;https://live.fptplay53.net/fnxhd1/vtv4_vhls.smil/chunklist_b5000000.m3u8;https://live.fptplay53.net/epzhd1/vtv5hd_vhls.smil/chunklist.m3u8;https://live.fptplay53.net/fnxhd1/vtv7hd_vhls.smil/chunklist_b5000000.m3u8|FullHD
+trungquoc|Yêu Em|https://phimimg.com/upload/vod/20250225-1/b99a2232b64a0692c456f2476c317f59.jpg|HD
+https://s5.phim1280.tv/20250227/ZvzNARKa/index.m3u8
+https://s5.phim1280.tv/20250227/shoDHz3Q/index.m3u8
+https://s5.phim1280.tv/20250227/HsLCJbkJ/index.m3u8
+https://s5.phim1280.tv/20250227/RPWE80u6/index.m3u8
+https://s5.phim1280.tv/20250227/EaH4eVZh/index.m3u8
+https://s5.phim1280.tv/20250227/qHn7H27t/index.m3u8
+https://s5.phim1280.tv/20250227/nE9jiZj4/index.m3u8
+https://s5.phim1280.tv/20250227/ASdgEsZg/index.m3u8
+https://s4.phim1280.tv/20250301/YVx8WkON/index.m3u8
+https://s4.phim1280.tv/20250301/Rq2sOyBn/index.m3u8
+https://s4.phim1280.tv/20250302/WN9rDvE7/index.m3u8
+https://s4.phim1280.tv/20250302/CSfRSUqq/index.m3u8
+https://s4.phim1280.tv/20250303/4b6jFWRD/index.m3u8
+https://s4.phim1280.tv/20250303/NJQrb97n/index.m3u8
+https://s4.phim1280.tv/20250304/DBlJkaYS/index.m3u8
+https://s4.phim1280.tv/20250304/5m9LqPoH/index.m3u8
+https://s4.phim1280.tv/20250305/b2cMLFEN/index.m3u8
+https://s4.phim1280.tv/20250305/H7n3vMAc/index.m3u8
+
+truyenhinh|VTV|https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTF0dHd1cGRjdHVqdW9icWFwY2Q0YnpmZDA1bTl5ajQyZmhtNTZiaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/muL2iYJR1MNPCdXxHv/giphy.gif|FullHD
+https://live.fptplay53.net/fnxhd1/vtv1hd_vhls.smil/chunklist_b5000000.m3u8
+https://live.fptplay53.net/fnxhd1/vtv2_vhls.smil/chunklist_b5000000.m3u8
+https://live.fptplay53.net/fnxhd1/vtv3hd_vhls.smil/chunklist_b5000000.m3u8
+https://live.fptplay53.net/fnxhd1/vtv4_vhls.smil/chunklist_b5000000.m3u8
+https://live.fptplay53.net/epzhd1/vtv5hd_vhls.smil/chunklist.m3u8
+https://live.fptplay53.net/fnxhd1/vtv7hd_vhls.smil/chunklist_b5000000.m3u8
+
+truyenhinh|Ngược dòng thời gian để yêu anh|https://phimimg.com/upload/vod/20240927-1/b3ad4656a3efecf7da4b5339672fc7a2.jpg|HD
+https://s5.phim1280.tv/20240927/XZwrCgby/index.m3u8
+https://s5.phim1280.tv/20240927/G7d6ZEfT/index.m3u8
+https://s5.phim1280.tv/20240927/lOmgzqQV/index.m3u8
+https://s5.phim1280.tv/20240927/oOIWfOdQ/index.m3u8
+https://s5.phim1280.tv/20240927/IrH5sGgd/index.m3u8
+https://s5.phim1280.tv/20240927/BMUOmAuu/index.m3u8
+https://s5.phim1280.tv/20240927/zVXx9Msg/index.m3u8
+https://s5.phim1280.tv/20240927/iHSFNEdF/index.m3u8
+https://s5.phim1280.tv/20240927/LSsATVVV/index.m3u8
+https://s5.phim1280.tv/20240927/wAUrArmL/index.m3u8
+https://s5.phim1280.tv/20240927/CYAiFLmV/index.m3u8
+https://s5.phim1280.tv/20240927/HKeqLYS4/index.m3u8
+https://s5.phim1280.tv/20240927/Nxqs8Rf9/index.m3u8
+https://s5.phim1280.tv/20240927/E6ex4w6f/index.m3u8
+https://s5.phim1280.tv/20240927/iMzYsesH/index.m3u8
