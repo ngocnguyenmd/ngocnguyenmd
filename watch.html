@@ -476,17 +476,16 @@
 
         let promptedEpisodes = {};
         video.addEventListener('timeupdate', throttle(() => {
-            if (!video.duration || isNaN(video.duration)) return;
-            const remaining = video.duration - video.currentTime;
-            const prompt = document.getElementById('nextPrompt');
-            if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && remaining > 0 && episodes.length > currentEpisodeIndex + 1) {
-                video.pause();
-                prompt.style.display = 'block';
-                promptedEpisodes[currentEpisodeIndex] = true;
-            }
-            if (subtitlesApplied) updateCustomCaptions();
-        }, 200));
-
+    if (!video.duration || isNaN(video.duration)) return;
+    const remaining = video.duration - video.currentTime;
+    const prompt = document.getElementById('nextPrompt');
+    if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && remaining > 4 && episodes.length > currentEpisodeIndex + 1) {
+        video.pause();
+        prompt.style.display = 'block';
+        promptedEpisodes[currentEpisodeIndex] = true;
+    }
+    if (subtitlesApplied) updateCustomCaptions();
+}, 200));
         function throttle(func, limit) {
             let inThrottle;
             return function () {
