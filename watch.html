@@ -479,7 +479,7 @@
     if (!video.duration || isNaN(video.duration)) return;
     const remaining = video.duration - video.currentTime;
     const prompt = document.getElementById('nextPrompt');
-    if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && remaining > 4 && episodes.length > currentEpisodeIndex + 1) {
+    if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && remaining > 5 && episodes.length > currentEpisodeIndex + 1) {
         video.pause();
         prompt.style.display = 'block';
         promptedEpisodes[currentEpisodeIndex] = true;
