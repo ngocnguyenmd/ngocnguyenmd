@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Trang Chủ Phim</title>
     <style>
         * {
@@ -11,13 +11,11 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             background: #160822;
             font-family: 'Segoe UI', sans-serif;
             color: #e0e0e0;
         }
-
         header {
             background: #3a185e;
             padding: 8px 0;
@@ -26,14 +24,12 @@
             top: 0;
             z-index: 1000;
         }
-
         nav {
             display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
             gap: 3px;
         }
-
         nav a {
             color: #e0e0e0;
             text-decoration: none;
@@ -42,30 +38,25 @@
             cursor: pointer;
             transition: background 0.2s ease;
         }
-
         nav a:hover {
             background: #4e1b88;
             border-radius: 5px;
         }
-
         nav a.active {
             background: #6b48a3;
             border-radius: 5px;
             font-weight: bold;
         }
-
         .container {
             margin-top: 60px;
             padding: 5px;
             max-width: 100vw;
         }
-
         .search-bar {
             display: flex;
             justify-content: center;
             margin-top: 35px;
         }
-
         .search-bar input {
             width: 65%;
             max-width: 300px;
@@ -77,7 +68,6 @@
             color: #e0e0e0;
             outline: none;
         }
-
         .search-bar button {
             padding: 6px 10px;
             font-size: 0.9rem;
@@ -88,22 +78,18 @@
             cursor: pointer;
             transition: background 0.2s ease;
         }
-
         .search-bar button:hover {
             background: #3d1570;
         }
-
         h1 {
             font-size: 1.3rem;
             text-align: center;
             margin: 18px;
             color: #3f1d66;
         }
-
         .movie-section {
             margin-bottom: 20px;
         }
-
         .movie-section h2 {
             font-size: 0.99rem;
             color: #dbe95a;
@@ -115,13 +101,11 @@
             text-transform: uppercase;
             letter-spacing: 3px;
         }
-
         .movie-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             gap: 8px;
         }
-
         .movie-card {
             background: #1c1129;
             padding: 5px;
@@ -130,33 +114,21 @@
             cursor: pointer;
             position: relative;
             transition: transform 0.2s ease;
-            -webkit-tap-highlight-color: transparent;
         }
-
         .movie-card:hover {
             transform: scale(1.03);
         }
-
         .movie-card img {
             width: 100%;
             height: 160px;
             object-fit: cover;
             border-radius: 5px;
-            display: block;
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
-
-        .movie-card img.loaded {
-            opacity: 1;
-        }
-
         .movie-card h3 {
             font-size: 0.8rem;
             margin: 3px 0;
             color: #ffffff;
         }
-
         .episode-tag {
             position: absolute;
             top: 3px;
@@ -167,7 +139,6 @@
             border-radius: 3px;
             font-size: 0.6rem;
         }
-
         @media (max-width: 720px) {
             nav a {
                 font-size: 0.8rem;
@@ -220,35 +191,29 @@
         let apiUrls = {};
         let customMovies = {};
         let allMovies = { apiMovies: [], customMovies: [] };
-        let movieCache = {}; // Cache dữ liệu phim
-
-        // Lazy load ảnh với Intersection Observer
-        const lazyLoadImages = () => {
-            const images = document.querySelectorAll('.movie-card img:not(.loaded)');
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.classList.add('loaded');
-                        observer.unobserve(img);
-                    }
-                });
-            }, { rootMargin: '50px' });
-            images.forEach(img => observer.observe(img));
-        };
 
         async function loadApiUrls() {
             try {
-                const response = await fetch('apiurl.json', { cache: 'force-cache' });
+                const response = await fetch('apiurl.json');
+                if (!response.ok) throw new Error('Không load được apiurl.json');
                 apiUrls = await response.json();
             } catch (error) {
-                apiUrls = { trungquoc: ["https://ophim1.com/phim/yeu-em"] };
+                console.warn('Lỗi load apiurl.json:', error);
+                apiUrls = {
+                    trungquoc: ["https://ophim1.com/phim/yeu-em"],
+                    hanquoc: [],
+                    my: [],
+                    vietnam: [],
+                    truyenhinh: [],
+                    hoathinh: []
+                };
             }
         }
 
         async function loadCustomMovies() {
             try {
-                const response = await fetch('custom_movies.txt', { cache: 'force-cache' });
+                const response = await fetch('custom_movies.txt');
+                if (!response.ok) throw new Error('Không load được custom_movies.txt');
                 const text = await response.text();
                 customMovies = {};
                 let currentCategory, currentMovie;
@@ -266,13 +231,22 @@
                     }
                 });
             } catch (error) {
-                customMovies = { trungquoc: [], hanquoc: [], my: [], vietnam: [], truyenhinh: [], hoathinh: [] };
+                console.warn('Lỗi load custom_movies.txt:', error);
+                customMovies = {
+                    trungquoc: [],
+                    hanquoc: [],
+                    my: [],
+                    vietnam: [],
+                    truyenhinh: [],
+                    hoathinh: []
+                };
             }
         }
 
         async function fetchMovie(url) {
             try {
-                const response = await fetch(url, { cache: 'force-cache' });
+                const response = await fetch(url);
+                if (!response.ok) return null;
                 const data = await response.json();
                 if (data.status && data.movie) {
                     return {
@@ -286,17 +260,16 @@
                 }
                 return null;
             } catch (error) {
+                console.warn(`Lỗi fetch API ${url}:`, error);
                 return null;
             }
         }
 
         async function fetchMovies(category) {
-            if (movieCache[category]) return movieCache[category]; // Sử dụng cache nếu có
             const urls = apiUrls[category] || [];
             const apiMovies = (await Promise.all(urls.map(fetchMovie))).filter(m => m);
             const customCategoryMovies = (customMovies[category] || []).map(movie => ({ ...movie, description: movie.title }));
-            movieCache[category] = { apiMovies, customMovies: customCategoryMovies };
-            return movieCache[category];
+            return { apiMovies, customMovies: customCategoryMovies };
         }
 
         function highlightCategory(category) {
@@ -310,47 +283,40 @@
                 vietnam: 'Phim Việt', truyenhinh: 'Truyền Hình', hoathinh: 'Hoạt Hình'
             }[category];
             highlightCategory(category);
+            await loadCustomMovies();
             allMovies = await fetchMovies(category);
             displayMovies(allMovies.apiMovies, allMovies.customMovies);
-            lazyLoadImages(); // Kích hoạt lazy load sau khi render
         }
 
         function displayMovies(apiMovies, customMovies) {
             const apiMovieList = document.getElementById('apiMovieList');
             const customMovieList = document.getElementById('customMovieList');
-            const limit = 20;
+            const limit = 50;
 
-            // Sử dụng DocumentFragment để giảm reflow
-            const apiFragment = document.createDocumentFragment();
-            const customFragment = document.createDocumentFragment();
+            apiMovieList.innerHTML = '';
+            customMovieList.innerHTML = '';
 
             apiMovies.slice(0, limit).forEach(movie => {
                 const card = document.createElement('div');
                 card.className = 'movie-card';
-                card.innerHTML = `<img src="${movie.image}" alt="${movie.title}" loading="lazy"><span class="episode-tag">${movie.episode_current}</span><h3>${movie.title}</h3>`;
+                card.innerHTML = `<img src="${movie.image}" alt="${movie.title}"><span class="episode-tag">${movie.episode_current}</span><h3>${movie.title}</h3>`;
                 card.onclick = () => window.location.href = `detail.html?movie=${encodeURIComponent(JSON.stringify(movie))}`;
-                apiFragment.appendChild(card);
+                apiMovieList.appendChild(card);
             });
 
             customMovies.slice(0, limit).forEach(movie => {
                 const card = document.createElement('div');
                 card.className = 'movie-card';
                 const episodeCount = movie.episodes.length > 1 ? `${movie.episodes.length} tập` : movie.tag;
-                card.innerHTML = `<img src="${movie.image}" alt="${movie.title}" loading="lazy"><span class="episode-tag">${episodeCount}</span><h3>${movie.title}</h3>`;
+                card.innerHTML = `<img src="${movie.image}" alt="${movie.title}"><span class="episode-tag">${episodeCount}</span><h3>${movie.title}</h3>`;
                 card.onclick = () => window.location.href = `detail.html?movie=${encodeURIComponent(JSON.stringify(movie))}`;
-                customFragment.appendChild(card);
+                customMovieList.appendChild(card);
             });
-
-            apiMovieList.innerHTML = '';
-            customMovieList.innerHTML = '';
-            apiMovieList.appendChild(apiFragment);
-            customMovieList.appendChild(customFragment);
 
             document.getElementById('api-movies').style.display = apiMovies.length ? 'block' : 'none';
             document.getElementById('custom-movies').style.display = customMovies.length ? 'block' : 'none';
         }
 
-        // Debounce cho hàm search
         const debounce = (func, wait) => {
             let timeout;
             return (...args) => {
@@ -364,7 +330,6 @@
             const filteredApi = allMovies.apiMovies.filter(m => m.title.toLowerCase().includes(query));
             const filteredCustom = allMovies.customMovies.filter(m => m.title.toLowerCase().includes(query));
             displayMovies(filteredApi, filteredCustom);
-            lazyLoadImages();
         }, 300);
 
         window.onload = async () => {
@@ -373,8 +338,6 @@
             loadMovies(initialCategory);
             document.getElementById('searchInput').addEventListener('input', searchMovies);
             document.getElementById('searchInput').addEventListener('keypress', e => e.key === 'Enter' && searchMovies());
-            const categories = ['trungquoc', 'hanquoc', 'my', 'vietnam', 'truyenhinh', 'hoathinh'];
-            categories.forEach(category => fetchMovies(category)); // Preload dữ liệu
         };
     </script>
 </body>
