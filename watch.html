@@ -393,6 +393,15 @@
             url: ep.m3u8
         })) : [];
 
+        async function validateSource(url) {
+            try {
+                const response = await fetch(url, { method: 'HEAD' });
+                return response.ok;
+            } catch {
+                return false;
+            }
+        }
+
         function measureNetworkSpeed() {
             const testUrl = 'https://images.pexels.com/photos/14630295/pexels-photo-14630295.jpeg?cs=srgb&dl=pexels-suki-lee-110686949-14630295.jpg&fm=jpg&h=100&w=150&fit=crop&_gl=1*1oqby5p*_ga*NTc0NDQ2MzM5LjE3NDEyMzMyNzc.*_ga_8JE65Q40S6*MTc0MTMxNjc1MS4yLjEuMTc0MTMxNjc2NC4wLjAuMA..';
             const xhr = new XMLHttpRequest();
@@ -424,20 +433,17 @@
             if (hls) hls.destroy();
             if (Hls.isSupported()) {
                 hls = new Hls({
-                    lowLatencyMode: false,
-                    maxBufferLength: 5,
-                    maxMaxBufferLength: 10,
-                    liveSyncDuration: 3,
-                    liveMaxLatencyDuration: 8,
-                    capLevelToPlayerSize: true,
-                    startLevel: 0,
-                    autoLevelCapping: 2,
-                    abrEwmaFastLive: 1.5,
-                    abrEwmaSlowLive: 3.0,
-                    abrBandWidthFactor: 0.5,
-                    abrBandWidthUpFactor: 0.3,
-                    backBufferLength: 5,
-                    debug: false
+                    debug: true,
+                    enableWorker: true,
+                    maxBufferLength: 30,
+                    maxMaxBufferLength: 60,
+                    liveSyncDuration: 5,
+                    liveMaxLatencyDuration: 10,
+                    maxLoadingDelay: 4,
+                    maxRetry: 3,
+                    xhrSetup: (xhr) => {
+                        xhr.withCredentials = true;
+                    }
                 });
                 hls.loadSource(source);
                 hls.attachMedia(video);
@@ -449,10 +455,14 @@
                     if (subtitlesApplied) applySubtitles();
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
+                    console.error('Lỗi HLS:', data);
                     if (data.fatal) {
-                        console.error('Lỗi HLS:', data);
                         hls.destroy();
-                        setTimeout(() => initializePlayer(source), 2000);
+                        video.src = source;
+                        video.play().catch(e => {
+                            console.error('Lỗi phát trực tiếp:', e);
+                            alert('Không thể phát video này. Vui lòng thử tập khác.');
+                        });
                     }
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
@@ -476,6 +486,12 @@
         video.addEventListener('error', (e) => {
             console.error('Lỗi video:', e);
             isPlaying = false;
+            const errorDiv = document.createElement('div');
+            errorDiv.style.color = '#ff6b6b';
+            errorDiv.style.textAlign = 'center';
+            errorDiv.style.padding = '10px';
+            errorDiv.textContent = 'Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.';
+            video.parentElement.appendChild(errorDiv);
         });
 
         function rewind() { video.currentTime = Math.max(0, video.currentTime - 10); }
@@ -666,7 +682,11 @@
                 const btn = document.createElement('button');
                 btn.className = 'episode-btn';
                 btn.textContent = `T${index + 1}`;
-                btn.onclick = () => {
+                btn.onclick = async () => {
+                    if (!(await validateSource(episode.url))) {
+                        alert('Nguồn video không khả dụng. Vui lòng thử tập khác.');
+                        return;
+                    }
                     currentEpisodeIndex = index;
                     removeSubtitles();
                     initializePlayer(episode.url);
