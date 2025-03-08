@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <title>Xem Phim - Series</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mediaelement@5.1.1/build/mediaelementplayer.min.css" />
     <style>
         /* Reset và style chung */
         body {
@@ -91,6 +91,11 @@
             left: 0;
             width: 100%;
             height: 100%;
+            border-radius: 8px;
+        }
+        .mejs__container {
+            width: 100% !important;
+            height: 100% !important;
             border-radius: 8px;
         }
         .error-message {
@@ -350,7 +355,7 @@
         <h1 id="seriesTitle">Đang tải...</h1>
         <div class="video-container">
             <div class="video-wrapper">
-                <div id="player"></div>
+                <video id="player" playsinline controls preload="metadata"></video>
                 <div id="customCaptions"></div>
                 <div id="errorMessage" class="error-message">
                     Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.
@@ -388,10 +393,10 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mediaelement@5.1.1/build/mediaelement-and-player.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
-        let player = null;
+        const video = document.getElementById('player');
         const videoWrapper = document.querySelector('.video-wrapper');
         const errorMessage = document.getElementById('errorMessage');
         const speedDisplay = document.getElementById('speedDisplay');
@@ -403,6 +408,7 @@
         let captionSize = 0.9;
         let dimMode = false;
         let isPlaying = false;
+        let player = null;
 
         const urlParams = new URLSearchParams(window.location.search);
         const movieData = urlParams.get('movie');
@@ -463,45 +469,57 @@
         }
 
         function initializePlayer(source) {
-            if (player) player.destroy();
-            const currentTime = player ? player.currentTime : 0;
+            if (player) player.remove();
+            const currentTime = video.currentTime || 0;
             const wasPlaying = isPlaying;
 
-            player = new Clappr.Player({
-                parentId: '#player',
+            player = new MediaElementPlayer('player', {
                 source: source,
-                mimeType: 'application/vnd.apple.mpegurl',
-                autoPlay: false,
-                width: '100%',
-                height: '100%',
-                playback: {
-                    hlsjsConfig: {
-                        enableWorker: true,
-                        liveSyncDurationCount: 3,
-                        maxBufferLength: 30
+                type: 'application/vnd.apple.mpegurl',
+                features: ['playpause', 'current', 'progress', 'duration', 'volume', 'fullscreen'],
+                success: (media, node, instance) => {
+                    if (Hls.isSupported()) {
+                        const hls = new Hls();
+                        hls.loadSource(source);
+                        hls.attachMedia(media);
+                        hls.on(Hls.Events.ERROR, (event, data) => {
+                            if (data.fatal) {
+                                console.error('Lỗi HLS:', data);
+                                showError('Video bị hỏng hoặc không tải được.');
+                            }
+                        });
+                    } else if (media.canPlayType('application/vnd.apple.mpegurl')) {
+                        media.src = source;
+                    } else {
+                        showError('Trình duyệt không hỗ trợ HLS.');
                     }
-                },
-                events: {
-                    onReady: () => {
-                        player.currentTime = currentTime;
-                        if (wasPlaying) player.play().catch(e => {
+
+                    media.addEventListener('loadedmetadata', () => {
+                        media.currentTime = currentTime;
+                        if (wasPlaying) media.play().catch(e => {
                             console.error('Không thể tự động phát:', e);
                             showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
                         });
                         if (subtitlesApplied) applySubtitles();
                         hideError();
-                    },
-                    onError: (e) => {
+                    });
+
+                    media.addEventListener('error', (e) => {
                         console.error('Lỗi video:', e);
                         isPlaying = false;
                         showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
-                    },
-                    onPlay: () => { isPlaying = true; },
-                    onPause: () => { isPlaying = false; }
+                    });
+
+                    media.addEventListener('play', () => { isPlaying = true; });
+                    media.addEventListener('pause', () => { isPlaying = false; });
+
+                    media.addEventListener('timeupdate', throttle(timeUpdateHandler, 200));
+                },
+                error: (e) => {
+                    console.error('Lỗi khởi tạo player:', e);
+                    showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
                 }
             });
-
-            player.on(Clappr.Events.PLAYER_TIMEUPDATE, throttle(timeUpdateHandler, 200));
         }
 
         function showError(message) {
@@ -514,8 +532,13 @@
             errorMessage.style.display = 'none';
         }
 
-        function rewind() { if (player) player.seek(player.currentTime - 10); }
-        function fastForward() { if (player) player.seek(player.currentTime + 10); }
+        function rewind() {
+            if (player) player.setCurrentTime(Math.max(0, player.getCurrentTime() - 10));
+        }
+
+        function fastForward() {
+            if (player) player.setCurrentTime(Math.min(player.getDuration(), player.getCurrentTime() + 10));
+        }
 
         function loadMovies(category) {
             window.location.href = `index.html?category=${category}`;
@@ -530,7 +553,7 @@
         let promptedEpisodes = {};
         function timeUpdateHandler() {
             if (!player || !player.getDuration() || isNaN(player.getDuration())) return;
-            const remaining = player.getDuration() - player.currentTime;
+            const remaining = player.getDuration() - player.getCurrentTime();
             const prompt = document.getElementById('nextPrompt');
             if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && remaining > 90 && episodes.length > currentEpisodeIndex + 1) {
                 player.pause();
@@ -598,25 +621,31 @@
         function applySubtitles() {
             removeSubtitles();
             if (player && subtitleContents[1]) {
-                const tracks = [{
-                    label: 'Phụ đề 1',
-                    src: subtitleContents[1],
-                    default: true
-                }];
+                const track1 = document.createElement('track');
+                track1.kind = 'captions';
+                track1.label = 'Phụ đề 1';
+                track1.srclang = 'vi';
+                track1.src = subtitleContents[1];
+                track1.default = true;
+                video.appendChild(track1);
+                track1.mode = 'hidden';
+
                 if (bilingualMode && subtitleContents[2]) {
-                    tracks.push({
-                        label: 'Phụ đề 2',
-                        src: subtitleContents[2]
-                    });
+                    const track2 = document.createElement('track');
+                    track2.kind = 'captions';
+                    track2.label = 'Phụ đề 2';
+                    track2.srclang = 'vi';
+                    track2.src = subtitleContents[2];
+                    video.appendChild(track2);
+                    track2.mode = 'hidden';
                 }
-                player.configure({ subtitles: tracks });
                 updateCustomCaptions();
             }
         }
 
         function removeSubtitles() {
-            if (player) {
-                player.configure({ subtitles: [] });
+            while (video.textTracks.length > 0) {
+                video.removeChild(video.textTracks[0].element);
             }
             document.getElementById('customCaptions').innerHTML = '';
         }
@@ -649,8 +678,13 @@
                 captionContainer.innerHTML = '';
                 return;
             }
-            const text1 = ''; // Clappr không hỗ trợ truy cập trực tiếp phụ đề, cần plugin tùy chỉnh
-            const text2 = bilingualMode ? '' : '';
+            let track1, track2;
+            for (let i = 0; i < video.textTracks.length; i++) {
+                if (video.textTracks[i].label === 'Phụ đề 1') track1 = video.textTracks[i];
+                else if (video.textTracks[i].label === 'Phụ đề 2') track2 = video.textTracks[i];
+            }
+            let text1 = track1 && track1.activeCues && track1.activeCues.length > 0 ? track1.activeCues[0].text : '';
+            let text2 = bilingualMode && track2 && track2.activeCues && track2.activeCues.length > 0 ? track2.activeCues[0].text : '';
             captionContainer.innerHTML = bilingualMode
                 ? `<div class="caption-line top">${text1}</div><div class="caption-line bottom">${text2}</div>`
                 : `<div class="caption-line top">${text1}</div>`;
