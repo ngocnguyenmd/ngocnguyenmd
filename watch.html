@@ -320,7 +320,7 @@
     </header>
     <div class="dim-overlay"></div>
     <div class="container">
-        <h1 id="seriesTitle">Loading...</h1>
+        <h1 id="seriesTitle">Đang tải...</h1>
         <div class="video-container">
             <div class="video-wrapper">
                 <video id="player" playsinline controls preload="metadata"></video>
@@ -372,15 +372,19 @@
         let bilingualMode = false;
         let captionSize = 0.9;
         let dimMode = false;
+        let isPlaying = false;
+
+        video.addEventListener('play', () => { isPlaying = true; });
+        video.addEventListener('pause', () => { isPlaying = false; });
 
         const urlParams = new URLSearchParams(window.location.search);
         const movieData = urlParams.get('movie');
         let movie;
         try {
             movie = JSON.parse(decodeURIComponent(movieData));
-            if (!movie || !movie.title) throw new Error('Invalid movie data');
+            if (!movie || !movie.title) throw new Error('Dữ liệu phim không hợp lệ');
         } catch (error) {
-            console.error('Error parsing movie data:', error);
+            console.error('Lỗi phân tích dữ liệu phim:', error);
             movie = { title: 'Phim không khả dụng', episodes: [], source: 'creator', category: 'trungquoc' };
         }
         document.getElementById('seriesTitle').innerHTML = `${movie.title} <span class="source-label source-${movie.source}">${movie.source === 'api' ? 'Bánh Mì' : 'Xưởng bánh mì'}</span>`;
@@ -414,11 +418,11 @@
         }
 
         function initializePlayer(source) {
+            const currentTime = video.currentTime;
+            const wasPlaying = isPlaying;
+            
             if (hls) hls.destroy();
-            video.setAttribute('playsinline', ''); // Đảm bảo video phát inline trên iOS
-            video.setAttribute('webkit-playsinline', ''); // Tương thích iOS cũ
-
-            if (Hls.isSupported() && !navigator.userAgent.includes('iPhone')) {
+            if (Hls.isSupported()) {
                 hls = new Hls({
                     lowLatencyMode: false,
                     maxBufferLength: 5,
@@ -438,18 +442,26 @@
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    video.currentTime = currentTime;
+                    if (wasPlaying) {
+                        video.play().catch(e => console.error('Không thể tự động phát:', e));
+                    }
                     if (subtitlesApplied) applySubtitles();
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
                     if (data.fatal) {
-                        console.error('HLS Error:', data);
+                        console.error('Lỗi HLS:', data);
                         hls.destroy();
                         setTimeout(() => initializePlayer(source), 2000);
                     }
                 });
-            } else {
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = source;
                 video.addEventListener('loadedmetadata', () => {
+                    video.currentTime = currentTime;
+                    if (wasPlaying) {
+                        video.play().catch(e => console.error('Không thể tự động phát:', e));
+                    }
                     if (subtitlesApplied) applySubtitles();
                 }, { once: true });
             }
@@ -458,17 +470,12 @@
         const player = new Plyr(video, {
             controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
             speed: { selected: 1, options: [1] },
-            captions: { active: false },
-            clickToPlay: true, // Đảm bảo click để phát trên di động
-            autoplay: false // Tắt autoplay để tránh lỗi trên di động
-        });
-
-        video.addEventListener('play', () => {
-            console.log('Video đang phát');
+            captions: { active: false }
         });
 
         video.addEventListener('error', (e) => {
-            console.error('Lỗi phát video:', e);
+            console.error('Lỗi video:', e);
+            isPlaying = false;
         });
 
         function rewind() { video.currentTime = Math.max(0, video.currentTime - 10); }
@@ -516,6 +523,9 @@
                 initializePlayer(episodes[newIndex].url);
                 updateActiveButton();
                 document.getElementById('nextPrompt').style.display = 'none';
+                if (isPlaying) {
+                    video.play().catch(e => console.error('Không thể phát tập tiếp theo:', e));
+                }
             }
         }
 
@@ -527,7 +537,7 @@
 
         function hidePrompt() {
             document.getElementById('nextPrompt').style.display = 'none';
-            video.play().catch(err => console.error('Error resuming video:', err));
+            video.play().catch(err => console.error('Lỗi tiếp tục video:', err));
         }
 
         function toggleSubtitles() {
@@ -593,7 +603,7 @@
         }
 
         function checkSubtitles() {
-            console.log('Subtitle status:', subtitleContents);
+            console.log('Trạng thái phụ đề:', subtitleContents);
         }
 
         function updateCustomCaptions() {
