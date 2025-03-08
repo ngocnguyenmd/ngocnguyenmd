@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <title>Xem Phim - Series</title>
-    <link rel="stylesheet" href="https://vjs.zencdn.net/8.10.0/video-js.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.10.0/dist/controls.css" />
     <style>
         /* Reset và style chung */
         body {
@@ -86,7 +85,7 @@
             height: 0;
             padding-bottom: 56.25%;
         }
-        .video-js {
+        #player {
             position: absolute;
             top: 0;
             left: 0;
@@ -94,7 +93,6 @@
             height: 100%;
             border-radius: 8px;
         }
-        .vjs-big-play-button { font-size: 2.5em; }
         .error-message {
             color: #ff6b6b;
             text-align: center;
@@ -352,7 +350,7 @@
         <h1 id="seriesTitle">Đang tải...</h1>
         <div class="video-container">
             <div class="video-wrapper">
-                <video id="player" class="video-js vjs-default-skin" playsinline controls preload="metadata"></video>
+                <video id="player" playsinline controls preload="metadata"></video>
                 <div id="customCaptions"></div>
                 <div id="errorMessage" class="error-message">
                     Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.
@@ -390,7 +388,7 @@
         </div>
     </div>
 
-    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.10.0/dist/shaka-player.compiled.js"></script>
     <script>
         const video = document.getElementById('player');
         const videoWrapper = document.querySelector('.video-wrapper');
@@ -405,20 +403,12 @@
         let dimMode = false;
         let isPlaying = false;
 
-        const player = videojs('player', {
-            controls: true,
-            fluid: true,
-            controlBar: {
-                playToggle: true,
-                progressControl: true,
-                currentTimeDisplay: true,
-                timeDivider: true,
-                durationDisplay: true,
-                volumePanel: true,
-                fullscreenToggle: true
-            },
-            textTrackSettings: false
-        });
+        // Initialize Shaka Player
+        shaka.polyfill.installAll();
+        if (!shaka.Player.isBrowserSupported()) {
+            showError('Trình duyệt không hỗ trợ Shaka Player.');
+        }
+        const player = new shaka.Player(video);
 
         video.addEventListener('play', () => { isPlaying = true; });
         video.addEventListener('pause', () => { isPlaying = false; });
@@ -481,54 +471,36 @@
             setTimeout(measureNetworkSpeed, 20000);
         }
 
-        function initializePlayer(source) {
+        async function initializePlayer(source) {
             const currentTime = video.currentTime;
             const wasPlaying = isPlaying;
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(source);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.ERROR, (event, data) => {
-                    if (data.fatal) {
-                        console.error('Lỗi HLS:', data);
-                        showError('Video bị hỏng hoặc không tải được.');
-                    }
-                });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = source;
-            } else {
-                showError('Trình duyệt không hỗ trợ HLS.');
-                return;
-            }
-            player.ready(() => {
+            try {
+                await player.load(source);
                 video.currentTime = currentTime;
-                if (wasPlaying) player.play().catch(e => {
+                if (wasPlaying) video.play().catch(e => {
                     console.error('Không thể tự động phát:', e);
-                    if (e.name === 'NotSupportedError') {
-                        showError('Định dạng video không được hỗ trợ bởi trình duyệt.');
-                    } else if (e.name === 'AbortError') {
-                        showError('Video bị hỏng hoặc không tải được.');
-                    } else {
-                        showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
-                    }
+                    showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
                 });
                 if (subtitlesApplied) applySubtitles();
                 hideError();
-            });
+            } catch (e) {
+                console.error('Lỗi Shaka Player:', e);
+                showError('Video bị hỏng hoặc không tải được.');
+            }
         }
 
         function showError(message) {
             errorMessage.textContent = message;
             errorMessage.style.display = 'block';
-            player.pause();
+            video.pause();
         }
 
         function hideError() {
             errorMessage.style.display = 'none';
         }
 
-        player.on('error', (e) => {
-            console.error('Lỗi video:', e);
+        player.addEventListener('error', (e) => {
+            console.error('Lỗi video:', e.detail);
             isPlaying = false;
             showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
         });
@@ -576,8 +548,8 @@
                 currentEpisodeIndex = newIndex;
                 removeSubtitles();
                 initializePlayer(episodes[newIndex].url);
-                player.on('error', () => {
-                    console.error('Lỗi video:', player.error());
+                player.addEventListener('error', () => {
+                    console.error('Lỗi video:', player.getError());
                     showError('Video bị hỏng. Chuyển sang tập khác.');
                     playNextEpisode(true);
                 });
