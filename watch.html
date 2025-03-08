@@ -23,7 +23,7 @@
             z-index: 1000;
         }
         nav {
-            max-width: 960px; /* Giới hạn chiều rộng nav giống video */
+            max-width: 960px;
             margin: 0 auto;
             display: flex;
             justify-content: space-around;
@@ -41,7 +41,7 @@
         nav a:hover { background-color: #4a90e2; border-radius: 5px; }
         nav a.active { font-weight: bold; background-color: #6b48a3; border-radius: 5px; }
         .container {
-            max-width: 960px; /* Chiều rộng cố định cho desktop */
+            max-width: 960px;
             margin: 70px auto 0;
             padding: 5px;
             position: relative;
@@ -67,16 +67,16 @@
             background: #1a1a1a;
             padding: 5px;
             border-radius: 8px;
-            width: 100%; /* Chiếm toàn bộ container */
-            max-width: 960px; /* Chiều rộng tối đa */
-            margin: 0 auto; /* Căn giữa */
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
             z-index: 2000;
         }
         .video-wrapper {
             position: relative;
             width: 100%;
             height: 0;
-            padding-bottom: 56.25%; /* Tỷ lệ 16:9 */
+            padding-bottom: 56.25%;
         }
         .plyr {
             position: absolute;
@@ -272,7 +272,7 @@
 
         @media (max-width: 960px) {
             .container {
-                max-width: 100vw; /* Trở lại full width trên thiết bị nhỏ */
+                max-width: 100vw;
                 margin-top: 60px;
                 padding: 3px;
             }
@@ -323,7 +323,7 @@
         <h1 id="seriesTitle">Loading...</h1>
         <div class="video-container">
             <div class="video-wrapper">
-                <video id="player" playsinline controls preload="autoplay"></video>
+                <video id="player" playsinline controls preload="metadata" autoplay></video>
                 <div id="customCaptions"></div>
             </div>
             <div class="control-buttons">
@@ -389,7 +389,6 @@
             url: ep.m3u8
         })) : [];
 
-        // Đo tốc độ mạng không ảnh hưởng video
         function measureNetworkSpeed() {
             const testUrl = 'https://images.pexels.com/photos/14630295/pexels-photo-14630295.jpeg?cs=srgb&dl=pexels-suki-lee-110686949-14630295.jpg&fm=jpg&h=100&w=150&fit=crop&_gl=1*1oqby5p*_ga*NTc0NDQ2MzM5LjE3NDEyMzMyNzc.*_ga_8JE65Q40S6*MTc0MTMxNjc1MS4yLjEuMTc0MTMxNjc2NC4wLjAuMA..';
             const xhr = new XMLHttpRequest();
@@ -401,7 +400,7 @@
                     const endTime = performance.now();
                     const duration = (endTime - startTime) / 1000;
                     const bytesLoaded = xhr.response.size;
-                    const speedKBps = (bytesLoaded / duration / 2).toFixed(2); // Sửa lại phép tính
+                    const speedKBps = (bytesLoaded / duration / 2).toFixed(2);
                     speedDisplay.textContent = `Tốc độ: ${speedKBps} KB/s`;
                     speedDisplay.className = 'speed-display';
                     if (speedKBps < 50) speedDisplay.classList.add('slow');
@@ -414,10 +413,20 @@
             setTimeout(measureNetworkSpeed, 20000);
         }
 
+        function isAutoplayBlocked() {
+            const testVideo = document.createElement('video');
+            testVideo.autoplay = true;
+            testVideo.muted = true;
+            const promise = testVideo.play();
+            return promise !== undefined && promise.catch(() => true);
+        }
+
         function initializePlayer(source) {
             if (hls) hls.destroy();
+            const isAutoplay = video.hasAttribute('autoplay') && !isAutoplayBlocked();
+            
             if (Hls.isSupported()) {
-            hls = new Hls({
+                hls = new Hls({
                     lowLatencyMode: false,
                     maxBufferLength: 5,
                     maxMaxBufferLength: 10,
@@ -436,7 +445,11 @@
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    video.play().catch(() => console.log("Autoplay blocked"));
+                    if (isAutoplay) {
+                        video.play().catch(() => console.log("Autoplay blocked"));
+                    } else {
+                        video.load();
+                    }
                     if (subtitlesApplied) applySubtitles();
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
@@ -449,7 +462,9 @@
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = source;
                 video.addEventListener('loadedmetadata', () => {
-                    video.play().catch(() => console.log("Autoplay blocked"));
+                    if (isAutoplay) {
+                        video.play().catch(() => console.log("Autoplay blocked"));
+                    }
                     if (subtitlesApplied) applySubtitles();
                 }, { once: true });
             }
@@ -476,16 +491,17 @@
 
         let promptedEpisodes = {};
         video.addEventListener('timeupdate', throttle(() => {
-    if (!video.duration || isNaN(video.duration)) return;
-    const remaining = video.duration - video.currentTime;
-    const prompt = document.getElementById('nextPrompt');
-    if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && remaining > 90 && episodes.length > currentEpisodeIndex + 1) {
-        video.pause();
-        prompt.style.display = 'block';
-        promptedEpisodes[currentEpisodeIndex] = true;
-    }
-    if (subtitlesApplied) updateCustomCaptions();
-}, 200));
+            if (!video.duration || isNaN(video.duration)) return;
+            const remaining = video.duration - video.currentTime;
+            const prompt = document.getElementById('nextPrompt');
+            if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && remaining > 90 && episodes.length > currentEpisodeIndex + 1) {
+                video.pause();
+                prompt.style.display = 'block';
+                promptedEpisodes[currentEpisodeIndex] = true;
+            }
+            if (subtitlesApplied) updateCustomCaptions();
+        }, 200));
+
         function throttle(func, limit) {
             let inThrottle;
             return function () {
