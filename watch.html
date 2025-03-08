@@ -6,7 +6,6 @@
     <title>Xem Phim - Series</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mediaelement@5.1.1/build/mediaelementplayer.min.css" />
     <style>
-        /* Reset và style chung */
         body {
             margin: 0;
             padding: 0;
@@ -16,7 +15,6 @@
             overflow-x: hidden;
         }
 
-        /* Header và Navigation */
         header {
             background-color: #270e41;
             padding: 5px 0;
@@ -44,7 +42,6 @@
         nav a:hover { background-color: #4a90e2; border-radius: 5px; }
         nav a.active { font-weight: bold; background-color: #6b48a3; border-radius: 5px; }
 
-        /* Container chính */
         .container {
             max-width: 960px;
             margin: 50px auto 0;
@@ -68,7 +65,6 @@
         .source-api { background: #4a90e2; }
         .source-creator { background: #6b48a3; }
 
-        /* Video container */
         .video-container {
             position: relative;
             background: #1a1a1a;
@@ -82,7 +78,7 @@
         .video-wrapper {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%; /* Tỷ lệ 16:9 */
+            padding-bottom: 56.25%;
             height: auto;
         }
         #player {
@@ -129,13 +125,18 @@
         .caption-line.top { color: #ffffff; }
         .caption-line.bottom { color: #e0e0e0; }
 
-        /* Control buttons */
         .control-buttons {
             display: flex;
             justify-content: center;
             gap: 5px;
-            margin-top: 5px;
-            flex-wrap: wrap;
+            padding: 5px 0;
+            background: #270e41;
+            position: absolute;
+            top: -40px;
+            left: 0;
+            width: 100%;
+            z-index: 3000;
+            border-radius: 5px 5px 0 0;
         }
         .control-btn {
             background: #6b48a3;
@@ -150,7 +151,6 @@
         }
         .control-btn:hover { background: #4a90e2; }
 
-        /* Episode list */
         .episode-list {
             margin-top: 5px;
             display: grid;
@@ -177,7 +177,6 @@
         .episode-btn:hover { background: #6b48a3; }
         .episode-btn.active { background: #4a90e2; color: #fff; }
 
-        /* Navigation links */
         .nav-links {
             display: flex;
             justify-content: center;
@@ -192,7 +191,6 @@
         }
         .back-link:hover { text-decoration: underline; color: #6b48a3; }
 
-        /* Next episode prompt */
         .next-prompt {
             position: absolute;
             top: 50%;
@@ -219,7 +217,6 @@
         }
         .next-prompt button:hover { background: #4a90e2; }
 
-        /* Subtitle controls */
         .subtitle-controls {
             display: flex;
             justify-content: center;
@@ -250,7 +247,6 @@
         .size-btn:hover { background: #4a90e2; }
         .apply-sub-btn.applied { background: #4a90e2; }
 
-        /* Dim mode */
         .dim-overlay {
             position: fixed;
             top: 0;
@@ -287,7 +283,6 @@
         .dim-btn:hover { background: #4a90e2; }
         .dim-btn.active { background: #4a90e2; }
 
-        /* Speed display */
         .speed-display {
             position: fixed;
             bottom: 5px;
@@ -307,30 +302,22 @@
         .speed-display.fast { color: #6b48a3; }
         .speed-display::before { content: '📡'; }
 
-        /* Media queries cho thiết bị nhỏ */
         @media (max-width: 960px) {
-            .container {
-                max-width: 100%;
-                margin-top: 45px;
-                padding: 3px;
-            }
+            .container { max-width: 100%; margin-top: 45px; padding: 3px; }
             nav { max-width: 100%; }
             .video-container { max-width: 100%; padding: 3px; }
             header { padding: 3px 0; }
             nav a { font-size: 0.8rem; padding: 5px 6px; }
             h1 { font-size: 1rem; margin-bottom: 6px; }
             .control-btn { padding: 5px 8px; font-size: 0.8rem; min-width: 35px; }
+            .control-buttons { top: -35px; }
             .episode-list {
                 grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
                 gap: 6px;
                 padding: 6px;
                 max-height: 180px;
             }
-            .episode-btn {
-                padding: 8px;
-                font-size: 0.9rem;
-                min-height: 40px;
-            }
+            .episode-btn { padding: 8px; font-size: 0.9rem; min-height: 40px; }
             .next-prompt { padding: 6px 10px; font-size: 0.7rem; }
             .subtitle-controls label,
             .check-sub-btn,
@@ -343,12 +330,9 @@
             .speed-display { font-size: 0.6rem; padding: 2px 4px; }
         }
 
-        /* Đảm bảo responsive trên mọi thiết bị */
         @media (max-width: 600px) {
-            .video-wrapper {
-                padding-bottom: 56.25%; /* Giữ tỷ lệ 16:9 */
-            }
-            .control-buttons { gap: 3px; }
+            .video-wrapper { padding-bottom: 56.25%; }
+            .control-buttons { gap: 3px; padding: 3px 0; }
             .subtitle-controls { gap: 3px; }
             .episode-list { max-height: 150px; }
         }
@@ -369,18 +353,18 @@
     <div class="container">
         <h1 id="seriesTitle">Đang tải...</h1>
         <div class="video-container">
-            <div class="video-wrapper">
-                <video id="player" playsinline controls preload="metadata"></video>
-                <div id="customCaptions"></div>
-                <div id="errorMessage" class="error-message">
-                    Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.
-                </div>
-            </div>
             <div class="control-buttons">
                 <button class="control-btn" onclick="rewind()">⏪︎</button>
                 <button class="control-btn" onclick="playNextEpisode(false)">⏮︎</button>
                 <button class="control-btn" onclick="playNextEpisode(true)">⏭</button>
                 <button class="control-btn" onclick="fastForward()">⏩︎</button>
+            </div>
+            <div class="video-wrapper">
+                <video id="player" playsinline controls preload="auto"></video>
+                <div id="customCaptions"></div>
+                <div id="errorMessage" class="error-message">
+                    Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.
+                </div>
             </div>
             <div class="subtitle-controls">
                 <label for="subtitle1">Tải phụ đề 1</label>
@@ -443,12 +427,8 @@
 
         async function validateSource(url) {
             try {
-                const response = await fetch(url);
-                if (!response.ok) return false;
-                const contentType = response.headers.get('content-type');
-                if (!contentType.includes('application/vnd.apple.mpegurl')) return false;
-                const text = await response.text();
-                return text.includes('#EXTM3U');
+                const response = await fetch(url, { method: 'HEAD' });
+                return response.ok && response.headers.get('content-type')?.includes('application/vnd.apple.mpegurl');
             } catch {
                 return false;
             }
@@ -465,31 +445,24 @@
                     const endTime = performance.now();
                     const duration = (endTime - startTime) / 1000;
                     const bytesLoaded = xhr.response.size;
-                    const speedKBps = (bytesLoaded / duration / 2).toFixed(2);
+                    const speedKBps = (bytesLoaded / duration / 1024).toFixed(2);
                     speedDisplay.textContent = `Tốc độ: ${speedKBps} KB/s`;
                     speedDisplay.className = 'speed-display';
-                    if (speedKBps < 50) {
-                        speedDisplay.classList.add('slow');
-                        showError('Tốc độ mạng quá thấp để phát video.');
-                    } else if (speedKBps > 1000) speedDisplay.classList.add('fast');
+                    if (speedKBps < 50) speedDisplay.classList.add('slow');
+                    else if (speedKBps > 1000) speedDisplay.classList.add('fast');
                     else speedDisplay.classList.add('good');
                 }
             };
-            xhr.onerror = () => {
-                speedDisplay.textContent = "Lỗi mạng";
-                showError('Không thể tải video do lỗi mạng.');
-            };
+            xhr.onerror = () => { speedDisplay.textContent = "Lỗi mạng"; showError('Không thể tải video do lỗi mạng.'); };
             xhr.send();
             setTimeout(measureNetworkSpeed, 20000);
         }
 
         function initializePlayer(source) {
             if (player) player.remove();
-            const currentTime = video.currentTime || 0;
-            const wasPlaying = isPlaying;
 
             player = new MediaElementPlayer('player', {
-                stretching: 'responsive', // Đảm bảo video co giãn theo container
+                stretching: 'responsive',
                 features: ['playpause', 'current', 'progress', 'duration', 'volume', 'fullscreen'],
                 success: (media, node, instance) => {
                     if (Hls.isSupported()) {
@@ -502,18 +475,24 @@
                                 showError('Video bị hỏng hoặc không tải được.');
                             }
                         });
+                        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                            media.play().catch(e => {
+                                console.error('Không thể tự động phát:', e);
+                                showError('Nhấn play để tiếp tục.');
+                            });
+                        });
                     } else if (media.canPlayType('application/vnd.apple.mpegurl')) {
                         media.src = source;
+                        media.load();
+                        media.play().catch(e => {
+                            console.error('Không thể tự động phát:', e);
+                            showError('Nhấn play để tiếp tục.');
+                        });
                     } else {
                         showError('Trình duyệt không hỗ trợ HLS.');
                     }
 
                     media.addEventListener('loadedmetadata', () => {
-                        media.currentTime = currentTime;
-                        if (wasPlaying) media.play().catch(e => {
-                            console.error('Không thể tự động phát:', e);
-                            showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
-                        });
                         if (subtitlesApplied) applySubtitles();
                         hideError();
                     });
@@ -526,7 +505,6 @@
 
                     media.addEventListener('play', () => { isPlaying = true; });
                     media.addEventListener('pause', () => { isPlaying = false; });
-
                     media.addEventListener('timeupdate', throttle(timeUpdateHandler, 200));
                 },
                 error: (e) => {
@@ -596,12 +574,6 @@
                 initializePlayer(episodes[newIndex].url);
                 document.getElementById('nextPrompt').style.display = 'none';
                 updateActiveButton();
-                if (isPlaying) {
-                    player.play().catch(e => {
-                        console.error('Không thể phát tập tiếp theo:', e);
-                        showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
-                    });
-                }
             }
         }
 
@@ -615,7 +587,7 @@
             document.getElementById('nextPrompt').style.display = 'none';
             if (player) player.play().catch(err => {
                 console.error('Lỗi tiếp tục video:', err);
-                showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
+                showError('Nhấn play để tiếp tục.');
             });
         }
 
@@ -707,9 +679,7 @@
         function toggleBilingual() {
             bilingualMode = !bilingualMode;
             document.getElementById('toggleBilingual').textContent = bilingualMode ? 'Tắt song ngữ' : 'Song ngữ';
-            if (subtitlesApplied) {
-                applySubtitles();
-            }
+            if (subtitlesApplied) applySubtitles();
         }
 
         function changeCaptionSize(delta) {
