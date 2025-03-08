@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <title>Xem Phim - Series</title>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <link rel="stylesheet" href="https://vjs.zencdn.net/8.10.0/video-js.min.css" />
     <style>
+        /* Reset và style chung */
         body {
             margin: 0;
             padding: 0;
@@ -14,6 +15,8 @@
             color: #e0e0e0;
             overflow-x: hidden;
         }
+
+        /* Header và Navigation */
         header {
             background-color: #270e41;
             padding: 5px 0;
@@ -40,16 +43,18 @@
         }
         nav a:hover { background-color: #4a90e2; border-radius: 5px; }
         nav a.active { font-weight: bold; background-color: #6b48a3; border-radius: 5px; }
+
+        /* Container chính */
         .container {
             max-width: 960px;
-            margin: 70px auto 0;
+            margin: 50px auto 0; /* Giảm margin-top từ 70px xuống 50px để video xuống thấp hơn */
             padding: 5px;
             position: relative;
         }
         h1 {
             font-size: 1.2rem;
             color: #4a90e2;
-            margin-bottom: 10px;
+            margin-bottom: 8px; /* Giảm margin-bottom từ 10px xuống 8px */
             text-align: center;
             position: relative;
         }
@@ -62,6 +67,8 @@
         }
         .source-api { background: #4a90e2; }
         .source-creator { background: #6b48a3; }
+
+        /* Video container */
         .video-container {
             position: relative;
             background: #1a1a1a;
@@ -78,17 +85,41 @@
             height: 0;
             padding-bottom: 56.25%;
         }
-        .plyr {
+        .video-js {
             position: absolute;
             top: 0;
             left: 0;
-            border-radius: 8px;
-            overflow: hidden;
             width: 100%;
             height: 100%;
-            z-index: 2000;
+            border-radius: 8px;
         }
-        .plyr__captions { display: none !important; }
+        .vjs-big-play-button { font-size: 2.5em; }
+        .error-message {
+            color: #ff6b6b;
+            text-align: center;
+            padding: 10px;
+            display: none;
+        }
+        #customCaptions {
+            position: absolute;
+            bottom: 10%;
+            width: 100%;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            font-size: 0.9rem;
+            pointer-events: none;
+            line-height: 1.2em;
+            z-index: 2500;
+        }
+        .video-wrapper.fullscreen #customCaptions {
+            bottom: 15px;
+            font-size: 1.2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        .caption-line.top { color: #ffffff; }
+        .caption-line.bottom { color: #e0e0e0; }
+
+        /* Control buttons */
         .control-buttons {
             display: flex;
             justify-content: center;
@@ -108,6 +139,8 @@
             min-width: 40px;
         }
         .control-btn:hover { background: #4a90e2; }
+
+        /* Episode list */
         .episode-list {
             margin-top: 5px;
             display: grid;
@@ -133,6 +166,8 @@
         }
         .episode-btn:hover { background: #6b48a3; }
         .episode-btn.active { background: #4a90e2; color: #fff; }
+
+        /* Navigation links */
         .nav-links {
             display: flex;
             justify-content: center;
@@ -146,6 +181,8 @@
             transition: color 0.2s;
         }
         .back-link:hover { text-decoration: underline; color: #6b48a3; }
+
+        /* Next episode prompt */
         .next-prompt {
             position: absolute;
             top: 50%;
@@ -171,6 +208,8 @@
             transition: background 0.2s;
         }
         .next-prompt button:hover { background: #4a90e2; }
+
+        /* Subtitle controls */
         .subtitle-controls {
             display: flex;
             justify-content: center;
@@ -200,22 +239,8 @@
         .bilingual-btn:hover,
         .size-btn:hover { background: #4a90e2; }
         .apply-sub-btn.applied { background: #4a90e2; }
-        #customCaptions {
-            position: absolute;
-            bottom: 10%;
-            width: 100%;
-            text-align: center;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-            font-size: 0.9rem;
-            pointer-events: none;
-            line-height: 1.2em;
-            z-index: 2500;
-        }
-        .video-wrapper.fullscreen #customCaptions {
-            bottom: 15px;
-            font-size: 1.2rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-        }
+
+        /* Dim mode */
         .dim-overlay {
             position: fixed;
             top: 0;
@@ -251,6 +276,8 @@
         }
         .dim-btn:hover { background: #4a90e2; }
         .dim-btn.active { background: #4a90e2; }
+
+        /* Speed display */
         .speed-display {
             position: fixed;
             bottom: 5px;
@@ -270,17 +297,18 @@
         .speed-display.fast { color: #6b48a3; }
         .speed-display::before { content: '📡'; }
 
+        /* Media queries cho thiết bị nhỏ */
         @media (max-width: 960px) {
             .container {
                 max-width: 100vw;
-                margin-top: 60px;
+                margin-top: 45px; /* Giảm từ 60px xuống 45px cho điện thoại */
                 padding: 3px;
             }
             nav { max-width: 100vw; }
             .video-container { max-width: 100%; }
             header { padding: 3px 0; }
             nav a { font-size: 0.8rem; padding: 5px 6px; }
-            h1 { font-size: 1rem; margin-bottom: 8px; }
+            h1 { font-size: 1rem; margin-bottom: 6px; } /* Giảm margin-bottom từ 8px xuống 6px */
             .video-container { padding: 3px; }
             .control-btn { padding: 5px 8px; font-size: 0.8rem; min-width: 35px; }
             .episode-list {
@@ -323,8 +351,11 @@
         <h1 id="seriesTitle">Đang tải...</h1>
         <div class="video-container">
             <div class="video-wrapper">
-                <video id="player" playsinline controls preload="metadata"></video>
+                <video id="player" class="video-js vjs-default-skin" playsinline controls preload="metadata"></video>
                 <div id="customCaptions"></div>
+                <div id="errorMessage" class="error-message">
+                    Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.
+                </div>
             </div>
             <div class="control-buttons">
                 <button class="control-btn" onclick="rewind()">⏪︎</button>
@@ -358,13 +389,12 @@
         </div>
     </div>
 
-    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
     <script>
         const video = document.getElementById('player');
         const videoWrapper = document.querySelector('.video-wrapper');
+        const errorMessage = document.getElementById('errorMessage');
         const speedDisplay = document.getElementById('speedDisplay');
-        let hls;
         let currentEpisodeIndex = 0;
         let episodes = [];
         let subtitleContents = { 1: null, 2: null };
@@ -373,6 +403,21 @@
         let captionSize = 0.9;
         let dimMode = false;
         let isPlaying = false;
+
+        const player = videojs('player', {
+            controls: true,
+            fluid: true,
+            controlBar: {
+                playToggle: true,
+                progressControl: true,
+                currentTimeDisplay: true,
+                timeDivider: true,
+                durationDisplay: true,
+                volumePanel: true,
+                fullscreenToggle: true
+            },
+            textTrackSettings: false
+        });
 
         video.addEventListener('play', () => { isPlaying = true; });
         video.addEventListener('pause', () => { isPlaying = false; });
@@ -429,69 +474,31 @@
         function initializePlayer(source) {
             const currentTime = video.currentTime;
             const wasPlaying = isPlaying;
-            
-            if (hls) hls.destroy();
-            if (Hls.isSupported()) {
-                hls = new Hls({
-                    debug: true,
-                    enableWorker: true,
-                    maxBufferLength: 30,
-                    maxMaxBufferLength: 60,
-                    liveSyncDuration: 5,
-                    liveMaxLatencyDuration: 10,
-                    maxLoadingDelay: 4,
-                    maxRetry: 3,
-                    xhrSetup: (xhr) => {
-                        xhr.withCredentials = true;
-                    }
+            player.src({ type: 'application/x-mpegURL', src: source });
+            player.ready(() => {
+                video.currentTime = currentTime;
+                if (wasPlaying) player.play().catch(e => {
+                    console.error('Không thể tự động phát:', e);
+                    showError();
                 });
-                hls.loadSource(source);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    video.currentTime = currentTime;
-                    if (wasPlaying) {
-                        video.play().catch(e => console.error('Không thể tự động phát:', e));
-                    }
-                    if (subtitlesApplied) applySubtitles();
-                });
-                hls.on(Hls.Events.ERROR, (event, data) => {
-                    console.error('Lỗi HLS:', data);
-                    if (data.fatal) {
-                        hls.destroy();
-                        video.src = source;
-                        video.play().catch(e => {
-                            console.error('Lỗi phát trực tiếp:', e);
-                            alert('Không thể phát video này. Vui lòng thử tập khác.');
-                        });
-                    }
-                });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = source;
-                video.addEventListener('loadedmetadata', () => {
-                    video.currentTime = currentTime;
-                    if (wasPlaying) {
-                        video.play().catch(e => console.error('Không thể tự động phát:', e));
-                    }
-                    if (subtitlesApplied) applySubtitles();
-                }, { once: true });
-            }
+                if (subtitlesApplied) applySubtitles();
+                hideError();
+            });
         }
 
-        const player = new Plyr(video, {
-            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-            speed: { selected: 1, options: [1] },
-            captions: { active: false }
-        });
+        function showError() {
+            errorMessage.style.display = 'block';
+            player.pause();
+        }
 
-        video.addEventListener('error', (e) => {
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        player.on('error', (e) => {
             console.error('Lỗi video:', e);
             isPlaying = false;
-            const errorDiv = document.createElement('div');
-            errorDiv.style.color = '#ff6b6b';
-            errorDiv.style.textAlign = 'center';
-            errorDiv.style.padding = '10px';
-            errorDiv.textContent = 'Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.';
-            video.parentElement.appendChild(errorDiv);
+            showError();
         });
 
         function rewind() { video.currentTime = Math.max(0, video.currentTime - 10); }
@@ -540,7 +547,10 @@
                 updateActiveButton();
                 document.getElementById('nextPrompt').style.display = 'none';
                 if (isPlaying) {
-                    video.play().catch(e => console.error('Không thể phát tập tiếp theo:', e));
+                    video.play().catch(e => {
+                        console.error('Không thể phát tập tiếp theo:', e);
+                        showError();
+                    });
                 }
             }
         }
@@ -553,7 +563,10 @@
 
         function hidePrompt() {
             document.getElementById('nextPrompt').style.display = 'none';
-            video.play().catch(err => console.error('Lỗi tiếp tục video:', err));
+            video.play().catch(err => {
+                console.error('Lỗi tiếp tục video:', err);
+                showError();
+            });
         }
 
         function toggleSubtitles() {
@@ -570,6 +583,7 @@
         }
 
         function applySubtitles() {
+            removeSubtitles();
             if (subtitleContents[1]) {
                 const track1 = document.createElement('track');
                 track1.kind = 'captions';
@@ -578,6 +592,7 @@
                 track1.src = subtitleContents[1];
                 track1.default = true;
                 video.appendChild(track1);
+                track1.mode = 'hidden';
             }
             if (subtitleContents[2] && bilingualMode) {
                 const track2 = document.createElement('track');
@@ -586,19 +601,16 @@
                 track2.srclang = 'vi';
                 track2.src = subtitleContents[2];
                 video.appendChild(track2);
+                track2.mode = 'hidden';
             }
-            setTimeout(() => {
-                for (let i = 0; i < video.textTracks.length; i++) {
-                    video.textTracks[i].mode = 'hidden';
-                }
-            }, 100);
+            updateCustomCaptions();
         }
 
         function removeSubtitles() {
-            while (video.getElementsByTagName('track').length > 0) {
-                video.removeChild(video.getElementsByTagName('track')[0]);
+            while (video.textTracks.length > 0) {
+                video.removeChild(video.textTracks[0].element);
             }
-            document.getElementById('customCaptions').innerHTML = "";
+            document.getElementById('customCaptions').innerHTML = '';
         }
 
         function loadSubtitle(number) {
@@ -610,6 +622,7 @@
                 const subtitleText = e.target.result;
                 const vttText = convertSrtToVtt(subtitleText);
                 subtitleContents[number] = 'data:text/vtt;base64,' + btoa(unescape(encodeURIComponent(vttText)));
+                if (subtitlesApplied) applySubtitles();
             };
             reader.readAsText(file);
         }
@@ -625,7 +638,7 @@
         function updateCustomCaptions() {
             const captionContainer = document.getElementById('customCaptions');
             if (!subtitlesApplied) {
-                captionContainer.innerHTML = "";
+                captionContainer.innerHTML = '';
                 return;
             }
             let track1, track2;
@@ -633,8 +646,8 @@
                 if (video.textTracks[i].label === 'Phụ đề 1') track1 = video.textTracks[i];
                 else if (video.textTracks[i].label === 'Phụ đề 2') track2 = video.textTracks[i];
             }
-            let text1 = track1 && track1.activeCues && track1.activeCues.length > 0 ? track1.activeCues[0].text : "";
-            let text2 = bilingualMode && track2 && track2.activeCues && track2.activeCues.length > 0 ? track2.activeCues[0].text : "";
+            let text1 = track1 && track1.activeCues && track1.activeCues.length > 0 ? track1.activeCues[0].text : '';
+            let text2 = bilingualMode && track2 && track2.activeCues && track2.activeCues.length > 0 ? track2.activeCues[0].text : '';
             captionContainer.innerHTML = bilingualMode
                 ? `<div class="caption-line top">${text1}</div><div class="caption-line bottom">${text2}</div>`
                 : `<div class="caption-line top">${text1}</div>`;
@@ -644,9 +657,7 @@
             bilingualMode = !bilingualMode;
             document.getElementById('toggleBilingual').textContent = bilingualMode ? 'Tắt song ngữ' : 'Song ngữ';
             if (subtitlesApplied) {
-                removeSubtitles();
                 applySubtitles();
-                updateCustomCaptions();
             }
         }
 
@@ -665,14 +676,6 @@
 
         document.addEventListener('fullscreenchange', () => {
             videoWrapper.classList.toggle('fullscreen', !!document.fullscreenElement);
-            if (subtitlesApplied) updateCustomCaptions();
-        });
-        document.addEventListener('webkitfullscreenchange', () => {
-            videoWrapper.classList.toggle('fullscreen', !!document.webkitFullscreenElement);
-            if (subtitlesApplied) updateCustomCaptions();
-        });
-        document.addEventListener('mozfullscreenchange', () => {
-            videoWrapper.classList.toggle('fullscreen', !!document.mozFullScreenElement);
             if (subtitlesApplied) updateCustomCaptions();
         });
 
