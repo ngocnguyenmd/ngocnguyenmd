@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <title>Xem Phim - Series</title>
     <link rel="stylesheet" href="https://vjs.zencdn.net/8.10.0/video-js.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         /* Reset và style chung */
         body {
@@ -47,14 +48,14 @@
         /* Container chính */
         .container {
             max-width: 960px;
-            margin: 50px auto 0; /* Giảm margin-top từ 70px xuống 50px để video xuống thấp hơn */
+            margin: 50px auto 0;
             padding: 5px;
             position: relative;
         }
         h1 {
             font-size: 1.2rem;
             color: #4a90e2;
-            margin-bottom: 8px; /* Giảm margin-bottom từ 10px xuống 8px */
+            margin-bottom: 8px;
             text-align: center;
             position: relative;
         }
@@ -301,14 +302,14 @@
         @media (max-width: 960px) {
             .container {
                 max-width: 100vw;
-                margin-top: 45px; /* Giảm từ 60px xuống 45px cho điện thoại */
+                margin-top: 45px;
                 padding: 3px;
             }
             nav { max-width: 100vw; }
             .video-container { max-width: 100%; }
             header { padding: 3px 0; }
             nav a { font-size: 0.8rem; padding: 5px 6px; }
-            h1 { font-size: 1rem; margin-bottom: 6px; } /* Giảm margin-bottom từ 8px xuống 6px */
+            h1 { font-size: 1rem; margin-bottom: 6px; }
             .video-container { padding: 3px; }
             .control-btn { padding: 5px 8px; font-size: 0.8rem; min-width: 35px; }
             .episode-list {
@@ -440,8 +441,12 @@
 
         async function validateSource(url) {
             try {
-                const response = await fetch(url, { method: 'HEAD' });
-                return response.ok;
+                const response = await fetch(url);
+                if (!response.ok) return false;
+                const contentType = response.headers.get('content-type');
+                if (!contentType.includes('application/vnd.apple.mpegurl')) return false;
+                const text = await response.text();
+                return text.includes('#EXTM3U');
             } catch {
                 return false;
             }
@@ -461,12 +466,17 @@
                     const speedKBps = (bytesLoaded / duration / 2).toFixed(2);
                     speedDisplay.textContent = `Tốc độ: ${speedKBps} KB/s`;
                     speedDisplay.className = 'speed-display';
-                    if (speedKBps < 50) speedDisplay.classList.add('slow');
-                    else if (speedKBps > 1000) speedDisplay.classList.add('fast');
+                    if (speedKBps < 50) {
+                        speedDisplay.classList.add('slow');
+                        showError('Tốc độ mạng quá thấp để phát video.');
+                    } else if (speedKBps > 1000) speedDisplay.classList.add('fast');
                     else speedDisplay.classList.add('good');
                 }
             };
-            xhr.onerror = () => speedDisplay.textContent = "Lỗi mạng";
+            xhr.onerror = () => {
+                speedDisplay.textContent = "Lỗi mạng";
+                showError('Không thể tải video do lỗi mạng.');
+            };
             xhr.send();
             setTimeout(measureNetworkSpeed, 20000);
         }
@@ -474,19 +484,41 @@
         function initializePlayer(source) {
             const currentTime = video.currentTime;
             const wasPlaying = isPlaying;
-            player.src({ type: 'application/x-mpegURL', src: source });
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(source);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.ERROR, (event, data) => {
+                    if (data.fatal) {
+                        console.error('Lỗi HLS:', data);
+                        showError('Video bị hỏng hoặc không tải được.');
+                    }
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = source;
+            } else {
+                showError('Trình duyệt không hỗ trợ HLS.');
+                return;
+            }
             player.ready(() => {
                 video.currentTime = currentTime;
                 if (wasPlaying) player.play().catch(e => {
                     console.error('Không thể tự động phát:', e);
-                    showError();
+                    if (e.name === 'NotSupportedError') {
+                        showError('Định dạng video không được hỗ trợ bởi trình duyệt.');
+                    } else if (e.name === 'AbortError') {
+                        showError('Video bị hỏng hoặc không tải được.');
+                    } else {
+                        showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
+                    }
                 });
                 if (subtitlesApplied) applySubtitles();
                 hideError();
             });
         }
 
-        function showError() {
+        function showError(message) {
+            errorMessage.textContent = message;
             errorMessage.style.display = 'block';
             player.pause();
         }
@@ -498,7 +530,7 @@
         player.on('error', (e) => {
             console.error('Lỗi video:', e);
             isPlaying = false;
-            showError();
+            showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
         });
 
         function rewind() { video.currentTime = Math.max(0, video.currentTime - 10); }
@@ -544,12 +576,17 @@
                 currentEpisodeIndex = newIndex;
                 removeSubtitles();
                 initializePlayer(episodes[newIndex].url);
+                player.on('error', () => {
+                    console.error('Lỗi video:', player.error());
+                    showError('Video bị hỏng. Chuyển sang tập khác.');
+                    playNextEpisode(true);
+                });
                 updateActiveButton();
                 document.getElementById('nextPrompt').style.display = 'none';
                 if (isPlaying) {
                     video.play().catch(e => {
                         console.error('Không thể phát tập tiếp theo:', e);
-                        showError();
+                        showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
                     });
                 }
             }
@@ -565,7 +602,7 @@
             document.getElementById('nextPrompt').style.display = 'none';
             video.play().catch(err => {
                 console.error('Lỗi tiếp tục video:', err);
-                showError();
+                showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
             });
         }
 
