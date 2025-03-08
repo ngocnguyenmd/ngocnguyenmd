@@ -384,7 +384,7 @@
             movie = { title: 'Phim không khả dụng', episodes: [], source: 'creator', category: 'trungquoc' };
         }
         document.getElementById('seriesTitle').innerHTML = `${movie.title} <span class="source-label source-${movie.source}">${movie.source === 'api' ? 'Bánh Mì' : 'Xưởng bánh mì'}</span>`;
-        episodes = movie.episodes?.length ? movie.episodes.map(ep => ({
+        episodes = (movie.episodes && movie.episodes.length) ? movie.episodes.map(ep => ({
             title: ep.episode,
             url: ep.m3u8
         })) : [];
@@ -400,10 +400,12 @@
                     const endTime = performance.now();
                     const duration = (endTime - startTime) / 1000;
                     const bytesLoaded = xhr.response.size;
-                    const speedKBps = (bytesLoaded / duration / 2).toFixed(2);
+                    const speedKBps = (bytesLoaded / duration / 1024).toFixed(2); // Tính bằng KB/s
                     speedDisplay.textContent = `Tốc độ: ${speedKBps} KB/s`;
                     speedDisplay.className = 'speed-display';
-                    speedDisplay.classList.add(speedKBps < 50 ? 'slow' : speedKBps > 1000 ? 'fast' : 'good');
+                    if (speedKBps < 50) speedDisplay.classList.add('slow');
+                    else if (speedKBps > 1000) speedDisplay.classList.add('fast');
+                    else speedDisplay.classList.add('good');
                 }
             };
             xhr.onerror = () => speedDisplay.textContent = "Lỗi mạng";
@@ -413,7 +415,6 @@
 
         function initializePlayer(source) {
             if (hls) hls.destroy();
-            
             if (Hls.isSupported()) {
                 hls = new Hls({
                     lowLatencyMode: false,
@@ -429,17 +430,20 @@
                     abrBandWidthFactor: 0.5,
                     abrBandWidthUpFactor: 0.3,
                     backBufferLength: 5,
-                    debug: false
+                    debug: true // Bật debug để kiểm tra lỗi
                 });
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    video.load();
+                    video.play().catch(err => {
+                        console.error("Không thể phát tự động:", err);
+                        video.load(); // Fallback tải metadata nếu autoplay thất bại
+                    });
                     if (subtitlesApplied) applySubtitles();
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
+                    console.error('HLS Error:', data);
                     if (data.fatal) {
-                        console.error('HLS Error:', data);
                         hls.destroy();
                         setTimeout(() => initializePlayer(source), 2000);
                     }
@@ -447,8 +451,13 @@
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = source;
                 video.addEventListener('loadedmetadata', () => {
+                    video.play().catch(err => {
+                        console.error("Không thể phát tự động:", err);
+                    });
                     if (subtitlesApplied) applySubtitles();
                 }, { once: true });
+            } else {
+                console.error("Trình duyệt không hỗ trợ HLS hoặc m3u8");
             }
         }
 
@@ -467,18 +476,19 @@
 
         function highlightCategory(category) {
             document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-            document.getElementById(category)?.classList.add('active');
+            const activeLink = document.getElementById(category);
+            if (activeLink) activeLink.classList.add('active');
         }
 
-        let promptedEpisodes = new Set();
+        let promptedEpisodes = {};
         video.addEventListener('timeupdate', throttle(() => {
             if (!video.duration || isNaN(video.duration)) return;
             const remaining = video.duration - video.currentTime;
             const prompt = document.getElementById('nextPrompt');
-            if (!promptedEpisodes.has(currentEpisodeIndex) && remaining <= 120 && remaining > 90 && episodes.length > currentEpisodeIndex + 1) {
+            if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && remaining > 90 && episodes.length > currentEpisodeIndex + 1) {
                 video.pause();
                 prompt.style.display = 'block';
-                promptedEpisodes.add(currentEpisodeIndex);
+                promptedEpisodes[currentEpisodeIndex] = true;
             }
             if (subtitlesApplied) updateCustomCaptions();
         }, 200));
@@ -517,17 +527,16 @@
         }
 
         function toggleSubtitles() {
-            subtitlesApplied = !subtitlesApplied;
-            const applyButton = document.getElementById('applyButton');
             if (subtitlesApplied) {
-                applySubtitles();
-                applyButton.classList.add('applied');
-                applyButton.textContent = 'Tắt';
-            } else {
                 removeSubtitles();
-                applyButton.classList.remove('applied');
-                applyButton.textContent = 'Áp dụng';
+                document.getElementById('applyButton').classList.remove('applied');
+                document.getElementById('applyButton').textContent = 'Áp dụng';
+            } else {
+                applySubtitles();
+                document.getElementById('applyButton').classList.add('applied');
+                document.getElementById('applyButton').textContent = 'Tắt';
             }
+            subtitlesApplied = !subtitlesApplied;
         }
 
         function applySubtitles() {
@@ -549,12 +558,16 @@
                 video.appendChild(track2);
             }
             setTimeout(() => {
-                Array.from(video.textTracks).forEach(track => track.mode = 'hidden');
+                for (let i = 0; i < video.textTracks.length; i++) {
+                    video.textTracks[i].mode = 'hidden';
+                }
             }, 100);
         }
 
         function removeSubtitles() {
-            Array.from(video.getElementsByTagName('track')).forEach(track => video.removeChild(track));
+            while (video.getElementsByTagName('track').length > 0) {
+                video.removeChild(video.getElementsByTagName('track')[0]);
+            }
             document.getElementById('customCaptions').innerHTML = "";
         }
 
@@ -563,12 +576,16 @@
             const file = input.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = e => {
+            reader.onload = function (e) {
                 const subtitleText = e.target.result;
-                const vttText = "WEBVTT\n\n" + subtitleText.replace(/(\d+:\d+:\d+),(\d+)/g, '$1.$2');
+                const vttText = convertSrtToVtt(subtitleText);
                 subtitleContents[number] = 'data:text/vtt;base64,' + btoa(unescape(encodeURIComponent(vttText)));
             };
             reader.readAsText(file);
+        }
+
+        function convertSrtToVtt(srt) {
+            return "WEBVTT\n\n" + srt.replace(/(\d+:\d+:\d+),(\d+)/g, '$1.$2');
         }
 
         function checkSubtitles() {
@@ -576,18 +593,18 @@
         }
 
         function updateCustomCaptions() {
+            const captionContainer = document.getElementById('customCaptions');
             if (!subtitlesApplied) {
-                document.getElementById('customCaptions').innerHTML = "";
+                captionContainer.innerHTML = "";
                 return;
             }
-            const captionContainer = document.getElementById('customCaptions');
             let track1, track2;
-            Array.from(video.textTracks).forEach(track => {
-                if (track.label === 'Phụ đề 1') track1 = track;
-                else if (track.label === 'Phụ đề 2') track2 = track;
-            });
-            const text1 = track1?.activeCues?.[0]?.text || "";
-            const text2 = bilingualMode && track2?.activeCues?.[0]?.text || "";
+            for (let i = 0; i < video.textTracks.length; i++) {
+                if (video.textTracks[i].label === 'Phụ đề 1') track1 = video.textTracks[i];
+                else if (video.textTracks[i].label === 'Phụ đề 2') track2 = video.textTracks[i];
+            }
+            let text1 = track1 && track1.activeCues && track1.activeCues.length > 0 ? track1.activeCues[0].text : "";
+            let text2 = bilingualMode && track2 && track2.activeCues && track2.activeCues.length > 0 ? track2.activeCues[0].text : "";
             captionContainer.innerHTML = bilingualMode
                 ? `<div class="caption-line top">${text1}</div><div class="caption-line bottom">${text2}</div>`
                 : `<div class="caption-line top">${text1}</div>`;
@@ -616,15 +633,21 @@
             dimButton.textContent = dimMode ? 'Bật đèn' : 'Tắt đèn';
         }
 
-        ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange'].forEach(event => {
-            document.addEventListener(event, () => {
-                videoWrapper.classList.toggle('fullscreen', !!document.fullscreenElement || !!document.webkitFullscreenElement || !!document.mozFullScreenElement);
-                if (subtitlesApplied) updateCustomCaptions();
-            });
+        document.addEventListener('fullscreenchange', () => {
+            videoWrapper.classList.toggle('fullscreen', !!document.fullscreenElement);
+            if (subtitlesApplied) updateCustomCaptions();
+        });
+        document.addEventListener('webkitfullscreenchange', () => {
+            videoWrapper.classList.toggle('fullscreen', !!document.webkitFullscreenElement);
+            if (subtitlesApplied) updateCustomCaptions();
+        });
+        document.addEventListener('mozfullscreenchange', () => {
+            videoWrapper.classList.toggle('fullscreen', !!document.mozFullScreenElement);
+            if (subtitlesApplied) updateCustomCaptions();
         });
 
         const episodeList = document.getElementById('episodeList');
-        if (episodes.length) {
+        if (episodes.length > 0) {
             episodes.forEach((episode, index) => {
                 const btn = document.createElement('button');
                 btn.className = 'episode-btn';
