@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <title>Xem Phim - Series</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/artplayer@5.0.9/dist/artplayer.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.css" />
     <style>
         /* Reset và style chung */
         body {
@@ -388,10 +388,10 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/artplayer@5.0.9/dist/artplayer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
-        let art = null;
+        let player = null;
         const videoWrapper = document.querySelector('.video-wrapper');
         const errorMessage = document.getElementById('errorMessage');
         const speedDisplay = document.getElementById('speedDisplay');
@@ -463,80 +463,59 @@
         }
 
         function initializePlayer(source) {
-            if (art) art.destroy();
-            const currentTime = art ? art.currentTime : 0;
+            if (player) player.destroy();
+            const currentTime = player ? player.currentTime : 0;
             const wasPlaying = isPlaying;
 
-            art = new Artplayer({
-                container: '#player',
-                url: source,
-                type: 'm3u8',
-                customType: {
-                    m3u8: function (video, url) {
-                        if (Hls.isSupported()) {
-                            const hls = new Hls();
-                            hls.loadSource(url);
-                            hls.attachMedia(video);
-                            hls.on(Hls.Events.ERROR, (event, data) => {
-                                if (data.fatal) {
-                                    console.error('Lỗi HLS:', data);
-                                    showError('Video bị hỏng hoặc không tải được.');
-                                }
-                            });
-                        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                            video.src = url;
-                        } else {
-                            showError('Trình duyệt không hỗ trợ HLS.');
-                        }
+            player = new Clappr.Player({
+                parentId: '#player',
+                source: source,
+                mimeType: 'application/vnd.apple.mpegurl',
+                autoPlay: false,
+                width: '100%',
+                height: '100%',
+                playback: {
+                    hlsjsConfig: {
+                        enableWorker: true,
+                        liveSyncDurationCount: 3,
+                        maxBufferLength: 30
                     }
                 },
-                controls: true,
-                fullscreen: true,
-                autoSize: true,
-                playbackRate: true,
-                subtitle: {
-                    url: subtitleContents[1] || '',
-                    bilingual: bilingualMode,
-                    style: {
-                        color: '#fff',
-                        fontSize: `${captionSize}rem`,
-                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
-                    }
+                events: {
+                    onReady: () => {
+                        player.currentTime = currentTime;
+                        if (wasPlaying) player.play().catch(e => {
+                            console.error('Không thể tự động phát:', e);
+                            showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
+                        });
+                        if (subtitlesApplied) applySubtitles();
+                        hideError();
+                    },
+                    onError: (e) => {
+                        console.error('Lỗi video:', e);
+                        isPlaying = false;
+                        showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
+                    },
+                    onPlay: () => { isPlaying = true; },
+                    onPause: () => { isPlaying = false; }
                 }
             });
 
-            art.on('ready', () => {
-                art.currentTime = currentTime;
-                if (wasPlaying) art.play().catch(e => {
-                    console.error('Không thể tự động phát:', e);
-                    showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
-                });
-                if (subtitlesApplied) applySubtitles();
-                hideError();
-            });
-
-            art.on('error', (e) => {
-                console.error('Lỗi video:', e);
-                isPlaying = false;
-                showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
-            });
-
-            art.on('play', () => { isPlaying = true; });
-            art.on('pause', () => { isPlaying = false; });
+            player.on(Clappr.Events.PLAYER_TIMEUPDATE, throttle(timeUpdateHandler, 200));
         }
 
         function showError(message) {
             errorMessage.textContent = message;
             errorMessage.style.display = 'block';
-            if (art) art.pause();
+            if (player) player.pause();
         }
 
         function hideError() {
             errorMessage.style.display = 'none';
         }
 
-        function rewind() { if (art) art.currentTime = Math.max(0, art.currentTime - 10); }
-        function fastForward() { if (art) art.currentTime = Math.min(art.duration, art.currentTime + 10); }
+        function rewind() { if (player) player.seek(player.currentTime - 10); }
+        function fastForward() { if (player) player.seek(player.currentTime + 10); }
 
         function loadMovies(category) {
             window.location.href = `index.html?category=${category}`;
@@ -550,11 +529,11 @@
 
         let promptedEpisodes = {};
         function timeUpdateHandler() {
-            if (!art || !art.duration || isNaN(art.duration)) return;
-            const remaining = art.duration - art.currentTime;
+            if (!player || !player.getDuration() || isNaN(player.getDuration())) return;
+            const remaining = player.getDuration() - player.currentTime;
             const prompt = document.getElementById('nextPrompt');
             if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && remaining > 90 && episodes.length > currentEpisodeIndex + 1) {
-                art.pause();
+                player.pause();
                 prompt.style.display = 'block';
                 promptedEpisodes[currentEpisodeIndex] = true;
             }
@@ -581,7 +560,7 @@
                 document.getElementById('nextPrompt').style.display = 'none';
                 updateActiveButton();
                 if (isPlaying) {
-                    art.play().catch(e => {
+                    player.play().catch(e => {
                         console.error('Không thể phát tập tiếp theo:', e);
                         showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
                     });
@@ -597,7 +576,7 @@
 
         function hidePrompt() {
             document.getElementById('nextPrompt').style.display = 'none';
-            if (art) art.play().catch(err => {
+            if (player) player.play().catch(err => {
                 console.error('Lỗi tiếp tục video:', err);
                 showError('Lỗi tải video. Vui lòng kiểm tra kết nối hoặc thử tập khác.');
             });
@@ -618,24 +597,26 @@
 
         function applySubtitles() {
             removeSubtitles();
-            if (art && subtitleContents[1]) {
-                art.subtitle.url = subtitleContents[1];
+            if (player && subtitleContents[1]) {
+                const tracks = [{
+                    label: 'Phụ đề 1',
+                    src: subtitleContents[1],
+                    default: true
+                }];
                 if (bilingualMode && subtitleContents[2]) {
-                    art.subtitle.bilingual = true;
-                    art.subtitle.second = subtitleContents[2];
-                } else {
-                    art.subtitle.bilingual = false;
+                    tracks.push({
+                        label: 'Phụ đề 2',
+                        src: subtitleContents[2]
+                    });
                 }
-                art.subtitle.show = true;
+                player.configure({ subtitles: tracks });
                 updateCustomCaptions();
             }
         }
 
         function removeSubtitles() {
-            if (art) {
-                art.subtitle.show = false;
-                art.subtitle.url = '';
-                art.subtitle.second = '';
+            if (player) {
+                player.configure({ subtitles: [] });
             }
             document.getElementById('customCaptions').innerHTML = '';
         }
@@ -664,12 +645,12 @@
 
         function updateCustomCaptions() {
             const captionContainer = document.getElementById('customCaptions');
-            if (!subtitlesApplied || !art) {
+            if (!subtitlesApplied || !player) {
                 captionContainer.innerHTML = '';
                 return;
             }
-            const text1 = art.subtitle.text || '';
-            const text2 = bilingualMode && art.subtitle.secondText ? art.subtitle.secondText : '';
+            const text1 = ''; // Clappr không hỗ trợ truy cập trực tiếp phụ đề, cần plugin tùy chỉnh
+            const text2 = bilingualMode ? '' : '';
             captionContainer.innerHTML = bilingualMode
                 ? `<div class="caption-line top">${text1}</div><div class="caption-line bottom">${text2}</div>`
                 : `<div class="caption-line top">${text1}</div>`;
@@ -685,9 +666,6 @@
 
         function changeCaptionSize(delta) {
             captionSize = Math.max(0.5, Math.min(1.5, captionSize + delta));
-            if (art) {
-                art.subtitle.style.fontSize = `${captionSize}rem`;
-            }
             document.getElementById('customCaptions').style.fontSize = `${captionSize}rem`;
         }
 
@@ -726,8 +704,6 @@
             initializePlayer(episodes[0].url);
             episodeList.children[0].classList.add('active');
             measureNetworkSpeed();
-
-            art.on('video:timeupdate', throttle(timeUpdateHandler, 200));
         } else {
             episodeList.innerHTML = '<p style="color: #e0e0e0; text-align: center;">Không có tập nào để phát.</p>';
         }
