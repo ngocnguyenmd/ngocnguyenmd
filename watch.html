@@ -418,21 +418,21 @@
             if (hls) hls.destroy();
             if (Hls.isSupported()) {
             hls = new Hls({
-                    lowLatencyMode: false,
-                    maxBufferLength: 5,
-                    maxMaxBufferLength: 10,
-                    liveSyncDuration: 3,
-                    liveMaxLatencyDuration: 8,
-                    capLevelToPlayerSize: true,
-                    startLevel: 0,
-                    autoLevelCapping: 2,
-                    abrEwmaFastLive: 1.5,
-                    abrEwmaSlowLive: 3.0,
-                    abrBandWidthFactor: 0.5,
-                    abrBandWidthUpFactor: 0.3,
-                    backBufferLength: 5,
-                    debug: false
-                });
+             lowLatencyMode: false,
+             maxBufferLength: 2,  // Giảm bộ đệm
+             maxMaxBufferLength: 3,  // Giảm bộ đệm tối đa
+             liveSyncDuration: 1,  // Giảm độ trễ đồng bộ
+             liveMaxLatencyDuration: 2,  // Giảm độ trễ tối đa
+             capLevelToPlayerSize: false,  // Không giới hạn chất lượng theo kích thước player
+             startLevel: 0,  // Bắt đầu với chất lượng thấp nhất
+             autoLevelCapping: 0,  // Giới hạn chất lượng ở mức thấp nhất
+             abrEwmaFastLive: 0.5,  // Thay đổi nhanh khi băng thông thay đổi
+             abrEwmaSlowLive: 1.0,  // Cập nhật chậm khi băng thông thấp
+             abrBandWidthFactor: 0.5,  // Giảm độ dốc điều chỉnh băng thông
+             abrBandWidthUpFactor: 0.3,  // Giảm độ dốc điều chỉnh băng thông lên
+             backBufferLength: 2,  // Giảm chiều dài bộ đệm lại
+             debug: false  // Tắt debug nếu không cần thiết
+        });
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
