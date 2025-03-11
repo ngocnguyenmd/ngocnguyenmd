@@ -418,21 +418,21 @@
             if (hls) hls.destroy();
             if (Hls.isSupported()) {
             hls = new Hls({
-             lowLatencyMode: false,
-             maxBufferLength: 2,  // Giảm bộ đệm
-             maxMaxBufferLength: 3,  // Giảm bộ đệm tối đa
-             liveSyncDuration: 1,  // Giảm độ trễ đồng bộ
-             liveMaxLatencyDuration: 2,  // Giảm độ trễ tối đa
-             capLevelToPlayerSize: false,  // Không giới hạn chất lượng theo kích thước player
-             startLevel: 0,  // Bắt đầu với chất lượng thấp nhất
-             autoLevelCapping: 0,  // Giới hạn chất lượng ở mức thấp nhất
-             abrEwmaFastLive: 0.5,  // Thay đổi nhanh khi băng thông thay đổi
-             abrEwmaSlowLive: 1.0,  // Cập nhật chậm khi băng thông thấp
-             abrBandWidthFactor: 0.5,  // Giảm độ dốc điều chỉnh băng thông
-             abrBandWidthUpFactor: 0.3,  // Giảm độ dốc điều chỉnh băng thông lên
-             backBufferLength: 2,  // Giảm chiều dài bộ đệm lại
-             debug: false  // Tắt debug nếu không cần thiết
-        });
+               lowLatencyMode: false,
+               maxBufferLength: 0.5,      // Bộ đệm nhỏ nhất
+               maxMaxBufferLength: 1,     // Bộ đệm tối đa nhỏ nhất
+               liveSyncDuration: 0.3,     // Độ trễ đồng bộ nhỏ nhất
+               liveMaxLatencyDuration: 0.5,// Độ trễ tối đa nhỏ nhất
+               capLevelToPlayerSize: false,
+               startLevel: 0,             // Chất lượng thấp nhất
+               autoLevelCapping: 0,       // Giới hạn chất lượng thấp nhất
+               abrEwmaFastLive: 0.2,      // Điều chỉnh băng thông nhanh nhất
+               abrEwmaSlowLive: 0.5,      // Điều chỉnh chậm khi băng thông thấp
+               abrBandWidthFactor: 0.2,   // Độ dốc băng thông nhỏ nhất
+               abrBandWidthUpFactor: 0.1, // Độ dốc tăng băng thông nhỏ nhất
+               backBufferLength: 0.5,     // Bộ đệm lại nhỏ nhất
+               debug: false               // Tắt debug
+});
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
