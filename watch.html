@@ -386,24 +386,24 @@
             if (hls) hls.destroy();
             if (Hls.isSupported()) {
                 hls = new Hls({
-    lowLatencyMode: true,          // Giữ nguyên: giảm độ trễ cho live streaming
-    maxBufferLength: 8,            // Giảm xuống 8 giây để giảm độ trễ, vẫn đủ để tránh giật
-    maxMaxBufferLength: 12,        // Giảm xuống 12 giây để tối ưu độ trễ và bộ nhớ
-    liveSyncDuration: 2,           // Giảm xuống 2 giây để đồng bộ nhanh hơn với luồng trực tiếp
-    liveMaxLatencyDuration: 4,     // Giảm xuống 4 giây để giảm độ trễ tối đa
-    capLevelToPlayerSize: true,    // Giữ nguyên: tối ưu chất lượng theo kích thước màn hình TV
-    startLevel: -1,                // Giữ nguyên: tự động chọn chất lượng ban đầu
-    autoLevelCapping: -1,          // Giữ nguyên: không giới hạn chất lượng tối đa
-    abrEwmaFastLive: 0.7,          // Giảm xuống 0.7 để điều chỉnh chất lượng nhanh hơn khi mạng tốt
-    abrEwmaSlowLive: 2.0,          // Tăng lên 2.0 để phản ứng chậm hơn khi mạng kém, tránh giảm chất lượng đột ngột
-    abrBandWidthFactor: 0.9,       // Tăng lên 0.9 để nhạy hơn với băng thông thực tế
-    abrBandWidthUpFactor: 0.7,     // Tăng lên 0.7 để nâng cấp chất lượng nhanh hơn khi mạng ổn định
-    backBufferLength: 3,           // Giảm xuống 3 giây để tiết kiệm bộ nhớ và giảm độ trễ
-    liveDurationInfinity: true,    // Thêm: xử lý luồng live vô hạn (TV thường phát liên tục)
-    nudgeMaxRetry: 5,              // Thêm: tăng số lần thử lại khi gặp lỗi phân đoạn
-    maxFragLookUpTolerance: 0.1,   // Thêm: giảm dung sai tìm kiếm phân đoạn, cải thiện đồng bộ
-    debug: false                   // Tắt debug trong sản phẩm thực tế để giảm log và tăng hiệu suất
-});
+                    lowLatencyMode: true,          // Giữ cho độ trễ thấp
+                    maxBufferLength: 15,           // Tăng bộ đệm lên 15 giây
+                    maxMaxBufferLength: 20,        // Tăng tối đa lên 20 giây
+                    liveSyncDuration: 3,           // Đồng bộ vừa phải
+                    liveMaxLatencyDuration: 6,     // Độ trễ tối đa vừa phải
+                    capLevelToPlayerSize: true,    // Tối ưu chất lượng theo kích thước player
+                    startLevel: -1,                // Tự động chọn chất lượng ban đầu
+                    autoLevelCapping: -1,          // Không giới hạn chất lượng tối đa
+                    abrEwmaFastLive: 0.8,          // Điều chỉnh vừa phải khi mạng tốt
+                    abrEwmaSlowLive: 2.0,          // Chậm giảm chất lượng khi mạng kém
+                    abrBandWidthFactor: 0.9,       // Nhạy hơn với băng thông
+                    abrBandWidthUpFactor: 0.7,     // Nâng cấp chất lượng nhanh hơn
+                    backBufferLength: 3,           // Giữ lại 3 giây dữ liệu cũ
+                    liveDurationInfinity: true,    // Xử lý luồng live vô hạn
+                    nudgeMaxRetry: 5,              // Thử lại 5 lần khi lỗi phân đoạn
+                    maxFragLookUpTolerance: 0.1,   // Giảm dung sai tìm kiếm phân đoạn
+                    debug: true                    // Bật debug để kiểm tra lỗi
+                });
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -413,9 +413,24 @@
                 hls.on(Hls.Events.ERROR, (event, data) => {
                     if (data.fatal) {
                         console.error('HLS Error:', data);
-                        hls.destroy();
-                        setTimeout(() => initializePlayer(source), 2000);
+                        switch (data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                console.log('Network error, retrying...');
+                                hls.startLoad(); // Thử tải lại ngay lập tức
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                console.log('Media error, recovering...');
+                                hls.recoverMediaError(); // Phục hồi lỗi media
+                                break;
+                            default:
+                                hls.destroy();
+                                setTimeout(() => initializePlayer(source), 1000); // Giảm thời gian chờ xuống 1 giây
+                        }
                     }
+                });
+                hls.on(Hls.Events.BUFFER_APPENDING, () => {
+                    const bufferLength = video.buffered.length ? video.buffered.end(0) - video.currentTime : 0;
+                    console.log('Buffer length:', bufferLength);
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = source;
