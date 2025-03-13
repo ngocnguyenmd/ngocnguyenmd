@@ -418,20 +418,20 @@
             if (hls) hls.destroy();
             if (Hls.isSupported()) {
             hls = new Hls({
-               lowLatencyMode: false,
-               maxBufferLength: 0.5,      // Bộ đệm nhỏ nhất
-               maxMaxBufferLength: 1,     // Bộ đệm tối đa nhỏ nhất
-               liveSyncDuration: 0.3,     // Độ trễ đồng bộ nhỏ nhất
-               liveMaxLatencyDuration: 0.5,// Độ trễ tối đa nhỏ nhất
-               capLevelToPlayerSize: false,
-               startLevel: 0,             // Chất lượng thấp nhất
-               autoLevelCapping: 0,       // Giới hạn chất lượng thấp nhất
-               abrEwmaFastLive: 0.2,      // Điều chỉnh băng thông nhanh nhất
-               abrEwmaSlowLive: 0.5,      // Điều chỉnh chậm khi băng thông thấp
-               abrBandWidthFactor: 0.2,   // Độ dốc băng thông nhỏ nhất
-               abrBandWidthUpFactor: 0.1, // Độ dốc tăng băng thông nhỏ nhất
-               backBufferLength: 0.5,     // Bộ đệm lại nhỏ nhất
-               debug: false               // Tắt debug
+    lowLatencyMode: false,
+    maxBufferLength: 10,       // Tăng lên 10 giây
+    maxMaxBufferLength: 20,    // Tăng lên 20 giây
+    liveSyncDuration: 5,       // Tăng độ trễ đồng bộ
+    liveMaxLatencyDuration: 10,// Tăng độ trễ tối đa
+    capLevelToPlayerSize: true,// Để chất lượng tự động điều chỉnh theo kích thước player
+    startLevel: -1,            // Để Hls.js tự động chọn chất lượng ban đầu
+    autoLevelCapping: -1,      // Không giới hạn chất lượng
+    abrEwmaFastLive: 1.0,      // Phản ứng nhanh hơn với mạng tốt
+    abrEwmaSlowLive: 3.0,      // Chậm lại khi mạng kém
+    abrBandWidthFactor: 0.8,   // Tăng độ nhạy băng thông
+    abrBandWidthUpFactor: 0.7, // Tăng tốc độ nâng cấp chất lượng
+    backBufferLength: 5,       // Tăng bộ đệm lại
+    debug: true                // Bật debug để kiểm tra lỗi
 });
                 hls.loadSource(source);
                 hls.attachMedia(video);
