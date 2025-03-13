@@ -417,22 +417,23 @@
         function initializePlayer(source) {
             if (hls) hls.destroy();
             if (Hls.isSupported()) {
-            hls = new Hls({
-    lowLatencyMode: false,
-    maxBufferLength: 15,       // Tăng lên 10 giây
-    maxMaxBufferLength: 20,    // Tăng lên 20 giây
-    liveSyncDuration: 5,       // Tăng độ trễ đồng bộ
-    liveMaxLatencyDuration: 10,// Tăng độ trễ tối đa
-    capLevelToPlayerSize: true,// Để chất lượng tự động điều chỉnh theo kích thước player
-    startLevel: -1,            // Để Hls.js tự động chọn chất lượng ban đầu
-    autoLevelCapping: -1,      // Không giới hạn chất lượng
-    abrEwmaFastLive: 1.0,      // Phản ứng nhanh hơn với mạng tốt
-    abrEwmaSlowLive: 2.0,      // Chậm lại khi mạng kém
-    abrBandWidthFactor: 1.0,   // Tăng độ nhạy băng thông
-    abrBandWidthUpFactor: 0.7, // Tăng tốc độ nâng cấp chất lượng
-    backBufferLength: 8,       // Tăng bộ đệm lại
-    debug: true                // Bật debug để kiểm tra lỗi
+          hls = new Hls({
+    lowLatencyMode: true,          // Kích hoạt chế độ độ trễ thấp (Low Latency)
+    maxBufferLength: 10,           // Giới hạn thời gian buffer tối đa cho video, giúp giảm độ trễ
+    maxMaxBufferLength: 15,        // Tăng thêm bộ đệm tối đa, nhưng không quá 15 giây
+    liveSyncDuration: 3,           // Giảm độ trễ đồng bộ giữa các phân đoạn
+    liveMaxLatencyDuration: 6,     // Giới hạn độ trễ tối đa giữa các phân đoạn live
+    capLevelToPlayerSize: true,    // Để chất lượng video tự động điều chỉnh theo kích thước player
+    startLevel: -1,                // Để Hls.js tự động chọn chất lượng ban đầu (tối ưu hóa cho mạng yếu)
+    autoLevelCapping: -1,          // Không giới hạn chất lượng, cho phép tự động điều chỉnh mức độ
+    abrEwmaFastLive: 1.0,          // Cải thiện phản ứng nhanh với mạng tốt, không quá nhanh để tránh chất lượng bị giảm
+    abrEwmaSlowLive: 1.5,          // Giảm tốc độ điều chỉnh khi mạng kém, giúp tránh việc giảm chất lượng quá nhanh
+    abrBandWidthFactor: 0.8,       // Điều chỉnh độ nhạy với băng thông (giảm một chút để tránh điều chỉnh quá mạnh)
+    abrBandWidthUpFactor: 0.6,     // Điều chỉnh tốc độ nâng cấp chất lượng khi băng thông tốt (giảm một chút để không quá mạnh)
+    backBufferLength: 5,           // Giảm lại bộ đệm để không giữ quá nhiều dữ liệu, giảm độ trễ
+    debug: true                    // Bật debug để kiểm tra lỗi và các sự cố mạng trong quá trình phát
 });
+
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -479,7 +480,7 @@
     if (!video.duration || isNaN(video.duration)) return;
     const remaining = video.duration - video.currentTime;
     const prompt = document.getElementById('nextPrompt');
-    if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && remaining > 888 && episodes.length > currentEpisodeIndex + 1) {
+    if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && remaining > 10 && episodes.length > currentEpisodeIndex + 1) {
         video.pause();
         prompt.style.display = 'block';
         promptedEpisodes[currentEpisodeIndex] = true;
