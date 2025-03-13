@@ -419,7 +419,7 @@
             if (Hls.isSupported()) {
             hls = new Hls({
     lowLatencyMode: false,
-    maxBufferLength: 10,       // Tăng lên 10 giây
+    maxBufferLength: 15,       // Tăng lên 10 giây
     maxMaxBufferLength: 20,    // Tăng lên 20 giây
     liveSyncDuration: 5,       // Tăng độ trễ đồng bộ
     liveMaxLatencyDuration: 10,// Tăng độ trễ tối đa
@@ -427,10 +427,10 @@
     startLevel: -1,            // Để Hls.js tự động chọn chất lượng ban đầu
     autoLevelCapping: -1,      // Không giới hạn chất lượng
     abrEwmaFastLive: 1.0,      // Phản ứng nhanh hơn với mạng tốt
-    abrEwmaSlowLive: 3.0,      // Chậm lại khi mạng kém
-    abrBandWidthFactor: 0.8,   // Tăng độ nhạy băng thông
+    abrEwmaSlowLive: 2.0,      // Chậm lại khi mạng kém
+    abrBandWidthFactor: 1.0,   // Tăng độ nhạy băng thông
     abrBandWidthUpFactor: 0.7, // Tăng tốc độ nâng cấp chất lượng
-    backBufferLength: 5,       // Tăng bộ đệm lại
+    backBufferLength: 8,       // Tăng bộ đệm lại
     debug: true                // Bật debug để kiểm tra lỗi
 });
                 hls.loadSource(source);
@@ -479,7 +479,7 @@
     if (!video.duration || isNaN(video.duration)) return;
     const remaining = video.duration - video.currentTime;
     const prompt = document.getElementById('nextPrompt');
-    if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && remaining > 50 && episodes.length > currentEpisodeIndex + 1) {
+    if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && remaining > 888 && episodes.length > currentEpisodeIndex + 1) {
         video.pause();
         prompt.style.display = 'block';
         promptedEpisodes[currentEpisodeIndex] = true;
