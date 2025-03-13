@@ -23,7 +23,7 @@
             z-index: 1000;
         }
         nav {
-            max-width: 960px; /* Giới hạn chiều rộng nav giống video */
+            max-width: 960px;
             margin: 0 auto;
             display: flex;
             justify-content: space-around;
@@ -41,7 +41,7 @@
         nav a:hover { background-color: #4a90e2; border-radius: 5px; }
         nav a.active { font-weight: bold; background-color: #6b48a3; border-radius: 5px; }
         .container {
-            max-width: 960px; /* Chiều rộng cố định cho desktop */
+            max-width: 960px;
             margin: 70px auto 0;
             padding: 5px;
             position: relative;
@@ -67,16 +67,16 @@
             background: #1a1a1a;
             padding: 5px;
             border-radius: 8px;
-            width: 100%; /* Chiếm toàn bộ container */
-            max-width: 960px; /* Chiều rộng tối đa */
-            margin: 0 auto; /* Căn giữa */
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
             z-index: 2000;
         }
         .video-wrapper {
             position: relative;
             width: 100%;
             height: 0;
-            padding-bottom: 56.25%; /* Tỷ lệ 16:9 */
+            padding-bottom: 56.25%;
         }
         .plyr {
             position: absolute;
@@ -146,31 +146,6 @@
             transition: color 0.2s;
         }
         .back-link:hover { text-decoration: underline; color: #6b48a3; }
-        .next-prompt {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #3a2a4a;
-            padding: 8px 15px;
-            border-radius: 5px;
-            display: none;
-            z-index: 3000;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #e0e0e0;
-        }
-        .next-prompt button {
-            background: #6b48a3;
-            color: #fff;
-            border: none;
-            padding: 5px 10px;
-            margin: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: background 0.2s;
-        }
-        .next-prompt button:hover { background: #4a90e2; }
         .subtitle-controls {
             display: flex;
             justify-content: center;
@@ -272,7 +247,7 @@
 
         @media (max-width: 960px) {
             .container {
-                max-width: 100vw; /* Trở lại full width trên thiết bị nhỏ */
+                max-width: 100vw;
                 margin-top: 60px;
                 padding: 3px;
             }
@@ -294,7 +269,6 @@
                 font-size: 0.9rem;
                 min-height: 40px;
             }
-            .next-prompt { padding: 6px 10px; font-size: 0.7rem; }
             .subtitle-controls label,
             .check-sub-btn,
             .apply-sub-btn,
@@ -344,11 +318,6 @@
                 <button class="size-btn" onclick="changeCaptionSize(-0.1)">-</button>
             </div>
             <div id="episodeList" class="episode-list"></div>
-            <div id="nextPrompt" class="next-prompt">
-                <span>Chuyển sang tập tiếp theo?</span><br />
-                <button onclick="playNextEpisode(true)">Có</button>
-                <button onclick="hidePrompt()">Không</button>
-            </div>
         </div>
         <button class="dim-btn" id="dimModeButton" onclick="toggleDimMode()">Tắt đèn</button>
         <div class="speed-display" id="speedDisplay">Tốc độ: 0 KB/s</div>
@@ -389,7 +358,6 @@
             url: ep.m3u8
         })) : [];
 
-        // Đo tốc độ mạng không ảnh hưởng video
         function measureNetworkSpeed() {
             const testUrl = 'https://images.pexels.com/photos/14630295/pexels-photo-14630295.jpeg?cs=srgb&dl=pexels-suki-lee-110686949-14630295.jpg&fm=jpg&h=100&w=150&fit=crop&_gl=1*1oqby5p*_ga*NTc0NDQ2MzM5LjE3NDEyMzMyNzc.*_ga_8JE65Q40S6*MTc0MTMxNjc1MS4yLjEuMTc0MTMxNjc2NC4wLjAuMA..';
             const xhr = new XMLHttpRequest();
@@ -401,7 +369,7 @@
                     const endTime = performance.now();
                     const duration = (endTime - startTime) / 1000;
                     const bytesLoaded = xhr.response.size;
-                    const speedKBps = (bytesLoaded / duration / 2).toFixed(2); // Sửa lại phép tính
+                    const speedKBps = (bytesLoaded / duration / 2).toFixed(2);
                     speedDisplay.textContent = `Tốc độ: ${speedKBps} KB/s`;
                     speedDisplay.className = 'speed-display';
                     if (speedKBps < 50) speedDisplay.classList.add('slow');
@@ -417,23 +385,22 @@
         function initializePlayer(source) {
             if (hls) hls.destroy();
             if (Hls.isSupported()) {
-          hls = new Hls({
-    lowLatencyMode: true,          // Kích hoạt chế độ độ trễ thấp (Low Latency)
-    maxBufferLength: 10,           // Giới hạn thời gian buffer tối đa cho video, giúp giảm độ trễ
-    maxMaxBufferLength: 15,        // Tăng thêm bộ đệm tối đa, nhưng không quá 15 giây
-    liveSyncDuration: 3,           // Giảm độ trễ đồng bộ giữa các phân đoạn
-    liveMaxLatencyDuration: 6,     // Giới hạn độ trễ tối đa giữa các phân đoạn live
-    capLevelToPlayerSize: true,    // Để chất lượng video tự động điều chỉnh theo kích thước player
-    startLevel: -1,                // Để Hls.js tự động chọn chất lượng ban đầu (tối ưu hóa cho mạng yếu)
-    autoLevelCapping: -1,          // Không giới hạn chất lượng, cho phép tự động điều chỉnh mức độ
-    abrEwmaFastLive: 1.0,          // Cải thiện phản ứng nhanh với mạng tốt, không quá nhanh để tránh chất lượng bị giảm
-    abrEwmaSlowLive: 1.5,          // Giảm tốc độ điều chỉnh khi mạng kém, giúp tránh việc giảm chất lượng quá nhanh
-    abrBandWidthFactor: 0.8,       // Điều chỉnh độ nhạy với băng thông (giảm một chút để tránh điều chỉnh quá mạnh)
-    abrBandWidthUpFactor: 0.6,     // Điều chỉnh tốc độ nâng cấp chất lượng khi băng thông tốt (giảm một chút để không quá mạnh)
-    backBufferLength: 5,           // Giảm lại bộ đệm để không giữ quá nhiều dữ liệu, giảm độ trễ
-    debug: true                    // Bật debug để kiểm tra lỗi và các sự cố mạng trong quá trình phát
-});
-
+                hls = new Hls({
+                    lowLatencyMode: true,
+                    maxBufferLength: 10,
+                    maxMaxBufferLength: 15,
+                    liveSyncDuration: 3,
+                    liveMaxLatencyDuration: 6,
+                    capLevelToPlayerSize: true,
+                    startLevel: -1,
+                    autoLevelCapping: -1,
+                    abrEwmaFastLive: 1.0,
+                    abrEwmaSlowLive: 1.5,
+                    abrBandWidthFactor: 0.8,
+                    abrBandWidthUpFactor: 0.6,
+                    backBufferLength: 5,
+                    debug: true
+                });
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -475,18 +442,10 @@
             if (activeLink) activeLink.classList.add('active');
         }
 
-        let promptedEpisodes = {};
         video.addEventListener('timeupdate', throttle(() => {
-    if (!video.duration || isNaN(video.duration)) return;
-    const remaining = video.duration - video.currentTime;
-    const prompt = document.getElementById('nextPrompt');
-    if (!promptedEpisodes[currentEpisodeIndex] && remaining <= 120 && episodes.length > currentEpisodeIndex + 1) {
-        video.pause();
-        prompt.style.display = 'block';
-        promptedEpisodes[currentEpisodeIndex] = true;
-    }
-    if (subtitlesApplied) updateCustomCaptions();
-}, 200));
+            if (subtitlesApplied) updateCustomCaptions();
+        }, 200));
+
         function throttle(func, limit) {
             let inThrottle;
             return function () {
@@ -505,7 +464,6 @@
                 removeSubtitles();
                 initializePlayer(episodes[newIndex].url);
                 updateActiveButton();
-                document.getElementById('nextPrompt').style.display = 'none';
             }
         }
 
@@ -513,11 +471,6 @@
             document.querySelectorAll('.episode-btn').forEach((btn, idx) => {
                 btn.classList.toggle('active', idx === currentEpisodeIndex);
             });
-        }
-
-        function hidePrompt() {
-            document.getElementById('nextPrompt').style.display = 'none';
-            video.play().catch(err => console.error('Error resuming video:', err));
         }
 
         function toggleSubtitles() {
@@ -650,7 +603,6 @@
                     currentEpisodeIndex = index;
                     removeSubtitles();
                     initializePlayer(episode.url);
-                    document.getElementById('nextPrompt').style.display = 'none';
                     updateActiveButton();
                 };
                 episodeList.appendChild(btn);
