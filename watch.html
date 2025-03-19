@@ -15,7 +15,7 @@
         }
 
         body {
-            background-color:rgb(6 4 3 / 90%);
+            background-color: rgb(6 4 3 / 90%);
             color: #fff;
             line-height: 1.4;
             position: relative;
@@ -111,8 +111,6 @@
             max-width: 1000px;
             margin: 0 auto 10px;
             z-index: 10;
-            display: flex;
-            flex-direction: column;
         }
 
         .video-wrapper {
@@ -158,6 +156,10 @@
             gap: 10px;
             padding: 10px 0;
             z-index: 10;
+            max-width: 1000px; /* Đồng bộ với video-player */
+            margin: 0 auto 10px; /* Căn giữa và cách dưới */
+            background-color: rgba(56, 46, 41, 0.9); /* Nền nhẹ để nổi bật */
+            border-radius: 8px;
         }
 
         .control-btn {
@@ -388,22 +390,23 @@
                 max-height: 50vh;
             }
             .video-controls {
-                gap: 12px; /* Tăng khoảng cách giữa các nút */
-                padding: 15px 0; /* Thêm padding để dễ chạm */
-                flex-wrap: wrap; /* Cho phép xuống dòng nếu quá chật */
+                gap: 12px;
+                padding: 15px 0;
+                flex-wrap: wrap;
                 justify-content: center;
+                max-width: 100%;
             }
             .control-btn, #cinema-mode-btn, #cinema-light-btn {
-                padding: 10px; /* Tăng padding */
-                width: 48px; /* Tăng chiều rộng */
-                height: 48px; /* Tăng chiều cao */
-                font-size: 1.1em; /* Tăng kích thước icon */
-                border-radius: 8px; /* Bo góc lớn hơn */
-                touch-action: manipulation; /* Tối ưu cho cảm ứng */
+                padding: 10px;
+                width: 48px;
+                height: 48px;
+                font-size: 1.1em;
+                border-radius: 8px;
+                touch-action: manipulation;
             }
             .control-btn:active, #cinema-mode-btn:active, #cinema-light-btn:active {
-                background-color: #c68c53; /* Hiệu ứng khi chạm */
-                transform: scale(0.95); /* Hiệu ứng nhấn nhẹ */
+                background-color: #c68c53;
+                transform: scale(0.95);
             }
             .episodes-section h3, .servers-section h3 {
                 font-size: 1.2em;
@@ -412,7 +415,7 @@
                 gap: 8px;
             }
             .episode-btn, .server-btn {
-                padding: 8px 16px; /* Tăng kích thước nút tập */
+                padding: 8px 16px;
                 font-size: 0.9em;
             }
             .button-group {
@@ -453,14 +456,15 @@
             <div class="video-wrapper">
                 <video id="player" playsinline controls preload="metadata"></video>
             </div>
-            <div class="video-controls">
-                <a id="prev-btn" href="#" class="control-btn"><i class="fas fa-step-backward"></i></a>
-                <button id="rewind-btn" class="control-btn"><i class="fas fa-backward"></i></button>
-                <button id="forward-btn" class="control-btn"><i class="fas fa-forward"></i></button>
-                <a id="next-btn" href="#" class="control-btn"><i class="fas fa-step-forward"></i></a>
-                <button id="cinema-mode-btn">Tắt đèn</button>
-                <button id="cinema-light-btn">Bật đèn</button>
-            </div>
+        </div>
+
+        <div class="video-controls">
+            <a id="prev-btn" href="#" class="control-btn"><i class="fas fa-step-backward"></i></a>
+            <button id="rewind-btn" class="control-btn"><i class="fas fa-backward"></i></button>
+            <button id="forward-btn" class="control-btn"><i class="fas fa-forward"></i></button>
+            <a id="next-btn" href="#" class="control-btn"><i class="fas fa-step-forward"></i></a>
+            <button id="cinema-mode-btn">Tắt đèn</button>
+            <button id="cinema-light-btn">Bật đèn</button>
         </div>
 
         <div class="episodes-section">
