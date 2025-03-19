@@ -40,7 +40,7 @@
             left: 0;
             width: 100%;
             background-color: #794223;
-            padding: 10px 15px;
+            padding: 5px 10px; /* Giảm padding để nhỏ gọn */
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
             line-height: 1;
@@ -55,22 +55,22 @@
         }
 
         .logo {
-            height: 35px;
+            height: 25px; /* Giảm chiều cao logo */
             width: auto;
-            max-width: 150px;
+            max-width: 120px; /* Giảm max-width */
             display: block;
         }
 
         .nav-menu {
             display: flex;
-            gap: 15px;
+            gap: 10px; /* Giảm gap giữa các mục menu */
         }
 
         .nav-menu a {
             color: #fff;
             text-decoration: none;
-            font-size: 0.95em;
-            padding: 6px 10px;
+            font-size: 0.85em; /* Giảm kích thước chữ */
+            padding: 4px 8px; /* Giảm padding của mục menu */
             border-radius: 5px;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
@@ -86,39 +86,9 @@
             font-weight: bold;
         }
 
-        .search-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .search-bar input {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            width: 250px;
-            background-color: #fff;
-            color: #333;
-            font-size: 0.9em;
-        }
-
-        .search-btn {
-            background-color: #8d5524;
-            color: #fff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .search-btn:hover {
-            background-color: #a66b3f;
-        }
-
         .container {
             max-width: 1200px;
-            margin: 100px auto 20px; /* Tăng margin-top để dịch toàn bộ xuống */
+            margin: 80px auto 20px; /* Giảm margin-top vì header nhỏ hơn */
             padding: 20px;
         }
 
@@ -134,7 +104,7 @@
 
         .movie-poster {
             flex: 0 0 250px;
-            margin-top: 20px; /* Dịch poster xuống thêm trên desktop */
+            margin-top: 20px;
         }
 
         .movie-poster img {
@@ -160,13 +130,13 @@
 
         .movie-info .content-wrapper {
             position: relative;
-            max-height: 100px; /* Giới hạn chiều cao ban đầu */
+            max-height: 100px;
             overflow: hidden;
             transition: max-height 0.3s ease;
         }
 
         .movie-info .content-wrapper.expanded {
-            max-height: none; /* Mở rộng khi nhấn "Xem thêm" */
+            max-height: none;
         }
 
         .movie-info table {
@@ -282,50 +252,33 @@
         /* Tối ưu cho điện thoại */
         @media (max-width: 720px) {
             .header {
-                padding: 5px 10px;
+                padding: 3px 8px; /* Giảm thêm padding */
             }
 
             .header-content {
                 flex-direction: column;
-                gap: 10px;
-                padding: 5px 0;
+                gap: 8px;
+                padding: 3px 0;
             }
 
             .logo {
-                height: 25px;
+                height: 20px; /* Nhỏ hơn trên mobile */
                 max-width: 100px;
             }
 
             .nav-menu {
                 flex-wrap: wrap;
                 justify-content: center;
-                gap: 8px;
+                gap: 6px; /* Giảm gap */
             }
 
             .nav-menu a {
-                font-size: 0.9em;
-                padding: 6px 8px;
-            }
-
-            .search-bar {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .search-bar input {
-                width: 100%;
-                max-width: 300px;
-                padding: 8px 12px;
-                font-size: 0.95em;
-            }
-
-            .search-btn {
-                padding: 8px 12px;
-                font-size: 0.95em;
+                font-size: 0.8em; /* Giảm chữ */
+                padding: 3px 6px; /* Giảm padding */
             }
 
             .container {
-                margin: 140px auto 20px; /* Tăng thêm để dịch xuống */
+                margin: 100px auto 20px; /* Giảm vì header nhỏ hơn */
                 padding: 15px;
             }
 
@@ -359,7 +312,7 @@
             }
 
             .movie-info .content-wrapper {
-                max-height: 80px; /* Thu gọn hơn trên mobile */
+                max-height: 80px;
             }
 
             .movie-info table td {
@@ -407,8 +360,22 @@
         }
 
         @media (max-width: 360px) {
+            .header {
+                padding: 2px 6px; /* Giảm tối đa */
+            }
+
+            .logo {
+                height: 18px;
+                max-width: 90px;
+            }
+
+            .nav-menu a {
+                font-size: 0.75em;
+                padding: 2px 5px;
+            }
+
             .container {
-                margin: 160px auto 20px; /* Tăng thêm cho màn nhỏ */
+                margin: 90px auto 20px; /* Giảm thêm */
                 padding: 10px;
             }
 
@@ -427,7 +394,7 @@
             }
 
             .movie-info .content-wrapper {
-                max-height: 60px; /* Thu gọn hơn nữa */
+                max-height: 60px;
             }
 
             .movie-info table td {
@@ -477,10 +444,6 @@
                 <a href="phim-my.html">Phim Mỹ</a>
                 <a href="truyen-hinh.html">Truyền hình</a>
                 <a href="hoat-hinh.html">Hoạt hình</a>
-            </div>
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Tìm kiếm phim...">
-                <button class="search-btn" id="search-btn"><i class="fas fa-search"></i></button>
             </div>
         </div>
     </header>
