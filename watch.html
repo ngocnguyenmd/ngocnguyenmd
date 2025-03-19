@@ -43,7 +43,7 @@
             left: 0;
             width: 100%;
             background-color: #794223;
-            padding: 10px 15px;
+            padding: 5px 10px;
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
             line-height: 1;
@@ -58,22 +58,22 @@
         }
 
         .logo {
-            height: 35px;
+            height: 25px;
             width: auto;
-            max-width: 150px;
+            max-width: 120px;
             display: block;
         }
 
         .nav-menu {
             display: flex;
-            gap: 15px;
+            gap: 10px;
         }
 
         .nav-menu a {
             color: #fff;
             text-decoration: none;
-            font-size: 0.95em;
-            padding: 6px 10px;
+            font-size: 0.85em;
+            padding: 4px 8px;
             border-radius: 5px;
             transition: background-color 0.3s ease;
         }
@@ -107,8 +107,8 @@
             position: relative;
             background: #000;
             border-radius: 8px;
-            width: 100%;
-            max-width: 1000px;
+            width: 979px; /* Kích thước cố định trên desktop */
+            height: 550px; /* Kích thước cố định trên desktop */
             margin: 0 auto 10px;
             z-index: 10;
         }
@@ -116,8 +116,7 @@
         .video-wrapper {
             position: relative;
             width: 100%;
-            height: 0;
-            padding-bottom: 56.25%;
+            height: 100%; /* Đổ đầy chiều cao của .video-player */
             background: transparent;
         }
 
@@ -153,28 +152,30 @@
         .video-controls {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 10px;
             padding: 10px 0;
             z-index: 10;
-            max-width: 1000px; /* Đồng bộ với video-player */
-            margin: 0 auto 10px; /* Căn giữa và cách dưới */
-            background-color: rgba(56, 46, 41, 0.9); /* Nền nhẹ để nổi bật */
+            max-width: 1000px;
+            margin: 0 auto 10px;
+            background-color: rgba(56, 46, 41, 0.9);
             border-radius: 8px;
         }
 
         .control-btn {
             background-color: #8d5524;
             color: #fff;
-            padding: 8px;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 16px;
             border-radius: 5px;
             text-decoration: none;
-            font-size: 0.9em;
+            font-size: 0.7em;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
         }
 
         .control-btn:hover {
@@ -184,6 +185,29 @@
         .control-btn.disabled {
             background-color: #b39e94;
             pointer-events: none;
+        }
+
+        #cinema-mode-btn, #cinema-light-btn {
+            background-color: #8d5524;
+            color: #fff;
+            width: 32px;
+            height: 16px;
+            border-radius: 5px;
+            font-size: 0.7em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        #cinema-mode-btn:hover, #cinema-light-btn:hover {
+            background-color: #a66b3f;
+        }
+
+        #cinema-light-btn {
+            display: none;
         }
 
         .episodes-section {
@@ -285,41 +309,6 @@
             background-color: #a66b3f;
         }
 
-        /* Nút rạp phim */
-        #cinema-mode-btn {
-            background-color: #8d5524;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 0.9em;
-            transition: background-color 0.3s ease;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        #cinema-mode-btn:hover {
-            background-color: #c68c53;
-        }
-
-        #cinema-light-btn {
-            background-color: #8d5524;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 0.9em;
-            transition: background-color 0.3s ease;
-            cursor: pointer;
-            display: none;
-            margin-left: 10px;
-        }
-
-        #cinema-light-btn:hover {
-            background-color: #c68c53;
-        }
-
-        /* Chế độ rạp phim */
         .cinema-mode .header,
         .cinema-mode .movie-title,
         .cinema-mode .episodes-section,
@@ -329,9 +318,9 @@
         }
 
         .cinema-mode .video-player {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 0;
+            width: 100%; /* Fullscreen trong chế độ cinema */
+            height: 100vh; /* Fullscreen trong chế độ cinema */
+            margin: 0;
         }
 
         .cinema-mode .control-btn:not(#next-btn) {
@@ -348,31 +337,43 @@
         }
 
         .cinema-mode #cinema-light-btn {
-            display: inline-block;
+            display: flex;
         }
 
-        /* Tối ưu hóa cho màn hình nhỏ (Samsung A04) */
+        /* Tối ưu hóa cho màn hình nhỏ */
+        @media (max-width: 979px) { /* Khi màn hình nhỏ hơn 979px */
+            .video-player {
+                width: 100%; /* Responsive trên mobile */
+                height: auto; /* Bỏ chiều cao cố định */
+                max-width: 100%;
+            }
+            .video-wrapper {
+                height: 0;
+                padding-bottom: 56.25%; /* Quay lại tỷ lệ 16:9 */
+            }
+        }
+
         @media (max-width: 720px) {
             .header {
-                padding: 5px 10px;
+                padding: 3px 8px;
             }
             .header-content {
                 flex-direction: column;
-                gap: 10px;
-                padding: 5px 0;
+                gap: 8px;
+                padding: 3px 0;
             }
             .logo {
-                height: 25px;
+                height: 20px;
                 max-width: 100px;
             }
             .nav-menu {
                 flex-wrap: wrap;
                 justify-content: center;
-                gap: 8px;
+                gap: 6px;
             }
             .nav-menu a {
                 font-size: 0.8em;
-                padding: 4px 6px;
+                padding: 3px 6px;
             }
             .container {
                 margin: 100px auto 20px;
@@ -384,7 +385,6 @@
             }
             .video-player {
                 margin-bottom: 10px;
-                max-width: 100%;
             }
             #player {
                 max-height: 50vh;
@@ -394,13 +394,19 @@
                 padding: 15px 0;
                 flex-wrap: wrap;
                 justify-content: center;
-                max-width: 100%;
+                align-items: center;
             }
-            .control-btn, #cinema-mode-btn, #cinema-light-btn {
-                padding: 10px;
-                width: 48px;
-                height: 48px;
-                font-size: 1.1em;
+            .control-btn {
+                width: 44px;
+                height: 22px;
+                font-size: 0.9em;
+                border-radius: 8px;
+                touch-action: manipulation;
+            }
+            #cinema-mode-btn, #cinema-light-btn {
+                width: 44px;
+                height: 22px;
+                font-size: 0.9em;
                 border-radius: 8px;
                 touch-action: manipulation;
             }
@@ -429,6 +435,24 @@
             .plyr__controls {
                 padding: 5px;
                 font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .header {
+                padding: 2px 6px;
+            }
+            .logo {
+                height: 18px;
+                max-width: 90px;
+            }
+            .nav-menu a {
+                font-size: 0.75em;
+                padding: 2px 5px;
+            }
+            .container {
+                margin: 70px auto 20px;
+                padding: 10px;
             }
         }
     </style>
@@ -463,8 +487,8 @@
             <button id="rewind-btn" class="control-btn"><i class="fas fa-backward"></i></button>
             <button id="forward-btn" class="control-btn"><i class="fas fa-forward"></i></button>
             <a id="next-btn" href="#" class="control-btn"><i class="fas fa-step-forward"></i></a>
-            <button id="cinema-mode-btn">Tắt đèn</button>
-            <button id="cinema-light-btn">Bật đèn</button>
+            <button id="cinema-mode-btn">💡</button>
+            <button id="cinema-light-btn">🔦</button>
         </div>
 
         <div class="episodes-section">
@@ -673,7 +697,6 @@
             nextBtn.classList.add('disabled');
         }
 
-        // Tính năng rạp phim
         const cinemaModeBtn = document.getElementById('cinema-mode-btn');
         const cinemaLightBtn = document.getElementById('cinema-light-btn');
 

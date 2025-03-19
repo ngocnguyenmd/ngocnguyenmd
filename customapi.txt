@@ -118,3 +118,73 @@ https://live.fptplay53.net/fnxhd1/vtv4_vhls.smil/chunklist_b5000000.m3u8
 https://live.fptplay53.net/epzhd1/vtv5hd_vhls.smil/chunklist.m3u8
 https://live.fptplay53.net/fnxhd1/vtv7hd_vhls.smil/chunklist_b5000000.m3u8
 https://hitmefirstcdn.store/hls/WhiI0ABpjWie68mS5ovjgppSaqp+00EcC-vRdNynn5jCpoDXHHdBNF2uQhKdGcOzmKJMyN-i8RDOwZjGuCxEyw==/bWFzdGVyLm0zdTg=.m3u8
+
+
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #794223;
+    padding: 5px 10px; /* Giảm như detail.html */
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    line-height: 1;
+}
+
+.logo {
+    height: 25px; /* Giảm như detail.html */
+    width: auto;
+    max-width: 120px;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 10px; /* Giảm như detail.html */
+}
+
+.nav-menu a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.85em; /* Giảm như detail.html */
+    padding: 4px 8px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+@media (max-width: 720px) {
+    .header {
+        padding: 3px 8px;
+    }
+    .header-content {
+        flex-direction: column;
+        gap: 8px;
+        padding: 3px 0;
+    }
+    .logo {
+        height: 20px;
+        max-width: 100px;
+    }
+    .nav-menu {
+        gap: 6px;
+    }
+    .nav-menu a {
+        font-size: 0.8em;
+        padding: 3px 6px;
+    }
+}
+
+@media (max-width: 360px) {
+    .header {
+        padding: 2px 6px;
+    }
+    .logo {
+        height: 18px;
+        max-width: 90px;
+    }
+    .nav-menu a {
+        font-size: 0.75em;
+        padding: 2px 5px;
+    }
+}
