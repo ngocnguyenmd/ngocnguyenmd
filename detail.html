@@ -118,7 +118,7 @@
 
         .container {
             max-width: 1200px;
-            margin: 80px auto 20px; /* Giữ nguyên cho desktop */
+            margin: 100px auto 20px; /* Tăng margin-top để dịch toàn bộ xuống */
             padding: 20px;
         }
 
@@ -134,6 +134,7 @@
 
         .movie-poster {
             flex: 0 0 250px;
+            margin-top: 20px; /* Dịch poster xuống thêm trên desktop */
         }
 
         .movie-poster img {
@@ -141,6 +142,8 @@
             height: 350px;
             object-fit: cover;
             border-radius: 10px;
+            border: 3px solid #8d5524;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
         .movie-info {
@@ -153,6 +156,17 @@
         .movie-info h1 {
             font-size: 1.8em;
             color: #8d5524;
+        }
+
+        .movie-info .content-wrapper {
+            position: relative;
+            max-height: 100px; /* Giới hạn chiều cao ban đầu */
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .movie-info .content-wrapper.expanded {
+            max-height: none; /* Mở rộng khi nhấn "Xem thêm" */
         }
 
         .movie-info table {
@@ -174,6 +188,25 @@
 
         .movie-info table td:nth-child(2) {
             word-wrap: break-word;
+        }
+
+        .toggle-content-btn {
+            background-color: #8d5524;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 8px;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .toggle-content-btn:hover {
+            background-color: #a66b3f;
         }
 
         .button-group {
@@ -246,6 +279,7 @@
             background-color: #c68c53;
         }
 
+        /* Tối ưu cho điện thoại */
         @media (max-width: 720px) {
             .header {
                 padding: 5px 10px;
@@ -269,56 +303,155 @@
             }
 
             .nav-menu a {
-                font-size: 0.8em;
-                padding: 4px 6px;
+                font-size: 0.9em;
+                padding: 6px 8px;
+            }
+
+            .search-bar {
+                width: 100%;
+                justify-content: center;
             }
 
             .search-bar input {
                 width: 100%;
-                padding: 6px 10px;
+                max-width: 300px;
+                padding: 8px 12px;
+                font-size: 0.95em;
             }
 
             .search-btn {
-                padding: 6px 10px;
+                padding: 8px 12px;
+                font-size: 0.95em;
             }
 
             .container {
-                margin: 160px auto 20px; /* Tăng lên 120px để đẩy poster và table xuống */
-                padding: 10px;
+                margin: 140px auto 20px; /* Tăng thêm để dịch xuống */
+                padding: 15px;
             }
 
             .movie-detail {
+                flex-direction: column;
+                padding: 15px;
+                gap: 20px;
+            }
+
+            .movie-poster {
+                flex: none;
+                width: 100%;
+                max-width: 250px;
+                margin: 0 auto;
+            }
+
+            .movie-poster img {
+                height: 350px;
+                width: 100%;
+                border: 3px solid #8d5524;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            }
+
+            .movie-info {
+                width: 100%;
+            }
+
+            .movie-info h1 {
+                font-size: 1.6em;
+                text-align: center;
+            }
+
+            .movie-info .content-wrapper {
+                max-height: 80px; /* Thu gọn hơn trên mobile */
+            }
+
+            .movie-info table td {
+                padding: 8px 0;
+                font-size: 1em;
+            }
+
+            .movie-info table td:first-child {
+                width: 100px;
+            }
+
+            .toggle-content-btn {
+                padding: 8px 16px;
+                font-size: 0.95em;
+            }
+
+            .button-group {
+                justify-content: center;
+                gap: 12px;
+            }
+
+            .watch-btn, .back-btn {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+
+            .episodes-section {
+                padding: 15px;
+            }
+
+            .episodes-section h3 {
+                font-size: 1.4em;
+                text-align: center;
+            }
+
+            .episodes-list {
+                gap: 10px;
+                justify-content: center;
+            }
+
+            .episode-btn {
+                padding: 8px 16px;
+                font-size: 0.95em;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .container {
+                margin: 160px auto 20px; /* Tăng thêm cho màn nhỏ */
                 padding: 10px;
             }
 
             .movie-poster {
-                flex: 0 0 200px;
+                max-width: 200px;
             }
 
             .movie-poster img {
                 height: 280px;
+                border: 3px solid #8d5524;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             }
 
             .movie-info h1 {
                 font-size: 1.4em;
             }
 
+            .movie-info .content-wrapper {
+                max-height: 60px; /* Thu gọn hơn nữa */
+            }
+
             .movie-info table td {
-                padding: 4px 0;
-                font-size: 0.85em;
+                padding: 6px 0;
+                font-size: 0.9em;
             }
 
             .movie-info table td:first-child {
-                width: 80px;
+                width: 90px;
+            }
+
+            .toggle-content-btn {
+                padding: 6px 12px;
+                font-size: 0.9em;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 10px;
             }
 
             .watch-btn, .back-btn {
-                padding: 6px 12px;
-                font-size: 0.85em;
-            }
-
-            .episodes-section {
-                padding: 10px;
+                padding: 8px 16px;
+                font-size: 0.95em;
             }
 
             .episodes-section h3 {
@@ -326,44 +459,8 @@
             }
 
             .episode-btn {
-                padding: 5px 10px;
-                font-size: 0.8em;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .movie-poster {
-                flex: 0 0 150px;
-            }
-
-            .movie-poster img {
-                height: 200px;
-            }
-
-            .movie-info h1 {
-                font-size: 1.2em;
-            }
-
-            .movie-info table td {
-                padding: 3px 0;
-                font-size: 0.8em;
-            }
-
-            .movie-info table td:first-child {
-                width: 70px;
-            }
-
-            .movie-info table td:nth-child(2) {
-                max-width: 140px;
-            }
-
-            .button-group {
-                gap: 6px;
-            }
-
-            .watch-btn, .back-btn {
-                padding: 5px 10px;
-                font-size: 0.8em;
+                padding: 6px 12px;
+                font-size: 0.9em;
             }
         }
     </style>
@@ -395,28 +492,31 @@
             </div>
             <div class="movie-info">
                 <h1 id="movie-title"></h1>
-                <table id="movie-table">
-                    <tr>
-                        <td>Chất lượng:</td>
-                        <td id="movie-quality"></td>
-                    </tr>
-                    <tr>
-                        <td>Nội dung:</td>
-                        <td id="movie-content"></td>
-                    </tr>
-                    <tr>
-                        <td>Diễn viên:</td>
-                        <td id="movie-actor"></td>
-                    </tr>
-                    <tr>
-                        <td>Đạo diễn:</td>
-                        <td id="movie-director"></td>
-                    </tr>
-                    <tr>
-                        <td>Quốc gia:</td>
-                        <td id="movie-country"></td>
-                    </tr>
-                </table>
+                <div class="content-wrapper" id="content-wrapper">
+                    <table id="movie-table">
+                        <tr>
+                            <td>Chất lượng:</td>
+                            <td id="movie-quality"></td>
+                        </tr>
+                        <tr>
+                            <td>Nội dung:</td>
+                            <td id="movie-content"></td>
+                        </tr>
+                        <tr>
+                            <td>Diễn viên:</td>
+                            <td id="movie-actor"></td>
+                        </tr>
+                        <tr>
+                            <td>Đạo diễn:</td>
+                            <td id="movie-director"></td>
+                        </tr>
+                        <tr>
+                            <td>Quốc gia:</td>
+                            <td id="movie-country"></td>
+                        </tr>
+                    </table>
+                </div>
+                <button class="toggle-content-btn" id="toggle-content-btn">Xem thêm</button>
                 <div class="button-group">
                     <a id="watch-btn" href="#" class="watch-btn"><i class="fas fa-play"></i> Xem phim</a>
                     <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Quay lại trang chủ</a>
@@ -491,6 +591,15 @@
         } else {
             episodesList.innerHTML = '<p>Không có tập nào.</p>';
         }
+
+        // Xử lý nút "Xem thêm"
+        const contentWrapper = document.getElementById('content-wrapper');
+        const toggleBtn = document.getElementById('toggle-content-btn');
+
+        toggleBtn.addEventListener('click', () => {
+            contentWrapper.classList.toggle('expanded');
+            toggleBtn.textContent = contentWrapper.classList.contains('expanded') ? 'Thu gọn' : 'Xem thêm';
+        });
 
         highlightActiveMenu();
     </script>
