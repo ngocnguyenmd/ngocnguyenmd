@@ -6,7 +6,7 @@
     <title>Xem phim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -242,6 +242,7 @@
             border-radius: 8px;
             text-decoration: none;
             font-size: 0.95em;
+            font-weight: 500;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
@@ -251,8 +252,12 @@
         }
 
         .episode-btn.active {
-            background-color: #059669;
-            font-weight: 600;
+            background-color: #065f46;
+            font-weight: 700;
+            font-size: 1.1em;
+            padding: 12px 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            transform: scale(1.05);
         }
 
         .servers-section {
@@ -282,6 +287,7 @@
             border-radius: 8px;
             text-decoration: none;
             font-size: 0.95em;
+            font-weight: 500;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
@@ -291,8 +297,12 @@
         }
 
         .server-btn.active {
-            background-color: #059669;
-            font-weight: 600;
+            background-color: #065f46;
+            font-weight: 700;
+            font-size: 1.1em;
+            padding: 12px 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            transform: scale(1.05);
         }
 
         .button-group {
@@ -393,7 +403,7 @@
             }
 
             .plyr__controls {
-                padding: 8px;
+                padding: 10px;
             }
         }
 
@@ -448,9 +458,9 @@
             }
 
             .control-btn, #cinema-mode-btn, #cinema-light-btn {
-                width: 48px;
-                height: 48px;
-                font-size: 1.1em;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2em;
                 border-radius: 10px;
             }
 
@@ -474,6 +484,11 @@
                 font-size: 1em;
             }
 
+            .episode-btn.active, .server-btn.active {
+                font-size: 1.05em;
+                padding: 12px 24px;
+            }
+
             .button-group {
                 flex-direction: column;
                 gap: 12px;
@@ -485,8 +500,8 @@
             }
 
             .plyr__controls {
-                padding: 10px;
-                font-size: 1em;
+                padding: 12px;
+                font-size: 1.1em;
             }
 
             .scroll-to-top {
@@ -520,14 +535,19 @@
             }
 
             .control-btn, #cinema-mode-btn, #cinema-light-btn {
-                width: 44px;
-                height: 44px;
-                font-size: 1em;
+                width: 46px;
+                height: 46px;
+                font-size: 1.1em;
             }
 
             .episode-btn, .server-btn {
                 padding: 8px 16px;
                 font-size: 0.95em;
+            }
+
+            .episode-btn.active, .server-btn.active {
+                font-size: 1em;
+                padding: 10px 20px;
             }
 
             .back-btn, .detail-btn {
@@ -540,8 +560,8 @@
             }
 
             .plyr__controls {
-                padding: 8px;
-                font-size: 0.95em;
+                padding: 10px;
+                font-size: 1em;
             }
         }
     </style>
@@ -567,7 +587,10 @@
 
         <div class="video-player">
             <div class="video-wrapper">
-                <video id="player" playsinline controls preload="metadata" decoding="async"></video>
+                <video id="player" playsinline controls preload="metadata" decoding="async" muted>
+                    <source src="" type="application/x-mpegURL">
+                    <p>Trình duyệt của bạn không hỗ trợ video này.</p>
+                </video>
             </div>
         </div>
 
@@ -650,39 +673,48 @@
         }
 
         function initializePlayer(source) {
+            console.log('Khởi tạo player với nguồn:', source);
             if (hls) {
                 hls.destroy();
+                console.log('Đã hủy HLS cũ');
             }
             if (Hls.isSupported()) {
                 hls = new Hls();
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    video.play().catch(err => console.log('Autoplay bị chặn:', err));
+                    console.log('Manifest HLS đã tải, thử phát video');
+                    video.play().catch(err => console.error('Lỗi phát video:', err));
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
                     console.error('Lỗi HLS:', data);
                     if (data.fatal) {
                         switch (data.type) {
                             case Hls.ErrorTypes.NETWORK_ERROR:
+                                console.log('Lỗi mạng, thử tải lại...');
                                 hls.startLoad();
                                 break;
                             case Hls.ErrorTypes.MEDIA_ERROR:
+                                console.log('Lỗi media, thử khôi phục...');
                                 hls.recoverMediaError();
                                 break;
                             default:
+                                console.log('Lỗi không khắc phục được, khởi động lại sau 1 giây');
                                 hls.destroy();
                                 setTimeout(() => initializePlayer(source), 1000);
                         }
                     }
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                console.log('Trình duyệt hỗ trợ HLS native, gắn nguồn trực tiếp');
                 video.src = source;
                 video.addEventListener('loadedmetadata', () => {
-                    video.play().catch(err => console.log('Autoplay bị chặn:', err));
+                    console.log('Metadata đã tải, thử phát');
+                    video.play().catch(err => console.error('Lỗi phát video:', err));
                 }, { once: true });
             } else {
-                alert('Trình duyệt không hỗ trợ HLS.');
+                console.error('Trình duyệt không hỗ trợ HLS');
+                alert('Trình duyệt không hỗ trợ HLS. Vui lòng thử trình duyệt khác.');
             }
         }
 
@@ -691,22 +723,37 @@
             speed: { selected: 1, options: [1] },
             captions: { active: false },
             autoplay: false,
-            clickToPlay: true
+            clickToPlay: false,
+            muted: true
+        });
+
+        player.on('ready', () => {
+            console.log('Plyr đã sẵn sàng hiển thị giao diện');
+        });
+        player.on('error', (event) => {
+            console.error('Lỗi Plyr:', event.detail);
+        });
+        player.on('play', () => {
+            console.log('Video đang phát');
         });
 
         if (streamUrl) {
+            console.log('Tìm thấy stream URL, khởi động player');
             initializePlayer(streamUrl);
         } else {
+            console.error('Không có stream URL');
             alert('Không tìm thấy nguồn video.');
             document.getElementById('player').innerHTML = '<p style="color: white; text-align: center;">Không có video để phát.</p>';
         }
 
         function rewind() {
             video.currentTime = Math.max(0, video.currentTime - 10);
+            console.log('Tua lại 10 giây');
         }
 
         function fastForward() {
             video.currentTime = Math.min(video.duration, video.currentTime + 10);
+            console.log('Tua tới 10 giây');
         }
 
         const rewindBtn = document.getElementById('rewind-btn');
@@ -792,10 +839,12 @@
 
         cinemaModeBtn.addEventListener('click', () => {
             document.body.classList.add('cinema-mode');
+            console.log('Chế độ rạp phim: Tắt đèn');
         });
 
         cinemaLightBtn.addEventListener('click', () => {
             document.body.classList.remove('cinema-mode');
+            console.log('Chế độ rạp phim: Bật đèn');
         });
 
         const scrollToTopBtn = document.getElementById('scroll-to-top');
