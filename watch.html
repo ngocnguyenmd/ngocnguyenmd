@@ -6,18 +6,19 @@
     <title>Xem phim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background-color: rgb(6 4 3 / 90%);
-            color: #fff;
-            line-height: 1.4;
+            background-color: #111827;
+            color: #ffffff;
+            line-height: 1.6;
             position: relative;
             min-height: 100vh;
             overflow-x: hidden;
@@ -33,7 +34,7 @@
             height: 100%;
             background-size: cover;
             background-position: center;
-            filter: blur(10px) brightness(0.8);
+            filter: blur(12px) brightness(0.4);
             z-index: -1;
         }
 
@@ -42,63 +43,68 @@
             top: 0;
             left: 0;
             width: 100%;
-            background-color: #794223;
-            padding: 5px 10px;
+            background: linear-gradient(180deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 100%);
+            padding: 12px 20px;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            line-height: 1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .logo {
-            height: 25px;
+            height: 45px;
             width: auto;
-            max-width: 120px;
-            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .nav-menu {
             display: flex;
-            gap: 10px;
+            gap: 20px;
         }
 
         .nav-menu a {
-            color: #fff;
+            color: #ffffff;
             text-decoration: none;
-            font-size: 0.85em;
-            padding: 4px 8px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
+            font-size: 1em;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .nav-menu a:hover {
-            background-color: #c68c53;
+            background-color: #10b981;
+            transform: translateY(-2px);
         }
 
         .nav-menu a.active {
-            background-color: #c68c53;
-            font-weight: bold;
+            background-color: #10b981;
+            font-weight: 600;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 60px auto 20px;
+            max-width: 1400px;
+            margin: 90px auto 30px;
             padding: 20px;
         }
 
         .movie-title {
-            font-size: 2em;
-            color: #fff;
+            font-size: 2.2em;
+            color: #10b981;
             margin-top: 20px;
             margin-bottom: 15px;
             text-align: center;
+            font-weight: 600;
             z-index: 10;
             position: relative;
         }
@@ -106,28 +112,29 @@
         .video-player {
             position: relative;
             background: #000;
-            border-radius: 8px;
-            width: 979px; /* Kích thước cố định trên desktop */
-            height: 550px; /* Kích thước cố định trên desktop */
-            margin: 0 auto 10px;
+            border-radius: 12px;
+            width: 979px;
+            height: 550px;
+            margin: 0 auto 15px;
             z-index: 10;
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .video-player:hover {
+            border-color: #10b981;
         }
 
         .video-wrapper {
             position: relative;
             width: 100%;
-            height: 100%; /* Đổ đầy chiều cao của .video-player */
-            background: transparent;
+            height: 100%;
         }
 
         #player {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 8px;
-            overflow: visible;
+            border-radius: 10px;
             object-fit: contain;
             z-index: 11;
             background: #000;
@@ -136,74 +143,71 @@
         .plyr--video {
             width: 100%;
             height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
         }
 
         .plyr__controls {
             display: flex !important;
             opacity: 1 !important;
             visibility: visible !important;
+            background: rgba(0, 0, 0, 0.7) !important;
             z-index: 12 !important;
-            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+        }
+
+        .plyr__control--overlaid {
+            background: #10b981 !important;
+        }
+
+        .plyr__control--overlaid:hover {
+            background: #34d399 !important;
+        }
+
+        .plyr--full-ui input[type=range] {
+            color: #10b981;
+        }
+
+        .plyr__control:hover {
+            background: #34d399 !important;
         }
 
         .video-controls {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            padding: 10px 0;
+            gap: 12px;
+            padding: 12px 0;
             z-index: 10;
             max-width: 1000px;
-            margin: 0 auto 10px;
-            background-color: rgba(56, 46, 41, 0.9);
-            border-radius: 8px;
+            margin: 0 auto 15px;
+            background-color: rgba(30, 41, 59, 0.9);
+            border-radius: 12px;
         }
 
-        .control-btn {
-            background-color: #8d5524;
-            color: #fff;
-            width: 32px;
-            height: 16px;
-            border-radius: 5px;
+        .control-btn, #cinema-mode-btn, #cinema-light-btn {
+            background-color: #10b981;
+            color: #ffffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
             text-decoration: none;
-            font-size: 0.7em;
+            font-size: 1em;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
             border: none;
             cursor: pointer;
+            touch-action: manipulation;
         }
 
-        .control-btn:hover {
-            background-color: #a66b3f;
+        .control-btn:hover, #cinema-mode-btn:hover, #cinema-light-btn:hover {
+            background-color: #34d399;
+            transform: scale(1.05);
         }
 
         .control-btn.disabled {
-            background-color: #b39e94;
+            background-color: #6b7280;
             pointer-events: none;
-        }
-
-        #cinema-mode-btn, #cinema-light-btn {
-            background-color: #8d5524;
-            color: #fff;
-            width: 32px;
-            height: 16px;
-            border-radius: 5px;
-            font-size: 0.7em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        #cinema-mode-btn:hover, #cinema-light-btn:hover {
-            background-color: #a66b3f;
         }
 
         #cinema-light-btn {
@@ -212,115 +216,151 @@
 
         .episodes-section {
             margin-bottom: 20px;
-            background-color: rgba(56, 46, 41, 0.9);
-            padding: 15px;
-            border-radius: 10px;
-            position: relative;
+            background-color: rgba(30, 41, 59, 0.9);
+            padding: 20px;
+            border-radius: 12px;
             z-index: 10;
         }
 
         .episodes-section h3 {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            color: #fff;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            color: #10b981;
+            font-weight: 600;
         }
 
         .episodes-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
 
         .episode-btn {
-            background-color: #8d5524;
-            color: #fff;
+            background-color: #10b981;
+            color: #ffffff;
             padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 8px;
             text-decoration: none;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
+            font-size: 0.95em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .episode-btn:hover {
-            background-color: #c68c53;
+            background-color: #34d399;
+            transform: scale(1.05);
         }
 
         .episode-btn.active {
-            background-color: #6b3e2e;
-            font-weight: bold;
+            background-color: #059669;
+            font-weight: 600;
         }
 
         .servers-section {
             margin-bottom: 20px;
-            background-color: rgba(242, 226, 217, 0.9);
-            padding: 15px;
-            border-radius: 10px;
+            background-color: rgba(30, 41, 59, 0.9);
+            padding: 20px;
+            border-radius: 12px;
         }
 
         .servers-section h3 {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            color: #fff;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            color: #10b981;
+            font-weight: 600;
         }
 
         .servers-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
 
         .server-btn {
-            background-color: #8d5524;
-            color: #fff;
+            background-color: #10b981;
+            color: #ffffff;
             padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 8px;
             text-decoration: none;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
+            font-size: 0.95em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .server-btn:hover {
-            background-color: #a66b3f;
+            background-color: #34d399;
+            transform: scale(1.05);
         }
 
         .server-btn.active {
-            background-color: #6b3e2e;
-            font-weight: bold;
+            background-color: #059669;
+            font-weight: 600;
         }
 
         .button-group {
             display: flex;
             justify-content: center;
             gap: 15px;
+            margin-bottom: 20px;
         }
 
         .back-btn, .detail-btn {
             display: inline-block;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 24px;
+            border-radius: 8px;
             text-decoration: none;
-            font-size: 1em;
-            color: #fff;
-            background-color: #8d5524;
-            transition: background-color 0.3s ease;
+            font-size: 0.95em;
+            color: #ffffff;
+            background-color: #10b981;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .back-btn:hover, .detail-btn:hover {
-            background-color: #a66b3f;
+            background-color: #34d399;
+            transform: scale(1.05);
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #10b981;
+            color: #ffffff;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            background-color: #34d399;
+            transform: scale(1.1);
         }
 
         .cinema-mode .header,
         .cinema-mode .movie-title,
         .cinema-mode .episodes-section,
         .cinema-mode .servers-section,
-        .cinema-mode .button-group {
+        .cinema-mode .button-group,
+        .cinema-mode .scroll-to-top {
             display: none;
         }
 
         .cinema-mode .video-player {
-            width: 100%; /* Fullscreen trong chế độ cinema */
-            height: 100vh; /* Fullscreen trong chế độ cinema */
+            width: 100%;
+            height: 100vh;
             margin: 0;
+            border: none;
         }
 
         .cinema-mode .control-btn:not(#next-btn) {
@@ -340,119 +380,168 @@
             display: flex;
         }
 
-        /* Tối ưu hóa cho màn hình nhỏ */
-        @media (max-width: 979px) { /* Khi màn hình nhỏ hơn 979px */
+        @media (max-width: 979px) {
             .video-player {
-                width: 100%; /* Responsive trên mobile */
-                height: auto; /* Bỏ chiều cao cố định */
+                width: 100%;
+                height: auto;
                 max-width: 100%;
             }
+
             .video-wrapper {
                 height: 0;
-                padding-bottom: 56.25%; /* Quay lại tỷ lệ 16:9 */
+                padding-bottom: 56.25%;
+            }
+
+            .plyr__controls {
+                padding: 8px;
             }
         }
 
         @media (max-width: 720px) {
             .header {
-                padding: 3px 8px;
+                padding: 10px 15px;
             }
+
             .header-content {
                 flex-direction: column;
-                gap: 8px;
-                padding: 3px 0;
+                gap: 15px;
             }
+
             .logo {
-                height: 20px;
-                max-width: 100px;
+                height: 40px;
             }
+
             .nav-menu {
                 flex-wrap: wrap;
                 justify-content: center;
-                gap: 6px;
+                gap: 12px;
             }
+
             .nav-menu a {
-                font-size: 0.8em;
-                padding: 3px 6px;
+                font-size: 0.95em;
+                padding: 6px 12px;
             }
+
             .container {
                 margin: 100px auto 20px;
-                padding: 10px;
+                padding: 15px;
             }
+
             .movie-title {
-                font-size: 1.2em;
+                font-size: 1.8em;
                 margin-top: 10px;
             }
+
             .video-player {
-                margin-bottom: 10px;
+                margin-bottom: 15px;
             }
+
             #player {
                 max-height: 50vh;
             }
+
             .video-controls {
-                gap: 12px;
+                gap: 15px;
                 padding: 15px 0;
                 flex-wrap: wrap;
                 justify-content: center;
-                align-items: center;
             }
-            .control-btn {
-                width: 44px;
-                height: 22px;
-                font-size: 0.9em;
-                border-radius: 8px;
-                touch-action: manipulation;
+
+            .control-btn, #cinema-mode-btn, #cinema-light-btn {
+                width: 48px;
+                height: 48px;
+                font-size: 1.1em;
+                border-radius: 10px;
             }
-            #cinema-mode-btn, #cinema-light-btn {
-                width: 44px;
-                height: 22px;
-                font-size: 0.9em;
-                border-radius: 8px;
-                touch-action: manipulation;
-            }
+
             .control-btn:active, #cinema-mode-btn:active, #cinema-light-btn:active {
-                background-color: #c68c53;
+                background-color: #34d399;
                 transform: scale(0.95);
             }
+
             .episodes-section h3, .servers-section h3 {
-                font-size: 1.2em;
+                font-size: 1.4em;
+                text-align: center;
             }
+
             .episodes-list, .servers-list {
-                gap: 8px;
+                gap: 10px;
+                justify-content: center;
             }
+
             .episode-btn, .server-btn {
-                padding: 8px 16px;
-                font-size: 0.9em;
+                padding: 10px 20px;
+                font-size: 1em;
             }
+
             .button-group {
                 flex-direction: column;
-                gap: 10px;
+                gap: 12px;
             }
+
             .back-btn, .detail-btn {
-                padding: 8px 16px;
-                font-size: 0.9em;
+                padding: 12px 24px;
+                font-size: 1em;
             }
+
             .plyr__controls {
-                padding: 5px;
+                padding: 10px;
+                font-size: 1em;
+            }
+
+            .scroll-to-top {
+                width: 40px;
+                height: 40px;
                 font-size: 0.9em;
             }
         }
 
         @media (max-width: 360px) {
             .header {
-                padding: 2px 6px;
+                padding: 8px 10px;
             }
+
             .logo {
-                height: 18px;
-                max-width: 90px;
+                height: 35px;
             }
+
             .nav-menu a {
-                font-size: 0.75em;
-                padding: 2px 5px;
+                font-size: 0.9em;
+                padding: 5px 10px;
             }
+
             .container {
-                margin: 70px auto 20px;
+                margin: 90px auto 20px;
                 padding: 10px;
+            }
+
+            .movie-title {
+                font-size: 1.6em;
+            }
+
+            .control-btn, #cinema-mode-btn, #cinema-light-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 1em;
+            }
+
+            .episode-btn, .server-btn {
+                padding: 8px 16px;
+                font-size: 0.95em;
+            }
+
+            .back-btn, .detail-btn {
+                padding: 10px 20px;
+                font-size: 0.95em;
+            }
+
+            .episodes-section h3, .servers-section h3 {
+                font-size: 1.3em;
+            }
+
+            .plyr__controls {
+                padding: 8px;
+                font-size: 0.95em;
             }
         }
     </style>
@@ -478,7 +567,7 @@
 
         <div class="video-player">
             <div class="video-wrapper">
-                <video id="player" playsinline controls preload="metadata"></video>
+                <video id="player" playsinline controls preload="metadata" decoding="async"></video>
             </div>
         </div>
 
@@ -487,8 +576,8 @@
             <button id="rewind-btn" class="control-btn"><i class="fas fa-backward"></i></button>
             <button id="forward-btn" class="control-btn"><i class="fas fa-forward"></i></button>
             <a id="next-btn" href="#" class="control-btn"><i class="fas fa-step-forward"></i></a>
-            <button id="cinema-mode-btn">💡</button>
-            <button id="cinema-light-btn">🔦</button>
+            <button id="cinema-mode-btn"><i class="fas fa-lightbulb"></i></button>
+            <button id="cinema-light-btn"><i class="fas fa-lightbulb"></i></button>
         </div>
 
         <div class="episodes-section">
@@ -506,6 +595,8 @@
             <a id="back-btn" href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Quay lại trang chủ</a>
         </div>
     </div>
+
+    <button class="scroll-to-top" id="scroll-to-top"><i class="fas fa-chevron-up"></i></button>
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
@@ -529,25 +620,44 @@
             console.error('Lỗi khi parse episodes:', e);
         }
 
-        console.log('Query String Data:', { streamUrl, movieName, posterUrl, quality, movieContent, movieActor, movieDirector, movieCountry, episodes });
-
         document.getElementById('movie-title').textContent = movieName || 'Phim không xác định';
 
         const detailBtn = document.getElementById('detail-btn');
         detailBtn.href = `detail.html?name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
 
+        function highlightActiveMenu(movieCountry) {
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            const movieCountryLower = (movieCountry || '').toLowerCase();
+            let activePage = 'index';
+
+            if (movieCountryLower.includes('hàn')) activePage = 'phim-han';
+            else if (movieCountryLower.includes('trung')) activePage = 'phim-trung';
+            else if (movieCountryLower.includes('việt')) activePage = 'phim-viet';
+            else if (movieCountryLower.includes('mỹ')) activePage = 'phim-my';
+            else {
+                const referrerPage = document.referrer 
+                    ? new URL(document.referrer).pathname.split('/').pop().split('.')[0] 
+                    : 'index';
+                activePage = referrerPage;
+            }
+
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href').split('.')[0];
+                if (href === activePage) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
         function initializePlayer(source) {
-            console.log('Khởi tạo player với nguồn:', source);
             if (hls) {
                 hls.destroy();
-                console.log('Đã hủy HLS cũ');
             }
             if (Hls.isSupported()) {
                 hls = new Hls();
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    console.log('Manifest HLS đã tải, thử phát video');
                     video.play().catch(err => console.log('Autoplay bị chặn:', err));
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
@@ -555,29 +665,23 @@
                     if (data.fatal) {
                         switch (data.type) {
                             case Hls.ErrorTypes.NETWORK_ERROR:
-                                console.log('Lỗi mạng, thử tải lại...');
                                 hls.startLoad();
                                 break;
                             case Hls.ErrorTypes.MEDIA_ERROR:
-                                console.log('Lỗi media, thử khôi phục...');
                                 hls.recoverMediaError();
                                 break;
                             default:
-                                console.log('Lỗi không khắc phục được, khởi động lại sau 1 giây');
                                 hls.destroy();
                                 setTimeout(() => initializePlayer(source), 1000);
                         }
                     }
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                console.log('Trình duyệt hỗ trợ HLS native, gắn nguồn trực tiếp');
                 video.src = source;
                 video.addEventListener('loadedmetadata', () => {
-                    console.log('Metadata đã tải, thử phát');
                     video.play().catch(err => console.log('Autoplay bị chặn:', err));
                 }, { once: true });
             } else {
-                console.error('Trình duyệt không hỗ trợ HLS');
                 alert('Trình duyệt không hỗ trợ HLS.');
             }
         }
@@ -589,34 +693,20 @@
             autoplay: false,
             clickToPlay: true
         });
-        console.log('Plyr đã được khởi tạo:', player);
-
-        player.on('ready', () => {
-            console.log('Plyr đã sẵn sàng hiển thị giao diện');
-        });
-        player.on('error', (event) => {
-            console.error('Lỗi Plyr:', event.detail);
-        });
-        player.on('play', () => {
-            console.log('Video đang phát');
-        });
 
         if (streamUrl) {
-            console.log('Tìm thấy stream URL, khởi động player');
             initializePlayer(streamUrl);
         } else {
-            console.error('Không có stream URL');
             alert('Không tìm thấy nguồn video.');
             document.getElementById('player').innerHTML = '<p style="color: white; text-align: center;">Không có video để phát.</p>';
         }
 
         function rewind() {
             video.currentTime = Math.max(0, video.currentTime - 10);
-            console.log('Tua lại 10 giây');
         }
+
         function fastForward() {
             video.currentTime = Math.min(video.duration, video.currentTime + 10);
-            console.log('Tua tới 10 giây');
         }
 
         const rewindBtn = document.getElementById('rewind-btn');
@@ -702,13 +792,26 @@
 
         cinemaModeBtn.addEventListener('click', () => {
             document.body.classList.add('cinema-mode');
-            console.log('Chế độ rạp phim: Tắt đèn');
         });
 
         cinemaLightBtn.addEventListener('click', () => {
             document.body.classList.remove('cinema-mode');
-            console.log('Chế độ rạp phim: Bật đèn');
         });
+
+        const scrollToTopBtn = document.getElementById('scroll-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                scrollToTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        highlightActiveMenu(movieCountry);
     </script>
 </body>
 </html>
