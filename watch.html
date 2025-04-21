@@ -114,25 +114,23 @@
             background: #000;
             border-radius: 12px;
             width: 979px;
-            max-width: 100%;
             height: 550px;
             margin: 0 auto 15px;
             z-index: 10;
-            border: 2px solid transparent;
-            transition: border-color 0.3s ease;
-        }
-
-        .video-player:hover {
-            border-color: #10b981;
+            overflow: visible;
         }
 
         .video-wrapper {
             position: relative;
             width: 100%;
             height: 100%;
+            background: transparent;
         }
 
         #player {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             border-radius: 10px;
@@ -144,6 +142,9 @@
         .plyr--video {
             width: 100%;
             height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         .plyr__controls {
@@ -152,7 +153,7 @@
             visibility: visible !important;
             background: rgba(0, 0, 0, 0.7) !important;
             z-index: 12 !important;
-            padding: 10px;
+            padding: 8px;
         }
 
         .plyr__control--overlaid {
@@ -413,8 +414,8 @@
             }
 
             .plyr__controls {
-                padding: 12px;
-                font-size: 1.1em;
+                padding: 8px;
+                font-size: 1em;
             }
         }
 
@@ -469,9 +470,9 @@
             }
 
             .control-btn, #cinema-mode-btn, #cinema-light-btn {
-                width: 52px;
-                height: 52px;
-                font-size: 1.2em;
+                width: 48px;
+                height: 48px;
+                font-size: 1.1em;
                 border-radius: 10px;
             }
 
@@ -541,9 +542,9 @@
             }
 
             .control-btn, #cinema-mode-btn, #cinema-light-btn {
-                width: 48px;
-                height: 48px;
-                font-size: 1.1em;
+                width: 44px;
+                height: 44px;
+                font-size: 1em;
             }
 
             .episode-btn, .server-btn {
@@ -566,8 +567,8 @@
             }
 
             .plyr__controls {
-                padding: 10px;
-                font-size: 1em;
+                padding: 6px;
+                font-size: 0.9em;
             }
         }
     </style>
@@ -593,10 +594,7 @@
 
         <div class="video-player">
             <div class="video-wrapper">
-                <video id="player" playsinline controls preload="metadata" decoding="async" muted>
-                    <source src="" type="application/x-mpegURL">
-                    <p>Trình duyệt của bạn không hỗ trợ video này.</p>
-                </video>
+                <video id="player" playsinline controls preload="metadata"></video>
             </div>
         </div>
 
@@ -688,35 +686,29 @@
                 console.log('Đã hủy HLS cũ');
             }
             if (Hls.isSupported()) {
-                hls = new Hls({
-                    maxBufferLength: 30,
-                    maxMaxBufferLength: 60,
-                    maxBufferSize: 60 * 1000 * 1000,
-                    startLevel: -1,
-                    autoStartLoad: true
-                });
+                hls = new Hls();
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
                     console.log('Manifest HLS đã tải, thử phát video');
-                    video.play().catch(err => console.error('Lỗi phát video:', err.message));
+                    video.play().catch(err => console.log('Autoplay bị chặn:', err));
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
                     console.error('Lỗi HLS:', data);
                     if (data.fatal) {
                         switch (data.type) {
                             case Hls.ErrorTypes.NETWORK_ERROR:
-                                console.log('Lỗi mạng, thử tải lại sau 2 giây...');
-                                setTimeout(() => hls.startLoad(), 2000);
+                                console.log('Lỗi mạng, thử tải lại...');
+                                hls.startLoad();
                                 break;
                             case Hls.ErrorTypes.MEDIA_ERROR:
                                 console.log('Lỗi media, thử khôi phục...');
                                 hls.recoverMediaError();
                                 break;
                             default:
-                                console.log('Lỗi không khắc phục được, khởi động lại sau 2 giây');
+                                console.log('Lỗi không khắc phục được, khởi động lại sau 1 giây');
                                 hls.destroy();
-                                setTimeout(() => initializePlayer(source), 2000);
+                                setTimeout(() => initializePlayer(source), 1000);
                         }
                     }
                 });
@@ -725,7 +717,7 @@
                 video.src = source;
                 video.addEventListener('loadedmetadata', () => {
                     console.log('Metadata đã tải, thử phát');
-                    video.play().catch(err => console.error('Lỗi phát video:', err.message));
+                    video.play().catch(err => console.log('Autoplay bị chặn:', err));
                 }, { once: true });
             } else {
                 console.error('Trình duyệt không hỗ trợ HLS');
@@ -738,10 +730,7 @@
             speed: { selected: 1, options: [1] },
             captions: { active: false },
             autoplay: false,
-            clickToPlay: false,
-            muted: true,
-            hideControls: false,
-            loadSprite: true
+            clickToPlay: true
         });
 
         player.on('ready', () => {
@@ -752,10 +741,6 @@
         });
         player.on('play', () => {
             console.log('Video đang phát');
-        });
-        player.on('canplay', () => {
-            console.log('Video sẵn sàng phát, thử play');
-            video.play().catch(err => console.error('Lỗi phát video:', err.message));
         });
 
         if (streamUrl) {
@@ -858,12 +843,12 @@
         const cinemaModeBtn = document.getElementById('cinema-mode-btn');
         const cinemaLightBtn = document.getElementById('cinema-light-btn');
 
-        cinemaModeBtn.addEventListener('touchstart', () => {
+        cinemaModeBtn.addEventListener('click', () => {
             document.body.classList.add('cinema-mode');
             console.log('Chế độ rạp phim: Tắt đèn');
         });
 
-        cinemaLightBtn.addEventListener('touchstart', () => {
+        cinemaLightBtn.addEventListener('click', () => {
             document.body.classList.remove('cinema-mode');
             console.log('Chế độ rạp phim: Bật đèn');
         });
