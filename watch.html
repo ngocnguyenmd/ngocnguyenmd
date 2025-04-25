@@ -6,19 +6,19 @@
     <title>Xem phim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Roboto', Arial, sans-serif;
         }
 
         body {
-            background-color: #111827;
-            color: #ffffff;
-            line-height: 1.6;
+            background-color: #141414; /* Đen Netflix */
+            color: #FFFFFF;
+            line-height: 1.5;
             position: relative;
             min-height: 100vh;
             overflow-x: hidden;
@@ -34,7 +34,7 @@
             height: 100%;
             background-size: cover;
             background-position: center;
-            filter: blur(12px) brightness(0.4);
+            filter: blur(8px) brightness(0.4); /* Blur nhẹ */
             z-index: -1;
         }
 
@@ -43,68 +43,92 @@
             top: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(180deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 100%);
-            padding: 12px 20px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent); /* Gradient Netflix */
+            padding: 15px 20px;
             z-index: 100;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .header-content {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             max-width: 1400px;
             margin: 0 auto;
+            gap: 20px;
         }
 
         .logo {
-            height: 45px;
+            max-height: 35px;
             width: auto;
-            transition: transform 0.3s ease;
         }
 
-        .logo:hover {
-            transform: scale(1.05);
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 350px;
+        }
+
+        .search-bar input {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: #FFF;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            background-color: #444;
+            outline: none;
+        }
+
+        .search-btn {
+            background-color: #E50914; /* Đỏ Netflix */
+            color: #FFF;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background-color: #F40612; /* Đỏ sáng */
         }
 
         .nav-menu {
             display: flex;
-            gap: 20px;
+            gap: 15px;
         }
 
         .nav-menu a {
-            color: #ffffff;
+            color: #B3B3B3; /* Xám nhạt */
             text-decoration: none;
-            font-size: 1em;
-            font-weight: 500;
-            padding: 8px 15px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 0.9em;
+            padding: 6px 12px;
+            transition: color 0.3s ease;
         }
 
-        .nav-menu a:hover {
-            background-color: #10b981;
-            transform: translateY(-2px);
-        }
-
+        .nav-menu a:hover,
         .nav-menu a.active {
-            background-color: #10b981;
-            font-weight: 600;
+            color: #FFF; /* Trắng khi hover/active */
+            font-weight: 500;
         }
 
         .container {
             max-width: 1400px;
-            margin: 90px auto 30px;
+            margin: 100px auto 30px;
             padding: 20px;
         }
 
         .movie-title {
-            font-size: 2.2em;
-            color: #10b981;
-            margin-top: 20px;
-            margin-bottom: 15px;
+            font-size: 2em;
+            color: #FFF;
+            margin: 20px 0;
             text-align: center;
-            font-weight: 600;
+            font-weight: 500;
             z-index: 10;
             position: relative;
         }
@@ -112,12 +136,12 @@
         .video-player {
             position: relative;
             background: #000;
-            border-radius: 12px;
-            width: 979px;
-            height: 550px;
-            margin: 0 auto 15px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 1280px; /* Giới hạn tối đa */
+            aspect-ratio: 16 / 9; /* Tỷ lệ 16:9 */
+            margin: 0 auto 20px;
             z-index: 10;
-            overflow: visible;
         }
 
         .video-wrapper {
@@ -128,12 +152,9 @@
         }
 
         #player {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 10px;
+            border-radius: 8px;
             object-fit: contain;
             z-index: 11;
             background: #000;
@@ -142,73 +163,61 @@
         .plyr--video {
             width: 100%;
             height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
         }
 
         .plyr__controls {
-            display: flex !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-            background: rgba(0, 0, 0, 0.7) !important;
-            z-index: 12 !important;
-            padding: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 0 0 8px 8px;
         }
 
         .plyr__control--overlaid {
-            background: #10b981 !important;
+            background: #E50914; /* Đỏ Netflix cho nút play lớn */
         }
 
         .plyr__control--overlaid:hover {
-            background: #34d399 !important;
+            background: #F40612; /* Đỏ sáng */
         }
 
-        .plyr--full-ui input[type=range] {
-            color: #10b981;
+        .plyr__control {
+            color: #FFF;
         }
 
         .plyr__control:hover {
-            background: #34d399 !important;
+            background: #E50914;
         }
 
         .video-controls {
             display: flex;
             justify-content: center;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 0;
+            gap: 10px;
+            padding: 15px;
+            background-color: #221F1F; /* Xám tối */
+            border-radius: 8px;
+            max-width: 1280px;
+            margin: 0 auto 20px;
             z-index: 10;
-            max-width: 1000px;
-            margin: 0 auto 15px;
-            background-color: rgba(30, 41, 59, 0.9);
-            border-radius: 12px;
         }
 
         .control-btn, #cinema-mode-btn, #cinema-light-btn {
-            background-color: #10b981;
-            color: #ffffff;
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 1em;
+            background-color: #E50914; /* Đỏ Netflix */
+            color: #FFF;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.9em;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease;
             border: none;
             cursor: pointer;
-            touch-action: manipulation;
         }
 
         .control-btn:hover, #cinema-mode-btn:hover, #cinema-light-btn:hover {
-            background-color: #34d399;
-            transform: scale(1.05);
+            background-color: #F40612; /* Đỏ sáng */
         }
 
         .control-btn.disabled {
-            background-color: #6b7280;
+            background-color: #666;
             pointer-events: none;
         }
 
@@ -217,171 +226,135 @@
         }
 
         .episodes-section {
-            margin-bottom: 20px;
-            background-color: rgba(30, 41, 59, 0.9);
+            background-color: #221F1F; /* Xám tối */
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             z-index: 10;
         }
 
         .episodes-section h3 {
-            font-size: 1.6em;
+            font-size: 1.5em;
+            color: #FFF;
             margin-bottom: 15px;
-            color: #10b981;
-            font-weight: 600;
+            font-weight: 500;
         }
 
         .episodes-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
         }
 
         .episode-btn {
-            background-color: #10b981;
-            color: #ffffff;
-            padding: 10px 20px;
-            border-radius: 8px;
+            background-color: #E50914; /* Đỏ Netflix */
+            color: #FFF;
+            padding: 8px 12px;
+            border-radius: 4px;
             text-decoration: none;
-            font-size: 0.95em;
-            font-weight: 500;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 0.9em;
+            text-align: center;
+            transition: background-color 0.3s ease;
         }
 
         .episode-btn:hover {
-            background-color: #34d399;
-            transform: scale(1.05);
+            background-color: #F40612; /* Đỏ sáng */
         }
 
         .episode-btn.active {
-            background-color: #065f46;
-            font-weight: 700;
-            font-size: 1.1em;
-            padding: 12px 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            transform: scale(1.05);
+            background-color: #F40612;
+            font-weight: 500;
         }
 
         .servers-section {
-            margin-bottom: 20px;
-            background-color: rgba(30, 41, 59, 0.9);
+            background-color: #221F1F; /* Xám tối */
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
 
         .servers-section h3 {
-            font-size: 1.6em;
+            font-size: 1.5em;
+            color: #FFF;
             margin-bottom: 15px;
-            color: #10b981;
-            font-weight: 600;
+            font-weight: 500;
         }
 
         .servers-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
         }
 
         .server-btn {
-            background-color: #10b981;
-            color: #ffffff;
-            padding: 10px 20px;
-            border-radius: 8px;
+            background-color: #E50914; /* Đỏ Netflix */
+            color: #FFF;
+            padding: 8px 12px;
+            border-radius: 4px;
             text-decoration: none;
-            font-size: 0.95em;
-            font-weight: 500;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 0.9em;
+            text-align: center;
+            transition: background-color 0.3s ease;
         }
 
         .server-btn:hover {
-            background-color: #34d399;
-            transform: scale(1.05);
+            background-color: #F40612; /* Đỏ sáng */
         }
 
         .server-btn.active {
-            background-color: #065f46;
-            font-weight: 700;
-            font-size: 1.1em;
-            padding: 12px 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            transform: scale(1.05);
+            background-color: #F40612;
+            font-weight: 500;
         }
 
         .button-group {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .back-btn, .detail-btn {
-            display: inline-block;
-            padding: 12px 24px;
-            border-radius: 8px;
+            background-color: #E50914; /* Đỏ Netflix */
+            color: #FFF;
+            padding: 10px 20px;
+            border-radius: 4px;
             text-decoration: none;
             font-size: 0.95em;
-            color: #ffffff;
-            background-color: #10b981;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease;
         }
 
         .back-btn:hover, .detail-btn:hover {
-            background-color: #34d399;
-            transform: scale(1.05);
-        }
-
-        .scroll-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #10b981;
-            color: #ffffff;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
-            z-index: 100;
-        }
-
-        .scroll-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .scroll-to-top:hover {
-            background-color: #34d399;
-            transform: scale(1.1);
+            background-color: #F40612; /* Đỏ sáng */
         }
 
         .cinema-mode .header,
         .cinema-mode .movie-title,
         .cinema-mode .episodes-section,
         .cinema-mode .servers-section,
-        .cinema-mode .button-group,
-        .cinema-mode .scroll-to-top {
+        .cinema-mode .button-group {
             display: none;
         }
 
         .cinema-mode .video-player {
-            width: 100%;
+            width: 100vw;
             height: 100vh;
             margin: 0;
-            border: none;
+            border-radius: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
-        .cinema-mode .control-btn:not(#next-btn) {
-            opacity: 0.3;
-            pointer-events: none;
-        }
-
-        .cinema-mode #next-btn {
-            opacity: 0.3;
+        .cinema-mode .video-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
         }
 
         .cinema-mode #cinema-mode-btn {
@@ -392,183 +365,63 @@
             display: flex;
         }
 
-        @media (max-width: 979px) {
-            .video-player {
-                width: 100%;
-                height: auto;
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #E50914;
+            font-size: 1.2em;
+            z-index: 12;
+        }
+
+        /* Responsive */
+        @media (max-width: 720px) {
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .search-bar {
                 max-width: 100%;
             }
 
-            .video-wrapper {
-                height: 0;
-                padding-bottom: 56.25%;
-                position: relative;
-            }
-
-            #player {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-            }
-
-            .plyr__controls {
-                padding: 8px;
-                font-size: 1em;
-            }
-        }
-
-        @media (max-width: 720px) {
-            .header {
-                padding: 10px 15px;
-            }
-
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .logo {
-                height: 40px;
-            }
-
-            .nav-menu {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 12px;
-            }
-
-            .nav-menu a {
-                font-size: 0.95em;
-                padding: 6px 12px;
-            }
-
             .container {
-                margin: 100px auto 20px;
+                margin: 150px auto 20px;
                 padding: 15px;
-            }
-
-            .movie-title {
-                font-size: 1.8em;
-                margin-top: 10px;
-            }
-
-            .video-player {
-                margin-bottom: 15px;
-            }
-
-            #player {
-                max-height: 50vh;
-            }
-
-            .video-controls {
-                gap: 15px;
-                padding: 15px 0;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .control-btn, #cinema-mode-btn, #cinema-light-btn {
-                width: 48px;
-                height: 48px;
-                font-size: 1.1em;
-                border-radius: 10px;
-            }
-
-            .control-btn:active, #cinema-mode-btn:active, #cinema-light-btn:active {
-                background-color: #34d399;
-                transform: scale(0.95);
-            }
-
-            .episodes-section h3, .servers-section h3 {
-                font-size: 1.4em;
-                text-align: center;
-            }
-
-            .episodes-list, .servers-list {
-                gap: 10px;
-                justify-content: center;
-            }
-
-            .episode-btn, .server-btn {
-                padding: 10px 20px;
-                font-size: 1em;
-            }
-
-            .episode-btn.active, .server-btn.active {
-                font-size: 1.05em;
-                padding: 12px 24px;
-            }
-
-            .button-group {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .back-btn, .detail-btn {
-                padding: 12px 24px;
-                font-size: 1em;
-            }
-
-            .scroll-to-top {
-                width: 40px;
-                height: 40px;
-                font-size: 0.9em;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .header {
-                padding: 8px 10px;
-            }
-
-            .logo {
-                height: 35px;
-            }
-
-            .nav-menu a {
-                font-size: 0.9em;
-                padding: 5px 10px;
-            }
-
-            .container {
-                margin: 90px auto 20px;
-                padding: 10px;
             }
 
             .movie-title {
                 font-size: 1.6em;
             }
 
-            .control-btn, #cinema-mode-btn, #cinema-light-btn {
-                width: 44px;
-                height: 44px;
-                font-size: 1em;
+            .video-player {
+                max-width: 100%;
+            }
+
+            .episodes-list, .servers-list {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                gap: 8px;
             }
 
             .episode-btn, .server-btn {
-                padding: 8px 16px;
-                font-size: 0.95em;
+                font-size: 0.85em;
+                padding: 6px 10px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .container {
+                margin: 120px auto 20px;
+                padding: 10px;
             }
 
-            .episode-btn.active, .server-btn.active {
-                font-size: 1em;
-                padding: 10px 20px;
+            .movie-title {
+                font-size: 1.4em;
             }
 
-            .back-btn, .detail-btn {
-                padding: 10px 20px;
-                font-size: 0.95em;
-            }
-
-            .episodes-section h3, .servers-section h3 {
-                font-size: 1.3em;
-            }
-
-            .plyr__controls {
-                padding: 6px;
-                font-size: 0.9em;
+            .episodes-list, .servers-list {
+                grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
             }
         }
     </style>
@@ -577,6 +430,10 @@
     <header class="header">
         <div class="header-content">
             <img src="https://pngimg.com/d/free_PNG90750.png" alt="Phim Hay" class="logo">
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Tìm kiếm phim...">
+                <button class="search-btn" id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
             <div class="nav-menu">
                 <a href="index.html">Trang chủ</a>
                 <a href="phim-han.html">Phim Hàn</a>
@@ -585,6 +442,7 @@
                 <a href="phim-my.html">Phim Mỹ</a>
                 <a href="truyen-hinh.html">Truyền hình</a>
                 <a href="hoat-hinh.html">Hoạt hình</a>
+                <a href="khac.html">Khác</a>
             </div>
         </div>
     </header>
@@ -594,17 +452,19 @@
 
         <div class="video-player">
             <div class="video-wrapper">
-                <video id="player" playsinline controls preload="metadata"></video>
+                <video id="player" playsinline controls preload="metadata">
+                    <p class="loading">Đang tải video...</p>
+                </video>
             </div>
         </div>
 
         <div class="video-controls">
-            <a id="prev-btn" href="#" class="control-btn"><i class="fas fa-step-backward"></i></a>
-            <button id="rewind-btn" class="control-btn"><i class="fas fa-backward"></i></button>
-            <button id="forward-btn" class="control-btn"><i class="fas fa-forward"></i></button>
-            <a id="next-btn" href="#" class="control-btn"><i class="fas fa-step-forward"></i></a>
-            <button id="cinema-mode-btn"><i class="fas fa-lightbulb"></i></button>
-            <button id="cinema-light-btn"><i class="fas fa-lightbulb"></i></button>
+            <a id="prev-btn" href="#" class="control-btn"><i class="fas fa-step-backward"></i> Trước</a>
+            <button id="rewind-btn" class="control-btn"><i class="fas fa-backward"></i> -10s</button>
+            <button id="forward-btn" class="control-btn"><i class="fas fa-forward"></i> +10s</button>
+            <a id="next-btn" href="#" class="control-btn"><i class="fas fa-step-forward"></i> Sau</a>
+            <button id="cinema-mode-btn"><i class="fas fa-film"></i> Rạp</button>
+            <button id="cinema-light-btn"><i class="fas fa-lightbulb"></i> Thoát</button>
         </div>
 
         <div class="episodes-section">
@@ -618,12 +478,10 @@
         </div>
 
         <div class="button-group">
-            <a id="detail-btn" href="#" class="detail-btn"><i class="fas fa-info-circle"></i> Quay lại chi tiết</a>
-            <a id="back-btn" href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Quay lại trang chủ</a>
+            <a id="detail-btn" href="#" class="detail-btn"><i class="fas fa-info-circle"></i> Chi tiết phim</a>
+            <a id="back-btn" href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Trang chủ</a>
         </div>
     </div>
-
-    <button class="scroll-to-top" id="scroll-to-top"><i class="fas fa-chevron-up"></i></button>
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
@@ -645,39 +503,15 @@
             episodes = JSON.parse(decodeURIComponent(urlParams.get('episodes') || '[]'));
         } catch (e) {
             console.error('Lỗi khi parse episodes:', e);
+            episodes = [];
         }
 
+        console.log('Query String Data:', { streamUrl, movieName, posterUrl, quality, movieContent, movieActor, movieDirector, movieCountry, episodes });
+
         document.getElementById('movie-title').textContent = movieName || 'Phim không xác định';
-        if (posterUrl) {
-            video.poster = posterUrl;
-        }
 
         const detailBtn = document.getElementById('detail-btn');
         detailBtn.href = `detail.html?name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
-
-        function highlightActiveMenu(movieCountry) {
-            const navLinks = document.querySelectorAll('.nav-menu a');
-            const movieCountryLower = (movieCountry || '').toLowerCase();
-            let activePage = 'index';
-
-            if (movieCountryLower.includes('hàn')) activePage = 'phim-han';
-            else if (movieCountryLower.includes('trung')) activePage = 'phim-trung';
-            else if (movieCountryLower.includes('việt')) activePage = 'phim-viet';
-            else if (movieCountryLower.includes('mỹ')) activePage = 'phim-my';
-            else {
-                const referrerPage = document.referrer 
-                    ? new URL(document.referrer).pathname.split('/').pop().split('.')[0] 
-                    : 'index';
-                activePage = referrerPage;
-            }
-
-            navLinks.forEach(link => {
-                const href = link.getAttribute('href').split('.')[0];
-                if (href === activePage) {
-                    link.classList.add('active');
-                }
-            });
-        }
 
         function initializePlayer(source) {
             console.log('Khởi tạo player với nguồn:', source);
@@ -685,71 +519,85 @@
                 hls.destroy();
                 console.log('Đã hủy HLS cũ');
             }
+
+            const loadingText = video.querySelector('.loading');
+            loadingText.style.display = 'block';
+
             if (Hls.isSupported()) {
-                hls = new Hls();
+                hls = new Hls({
+                    autoStartLoad: true,
+                    maxBufferLength: 30,
+                    maxMaxBufferLength: 60,
+                });
                 hls.loadSource(source);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    console.log('Manifest HLS đã tải, thử phát video');
+                    console.log('Manifest HLS đã tải');
+                    loadingText.style.display = 'none';
                     video.play().catch(err => console.log('Autoplay bị chặn:', err));
                 });
                 hls.on(Hls.Events.ERROR, (event, data) => {
                     console.error('Lỗi HLS:', data);
+                    loadingText.style.display = 'none';
                     if (data.fatal) {
                         switch (data.type) {
                             case Hls.ErrorTypes.NETWORK_ERROR:
-                                console.log('Lỗi mạng, thử tải lại...');
-                                hls.startLoad();
+                                console.log('Lỗi mạng, thử tải lại sau 2s...');
+                                setTimeout(() => hls.startLoad(), 2000);
                                 break;
                             case Hls.ErrorTypes.MEDIA_ERROR:
                                 console.log('Lỗi media, thử khôi phục...');
                                 hls.recoverMediaError();
                                 break;
                             default:
-                                console.log('Lỗi không khắc phục được, khởi động lại sau 1 giây');
+                                console.log('Lỗi không khắc phục được');
                                 hls.destroy();
-                                setTimeout(() => initializePlayer(source), 1000);
+                                alert('Không thể phát video do lỗi nguồn.');
                         }
                     }
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                console.log('Trình duyệt hỗ trợ HLS native, gắn nguồn trực tiếp');
+                console.log('Trình duyệt hỗ trợ HLS native');
                 video.src = source;
                 video.addEventListener('loadedmetadata', () => {
-                    console.log('Metadata đã tải, thử phát');
+                    console.log('Metadata đã tải');
+                    loadingText.style.display = 'none';
                     video.play().catch(err => console.log('Autoplay bị chặn:', err));
                 }, { once: true });
             } else {
                 console.error('Trình duyệt không hỗ trợ HLS');
-                alert('Trình duyệt không hỗ trợ HLS. Vui lòng thử trình duyệt khác.');
+                loadingText.style.display = 'none';
+                alert('Trình duyệt không hỗ trợ phát video HLS.');
             }
         }
 
         const player = new Plyr(video, {
-            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-            speed: { selected: 1, options: [1] },
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'fullscreen'],
+            speed: { selected: 1, options: [0.5, 1, 1.5, 2] },
             captions: { active: false },
             autoplay: false,
-            clickToPlay: true
+            clickToPlay: true,
+            settings: ['speed']
         });
 
-        player.on('ready', () => {
-            console.log('Plyr đã sẵn sàng hiển thị giao diện');
-        });
-        player.on('error', (event) => {
-            console.error('Lỗi Plyr:', event.detail);
-        });
-        player.on('play', () => {
-            console.log('Video đang phát');
+        player.on('ready', () => console.log('Plyr đã sẵn sàng'));
+        player.on('error', (event) => console.error('Lỗi Plyr:', event.detail));
+        player.on('play', () => console.log('Video đang phát'));
+        player.on('ended', () => {
+            const mainEpisodes = episodes.filter(ep => ep.server === 'main');
+            const currentMainIndex = mainEpisodes.findIndex(ep => ep.link === streamUrl);
+            if (currentMainIndex < mainEpisodes.length - 1) {
+                const nextLink = mainEpisodes[currentMainIndex + 1].link;
+                window.location.href = `watch.html?stream=${encodeURIComponent(nextLink)}&name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
+            }
         });
 
         if (streamUrl) {
-            console.log('Tìm thấy stream URL, khởi động player');
             initializePlayer(streamUrl);
         } else {
             console.error('Không có stream URL');
-            alert('Không tìm thấy nguồn video.');
-            document.getElementById('player').innerHTML = '<p style="color: white; text-align: center;">Không có video để phát.</p>';
+            document.querySelector('.loading').textContent = 'Không có video để phát.';
+            document.querySelector('.loading').style.display = 'block';
         }
 
         function rewind() {
@@ -758,15 +606,12 @@
         }
 
         function fastForward() {
-            video.currentTime = Math.min(video.duration, video.currentTime + 10);
+            video.currentTime = Math.min(video.duration || Infinity, video.currentTime + 10);
             console.log('Tua tới 10 giây');
         }
 
-        const rewindBtn = document.getElementById('rewind-btn');
-        rewindBtn.addEventListener('click', rewind);
-
-        const forwardBtn = document.getElementById('forward-btn');
-        forwardBtn.addEventListener('click', fastForward);
+        document.getElementById('rewind-btn').addEventListener('click', rewind);
+        document.getElementById('forward-btn').addEventListener('click', fastForward);
 
         const episodesList = document.getElementById('episodes-list');
         const serversList = document.getElementById('servers-list');
@@ -774,44 +619,46 @@
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
 
-        let currentEpisodeIndex = episodes.findIndex(ep => ep.link === streamUrl);
-        if (currentEpisodeIndex === -1) currentEpisodeIndex = 0;
+        function generateEpisodeLink(ep) {
+            return `watch.html?stream=${encodeURIComponent(ep.link)}&name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
+        }
 
         if (episodes.length > 0) {
-            episodes.filter(ep => ep.server === 'main').forEach((ep, index) => {
-                const episodeBtn = document.createElement('a');
-                episodeBtn.classList.add('episode-btn');
-                episodeBtn.href = `watch.html?stream=${encodeURIComponent(ep.link)}&name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
-                episodeBtn.textContent = `Tập ${index + 1}`;
-                if (ep.link === streamUrl) {
-                    episodeBtn.classList.add('active');
+            const mainEpisodes = episodes.filter(ep => ep.server === 'main');
+            mainEpisodes.forEach((ep, index) => {
+                if (ep.link) {
+                    const episodeBtn = document.createElement('a');
+                    episodeBtn.classList.add('episode-btn');
+                    episodeBtn.href = generateEpisodeLink(ep);
+                    episodeBtn.textContent = `Tập ${index + 1}`;
+                    if (ep.link === streamUrl) {
+                        episodeBtn.classList.add('active');
+                    }
+                    episodesList.appendChild(episodeBtn);
                 }
-                episodesList.appendChild(episodeBtn);
             });
 
-            const mainEpisodes = episodes.filter(ep => ep.server === 'main');
             const currentMainIndex = mainEpisodes.findIndex(ep => ep.link === streamUrl);
-
             if (currentMainIndex > 0) {
-                prevBtn.href = `watch.html?stream=${encodeURIComponent(mainEpisodes[currentMainIndex - 1].link)}&name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
+                prevBtn.href = generateEpisodeLink(mainEpisodes[currentMainIndex - 1]);
             } else {
                 prevBtn.classList.add('disabled');
             }
 
             if (currentMainIndex < mainEpisodes.length - 1) {
-                nextBtn.href = `watch.html?stream=${encodeURIComponent(mainEpisodes[currentMainIndex + 1].link)}&name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
+                nextBtn.href = generateEpisodeLink(mainEpisodes[currentMainIndex + 1]);
             } else {
                 nextBtn.classList.add('disabled');
             }
 
-            const currentEpisode = episodes[currentEpisodeIndex];
-            const mainLink = currentEpisode.link;
-            const backupLink = episodes.find(ep => ep.server === 'backup' && ep.episodeRef === currentMainIndex)?.link || '';
+            const currentEpisode = episodes.find(ep => ep.link === streamUrl) || mainEpisodes[currentMainIndex];
+            const mainLink = currentEpisode?.link;
+            const backupLink = episodes.find(ep => ep.server === 'backup' && ep.episodeRef === currentMainIndex)?.link;
 
             if (mainLink) {
                 const mainServerBtn = document.createElement('a');
                 mainServerBtn.classList.add('server-btn');
-                mainServerBtn.href = `watch.html?stream=${encodeURIComponent(mainLink)}&name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
+                mainServerBtn.href = generateEpisodeLink({ link: mainLink, server: 'main' });
                 mainServerBtn.textContent = 'Link chính';
                 if (streamUrl === mainLink) {
                     mainServerBtn.classList.add('active');
@@ -822,7 +669,7 @@
             if (backupLink) {
                 const backupServerBtn = document.createElement('a');
                 backupServerBtn.classList.add('server-btn');
-                backupServerBtn.href = `watch.html?stream=${encodeURIComponent(backupLink)}&name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
+                backupServerBtn.href = generateEpisodeLink({ link: backupLink, server: 'backup' });
                 backupServerBtn.textContent = 'Link phụ';
                 if (streamUrl === backupLink) {
                     backupServerBtn.classList.add('active');
@@ -845,28 +692,48 @@
 
         cinemaModeBtn.addEventListener('click', () => {
             document.body.classList.add('cinema-mode');
-            console.log('Chế độ rạp phim: Tắt đèn');
+            console.log('Chế độ rạp phim: Bật');
+            player.fullscreen.enter();
         });
 
         cinemaLightBtn.addEventListener('click', () => {
             document.body.classList.remove('cinema-mode');
-            console.log('Chế độ rạp phim: Bật đèn');
+            console.log('Chế độ rạp phim: Tắt');
+            player.fullscreen.exit();
         });
 
-        const scrollToTopBtn = document.getElementById('scroll-to-top');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                scrollToTopBtn.classList.add('visible');
-            } else {
-                scrollToTopBtn.classList.remove('visible');
+        function highlightActiveMenu() {
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            const referrerPage = document.referrer 
+                ? new URL(document.referrer).pathname.split('/').pop().split('.')[0] 
+                : 'index';
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href').split('.')[0];
+                if (href === referrerPage) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        searchBtn.addEventListener('click', () => {
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm) {
+                window.location.href = `index.html?search=${encodeURIComponent(searchTerm)}`;
             }
         });
 
-        scrollToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    window.location.href = `index.html?search=${encodeURIComponent(searchTerm)}`;
+                }
+            }
         });
 
-        highlightActiveMenu(movieCountry);
+        highlightActiveMenu();
     </script>
 </body>
 </html>

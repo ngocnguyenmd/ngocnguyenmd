@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chi tiết phim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Roboto', Arial, sans-serif;
         }
 
         body {
-            background-color: #111827;
-            color: #ffffff;
-            line-height: 1.6;
+            background-color: #141414;
+            color: #FFFFFF;
+            line-height: 1.5;
             position: relative;
             min-height: 100vh;
         }
@@ -31,7 +31,7 @@
             height: 100%;
             background-size: cover;
             background-position: center;
-            filter: blur(12px) brightness(0.4);
+            filter: blur(8px) brightness(0.4);
             z-index: -1;
         }
 
@@ -40,307 +40,265 @@
             top: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(180deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 100%);
-            padding: 12px 20px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+            padding: 15px 20px;
             z-index: 100;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .header-content {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             max-width: 1400px;
             margin: 0 auto;
+            gap: 20px;
         }
 
         .logo {
-            height: 45px;
+            max-height: 35px;
             width: auto;
-            transition: transform 0.3s ease;
         }
 
-        .logo:hover {
-            transform: scale(1.05);
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 350px;
+        }
+
+        .search-bar input {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: #FFF;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            background-color: #444;
+            outline: none;
+        }
+
+        .search-btn {
+            background-color: #E50914;
+            color: #FFF;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background-color: #F40612;
         }
 
         .nav-menu {
             display: flex;
-            gap: 20px;
+            gap: 15px;
         }
 
         .nav-menu a {
-            color: #ffffff;
+            color: #B3B3B3;
             text-decoration: none;
-            font-size: 1em;
-            font-weight: 500;
-            padding: 8px 15px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease, color 0.3s ease;
+            font-size: 0.9em;
+            padding: 6px 12px;
+            transition: color 0.3s ease;
         }
 
-        .nav-menu a:hover {
-            background-color: #10b981;
-            color: #ffffff;
-            transform: translateY(-2px);
-        }
-
+        .nav-menu a:hover,
         .nav-menu a.active {
-            background-color: #10b981;
-            color: #ffffff;
-            font-weight: 600;
+            color: #FFF;
+            font-weight: 500;
         }
 
         .container {
             max-width: 1400px;
-            margin: 90px auto 30px;
+            margin: 100px auto 30px;
             padding: 20px;
         }
 
         .movie-detail {
             display: flex;
             gap: 20px;
-            margin-bottom: 30px;
-            background-color: rgba(30, 41, 59, 0.9);
+            background-color: #221F1F;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
         }
 
         .movie-poster {
             flex: 0 0 250px;
-            margin-top: 20px;
             transition: transform 0.3s ease;
-        }
-
-        .movie-poster:hover {
-            transform: scale(1.02);
         }
 
         .movie-poster img {
             width: 100%;
             height: 350px;
             object-fit: cover;
-            border-radius: 10px;
-            border: 3px solid #10b981;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            transition: border-color 0.3s ease;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
-        .movie-poster:hover img {
-            border-color: #34d399;
+        .movie-poster:hover {
+            transform: scale(1.03);
         }
 
         .movie-info {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
         }
 
         .movie-info h1 {
             font-size: 2em;
-            color: #10b981;
-            font-weight: 600;
+            color: #FFF;
+            font-weight: 500;
         }
 
         .movie-info .content-wrapper {
             position: relative;
-            max-height: 120px;
+            max-height: 150px; /* Tăng max-height để hiển thị nhiều nội dung hơn */
             overflow: hidden;
             transition: max-height 0.5s ease;
+            font-size: 0.95em;
+            color: #B3B3B3;
         }
 
         .movie-info .content-wrapper.expanded {
-            max-height: 1000px;
+            max-height: 1000px; /* Đủ lớn để chứa toàn bộ nội dung */
         }
 
-        .movie-info table {
-            width: 100%;
-            border-collapse: collapse;
+        .movie-info .info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .movie-info table td {
-            padding: 8px 0;
-            border-bottom: 1px solid #10b981;
-            font-size: 0.95em;
-            line-height: 1.5;
+        .movie-info .info-list div {
+            display: flex;
+            gap: 15px;
         }
 
-        .movie-info table td:first-child {
-            font-weight: 500;
+        .movie-info .info-list strong {
             width: 100px;
-            color: #10b981;
-        }
-
-        .movie-info table td:nth-child(2) {
-            word-wrap: break-word;
+            color: #E50914;
+            font-weight: 500;
         }
 
         .toggle-content-btn {
-            background-color: #10b981;
-            color: #ffffff;
+            background-color: #E50914;
+            color: #FFF;
             border: none;
             padding: 8px 16px;
-            border-radius: 8px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 0.95em;
-            margin-top: 12px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            align-self: flex-start;
+            display: none; /* Ẩn mặc định, chỉ hiển thị nếu cần */
         }
 
         .toggle-content-btn:hover {
-            background-color: #34d399;
-            transform: scale(1.05);
+            background-color: #F40612;
         }
 
         .button-group {
             display: flex;
-            gap: 12px;
-            margin-top: 12px;
+            gap: 15px;
+            margin-top: 10px;
         }
 
         .watch-btn, .back-btn {
-            display: inline-block;
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 4px;
             text-decoration: none;
             font-size: 0.95em;
-            color: #ffffff;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            color: #FFF;
+            transition: background-color 0.3s ease;
         }
 
         .watch-btn {
-            background-color: #10b981;
+            background-color: #E50914;
         }
 
         .watch-btn:hover {
-            background-color: #34d399;
-            transform: scale(1.05);
+            background-color: #F40612;
         }
 
         .watch-btn.disabled {
-            background-color: #6b7280;
+            background-color: #666;
             pointer-events: none;
         }
 
         .back-btn {
-            background-color: #334155;
+            background-color: #333;
         }
 
         .back-btn:hover {
-            background-color: #475569;
-            transform: scale(1.05);
+            background-color: #444;
         }
 
         .episodes-section {
-            background-color: rgba(30, 41, 59, 0.9);
+            background-color: #221F1F;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
 
         .episodes-section h3 {
-            font-size: 1.6em;
-            color: #10b981;
+            font-size: 1.5em;
+            color: #FFF;
             margin-bottom: 15px;
-            font-weight: 600;
+            font-weight: 500;
         }
 
         .episodes-list {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             gap: 10px;
         }
 
         .episode-btn {
-            background-color: #10b981;
-            color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 8px;
+            background-color: #E50914;
+            color: #FFF;
+            padding: 8px 12px;
+            border-radius: 4px;
             text-decoration: none;
-            font-size: 0.95em;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 0.9em;
+            text-align: center;
+            transition: background-color 0.3s ease;
         }
 
         .episode-btn:hover {
-            background-color: #34d399;
-            transform: scale(1.05);
+            background-color: #F40612;
         }
 
-        .error-message {
-            text-align: center;
-            font-size: 1.2em;
-            color: #10b981;
-            padding: 20px;
-        }
-
-        .scroll-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #10b981;
-            color: #ffffff;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
-            z-index: 100;
-        }
-
-        .scroll-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .scroll-to-top:hover {
-            background-color: #34d399;
-            transform: scale(1.1);
-        }
-
+        /* Responsive */
         @media (max-width: 720px) {
-            .header {
-                padding: 10px 15px;
-            }
-
             .header-content {
                 flex-direction: column;
-                gap: 15px;
+                gap: 10px;
             }
 
-            .logo {
-                height: 40px;
-            }
-
-            .nav-menu {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 12px;
-            }
-
-            .nav-menu a {
-                font-size: 0.95em;
-                padding: 6px 12px;
+            .search-bar {
+                max-width: 100%;
             }
 
             .container {
-                margin: 100px auto 20px;
+                margin: 150px auto 20px;
                 padding: 15px;
             }
 
             .movie-detail {
                 flex-direction: column;
                 padding: 15px;
-                gap: 20px;
+                gap: 15px;
             }
 
             .movie-poster {
@@ -351,85 +309,36 @@
             }
 
             .movie-poster img {
-                height: 300px;
-                border: 3px solid #10b981;
+                height: 350px;
             }
 
             .movie-info h1 {
-                font-size: 1.7em;
+                font-size: 1.6em;
                 text-align: center;
             }
 
             .movie-info .content-wrapper {
-                max-height: 100px;
-            }
-
-            .movie-info table td {
-                padding: 8px 0;
-                font-size: 0.9em;
-            }
-
-            .movie-info table td:first-child {
-                width: 100px;
+                max-height: 120px;
             }
 
             .toggle-content-btn {
-                padding: 10px 20px;
-                font-size: 1em;
+                align-self: center;
             }
 
             .button-group {
                 justify-content: center;
-                gap: 15px;
-            }
-
-            .watch-btn, .back-btn {
-                padding: 12px 24px;
-                font-size: 1em;
-            }
-
-            .episodes-section {
-                padding: 15px;
-            }
-
-            .episodes-section h3 {
-                font-size: 1.4em;
-                text-align: center;
+                flex-wrap: wrap;
             }
 
             .episodes-list {
-                gap: 12px;
-                justify-content: center;
-            }
-
-            .episode-btn {
-                padding: 10px 20px;
-                font-size: 1em;
-            }
-
-            .scroll-to-top {
-                width: 40px;
-                height: 40px;
-                font-size: 0.9em;
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                gap: 8px;
             }
         }
 
         @media (max-width: 360px) {
-            .header {
-                padding: 8px 10px;
-            }
-
-            .logo {
-                height: 35px;
-            }
-
-            .nav-menu a {
-                font-size: 0.9em;
-                padding: 5px 10px;
-            }
-
             .container {
-                margin: 90px auto 20px;
+                margin: 120px auto 20px;
                 padding: 10px;
             }
 
@@ -438,49 +347,24 @@
             }
 
             .movie-poster img {
-                height: 240px;
-                border: 3px solid #10b981;
+                height: 280px;
             }
 
             .movie-info h1 {
-                font-size: 1.5em;
+                font-size: 1.4em;
             }
 
             .movie-info .content-wrapper {
-                max-height: 80px;
+                max-height: 100px;
             }
 
-            .movie-info table td {
-                padding: 6px 0;
-                font-size: 0.85em;
-            }
-
-            .movie-info table td:first-child {
-                width: 90px;
-            }
-
-            .toggle-content-btn {
-                padding: 8px 16px;
-                font-size: 0.95em;
-            }
-
-            .button-group {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .watch-btn, .back-btn {
-                padding: 10px 20px;
-                font-size: 0.95em;
-            }
-
-            .episodes-section h3 {
-                font-size: 1.3em;
+            .episodes-list {
+                grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
             }
 
             .episode-btn {
-                padding: 8px 16px;
-                font-size: 0.95em;
+                font-size: 0.85em;
+                padding: 6px 10px;
             }
         }
     </style>
@@ -489,6 +373,10 @@
     <header class="header">
         <div class="header-content">
             <img src="https://pngimg.com/d/free_PNG90750.png" alt="Phim Hay" class="logo">
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Tìm kiếm phim...">
+                <button class="search-btn" id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
             <div class="nav-menu">
                 <a href="index.html">Trang chủ</a>
                 <a href="phim-han.html">Phim Hàn</a>
@@ -497,6 +385,7 @@
                 <a href="phim-my.html">Phim Mỹ</a>
                 <a href="truyen-hinh.html">Truyền hình</a>
                 <a href="hoat-hinh.html">Hoạt hình</a>
+                <a href="khac.html">Khác</a>
             </div>
         </div>
     </header>
@@ -504,33 +393,18 @@
     <div class="container">
         <div class="movie-detail">
             <div class="movie-poster">
-                <img id="movie-poster" src="" alt="Poster phim" loading="lazy" decoding="async">
+                <img id="movie-poster" src="" alt="Poster phim">
             </div>
             <div class="movie-info">
                 <h1 id="movie-title"></h1>
                 <div class="content-wrapper" id="content-wrapper">
-                    <table id="movie-table">
-                        <tr>
-                            <td>Chất lượng:</td>
-                            <td id="movie-quality"></td>
-                        </tr>
-                        <tr>
-                            <td>Nội dung:</td>
-                            <td id="movie-content"></td>
-                        </tr>
-                        <tr>
-                            <td>Diễn viên:</td>
-                            <td id="movie-actor"></td>
-                        </tr>
-                        <tr>
-                            <td>Đạo diễn:</td>
-                            <td id="movie-director"></td>
-                        </tr>
-                        <tr>
-                            <td>Quốc gia:</td>
-                            <td id="movie-country"></td>
-                        </tr>
-                    </table>
+                    <div class="info-list">
+                        <div><strong>Chất lượng:</strong> <span id="movie-quality"></span></div>
+                        <div><strong>Nội dung:</strong> <span id="movie-content"></span></div>
+                        <div><strong>Diễn viên:</strong> <span id="movie-actor"></span></div>
+                        <div><strong>Đạo diễn:</strong> <span id="movie-director"></span></div>
+                        <div><strong>Quốc gia:</strong> <span id="movie-country"></span></div>
+                    </div>
                 </div>
                 <button class="toggle-content-btn" id="toggle-content-btn">Xem thêm</button>
                 <div class="button-group">
@@ -545,127 +419,112 @@
         </div>
     </div>
 
-    <button class="scroll-to-top" id="scroll-to-top"><i class="fas fa-chevron-up"></i></button>
-
     <script>
-        function initialize() {
-            // Highlight active menu
-            function highlightActiveMenu(movieCountry) {
-                const navLinks = document.querySelectorAll('.nav-menu a');
-                const movieCountryLower = (movieCountry || '').toLowerCase();
-                let activePage = 'index';
+        function highlightActiveMenu() {
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            const referrerPage = document.referrer 
+                ? new URL(document.referrer).pathname.split('/').pop().split('.')[0] 
+                : 'index';
 
-                if (movieCountryLower.includes('hàn')) activePage = 'phim-han';
-                else if (movieCountryLower.includes('trung')) activePage = 'phim-trung';
-                else if (movieCountryLower.includes('việt')) activePage = 'phim-viet';
-                else if (movieCountryLower.includes('mỹ')) activePage = 'phim-my';
-                else {
-                    // Fallback to referrer if country is not specific
-                    const referrerPage = document.referrer 
-                        ? new URL(document.referrer).pathname.split('/').pop().split('.')[0] 
-                        : 'index';
-                    activePage = referrerPage;
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href').split('.')[0];
+                if (href === referrerPage) {
+                    link.classList.add('active');
                 }
+            });
+        }
 
-                navLinks.forEach(link => {
-                    const href = link.getAttribute('href').split('.')[0];
-                    if (href === activePage) {
-                        link.classList.add('active');
-                    }
-                });
-            }
+        const urlParams = new URLSearchParams(window.location.search);
+        const movieName = decodeURIComponent(urlParams.get('name') || '');
+        const posterUrl = decodeURIComponent(urlParams.get('poster') || '');
+        const quality = decodeURIComponent(urlParams.get('quality') || 'HD');
+        const movieContent = decodeURIComponent(urlParams.get('content') || '');
+        const movieActor = decodeURIComponent(urlParams.get('actor') || '');
+        const movieDirector = decodeURIComponent(urlParams.get('director') || '');
+        const movieCountry = decodeURIComponent(urlParams.get('country') || '');
+        let episodes = [];
+        try {
+            episodes = JSON.parse(decodeURIComponent(urlParams.get('episodes') || '[]'));
+        } catch (e) {
+            console.error('Lỗi khi parse episodes:', e);
+            episodes = [];
+        }
 
-            // Get URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const movieName = decodeURIComponent(urlParams.get('name') || '');
-            const posterUrl = decodeURIComponent(urlParams.get('poster') || '');
-            const quality = decodeURIComponent(urlParams.get('quality') || 'HD');
-            const movieContent = decodeURIComponent(urlParams.get('content') || 'Không có nội dung');
-            const movieActor = decodeURIComponent(urlParams.get('actor') || 'Không có thông tin diễn viên');
-            const movieDirector = decodeURIComponent(urlParams.get('director') || 'Không có thông tin đạo diễn');
-            const movieCountry = decodeURIComponent(urlParams.get('country') || 'Không có thông tin quốc gia');
-            let episodes = [];
+        // Ghi log để debug
+        console.log('Detail Data:', { movieName, posterUrl, quality, movieContent, movieActor, movieDirector, movieCountry, episodes });
 
-            // Check for missing movie name
-            if (!movieName) {
-                document.querySelector('.container').innerHTML = '<p class="error-message">Không tìm thấy thông tin phim. Vui lòng quay lại <a href="index.html">trang chủ</a>.</p>';
-                return;
-            }
+        // Hiển thị thông tin phim
+        document.getElementById('movie-title').textContent = movieName || 'Phim không xác định';
+        document.getElementById('movie-poster').src = posterUrl || 'poster-not-found.jpg';
+        document.getElementById('movie-quality').textContent = quality;
+        document.getElementById('movie-content').textContent = movieContent;
+        document.getElementById('movie-actor').textContent = movieActor;
+        document.getElementById('movie-director').textContent = movieDirector;
+        document.getElementById('movie-country').textContent = movieCountry;
 
-            // Parse episodes
-            try {
-                episodes = JSON.parse(decodeURIComponent(urlParams.get('episodes') || '[]'));
-            } catch (e) {
-                console.error('Lỗi khi parse episodes:', e);
-                episodes = [];
-            }
+        // Xử lý nút Xem phim và danh sách tập
+        const watchBtn = document.getElementById('watch-btn');
+        const episodesList = document.getElementById('episodes-list');
 
-            // Update movie details
-            document.getElementById('movie-title').textContent = movieName;
-            const moviePoster = document.getElementById('movie-poster');
-            moviePoster.src = posterUrl && posterUrl !== 'null' ? posterUrl : 'poster-not-found.jpg';
-            moviePoster.alt = movieName;
-            moviePoster.onerror = () => { moviePoster.src = 'poster-not-found.jpg'; };
-            document.getElementById('movie-quality').textContent = quality;
-            document.getElementById('movie-content').textContent = movieContent;
-            document.getElementById('movie-actor').textContent = movieActor;
-            document.getElementById('movie-director').textContent = movieDirector;
-            document.getElementById('movie-country').textContent = movieCountry;
-
-            // Update buttons and episodes
-            const watchBtn = document.getElementById('watch-btn');
-            const episodesList = document.getElementById('episodes-list');
-            const validEpisodes = episodes.filter(ep => ep.link && ep.server === 'main');
-
-            if (validEpisodes.length > 0) {
-                const firstEpisodeLink = validEpisodes[0].link;
-                watchBtn.href = `watch.html?stream=${encodeURIComponent(firstEpisodeLink)}&name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
-                watchBtn.innerHTML = '<i class="fas fa-play"></i> Xem phim';
-            } else {
-                watchBtn.textContent = 'Không có tập để xem';
-                watchBtn.classList.add('disabled');
-            }
-
-            if (validEpisodes.length > 0) {
-                validEpisodes.forEach((ep, index) => {
+        if (episodes.length > 0) {
+            // Sử dụng tập đầu tiên bất kỳ, không lọc server === 'main'
+            const firstEpisodeLink = episodes[0].link || '';
+            watchBtn.href = `watch.html?stream=${encodeURIComponent(firstEpisodeLink)}&name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
+            
+            // Hiển thị tất cả các tập
+            episodes.forEach((ep, index) => {
+                if (ep.link) { // Kiểm tra ep.link hợp lệ
                     const episodeBtn = document.createElement('a');
                     episodeBtn.classList.add('episode-btn');
                     episodeBtn.href = `watch.html?stream=${encodeURIComponent(ep.link)}&name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
                     episodeBtn.textContent = `Tập ${index + 1}`;
                     episodesList.appendChild(episodeBtn);
-                });
-            } else {
-                episodesList.innerHTML = '<p>Không có tập nào.</p>';
-            }
-
-            // Handle toggle content button
-            const contentWrapper = document.getElementById('content-wrapper');
-            const toggleBtn = document.getElementById('toggle-content-btn');
-            toggleBtn.addEventListener('click', () => {
-                contentWrapper.classList.toggle('expanded');
-                toggleBtn.textContent = contentWrapper.classList.contains('expanded') ? 'Thu gọn' : 'Xem thêm';
-            });
-
-            // Scroll-to-top
-            const scrollToTopBtn = document.getElementById('scroll-to-top');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) {
-                    scrollToTopBtn.classList.add('visible');
-                } else {
-                    scrollToTopBtn.classList.remove('visible');
                 }
             });
-
-            scrollToTopBtn.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-
-            // Highlight active menu
-            highlightActiveMenu(movieCountry);
+        } else {
+            watchBtn.textContent = 'Không có tập để xem';
+            watchBtn.classList.add('disabled');
+            episodesList.innerHTML = '<p>Không có tập nào.</p>';
         }
 
-        // Run initialization
-        initialize();
+        // Xử lý nút Xem thêm
+        const contentWrapper = document.getElementById('content-wrapper');
+        const toggleBtn = document.getElementById('toggle-content-btn');
+
+        function checkContentOverflow() {
+            const isOverflowing = contentWrapper.scrollHeight > contentWrapper.clientHeight;
+            toggleBtn.style.display = isOverflowing ? 'block' : 'none';
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            contentWrapper.classList.toggle('expanded');
+            toggleBtn.textContent = contentWrapper.classList.contains('expanded') ? 'Thu gọn' : 'Xem thêm';
+        });
+
+        // Kiểm tra overflow khi tải trang
+        window.addEventListener('load', checkContentOverflow);
+        window.addEventListener('resize', checkContentOverflow);
+
+        // Xử lý tìm kiếm
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        searchBtn.addEventListener('click', () => {
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm) {
+                window.location.href = `index.html?search=${encodeURIComponent(searchTerm)}`;
+            }
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    window.location.href = `index.html?search=${encodeURIComponent(searchTerm)}`;
+                }
+            }
+        });
+
+        highlightActiveMenu();
     </script>
 </body>
 </html>
