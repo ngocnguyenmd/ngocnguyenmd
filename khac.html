@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phim Hay - Phim Hàn</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #141414; /* Màu nền đen của Netflix */
+            color: #FFFFFF; /* Màu chữ trắng */
+            line-height: 1.4;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px) brightness(0.4); /* Blur nhẹ, tối hơn */
+            z-index: -1;
+            background-image: url(''); /* Có thể thêm ảnh nền nếu muốn */
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent); /* Gradient giống Netflix */
+            padding: 15px 20px;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 20px;
+        }
+
+        .logo {
+            max-height: 35px;
+            width: auto;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 350px;
+        }
+
+        .search-bar input {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: #FFF;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            background-color: #444;
+            outline: none;
+        }
+
+        .search-btn {
+            background-color: #E50914; /* Đỏ Netflix */
+            color: #FFF;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background-color: #F40612; /* Đỏ sáng hơn khi hover */
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-menu a {
+            color: #B3B3B3; /* Xám nhạt */
+            text-decoration: none;
+            font-size: 0.9em;
+            padding: 6px 12px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #FFF; /* Trắng khi hover hoặc active */
+            font-weight: 500;
+        }
+
+        .main-content {
+            padding: 30px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 100px; /* Điều chỉnh dựa trên header */
+        }
+
+        .movie-section {
+            margin-bottom: 40px;
+        }
+
+        .movie-section h2 {
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            color: #FFF;
+            font-weight: 500;
+        }
+
+        .movie-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            justify-content: start;
+        }
+
+        .movie-item {
+            position: relative;
+            background-color: #221F1F; /* Xám tối */
+            border-radius: 6px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .movie-item:hover {
+            transform: scale(1.05); /* Phóng to nhẹ */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .movie-poster {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .movie-poster img {
+            width: 100%;
+            height: 270px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .movie-poster:hover img {
+            transform: scale(1.1);
+        }
+
+        .episode-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: #E50914; /* Đỏ Netflix */
+            color: #FFF;
+            padding: 4px 8px;
+            font-size: 0.8em;
+            border-radius: 3px;
+        }
+
+        .movie-title {
+            font-size: 0.95em;
+            margin: 10px;
+            color: #FFF;
+            text-decoration: none;
+            display: block;
+            transition: color 0.3s ease;
+        }
+
+        .movie-title:hover {
+            color: #E50914; /* Đỏ Netflix khi hover */
+        }
+
+        .movie-item:hover::after {
+            content: attr(data-content); /* Hiển thị nội dung ngắn khi hover */
+            position: absolute;
+            bottom: 40px;
+            left: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #FFF;
+            padding: 8px;
+            font-size: 0.85em;
+            border-radius: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .loading {
+            text-align: center;
+            color: #B3B3B3;
+            font-size: 1em;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 720px) {
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .search-bar {
+                max-width: 100%;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .main-content {
+                padding: 20px 15px;
+                padding-top: 200px;
+            }
+
+            .movie-list {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 10px;
+            }
+
+            .movie-poster img {
+                height: 210px;
+            }
+
+            .movie-title {
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .movie-list {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+
+            .movie-poster img {
+                height: 180px;
+            }
+
+            .movie-title {
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <img src="https://pngimg.com/d/free_PNG90750.png" alt="Phim Hay" class="logo">
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Tìm kiếm phim...">
+                <button class="search-btn" id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="active">Trang chủ</a>
+                <a href="phim-han.html">Phim Hàn</a>
+                <a href="phim-trung.html">Phim Trung</a>
+                <a href="phim-viet.html">Phim Việt</a>
+                <a href="phim-my.html">Phim Mỹ</a>
+                <a href="truyen-hinh.html">Truyền hình</a>
+                <a href="hoat-hinh.html">Hoạt hình</a>
+                <a href="khac.html">Khác</a>
+            </div>
+        </div>
+    </header>
+    <main class="main-content">
+        <div class="movie-section">
+            <h2>Phim Đề Cử</h2>
+            <div class="movie-list" id="recommended-list">
+                <p class="loading">Đang tải...</p>
+            </div>
+        </div>
+        <div class="movie-section">
+            <h2>Phim Bộ</h2>
+            <div class="movie-list" id="series-list"></div>
+        </div>
+        <div class="movie-section">
+            <h2>Phim Lẻ</h2>
+            <div class="movie-list" id="movie-list"></div>
+        </div>
+        <div class="movie-section">
+            <h2>Phim Bánh Mì</h2>
+            <div class="movie-list" id="banhmi-list"></div>
+        </div>
+    </main>
+    <script>
+        // Giữ nguyên JavaScript gốc, chỉ thêm thuộc tính data-content cho movie-item
+        const currentPage = window.location.pathname.split('/').pop().split('.')[0] || 'index';
+        let allApiUrls = [];
+        let banhmiMovies = [];
+        let seriesMovies = [];
+        let singleMovies = [];
+
+        function adjustMainContentPadding() {
+            const header = document.querySelector('.header');
+            const mainContent = document.querySelector('.main-content');
+            const headerHeight = header.getBoundingClientRect().height;
+            mainContent.style.paddingTop = `${headerHeight + 20}px`;
+        }
+
+        function highlightActiveMenu() {
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href').split('.')[0];
+                if (href === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        async function loadCustomMovies(file) {
+            let movies = [];
+            try {
+                const txtResponse = await fetch(file);
+                const txtData = await txtResponse.text();
+                const lines = txtData.split('\n').map(line => line.trim()).filter(line => line.length);
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].includes('|') && !lines[i].includes('|sv2|')) {
+                        const [pageTag, movieName, posterUrl, quality] = lines[i].split('|').map(item => item.trim());
+                        const episodes = [];
+                        for (let j = i + 1; j < lines.length && !lines[j].includes('|'); j++) {
+                            if (lines[j].startsWith('https') && lines[j].endsWith('.m3u8')) {
+                                episodes.push({ link: lines[j], server: 'main' });
+                            }
+                        }
+                        movies.push({
+                            pageTag,
+                            name: movieName,
+                            poster_url: posterUrl,
+                            quality: quality,
+                            content: 'Nội dung không có trong thư viện', // Dùng làm data-content
+                            actor: 'Không có thông tin diễn viên',
+                            director: 'Không có thông tin đạo diễn',
+                            country: 'Không có thông tin quốc gia',
+                            episodes: episodes
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error(`Lỗi khi tải ${file}:`, error);
+            }
+            return movies;
+        }
+
+        async function loadApiUrls() {
+            let apiUrls = [];
+            try {
+                const jsonResponse = await fetch('apiurl.json');
+                const jsonData = await jsonResponse.json();
+                if (Array.isArray(jsonData)) {
+                    jsonData.forEach(item => {
+                        if (typeof item === 'string') {
+                            apiUrls.push({ url: item, pageTag: null });
+                        } else if (typeof item === 'object') {
+                            const pageTag = Object.keys(item)[0].replace(/[{}]/g, '');
+                            const urls = item[pageTag];
+                            if (Array.isArray(urls)) {
+                                urls.forEach(url => apiUrls.push({ url, pageTag }));
+                            }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Lỗi khi tải apiurl.json:', error);
+            }
+            return apiUrls;
+        }
+
+        async function loadAllMovies() {
+            const apiUrls = await loadApiUrls();
+            const banhmiMovies = await loadCustomMovies('customapi.txt');
+            const seriesMovies = await loadCustomMovies('bo.txt');
+            const singleMovies = await loadCustomMovies('le.txt');
+            return { apiUrls, banhmiMovies, seriesMovies, singleMovies };
+        }
+
+        async function fetchMovieData(url) {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.status && data.movie ? data : null;
+            } catch (error) {
+                console.error(`Lỗi khi tải dữ liệu từ ${url}:`, error);
+                return null;
+            }
+        }
+
+        function renderMovies(apiUrls, banhmiMovies, seriesMovies, singleMovies, searchTerm = '') {
+            const recommendedList = document.getElementById('recommended-list');
+            const banhmiList = document.getElementById('banhmi-list');
+            const seriesList = document.getElementById('series-list');
+            const movieList = document.getElementById('movie-list');
+
+            recommendedList.innerHTML = '<p class="loading">Đang tải...</p>';
+            banhmiList.innerHTML = '';
+            seriesList.innerHTML = '';
+            movieList.innerHTML = '';
+
+            // Render Phim Đề Cử
+            const filteredUrls = apiUrls.filter(({ pageTag }) => !pageTag || pageTag === currentPage);
+            if (filteredUrls.length === 0) {
+                recommendedList.innerHTML = '<p>Không có phim đề cử để hiển thị.</p>';
+            } else {
+                Promise.all(filteredUrls.map(({ url }) => fetchMovieData(url)))
+                    .then(results => {
+                        recommendedList.innerHTML = '';
+                        let recommendedCount = 0;
+                        results.forEach(data => {
+                            if (data && data.movie) {
+                                const movie = data.movie;
+                                const episodes = data.episodes && data.episodes.length > 0
+                                    ? data.episodes[0].server_data.map(ep => ({ link: ep.link_m3u8, server: 'main' }))
+                                    : [];
+                                const movieName = movie.name || 'Phim không xác định';
+                                if (movieName.toLowerCase().includes(searchTerm.toLowerCase())) {
+                                    const moviePoster = movie.poster_url || 'poster-not-found.jpg';
+                                    const movieQuality = movie.quality || 'HD';
+                                    const movieContent = movie.content || 'Không có nội dung';
+                                    const movieActor = movie.actor && movie.actor.length > 0 ? movie.actor.join(', ') : 'Không có thông tin diễn viên';
+                                    const movieDirector = movie.director && movie.director.length > 0 ? movie.director.join(', ') : 'Không có thông tin đạo diễn';
+                                    const movieCountry = movie.country && movie.country.length > 0 ? movie.country.map(c => c.name).join(', ') : 'Không có thông tin quốc gia';
+                                    const movieItem = document.createElement('div');
+                                    movieItem.classList.add('movie-item');
+                                    movieItem.setAttribute('data-content', movieContent); // Thêm data-content
+                                    const detailUrl = `detail.html?name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(moviePoster)}&quality=${encodeURIComponent(movieQuality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
+                                    movieItem.innerHTML = `
+                                        <div class="movie-poster">
+                                            <a href="${detailUrl}">
+                                                <img src="${moviePoster}" alt="${movieName}" loading="lazy" onerror="this.src='poster-not-found.jpg'">
+                                                <span class="episode-badge">${episodes.length} tập</span>
+                                            </a>
+                                        </div>
+                                        <a href="${detailUrl}" class="movie-title">${movieName} (${movieQuality})</a>
+                                    `;
+                                    recommendedList.appendChild(movieItem);
+                                    recommendedCount++;
+                                }
+                            }
+                        });
+                        if (recommendedCount === 0) {
+                            recommendedList.innerHTML = '<p>Không có phim đề cử để hiển thị.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi tải phim đề cử:', error);
+                        recommendedList.innerHTML = '<p>Lỗi khi tải phim đề cử.</p>';
+                    });
+            }
+
+            // Render Phim Bộ
+            const seriesFiltered = seriesMovies
+                .filter(movie => !movie.pageTag || movie.pageTag === currentPage)
+                .filter(movie => movie.name.toLowerCase().includes(searchTerm.toLowerCase()));
+            if (seriesFiltered.length === 0) {
+                seriesList.innerHTML = '<p>Không có phim bộ để hiển thị.</p>';
+            } else {
+                seriesFiltered.forEach(movie => {
+                    const movieItem = document.createElement('div');
+                    movieItem.classList.add('movie-item');
+                    movieItem.setAttribute('data-content', movie.content); // Thêm data-content
+                    const episodes = encodeURIComponent(JSON.stringify(movie.episodes));
+                    const detailUrl = `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actor=${encodeURIComponent(movie.actor)}&director=${encodeURIComponent(movie.director)}&country=${encodeURIComponent(movie.country)}&episodes=${episodes}`;
+                    movieItem.innerHTML = `
+                        <div class="movie-poster">
+                            <a href="${detailUrl}">
+                                <img src="${movie.poster_url}" alt="${movie.name}" loading="lazy" onerror="this.src='poster-not-found.jpg'">
+                                <span class="episode-badge">${movie.episodes.length} tập</span>
+                            </a>
+                        </div>
+                        <a href="${detailUrl}" class="movie-title">${movie.name} (${movie.quality})</a>
+                    `;
+                    seriesList.appendChild(movieItem);
+                });
+            }
+
+            // Render Phim Lẻ
+            const singleFiltered = singleMovies
+                .filter(movie => !movie.pageTag || movie.pageTag === currentPage)
+                .filter(movie => movie.name.toLowerCase().includes(searchTerm.toLowerCase()));
+            if (singleFiltered.length === 0) {
+                movieList.innerHTML = '<p>Không có phim lẻ để hiển thị.</p>';
+            } else {
+                singleFiltered.forEach(movie => {
+                    const movieItem = document.createElement('div');
+                    movieItem.classList.add('movie-item');
+                    movieItem.setAttribute('data-content', movie.content); // Thêm data-content
+                    const episodes = encodeURIComponent(JSON.stringify(movie.episodes));
+                    const detailUrl = `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actor=${encodeURIComponent(movie.actor)}&director=${encodeURIComponent(movie.director)}&country=${encodeURIComponent(movie.country)}&episodes=${episodes}`;
+                    movieItem.innerHTML = `
+                        <div class="movie-poster">
+                            <a href="${detailUrl}">
+                                <img src="${movie.poster_url}" alt="${movie.name}" loading="lazy" onerror="this.src='poster-not-found.jpg'">
+                                <span class="episode-badge">${movie.episodes.length} tập</span>
+                            </a>
+                        </div>
+                        <a href="${detailUrl}" class="movie-title">${movie.name} (${movie.quality})</a>
+                    `;
+                    movieList.appendChild(movieItem);
+                });
+            }
+
+            // Render Phim Bánh Mì
+            const banhmiFiltered = banhmiMovies
+                .filter(movie => !movie.pageTag || movie.pageTag === currentPage)
+                .filter(movie => movie.name.toLowerCase().includes(searchTerm.toLowerCase()));
+            if (banhmiFiltered.length === 0) {
+                banhmiList.innerHTML = '<p>Không có phim bánh mì để hiển thị.</p>';
+            } else {
+                banhmiFiltered.forEach(movie => {
+                    const movieItem = document.createElement('div');
+                    movieItem.classList.add('movie-item');
+                    movieItem.setAttribute('data-content', movie.content); // Thêm data-content
+                    const episodes = encodeURIComponent(JSON.stringify(movie.episodes));
+                    const detailUrl = `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actor=${encodeURIComponent(movie.actor)}&director=${encodeURIComponent(movie.director)}&country=${encodeURIComponent(movie.country)}&episodes=${episodes}`;
+                    movieItem.innerHTML = `
+                        <div class="movie-poster">
+                            <a href="${detailUrl}">
+                                <img src="${movie.poster_url}" alt="${movie.name}" loading="lazy" onerror="this.src='poster-not-found.jpg'">
+                                <span class="episode-badge">${movie.episodes.length} tập</span>
+                            </a>
+                        </div>
+                        <a href="${detailUrl}" class="movie-title">${movie.name} (${movie.quality})</a>
+                    `;
+                    banhmiList.appendChild(movieItem);
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', adjustMainContentPadding);
+
+        loadAllMovies().then(({ apiUrls, banhmiMovies, seriesMovies, singleMovies }) => {
+            allApiUrls = apiUrls;
+            banhmiMovies = banhmiMovies;
+            seriesMovies = seriesMovies;
+            singleMovies = singleMovies;
+
+            if (apiUrls.length > 0 || banhmiMovies.length > 0 || seriesMovies.length > 0 || singleMovies.length > 0) {
+                renderMovies(apiUrls, banhmiMovies, seriesMovies, singleMovies);
+            } else {
+                document.getElementById('recommended-list').innerHTML = '<p>Không có phim đề cử để hiển thị.</p>';
+                document.getElementById('banhmi-list').innerHTML = '<p>Không có phim bánh mì để hiển thị.</p>';
+                document.getElementById('series-list').innerHTML = '<p>Không có phim bộ để hiển thị.</p>';
+                document.getElementById('movie-list').innerHTML = '<p>Không có phim lẻ để hiển thị.</p>';
+            }
+
+            const searchInput = document.getElementById('search-input');
+            const searchBtn = document.getElementById('search-btn');
+            searchBtn.addEventListener('click', () => {
+                const searchTerm = searchInput.value.trim();
+                renderMovies(allApiUrls, banhmiMovies, seriesMovies, singleMovies, searchTerm);
+            });
+
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const searchTerm = searchInput.value.trim();
+                    renderMovies(allApiUrls, banhmiMovies, seriesMovies, singleMovies, searchTerm);
+                }
+            });
+
+            adjustMainContentPadding();
+            highlightActiveMenu();
+        });
+
+        window.addEventListener('resize', adjustMainContentPadding);
+    </script>
+</body>
+</html>
