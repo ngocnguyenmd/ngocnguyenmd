@@ -3,11 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xem phim</title>
+    <meta name="description" content="Xem phim trực tuyến với chất lượng cao và phụ đề song ngữ.">
+    <meta name="keywords" content="xem phim, phim online, phụ đề song ngữ">
+    <meta name="author" content="Phim Hay">
+    <title>Xem phim - Phim Hay</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://pngimg.com/d/free_PNG90750.png" type="image/png">
     <style>
+        :root {
+            --primary-color: #E50914;
+            --primary-hover: #F40612;
+            --bg-dark: #141414;
+            --bg-section: #221F1F;
+            --text-gray: #B3B3B3;
+            --text-white: #FFF;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,26 +29,11 @@
         }
 
         body {
-            background-color: #141414; /* Đen Netflix */
-            color: #FFFFFF;
+            background-color: var(--bg-dark);
+            color: var(--text-white);
             line-height: 1.5;
-            position: relative;
             min-height: 100vh;
             overflow-x: hidden;
-            transition: background-color 0.3s ease;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            filter: blur(8px) brightness(0.4); /* Blur nhẹ */
-            z-index: -1;
         }
 
         .header {
@@ -43,7 +41,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent); /* Gradient Netflix */
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
             padding: 15px 20px;
             z-index: 100;
         }
@@ -74,9 +72,8 @@
             border: none;
             border-radius: 4px;
             background-color: #333;
-            color: #FFF;
+            color: var(--text-white);
             font-size: 0.9em;
-            transition: background-color 0.3s ease;
         }
 
         .search-bar input:focus {
@@ -85,17 +82,16 @@
         }
 
         .search-btn {
-            background-color: #E50914; /* Đỏ Netflix */
-            color: #FFF;
+            background-color: var(--primary-color);
+            color: var(--text-white);
             border: none;
             padding: 8px 12px;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
         .search-btn:hover {
-            background-color: #F40612; /* Đỏ sáng */
+            background-color: var(--primary-hover);
         }
 
         .nav-menu {
@@ -104,16 +100,15 @@
         }
 
         .nav-menu a {
-            color: #B3B3B3; /* Xám nhạt */
+            color: var(--text-gray);
             text-decoration: none;
             font-size: 0.9em;
             padding: 6px 12px;
-            transition: color 0.3s ease;
         }
 
         .nav-menu a:hover,
         .nav-menu a.active {
-            color: #FFF; /* Trắng khi hover/active */
+            color: var(--text-white);
             font-weight: 500;
         }
 
@@ -125,30 +120,26 @@
 
         .movie-title {
             font-size: 2em;
-            color: #FFF;
+            color: var(--text-white);
             margin: 20px 0;
             text-align: center;
             font-weight: 500;
-            z-index: 10;
-            position: relative;
         }
 
         .video-player {
-            position: relative;
             background: #000;
             border-radius: 8px;
             width: 100%;
-            max-width: 1280px; /* Giới hạn tối đa */
-            aspect-ratio: 16 / 9; /* Tỷ lệ 16:9 */
+            max-width: 900px;
+            aspect-ratio: 16 / 9;
             margin: 0 auto 20px;
-            z-index: 10;
         }
 
         .video-wrapper {
             position: relative;
             width: 100%;
             height: 100%;
-            background: transparent;
+            background: #000;
         }
 
         #player {
@@ -156,7 +147,6 @@
             height: 100%;
             border-radius: 8px;
             object-fit: contain;
-            z-index: 11;
             background: #000;
         }
 
@@ -171,19 +161,59 @@
         }
 
         .plyr__control--overlaid {
-            background: #E50914; /* Đỏ Netflix cho nút play lớn */
+            background: var(--primary-color);
         }
 
         .plyr__control--overlaid:hover {
-            background: #F40612; /* Đỏ sáng */
+            background: var(--primary-hover);
         }
 
         .plyr__control {
-            color: #FFF;
+            color: var(--text-white);
         }
 
         .plyr__control:hover {
-            background: #E50914;
+            background: var(--primary-color);
+        }
+
+        .subtitle-container {
+            position: absolute;
+            bottom: 8%;
+            width: 100%;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .subtitle-vi, .subtitle-en {
+            display: block;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            font-size: 1.2em;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+            line-height: 1.4;
+            padding: 2px 10px;
+        }
+
+        .subtitle-vi {
+            bottom: 20px;
+            color: #FFFF00;
+            display: none;
+        }
+
+        .subtitle-en {
+            top: 20px;
+            color: #ffffff;
+            display: none;
+        }
+
+        .subtitle-vi.active {
+            display: block;
+        }
+
+        .subtitle-en.active {
+            display: block;
         }
 
         .video-controls {
@@ -191,29 +221,28 @@
             justify-content: center;
             gap: 10px;
             padding: 15px;
-            background-color: #221F1F; /* Xám tối */
+            background-color: var(--bg-section);
             border-radius: 8px;
-            max-width: 1280px;
+            max-width: 900px;
             margin: 0 auto 20px;
-            z-index: 10;
         }
 
-        .control-btn, #cinema-mode-btn, #cinema-light-btn {
-            background-color: #E50914; /* Đỏ Netflix */
-            color: #FFF;
+        .control-btn {
+            background-color: var(--primary-color);
+            color: var(--text-white);
             padding: 8px 12px;
             border-radius: 4px;
             font-size: 0.9em;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.3s ease;
             border: none;
             cursor: pointer;
+            text-decoration: none;
         }
 
-        .control-btn:hover, #cinema-mode-btn:hover, #cinema-light-btn:hover {
-            background-color: #F40612; /* Đỏ sáng */
+        .control-btn:hover {
+            background-color: var(--primary-hover);
         }
 
         .control-btn.disabled {
@@ -221,90 +250,42 @@
             pointer-events: none;
         }
 
-        #cinema-light-btn {
-            display: none;
-        }
-
-        .episodes-section {
-            background-color: #221F1F; /* Xám tối */
+        .episodes-section, .servers-section {
+            background-color: var(--bg-section);
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            z-index: 10;
         }
 
-        .episodes-section h3 {
+        .episodes-section h3, .servers-section h3 {
             font-size: 1.5em;
-            color: #FFF;
+            color: var(--text-white);
             margin-bottom: 15px;
             font-weight: 500;
         }
 
-        .episodes-list {
+        .episodes-list, .servers-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             gap: 10px;
         }
 
-        .episode-btn {
-            background-color: #E50914; /* Đỏ Netflix */
-            color: #FFF;
+        .episode-btn, .server-btn {
+            background-color: var(--primary-color);
+            color: var(--text-white);
             padding: 8px 12px;
             border-radius: 4px;
             text-decoration: none;
             font-size: 0.9em;
             text-align: center;
-            transition: background-color 0.3s ease;
         }
 
-        .episode-btn:hover {
-            background-color: #F40612; /* Đỏ sáng */
+        .episode-btn:hover, .server-btn:hover {
+            background-color: var(--primary-hover);
         }
 
-        .episode-btn.active {
-            background-color: #140203;
-            font-weight: 500;
-        }
-
-        .servers-section {
-            background-color: #221F1F; /* Xám tối */
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        }
-
-        .servers-section h3 {
-            font-size: 1.5em;
-            color: #FFF;
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-
-        .servers-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-        }
-
-        .server-btn {
-            background-color: #E50914; /* Đỏ Netflix */
-            color: #FFF;
-            padding: 8px 12px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 0.9em;
-            text-align: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .server-btn:hover {
-            background-color: #F40612; /* Đỏ sáng */
-        }
-
-        .server-btn.active {
-            background-color: #F40612;
+        .episode-btn.active, .server-btn.active {
+            background-color: var(--primary-hover);
             font-weight: 500;
         }
 
@@ -316,66 +297,68 @@
         }
 
         .back-btn, .detail-btn {
-            background-color: #E50914; /* Đỏ Netflix */
-            color: #FFF;
+            background-color: var(--primary-color);
+            color: var(--text-white);
             padding: 10px 20px;
             border-radius: 4px;
             text-decoration: none;
             font-size: 0.95em;
-            transition: background-color 0.3s ease;
         }
 
         .back-btn:hover, .detail-btn:hover {
-            background-color: #F40612; /* Đỏ sáng */
+            background-color: var(--primary-hover);
         }
 
-        .cinema-mode .header,
-        .cinema-mode .movie-title,
-        .cinema-mode .episodes-section,
-        .cinema-mode .servers-section,
-        .cinema-mode .button-group {
-            display: none;
-        }
-
-        .cinema-mode .video-player {
-            width: 100vw;
-            height: 100vh;
-            margin: 0;
-            border-radius: 0;
+        .error-message {
             position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-hover);
+            color: var(--text-white);
+            padding: 10px 20px;
+            border-radius: 4px;
+            z-index: 1006;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .cinema-mode .video-controls {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1001;
+        .error-message.show {
+            opacity: 1;
         }
 
-        .cinema-mode #cinema-mode-btn {
-            display: none;
-        }
-
-        .cinema-mode #cinema-light-btn {
+        .subtitle-upload {
             display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px auto;
+            max-width: 900px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #E50914;
-            font-size: 1.2em;
-            z-index: 12;
+        .subtitle-upload input[type="file"] {
+            padding: 8px;
+            background-color: #333;
+            color: var(--text-white);
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9em;
         }
 
-        /* Responsive */
+        .subtitle-upload button {
+            background-color: var(--primary-color);
+            color: var(--text-white);
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .subtitle-upload button:hover {
+            background-color: var(--primary-hover);
+        }
+
         @media (max-width: 720px) {
             .header-content {
                 flex-direction: column;
@@ -399,6 +382,16 @@
                 max-width: 100%;
             }
 
+            .video-controls {
+                padding: 8px;
+                gap: 8px;
+            }
+
+            .control-btn {
+                padding: 6px 10px;
+                font-size: 0.85em;
+            }
+
             .episodes-list, .servers-list {
                 grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
                 gap: 8px;
@@ -407,6 +400,16 @@
             .episode-btn, .server-btn {
                 font-size: 0.85em;
                 padding: 6px 10px;
+            }
+
+            .subtitle-container {
+                font-size: 0.9em;
+                bottom: 15%;
+            }
+
+            .subtitle-upload {
+                flex-direction: column;
+                gap: 8px;
             }
         }
 
@@ -422,6 +425,16 @@
 
             .episodes-list, .servers-list {
                 grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            }
+
+            .episode-btn, .server-btn {
+                font-size: 0.8em;
+                padding: 5px 7px;
+            }
+
+            .subtitle-container {
+                font-size: 0.8em;
+                bottom: 20%;
             }
         }
     </style>
@@ -452,10 +465,18 @@
 
         <div class="video-player">
             <div class="video-wrapper">
-                <video id="player" playsinline controls preload="metadata">
-                    <p class="loading">Đang tải video...</p>
-                </video>
+                <video id="player" playsinline controls preload="metadata" poster=""></video>
+                <div class="subtitle-container">
+                    <div class="subtitle-en"></div>
+                    <div class="subtitle-vi"></div>
+                </div>
             </div>
+        </div>
+
+        <div class="subtitle-upload">
+            <input type="file" id="subtitle-file-vi" accept=".vtt,.srt" placeholder="Phụ đề tiếng Việt">
+            <input type="file" id="subtitle-file-en" accept=".vtt,.srt" placeholder="Phụ đề tiếng Anh">
+            <button id="upload-subtitle-btn">Tải phụ đề</button>
         </div>
 
         <div class="video-controls">
@@ -463,8 +484,6 @@
             <button id="rewind-btn" class="control-btn"><i class="fas fa-backward"></i> -10s</button>
             <button id="forward-btn" class="control-btn"><i class="fas fa-forward"></i> +10s</button>
             <a id="next-btn" href="#" class="control-btn"><i class="fas fa-step-forward"></i> Sau</a>
-            <button id="cinema-mode-btn"><i class="fas fa-film"></i> Rạp</button>
-            <button id="cinema-light-btn"><i class="fas fa-lightbulb"></i> Thoát</button>
         </div>
 
         <div class="episodes-section">
@@ -483,11 +502,24 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <div id="error-message" class="error-message"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15"></script>
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script>
         const video = document.getElementById('player');
         let hls;
+        const errorMessage = document.getElementById('error-message');
+        const subtitleVi = document.querySelector('.subtitle-vi');
+        const subtitleEn = document.querySelector('.subtitle-en');
+        let viCues = [];
+        let enCues = [];
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            setTimeout(() => errorMessage.classList.remove('show'), 3000);
+        }
 
         const urlParams = new URLSearchParams(window.location.search);
         const streamUrl = decodeURIComponent(urlParams.get('stream') || '');
@@ -502,11 +534,13 @@
         try {
             episodes = JSON.parse(decodeURIComponent(urlParams.get('episodes') || '[]'));
         } catch (e) {
-            console.error('Lỗi khi parse episodes:', e);
+            showError('Dữ liệu tập phim không hợp lệ.');
             episodes = [];
         }
 
-        console.log('Query String Data:', { streamUrl, movieName, posterUrl, quality, movieContent, movieActor, movieDirector, movieCountry, episodes });
+        if (posterUrl) {
+            video.poster = posterUrl; // Chỉ load poster cho video
+        }
 
         document.getElementById('movie-title').textContent = movieName || 'Phim không xác định';
 
@@ -514,65 +548,57 @@
         detailBtn.href = `detail.html?name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
 
         function initializePlayer(source) {
-            console.log('Khởi tạo player với nguồn:', source);
             if (hls) {
                 hls.destroy();
-                console.log('Đã hủy HLS cũ');
             }
-
-            const loadingText = video.querySelector('.loading');
-            loadingText.style.display = 'block';
 
             if (Hls.isSupported()) {
                 hls = new Hls({
                     autoStartLoad: true,
                     maxBufferLength: 30,
                     maxMaxBufferLength: 60,
+                    maxBufferSize: 30 * 1000 * 1000,
+                    maxBufferHole: 0.5,
+                    lowLatencyMode: true,
+                    backBufferLength: 0,
+                    liveSyncDurationCount: 3,
+                    liveMaxLatencyDurationCount: 10,
+                    fragLoadingTimeOut: 15000,
+                    manifestLoadingTimeOut: 8000,
+                    levelLoadingTimeOut: 8000,
+                    maxFragRetries: 2,
+                    maxManifestRetries: 2,
+                    maxLevelRetries: 2,
                 });
                 hls.loadSource(source);
                 hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    console.log('Manifest HLS đã tải');
-                    loadingText.style.display = 'none';
-                    video.play().catch(err => console.log('Autoplay bị chặn:', err));
-                });
                 hls.on(Hls.Events.ERROR, (event, data) => {
-                    console.error('Lỗi HLS:', data);
-                    loadingText.style.display = 'none';
                     if (data.fatal) {
                         switch (data.type) {
                             case Hls.ErrorTypes.NETWORK_ERROR:
-                                console.log('Lỗi mạng, thử tải lại sau 2s...');
-                                setTimeout(() => hls.startLoad(), 2000);
+                                showError('Lỗi mạng, thử lại sau 3s...');
+                                setTimeout(() => hls.startLoad(), 3000);
                                 break;
                             case Hls.ErrorTypes.MEDIA_ERROR:
-                                console.log('Lỗi media, thử khôi phục...');
+                                showError('Lỗi media, thử khôi phục...');
                                 hls.recoverMediaError();
                                 break;
                             default:
-                                console.log('Lỗi không khắc phục được');
+                                showError('Không thể phát video.');
                                 hls.destroy();
-                                alert('Không thể phát video do lỗi nguồn.');
                         }
                     }
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                console.log('Trình duyệt hỗ trợ HLS native');
                 video.src = source;
-                video.addEventListener('loadedmetadata', () => {
-                    console.log('Metadata đã tải');
-                    loadingText.style.display = 'none';
-                    video.play().catch(err => console.log('Autoplay bị chặn:', err));
-                }, { once: true });
+                video.addEventListener('loadedmetadata', () => video.play(), { once: true });
             } else {
-                console.error('Trình duyệt không hỗ trợ HLS');
-                loadingText.style.display = 'none';
-                alert('Trình duyệt không hỗ trợ phát video HLS.');
+                showError('Trình duyệt không hỗ trợ phát video HLS.');
             }
         }
 
         const player = new Plyr(video, {
-            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'fullscreen'],
+            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
             speed: { selected: 1, options: [0.5, 1, 1.5, 2] },
             captions: { active: false },
             autoplay: false,
@@ -580,34 +606,28 @@
             settings: ['speed']
         });
 
-        player.on('ready', () => console.log('Plyr đã sẵn sàng'));
-        player.on('error', (event) => console.error('Lỗi Plyr:', event.detail));
-        player.on('play', () => console.log('Video đang phát'));
+        player.on('error', () => showError('Lỗi phát video, vui lòng thử lại.'));
         player.on('ended', () => {
             const mainEpisodes = episodes.filter(ep => ep.server === 'main');
             const currentMainIndex = mainEpisodes.findIndex(ep => ep.link === streamUrl);
-            if (currentMainIndex < mainEpisodes.length - 1) {
+            if (currentMainIndex >= 0 && currentMainIndex < mainEpisodes.length - 1) {
                 const nextLink = mainEpisodes[currentMainIndex + 1].link;
-                window.location.href = `watch.html?stream=${encodeURIComponent(nextLink)}&name=${encodeURIComponent(movieName)}&poster=${encodeURIComponent(posterUrl)}&quality=${encodeURIComponent(quality)}&content=${encodeURIComponent(movieContent)}&actor=${encodeURIComponent(movieActor)}&director=${encodeURIComponent(movieDirector)}&country=${encodeURIComponent(movieCountry)}&episodes=${encodeURIComponent(JSON.stringify(episodes))}`;
+                window.location.href = generateEpisodeLink({ link: nextLink, server: 'main' });
             }
         });
 
         if (streamUrl) {
             initializePlayer(streamUrl);
         } else {
-            console.error('Không có stream URL');
-            document.querySelector('.loading').textContent = 'Không có video để phát.';
-            document.querySelector('.loading').style.display = 'block';
+            showError('Không có nguồn video để phát.');
         }
 
         function rewind() {
             video.currentTime = Math.max(0, video.currentTime - 10);
-            console.log('Tua lại 10 giây');
         }
 
         function fastForward() {
             video.currentTime = Math.min(video.duration || Infinity, video.currentTime + 10);
-            console.log('Tua tới 10 giây');
         }
 
         document.getElementById('rewind-btn').addEventListener('click', rewind);
@@ -645,15 +665,19 @@
                 prevBtn.classList.add('disabled');
             }
 
-            if (currentMainIndex < mainEpisodes.length - 1) {
+            if (currentMainIndex >= 0 && currentMainIndex < mainEpisodes.length - 1) {
                 nextBtn.href = generateEpisodeLink(mainEpisodes[currentMainIndex + 1]);
             } else {
                 nextBtn.classList.add('disabled');
             }
 
-            const currentEpisode = episodes.find(ep => ep.link === streamUrl) || mainEpisodes[currentMainIndex];
-            const mainLink = currentEpisode?.link;
-            const backupLink = episodes.find(ep => ep.server === 'backup' && ep.episodeRef === currentMainIndex)?.link;
+            const currentEpisode = episodes.find(ep => ep.link === streamUrl);
+            let mainLink = null;
+            let backupLink = null;
+            if (currentMainIndex >= 0) {
+                mainLink = mainEpisodes[currentMainIndex]?.link;
+                backupLink = episodes.find(ep => ep.server === 'backup' && ep.episodeRef === currentMainIndex)?.link;
+            }
 
             if (mainLink) {
                 const mainServerBtn = document.createElement('a');
@@ -687,21 +711,6 @@
             nextBtn.classList.add('disabled');
         }
 
-        const cinemaModeBtn = document.getElementById('cinema-mode-btn');
-        const cinemaLightBtn = document.getElementById('cinema-light-btn');
-
-        cinemaModeBtn.addEventListener('click', () => {
-            document.body.classList.add('cinema-mode');
-            console.log('Chế độ rạp phim: Bật');
-            player.fullscreen.enter();
-        });
-
-        cinemaLightBtn.addEventListener('click', () => {
-            document.body.classList.remove('cinema-mode');
-            console.log('Chế độ rạp phim: Tắt');
-            player.fullscreen.exit();
-        });
-
         function highlightActiveMenu() {
             const navLinks = document.querySelectorAll('.nav-menu a');
             const referrerPage = document.referrer 
@@ -731,6 +740,115 @@
                     window.location.href = `index.html?search=${encodeURIComponent(searchTerm)}`;
                 }
             }
+        });
+
+        function parseVTT(content) {
+            const cues = [];
+            const lines = content.split('\n');
+            let currentCue = null;
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.includes('-->')) {
+                    const [start, end] = line.split('-->').map(t => t.trim());
+                    const startTime = parseTime(start);
+                    const endTime = parseTime(end);
+                    currentCue = { startTime, endTime, text: '' };
+                    while (i + 1 < lines.length && lines[i + 1].trim() && !lines[i + 1].includes('-->')) {
+                        i++;
+                        currentCue.text += lines[i].trim() + ' ';
+                    }
+                    currentCue.text = currentCue.text.trim();
+                    if (currentCue.text) {
+                        cues.push(currentCue);
+                    }
+                    currentCue = null;
+                }
+            }
+            return cues;
+        }
+
+        function parseTime(timeStr) {
+            const parts = timeStr.split(':');
+            let seconds = 0;
+            if (parts.length === 3) {
+                seconds += parseInt(parts[0]) * 3600;
+                seconds += parseInt(parts[1]) * 60;
+                seconds += parseFloat(parts[2].replace(',', '.'));
+            } else if (parts.length === 2) {
+                seconds += parseInt(parts[0]) * 60;
+                seconds += parseFloat(parts[1].replace(',', '.'));
+            }
+            return seconds;
+        }
+
+        function updateSubtitles() {
+            const currentTime = video.currentTime;
+            const activeViCue = viCues.find(cue => currentTime >= cue.startTime && currentTime <= cue.endTime);
+            subtitleVi.textContent = activeViCue ? activeViCue.text : '';
+            subtitleVi.classList.toggle('active', !!activeViCue);
+
+            const activeEnCue = enCues.find(cue => currentTime >= cue.startTime && currentTime <= cue.endTime);
+            subtitleEn.textContent = activeEnCue ? activeEnCue.text : '';
+            subtitleEn.classList.toggle('active', !!activeEnCue);
+        }
+
+        video.addEventListener('timeupdate', updateSubtitles);
+
+        const subtitleFileVi = document.getElementById('subtitle-file-vi');
+        const subtitleFileEn = document.getElementById('subtitle-file-en');
+        const uploadSubtitleBtn = document.getElementById('upload-subtitle-btn');
+
+        uploadSubtitleBtn.addEventListener('click', () => {
+            const files = [
+                { file: subtitleFileVi.files[0], lang: 'vi' },
+                { file: subtitleFileEn.files[0], lang: 'en' }
+            ].filter(item => item.file);
+
+            if (!files.length) {
+                showError('Vui lòng chọn ít nhất một file phụ đề (.vtt hoặc .srt).');
+                return;
+            }
+
+            files.forEach(({ file, lang }) => {
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+                if (!['vtt', 'srt'].includes(fileExtension)) {
+                    showError(`File ${file.name} không hợp lệ. Chỉ hỗ trợ .vtt hoặc .srt.`);
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    let subtitleContent = e.target.result;
+                    if (fileExtension === 'srt') {
+                        subtitleContent = `WEBVTT\n\n${subtitleContent
+                            .replace(/(\d+:\d+:\d+),(\d+)/g, '$1.$2')
+                            .replace(/^\d+\n/, '')
+                            .replace(/\n\n+/g, '\n\n')}`;
+                    } else if (!subtitleContent.startsWith('WEBVTT')) {
+                        subtitleContent = `WEBVTT\n\n${subtitleContent}`;
+                    }
+
+                    if (!subtitleContent.includes('-->')) {
+                        showError(`File phụ đề ${file.name} không hợp lệ.`);
+                        return;
+                    }
+
+                    const cues = parseVTT(subtitleContent);
+                    if (lang === 'vi') {
+                        viCues = cues;
+                        subtitleVi.textContent = '';
+                        subtitleVi.classList.remove('active');
+                    } else {
+                        enCues = cues;
+                        subtitleEn.textContent = '';
+                        subtitleEn.classList.remove('active');
+                    }
+                    showError(`Đã tải phụ đề ${file.name} thành công!`);
+                };
+                reader.onerror = () => showError(`Lỗi khi đọc file phụ đề ${file.name}.`);
+                reader.readAsText(file);
+            });
         });
 
         highlightActiveMenu();
