@@ -7,14 +7,15 @@
     <meta name="keywords" content="xem phim, phim online, phụ đề song ngữ">
     <meta name="author" content="Phim Hay">
     <title>Xem phim - Phim Hay</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" as="style">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" media="print" onload="this.media='all'">
     <link rel="icon" href="https://pngimg.com/d/free_PNG90750.png" type="image/png">
     <style>
         :root {
             --primary-color: #E50914;
-            --primary-hover: #F40612;
+            --primary-hover: #000000;
             --bg-dark: #141414;
             --bg-section: #221F1F;
             --text-gray: #B3B3B3;
@@ -29,7 +30,7 @@
         }
 
         body {
-            background-color: var(--bg-dark);
+            background: var(--bg-dark);
             color: var(--text-white);
             line-height: 1.5;
             min-height: 100vh;
@@ -41,9 +42,10 @@
             top: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
-            padding: 15px 20px;
+            background: var(--bg-dark);
+            padding: 10px 20px;
             z-index: 100;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         .header-content {
@@ -52,37 +54,39 @@
             justify-content: space-between;
             max-width: 1400px;
             margin: 0 auto;
-            gap: 20px;
+            gap: 15px;
         }
 
         .logo {
-            max-height: 35px;
+            max-height: 30px;
             width: auto;
         }
 
         .search-bar {
             display: flex;
             align-items: center;
-            gap: 10px;
-            max-width: 350px;
+            gap: 8px;
+            max-width: 300px;
+            flex: 1;
         }
 
         .search-bar input {
-            padding: 8px 12px;
+            padding: 8px 10px;
             border: none;
             border-radius: 4px;
-            background-color: #333;
+            background: #333;
             color: var(--text-white);
             font-size: 0.9em;
+            width: 100%;
         }
 
         .search-bar input:focus {
-            background-color: #444;
+            background: #444;
             outline: none;
         }
 
         .search-btn {
-            background-color: var(--primary-color);
+            background: var(--primary-color);
             color: var(--text-white);
             border: none;
             padding: 8px 12px;
@@ -91,36 +95,36 @@
         }
 
         .search-btn:hover {
-            background-color: var(--primary-hover);
+            background: var(--primary-hover);
         }
 
         .nav-menu {
             display: flex;
-            gap: 15px;
+            gap: 20px;
         }
 
         .nav-menu a {
-            color: var(--text-gray);
+            color: var(--text-white);
             text-decoration: none;
-            font-size: 0.9em;
+            font-size: 0.95em;
             padding: 6px 12px;
+            transition: color 0.3s ease;
         }
 
         .nav-menu a:hover,
         .nav-menu a.active {
-            color: var(--text-white);
+            color: var(--primary-color);
             font-weight: 500;
         }
 
         .container {
             max-width: 1400px;
-            margin: 100px auto 30px;
+            margin: 80px auto 30px;
             padding: 20px;
         }
 
         .movie-title {
             font-size: 2em;
-            color: var(--text-white);
             margin: 20px 0;
             text-align: center;
             font-weight: 500;
@@ -131,7 +135,7 @@
             border-radius: 8px;
             width: 100%;
             max-width: 900px;
-            aspect-ratio: 16 / 9;
+            aspect-ratio: 16/9;
             margin: 0 auto 20px;
         }
 
@@ -139,7 +143,6 @@
             position: relative;
             width: 100%;
             height: 100%;
-            background: #000;
         }
 
         #player {
@@ -147,7 +150,6 @@
             height: 100%;
             border-radius: 8px;
             object-fit: contain;
-            background: #000;
         }
 
         .plyr--video {
@@ -168,10 +170,6 @@
             background: var(--primary-hover);
         }
 
-        .plyr__control {
-            color: var(--text-white);
-        }
-
         .plyr__control:hover {
             background: var(--primary-color);
         }
@@ -185,7 +183,6 @@
         }
 
         .subtitle-vi, .subtitle-en {
-            display: block;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
@@ -194,24 +191,20 @@
             text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
             line-height: 1.4;
             padding: 2px 10px;
+            display: none;
         }
 
         .subtitle-vi {
             bottom: 20px;
             color: #FFFF00;
-            display: none;
         }
 
         .subtitle-en {
             top: 20px;
-            color: #ffffff;
-            display: none;
+            color: #FFF;
         }
 
-        .subtitle-vi.active {
-            display: block;
-        }
-
+        .subtitle-vi.active,
         .subtitle-en.active {
             display: block;
         }
@@ -221,37 +214,36 @@
             justify-content: center;
             gap: 10px;
             padding: 15px;
-            background-color: var(--bg-section);
+            background: var(--bg-section);
             border-radius: 8px;
             max-width: 900px;
             margin: 0 auto 20px;
         }
 
         .control-btn {
-            background-color: var(--primary-color);
+            background: var(--primary-color);
             color: var(--text-white);
             padding: 8px 12px;
             border-radius: 4px;
             font-size: 0.9em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             border: none;
             cursor: pointer;
             text-decoration: none;
+            display: flex;
+            align-items: center;
         }
 
         .control-btn:hover {
-            background-color: var(--primary-hover);
+            background: var(--primary-hover);
         }
 
         .control-btn.disabled {
-            background-color: #666;
+            background: #666;
             pointer-events: none;
         }
 
         .episodes-section, .servers-section {
-            background-color: var(--bg-section);
+            background: var(--bg-section);
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
@@ -259,7 +251,6 @@
 
         .episodes-section h3, .servers-section h3 {
             font-size: 1.5em;
-            color: var(--text-white);
             margin-bottom: 15px;
             font-weight: 500;
         }
@@ -271,22 +262,26 @@
         }
 
         .episode-btn, .server-btn {
-            background-color: var(--primary-color);
+            background: var(--primary-color);
             color: var(--text-white);
             padding: 8px 12px;
             border-radius: 4px;
             text-decoration: none;
             font-size: 0.9em;
             text-align: center;
+            transition: all 0.2s ease;
         }
 
         .episode-btn:hover, .server-btn:hover {
-            background-color: var(--primary-hover);
+            background: var(--primary-hover);
         }
 
         .episode-btn.active, .server-btn.active {
-            background-color: var(--primary-hover);
-            font-weight: 500;
+            background: var(--primary-hover);
+            font-weight: bold;
+            font-size: 1em;
+            transform: scale(1.05);
+            box-shadow: 0 0 8px rgba(255, 4, 4, 0.685);
         }
 
         .button-group {
@@ -297,7 +292,7 @@
         }
 
         .back-btn, .detail-btn {
-            background-color: var(--primary-color);
+            background: var(--primary-color);
             color: var(--text-white);
             padding: 10px 20px;
             border-radius: 4px;
@@ -306,7 +301,7 @@
         }
 
         .back-btn:hover, .detail-btn:hover {
-            background-color: var(--primary-hover);
+            background: var(--primary-hover);
         }
 
         .error-message {
@@ -319,7 +314,7 @@
             border-radius: 4px;
             z-index: 1006;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s;
         }
 
         .error-message.show {
@@ -329,24 +324,39 @@
         .subtitle-upload {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             margin: 10px auto;
             max-width: 900px;
             justify-content: center;
-            flex-wrap: wrap;
+        }
+
+        .subtitle-upload label {
+            background: #333;
+            color: var(--text-white);
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            font-size: 0;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .subtitle-upload label i {
+            font-size: 1.2em;
+        }
+
+        .subtitle-upload label:hover {
+            background: #444;
         }
 
         .subtitle-upload input[type="file"] {
-            padding: 8px;
-            background-color: #333;
-            color: var(--text-white);
-            border: none;
-            border-radius: 4px;
-            font-size: 0.9em;
+            display: none;
         }
 
         .subtitle-upload button {
-            background-color: var(--primary-color);
+            background: var(--primary-color);
             color: var(--text-white);
             padding: 8px 12px;
             border-radius: 4px;
@@ -356,21 +366,40 @@
         }
 
         .subtitle-upload button:hover {
-            background-color: var(--primary-hover);
+            background: var(--primary-hover);
         }
 
         @media (max-width: 720px) {
+            .header {
+                padding: 8px 15px;
+            }
+
             .header-content {
                 flex-direction: column;
-                gap: 10px;
+                gap: 8px;
+            }
+
+            .logo {
+                max-height: 25px;
             }
 
             .search-bar {
                 max-width: 100%;
             }
 
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .nav-menu a {
+                font-size: 0.85em;
+                padding: 4px 8px;
+            }
+
             .container {
-                margin: 150px auto 20px;
+                margin: 120px auto 20px;
                 padding: 15px;
             }
 
@@ -383,7 +412,7 @@
             }
 
             .video-controls {
-                padding: 8px;
+                padding: 10px;
                 gap: 8px;
             }
 
@@ -393,7 +422,7 @@
             }
 
             .episodes-list, .servers-list {
-                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
                 gap: 8px;
             }
 
@@ -402,20 +431,62 @@
                 padding: 6px 10px;
             }
 
-            .subtitle-container {
+            .episode-btn.active, .server-btn.active {
                 font-size: 0.9em;
-                bottom: 15%;
+            }
+
+            .subtitle-container {
+                bottom: 10%;
+            }
+
+            .subtitle-vi, .subtitle-en {
+                font-size: 1em;
             }
 
             .subtitle-upload {
-                flex-direction: column;
-                gap: 8px;
+                gap: 6px;
+            }
+
+            .subtitle-upload label {
+                width: 36px;
+                height: 36px;
+            }
+
+            .subtitle-upload label i {
+                font-size: 1.1em;
+            }
+
+            .subtitle-upload button {
+                font-size: 0.85em;
+                padding: 6px 10px;
             }
         }
 
         @media (max-width: 360px) {
+            .header {
+                padding: 6px 10px;
+            }
+
+            .logo {
+                max-height: 20px;
+            }
+
+            .search-bar input {
+                font-size: 0.8em;
+                padding: 6px 8px;
+            }
+
+            .search-btn {
+                padding: 6px 10px;
+            }
+
+            .nav-menu a {
+                font-size: 0.8em;
+                padding: 3px 6px;
+            }
+
             .container {
-                margin: 120px auto 20px;
+                margin: 100px auto 15px;
                 padding: 10px;
             }
 
@@ -424,17 +495,35 @@
             }
 
             .episodes-list, .servers-list {
-                grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                gap: 8px;
             }
 
             .episode-btn, .server-btn {
                 font-size: 0.8em;
-                padding: 5px 7px;
+                padding: 5px 8px;
             }
 
-            .subtitle-container {
+            .episode-btn.active, .server-btn.active {
+                font-size: 0.85em;
+            }
+
+            .subtitle-vi, .subtitle-en {
+                font-size: 0.9em;
+            }
+
+            .subtitle-upload label {
+                width: 32px;
+                height: 32px;
+            }
+
+            .subtitle-upload label i {
+                font-size: 1em;
+            }
+
+            .subtitle-upload button {
                 font-size: 0.8em;
-                bottom: 20%;
+                padding: 5px 8px;
             }
         }
     </style>
@@ -474,9 +563,11 @@
         </div>
 
         <div class="subtitle-upload">
-            <input type="file" id="subtitle-file-vi" accept=".vtt,.srt" placeholder="Phụ đề tiếng Việt">
-            <input type="file" id="subtitle-file-en" accept=".vtt,.srt" placeholder="Phụ đề tiếng Anh">
-            <button id="upload-subtitle-btn">Tải phụ đề</button>
+            <label for="subtitle-file-vi"><i class="fas fa-closed-captioning"></i></label>
+            <input type="file" id="subtitle-file-vi" accept=".vtt,.srt">
+            <label for="subtitle-file-en"><i class="fas fa-closed-captioning"></i></label>
+            <input type="file" id="subtitle-file-en" accept=".vtt,.srt">
+            <button id="upload-subtitle-btn"><i class="fas fa-upload"></i> Tải phụ đề</button>
         </div>
 
         <div class="video-controls">
@@ -539,7 +630,7 @@
         }
 
         if (posterUrl) {
-            video.poster = posterUrl; // Chỉ load poster cho video
+            video.poster = posterUrl;
         }
 
         document.getElementById('movie-title').textContent = movieName || 'Phim không xác định';
@@ -671,7 +762,6 @@
                 nextBtn.classList.add('disabled');
             }
 
-            const currentEpisode = episodes.find(ep => ep.link === streamUrl);
             let mainLink = null;
             let backupLink = null;
             if (currentMainIndex >= 0) {
@@ -820,6 +910,10 @@
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     let subtitleContent = e.target.result;
+                    if (!subtitleContent.trim()) {
+                        showError(`File phụ đề ${file.name} rỗng.`);
+                        return;
+                    }
                     if (fileExtension === 'srt') {
                         subtitleContent = `WEBVTT\n\n${subtitleContent
                             .replace(/(\d+:\d+:\d+),(\d+)/g, '$1.$2')
@@ -849,6 +943,15 @@
                 reader.onerror = () => showError(`Lỗi khi đọc file phụ đề ${file.name}.`);
                 reader.readAsText(file);
             });
+        });
+
+        subtitleFileVi.addEventListener('change', () => {
+            const label = document.querySelector('label[for="subtitle-file-vi"]');
+            label.title = subtitleFileVi.files[0] ? `VN: ${subtitleFileVi.files[0].name}` : 'Phụ đề tiếng Việt';
+        });
+        subtitleFileEn.addEventListener('change', () => {
+            const label = document.querySelector('label[for="subtitle-file-en"]');
+            label.title = subtitleFileEn.files[0] ? `EN: ${subtitleFileEn.files[0].name}` : 'Phụ đề tiếng Anh';
         });
 
         highlightActiveMenu();
