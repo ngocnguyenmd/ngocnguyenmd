@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Phim Hay - Xem phim online miễn phí">
-    <meta name="keywords" content="phim Hàn, phim bộ, phim lẻ, xem phim online">
+    <meta name="description" content="Phim Hay - Xem phim truyền hình">
+    <meta name="keywords" content="phim truyền hình, xem phim online">
     <meta name="author" content="Phim Hay">
-    <title>Phim Hay - Xem phim online</title>
+    <title>Phim Hay - Truyền hình</title>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" as="style">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
@@ -144,7 +144,7 @@
 
         .movie-item {
             width: 244px;
-            height: 450px; /* Chiều cao cố định, bao gồm ảnh + tiêu đề */
+            height: 450px;
             position: relative;
             transition: transform 0.3s ease;
             display: flex;
@@ -156,7 +156,7 @@
         }
 
         .movie-poster {
-            flex: 1; /* Chiếm hết không gian trừ tiêu đề */
+            flex: 1;
             position: relative;
             overflow: hidden;
             border-radius: 8px;
@@ -172,7 +172,7 @@
         .movie-poster img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Crop ảnh để lấp đầy */
+            object-fit: cover;
             object-position: center;
             display: block;
             border-radius: 8px;
@@ -213,7 +213,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             text-align: center;
-            height: 40px; /* Chiều cao cố định cho tiêu đề */
+            height: 40px;
         }
 
         .movie-title:hover {
@@ -255,7 +255,7 @@
 
             .movie-item {
                 width: 170px;
-                height: 315px; /* Tỷ lệ tương ứng cho mobile */
+                height: 315px;
             }
 
             .movie-title {
@@ -365,7 +365,7 @@
     </header>
     <main class="main-content">
         <section class="movie-section">
-            <h2>Phim đề cử</h2>
+            <h2>US/UK</h2>
             <div class="movie-list" id="recommended-list"></div>
         </section>
         <section class="movie-section">
@@ -401,7 +401,7 @@
             searchBtn: document.getElementById('search-btn')
         };
         const currentPage = window.location.pathname.split('/').pop().split('.')[0] || 'index';
-        let allApiUrls = [], banhmiMovies = [], seriesMovies = [], singleMovies = [];
+        let allApiUrls = [], customMovies = [], seriesMovies = [], singleMovies = [];
 
         function adjustMainContentPadding() {
             const headerHeight = document.querySelector('.header').getBoundingClientRect().height;
@@ -616,14 +616,14 @@
             images.forEach(img => observer.observe(img));
         }
 
-        function renderMovies(apiUrls, banhmiMovies, seriesMovies, singleMovies, searchTerm = '') {
+        function renderMovies(apiUrls, customMovies, seriesMovies, singleMovies, searchTerm = '') {
             elements.recommendedList.innerHTML = '';
             elements.banhmiList.innerHTML = '';
             elements.seriesList.innerHTML = '';
             elements.movieList.innerHTML = '';
 
             const filteredUrls = apiUrls.filter(({ pageTag }) => pageTag === currentPage);
-            const allMovies = [...banhmiMovies, ...seriesMovies, ...singleMovies];
+            const allMovies = [...customMovies, ...seriesMovies, ...singleMovies];
             const searchResults = [];
 
             if (searchTerm) {
@@ -641,10 +641,15 @@
                     });
                 });
             } else {
-                const pageMovies = allMovies.filter(movie => movie.pageTag === currentPage);
+                // Section "Phim truyền hình" (hoặc "Phim đề cử" ở index.html)
+                const pageMovies = currentPage === 'index'
+                    ? customMovies.filter(movie => movie.pageTag === 'index')
+                    : customMovies.filter(movie => movie.pageTag === currentPage);
+
                 if (pageMovies.length === 0 && filteredUrls.length === 0) {
                     elements.recommendedList.innerHTML = '<p>Không có phim đề cử.</p>';
                 } else {
+                    // Hiển thị phim từ customapi.txt
                     pageMovies.forEach(movie => {
                         const detailUrl = movie.apiSource === 'custom'
                             ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
@@ -664,6 +669,7 @@
                         observeImages();
                     });
 
+                    // Hiển thị phim từ API
                     filteredUrls.forEach(({ url, apiSource }) => {
                         fetchMovieData(url, apiSource).then(data => {
                             if (data) {
@@ -686,35 +692,78 @@
                     });
                 }
 
-                const renderMovieList = (movies, listElement, sectionName) => {
-                    const filtered = movies.filter(movie => movie.pageTag === (sectionName === 'phim bánh mì' ? 'banhmi' : sectionName === 'phim bộ' ? 'bo' : 'le'));
-                    if (filtered.length === 0) {
-                        listElement.innerHTML = `<p>Không có ${sectionName}.</p>`;
-                    } else {
-                        filtered.forEach(movie => {
-                            const detailUrl = movie.apiSource === 'custom'
-                                ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
-                                : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`;
-                            const movieItem = document.createElement('div');
-                            movieItem.classList.add('movie-item');
-                            movieItem.innerHTML = `
-                                <div class="movie-poster">
-                                    <a href="${detailUrl}">
-                                        <img data-src="${movie.poster_url}" alt="${movie.name}" onerror="this.src='poster-not-found.jpg'">
-                                        <span class="episode-badge">${movie.episode_total} tập</span>
-                                    </a>
-                                </div>
-                                <a href="${detailUrl}" class="movie-title">${movie.name} (${movie.quality})</a>
-                            `;
-                            listElement.appendChild(movieItem);
-                            observeImages();
-                        });
-                    }
-                };
+                // Section "Phim bánh mì"
+                const banhmiFiltered = customMovies.filter(movie => movie.pageTag === currentPage);
+                if (banhmiFiltered.length === 0) {
+                    elements.banhmiList.innerHTML = '<p>Không có phim bánh mì.</p>';
+                } else {
+                    banhmiFiltered.forEach(movie => {
+                        const detailUrl = movie.apiSource === 'custom'
+                            ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
+                            : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`;
+                        const movieItem = document.createElement('div');
+                        movieItem.classList.add('movie-item');
+                        movieItem.innerHTML = `
+                            <div class="movie-poster">
+                                <a href="${detailUrl}">
+                                    <img data-src="${movie.poster_url}" alt="${movie.name}" onerror="this.src='poster-not-found.jpg'">
+                                    <span class="episode-badge">${movie.episode_total} tập</span>
+                                </a>
+                            </div>
+                            <a href="${detailUrl}" class="movie-title">${movie.name} (${movie.quality})</a>
+                        `;
+                        elements.banhmiList.appendChild(movieItem);
+                        observeImages();
+                    });
+                }
 
-                renderMovieList(banhmiMovies, elements.banhmiList, 'phim bánh mì');
-                renderMovieList(seriesMovies, elements.seriesList, 'phim bộ');
-                renderMovieList(singleMovies, elements.movieList, 'phim lẻ');
+                // Section "Phim bộ"
+                if (seriesMovies.length === 0) {
+                    elements.seriesList.innerHTML = '<p>Không có phim bộ.</p>';
+                } else {
+                    seriesMovies.forEach(movie => {
+                        const detailUrl = movie.apiSource === 'custom'
+                            ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
+                            : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`;
+                        const movieItem = document.createElement('div');
+                        movieItem.classList.add('movie-item');
+                        movieItem.innerHTML = `
+                            <div class="movie-poster">
+                                <a href="${detailUrl}">
+                                    <img data-src="${movie.poster_url}" alt="${movie.name}" onerror="this.src='poster-not-found.jpg'">
+                                    <span class="episode-badge">${movie.episode_total} tập</span>
+                                </a>
+                            </div>
+                            <a href="${detailUrl}" class="movie-title">${movie.name} (${movie.quality})</a>
+                        `;
+                        elements.seriesList.appendChild(movieItem);
+                        observeImages();
+                    });
+                }
+
+                // Section "Phim lẻ"
+                if (singleMovies.length === 0) {
+                    elements.movieList.innerHTML = '<p>Không có phim lẻ.</p>';
+                } else {
+                    singleMovies.forEach(movie => {
+                        const detailUrl = movie.apiSource === 'custom'
+                            ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
+                            : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`;
+                        const movieItem = document.createElement('div');
+                        movieItem.classList.add('movie-item');
+                        movieItem.innerHTML = `
+                            <div class="movie-poster">
+                                <a href="${detailUrl}">
+                                    <img data-src="${movie.poster_url}" alt="${movie.name}" onerror="this.src='poster-not-found.jpg'">
+                                    <span class="episode-badge">${movie.episode_total} tập</span>
+                                </a>
+                            </div>
+                            <a href="${detailUrl}" class="movie-title">${movie.name} (${movie.quality})</a>
+                        `;
+                        elements.movieList.appendChild(movieItem);
+                        observeImages();
+                    });
+                }
             }
 
             function renderSearchResults(results) {
@@ -753,9 +802,9 @@
             loadCustomMovies('customapi.txt'),
             loadCustomMovies('bo.txt'),
             loadCustomMovies('le.txt')
-        ]).then(([apiUrls, banhmiMovies, seriesMovies, singleMovies]) => {
+        ]).then(([apiUrls, customMovies, seriesMovies, singleMovies]) => {
             allApiUrls = apiUrls;
-            banhmiMovies = banhmiMovies.map(m => ({ ...m, pageTag: 'banhmi' }));
+            // Không ghi đè pageTag cho customMovies
             seriesMovies = seriesMovies.map(m => ({ ...m, pageTag: 'bo' }));
             singleMovies = singleMovies.map(m => ({ ...m, pageTag: 'le' }));
 
@@ -763,19 +812,19 @@
             const searchTerm = urlParams.get('search') || '';
             elements.searchInput.value = searchTerm;
 
-            renderMovies(apiUrls, banhmiMovies, seriesMovies, singleMovies, searchTerm);
+            renderMovies(apiUrls, customMovies, seriesMovies, singleMovies, searchTerm);
 
             elements.searchBtn.addEventListener('click', () => {
                 const searchTerm = elements.searchInput.value.trim();
                 window.history.pushState({}, '', `?search=${encodeURIComponent(searchTerm)}`);
-                renderMovies(allApiUrls, banhmiMovies, seriesMovies, singleMovies, searchTerm);
+                renderMovies(allApiUrls, customMovies, seriesMovies, singleMovies, searchTerm);
             });
 
             elements.searchInput.addEventListener('keypress', e => {
                 if (e.key === 'Enter') {
                     const searchTerm = elements.searchInput.value.trim();
                     window.history.pushState({}, '', `?search=${encodeURIComponent(searchTerm)}`);
-                    renderMovies(allApiUrls, banhmiMovies, seriesMovies, singleMovies, searchTerm);
+                    renderMovies(allApiUrls, customMovies, seriesMovies, singleMovies, searchTerm);
                 }
             });
 
