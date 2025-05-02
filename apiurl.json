@@ -12,6 +12,7 @@
 "https://ophim1.com/phim/cung-dien-ma-am",
 "https://phimapi.com/phim/co-gai-ngua-dua-lo-lem-xam",
 "https://phimapi.com/phim/khi-mat-troi-lan-cung-la-luc-cac-vi-sao-xuat-hien",
+"https://phim.nguonc.com/api/film/ke-ngay-tho-nguoi-tung-trai-va-cau-chuyen-tinh-cua-chung-ta",
 "https://phimapi.com/phim/teogonia"
   ] },
   
@@ -130,10 +131,8 @@
 ] },
 
 { "hoat-hinh": [
-"https://phimapi.com/phim/plankton-ban-dien-anh",
-  "https://phimapi.com/phim/dam-phat-chet-luon-phan-2",
-  "https://ophim1.com/phim/one-punch-man",
-  "https://phimapi.com/phim/sat-thu-ve-vuon",
-  "https://phimapi.com/phim/bon-anh-em-cua-gia-dinh-yuzuki"
+"https://ophim1.com/phim/tran-hon-nhai-phan-4",
+"https://ophim1.com/phim/dau-pha-thuong-khung-ngoai-truyen"
+
 ] }
 ]
