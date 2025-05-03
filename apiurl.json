@@ -1,19 +1,16 @@
 [
   
   { "index": [
-"https://phimapi.com/phim/tho-ngoc-noi-cung-trang",
-"https://phimapi.com/phim/mat-vu-phu-ho",
-"https://phimapi.com/phim/mach-song",
-"https://phimapi.com/phim/chuyen-doi-bac-si-noi-tru",
-"https://phimapi.com/phim/nguoi-hung-yeu-duoi-2",
-"https://ophim1.com/phim/bang-thuong-giai-te",
-"https://phimapi.com/phim/thanh-kiem-cua-tho-san-quy",
-"https://phimapi.com/phim/yeu-anh-ngan-chong-gai",
-"https://ophim1.com/phim/cung-dien-ma-am",
-"https://phimapi.com/phim/co-gai-ngua-dua-lo-lem-xam",
-"https://phimapi.com/phim/khi-mat-troi-lan-cung-la-luc-cac-vi-sao-xuat-hien",
-"https://phim.nguonc.com/api/film/ke-ngay-tho-nguoi-tung-trai-va-cau-chuyen-tinh-cua-chung-ta",
-"https://phimapi.com/phim/teogonia"
+"https://phim.nguonc.com/api/film/teogonia",
+"https://phimapi.com/phim/thien-thu-lenh",
+"https://phimapi.com/phim/cung-dien-ma-am",
+"https://phimapi.com/phim/hoi-ban-trai-cua-bunny",
+"https://phimapi.com/phim/hoai-thuy-truc-dinh",
+"https://phimapi.com/phim/bang-thuong-giai-te",
+"https://phim.nguonc.com/api/film/quan-an-cua-ngai-heo",
+"https://phimapi.com/phim/lanh-dia-tu-chien",
+"https://phim.nguonc.com/api/film/khoe-truoc-yeu-sau",
+"https://phimapi.com/phim/buoi-hen-ho-kinh-hoang"
   ] },
   
   { "phim-trung": [
@@ -98,7 +95,8 @@
   "https://ophim1.com/phim/bac-si-ma",
   "https://ophim1.com/phim/vien-da-bi-an",
   "https://ophim1.com/phim/mot-ngay-no-ke-huy-diet-go-cua-nha-toi",
-  "https://ophim1.com/phim/tinh-ai-chunhwa"
+  "https://ophim1.com/phim/tinh-ai-chunhwa",
+  "https://phimapi.com/phim/hoi-ban-trai-cua-bunny"
 ] },
 
 
