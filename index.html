@@ -217,13 +217,24 @@
         .banner-item {
             flex: 0 0 100%;
             height: 100%;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
             display: flex;
             align-items: flex-end;
             padding-top: 5px;
             position: relative;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .banner-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            transition: opacity 0.5s ease;
         }
 
         .banner-item::before {
@@ -368,23 +379,16 @@
             object-fit: cover;
             object-position: center;
             display: block;
-            transition: var(--transition);
+            transition: opacity 0.3s ease;
         }
 
         .movie-poster img:not(.loaded) {
             opacity: 0;
-            background: linear-gradient(135deg, #333 25%, #444 50%, #333 75%);
-            background-size: 200%;
-            animation: shimmer 2s infinite;
+            background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23333"/%3E%3C/svg%3E') center/cover;
         }
 
         .movie-poster img.loaded {
             opacity: 1;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
         }
 
         .episode-badge {
@@ -527,7 +531,7 @@
 
             .banner-section {
                 height: 90%;
-                gap:20px;
+                gap: 20px;
             }
 
             .movie-item {
@@ -757,7 +761,7 @@
                 <i class="fas fa-info-circle"></i> Liên hệ
             </button>
         </div>
-        <p class="footer-text">© 2025 Phim Hay. All rights reserved.</p>
+        <p class="footer-text">© 2025 Phim Nhà Bánh Mì.</p>
     </footer>
     <button class="scroll-top" id="scroll-top">
         <i class="fas fa-arrow-up"></i>
@@ -780,6 +784,8 @@
         const currentPage = window.location.pathname.split('/').pop().split('.')[0] || 'index';
         let allApiUrls = [], customMovies = [], seriesMovies = [], singleMovies = [];
         let bannerMovies = [], currentBannerIndex = 0;
+        const CACHE_KEY = 'movie_data_cache';
+        const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
 
         // Theme Toggle
         elements.themeToggle.addEventListener('click', () => {
@@ -796,11 +802,7 @@
 
         // Scroll Top Button
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                elements.scrollTop.classList.add('visible');
-            } else {
-                elements.scrollTop.classList.remove('visible');
-            }
+            elements.scrollTop.classList.toggle('visible', window.scrollY > 300);
         });
 
         elements.scrollTop.addEventListener('click', () => {
@@ -815,11 +817,7 @@
         function highlightActiveMenu() {
             document.querySelectorAll('.nav-menu a').forEach(link => {
                 const linkPage = link.getAttribute('href').split('.')[0];
-                if (linkPage === currentPage) {
-                    link.classList.add('active');
-                } else {
-                    link.classList.remove('active');
-                }
+                link.classList.toggle('active', linkPage === currentPage);
             });
         }
 
@@ -890,9 +888,9 @@
                 name: movie.name,
                 slug: movie.slug,
                 origin_name: movie.origin_name || movie.original_name,
-                poster_url: movie.poster_url || movie.thumb_url || 'poster-not-found.jpg',
-                banner_url: movie.banner_url || movie.poster_url || movie.thumb_url || 'poster-not-found.jpg',
-                thumb_url: movie.thumb_url || movie.poster_url || 'poster-not-found.jpg',
+                poster_url: movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/200x300?text=No+Image',
+                banner_url: movie.banner_url || movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/200x300?text=No+Image',
+                thumb_url: movie.thumb_url || movie.poster_url || 'https://via.placeholder.com/200x300?text=No+Image',
                 content: movie.content || movie.description || 'Không có nội dung',
                 type: movie.type || (uniqueEpisodes.length > 1 ? 'series' : 'movie'),
                 status: movie.status || movie.current_episode || 'unknown',
@@ -900,7 +898,7 @@
                 episode_current: movie.episode_current || movie.current_episode || 'Tập 1',
                 time: movie.time || 'Không rõ',
                 quality: movie.quality || 'HD',
-                lang: movie.lang || movie.language || 'Vietsub', // Mặc định là Vietsub nếu không có thông tin
+                lang: movie.lang || movie.language || 'Vietsub',
                 year: year || 'Không rõ',
                 actors: Array.isArray(movie.actor) ? movie.actor.join(', ') : (movie.casts || 'Không có thông tin'),
                 directors: Array.isArray(movie.director) ? movie.director.join(', ') : (movie.director || 'Không có thông tin'),
@@ -921,9 +919,13 @@
                 const text = await response.text();
                 const lines = text.split('\n').map(line => line.trim()).filter(line => line);
                 const movies = [];
+                const episodeRegex = /^(.+?)\|(.+?)\|(.+?)\|(.+?)$/;
+                const linkRegex = /^(.+?)\|(.+?)$/;
+
                 for (let i = 0; i < lines.length; i++) {
-                    if (lines[i].includes('|') && !lines[i].includes('|sv2|')) {
-                        const [pageTag, movieName, posterUrl, quality] = lines[i].split('|').map(item => item.trim());
+                    const match = lines[i].match(episodeRegex);
+                    if (match && !lines[i].includes('|sv2|')) {
+                        const [, pageTag, movieName, posterUrl, quality] = match;
                         const episodes = [];
                         let apiSource = 'custom';
                         let apiUrl = null;
@@ -931,56 +933,57 @@
                         let episodeCount = 0;
                         const seenLinks = new Set();
 
-                        for (let j = i + 1; j < lines.length && !lines[j].includes('|'); j++) {
-                            if (lines[j].startsWith('https')) {
-                                let epName = `Tập ${episodeCount + 1}`;
-                                let link_m3u8 = '';
-                                let link_embed = '';
-                                let link_video = '';
+                        for (let j = i + 1; j < lines.length && !lines[j].match(episodeRegex); j++) {
+                            let epName = `Tập ${episodeCount + 1}`;
+                            let link_m3u8 = '';
+                            let link_embed = '';
+                            let link_video = '';
 
-                                if (lines[j].includes('|')) {
-                                    const [name, link] = lines[j].split('|').map(item => item.trim());
-                                    epName = name.replace('Tập ', '').trim();
-                                    if (link.endsWith('.m3u8')) {
-                                        link_m3u8 = link;
-                                    } else if (link.includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) {
-                                        link_embed = link;
-                                    } else {
-                                        link_video = link;
-                                    }
-                                } else if (lines[j].endsWith('.m3u8')) {
+                            const linkMatch = lines[j].match(linkRegex);
+                            if (linkMatch) {
+                                const [, name, link] = linkMatch;
+                                epName = name.replace('Tập ', '').trim();
+                                if (link.endsWith('.m3u8')) {
+                                    link_m3u8 = link;
+                                } else if (link.includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) {
+                                    link_embed = link;
+                                } else {
+                                    link_video = link;
+                                }
+                            } else if (lines[j].startsWith('https')) {
+                                if (lines[j].endsWith('.m3u8')) {
                                     link_m3u8 = lines[j];
-                                } else if (lines[j].includes('youtube.com') || lines[j].includes('vimeo.com') || lines[j].includes('drive.google.com')) {
+                                } else if (lines[j].includes('youtube.com') || link.includes('vimeo.com') || lines[j].includes('drive.google.com')) {
                                     link_embed = lines[j];
                                 } else {
                                     link_video = lines[j];
                                 }
+                            }
 
-                                const linkKey = link_m3u8 || link_embed || link_video;
-                                if (linkKey && !seenLinks.has(linkKey)) {
-                                    seenLinks.add(linkKey);
-                                    episodes.push({
-                                        name: epName,
-                                        link_m3u8,
-                                        link_embed,
-                                        link_video
-                                    });
-                                    episodeCount++;
-                                }
+                            const linkKey = link_m3u8 || link_embed || link_video;
+                            if (linkKey && !seenLinks.has(linkKey)) {
+                                seenLinks.add(linkKey);
+                                episodes.push({
+                                    name: epName,
+                                    link_m3u8,
+                                    link_embed,
+                                    link_video
+                                });
+                                episodeCount++;
+                            }
 
-                                if (lines[j].includes('ophim1.com')) {
-                                    apiSource = 'ophim1';
-                                    apiUrl = lines[j];
-                                    slug = lines[j].split('/').pop();
-                                } else if (lines[j].includes('phimapi.com')) {
-                                    apiSource = 'phimapi';
-                                    apiUrl = lines[j];
-                                    slug = lines[j].split('/').pop();
-                                } else if (lines[j].includes('phim.nguonc.com')) {
-                                    apiSource = 'phimnguonc';
-                                    apiUrl = lines[j];
-                                    slug = lines[j].split('/').pop();
-                                }
+                            if (lines[j].includes('ophim1.com')) {
+                                apiSource = 'ophim1';
+                                apiUrl = lines[j];
+                                slug = lines[j].split('/').pop();
+                            } else if (lines[j].includes('phimapi.com')) {
+                                apiSource = 'phimapi';
+                                apiUrl = lines[j];
+                                slug = lines[j].split('/').pop();
+                            } else if (lines[j].includes('phim.nguonc.com')) {
+                                apiSource = 'phimnguonc';
+                                apiUrl = lines[j];
+                                slug = lines[j].split('/').pop();
                             }
                         }
 
@@ -989,12 +992,14 @@
                             slug = `custom-${Date.now()}`;
                         }
 
+                        const validPosterUrl = posterUrl && posterUrl.startsWith('http') ? posterUrl : 'https://via.placeholder.com/200x300?text=No+Image';
+
                         movies.push({
                             pageTag,
                             name: movieName,
                             slug,
-                            poster_url: posterUrl || 'poster-not-found.jpg',
-                            banner_url: posterUrl || 'poster-not-found.jpg',
+                            poster_url: validPosterUrl,
+                            banner_url: validPosterUrl,
                             quality: quality || 'HD',
                             content: 'Nội dung không có trong thư viện',
                             actors: 'Không có thông tin diễn viên',
@@ -1005,7 +1010,7 @@
                             type: episodeCount > 1 ? 'series' : 'movie',
                             apiSource,
                             apiUrl,
-                            lang: 'Vietsub' // Mặc định là Vietsub, cần cập nhật trong file customapi.txt nếu là TM hoặc LT
+                            lang: 'Vietsub'
                         });
                     }
                 }
@@ -1027,11 +1032,8 @@
                     item[pageTag].forEach(url => {
                         if (url) {
                             let apiSource = 'ophim1';
-                            if (url.includes('phimapi.com')) {
-                                apiSource = 'phimapi';
-                            } else if (url.includes('phim.nguonc.com')) {
-                                apiSource = 'phimnguonc';
-                            }
+                            if (url.includes('phimapi.com')) apiSource = 'phimapi';
+                            else if (url.includes('phim.nguonc.com')) apiSource = 'phimnguonc';
                             apiUrls.push({ url, pageTag, apiSource });
                         }
                     });
@@ -1043,7 +1045,7 @@
             }
         }
 
-        async function fetchMovieData(url, apiSource, apiUrls) {
+        async function fetchMovieData(url, apiSource, apiUrls, retries = 2) {
             try {
                 const response = await fetch(url, { mode: 'cors' });
                 if (!response.ok) throw new Error(`Không thể tải dữ liệu từ ${url}`);
@@ -1056,24 +1058,44 @@
                 }
                 return null;
             } catch (error) {
+                if (retries > 0) {
+                    console.warn(`Thử lại ${url}, còn ${retries} lần`);
+                    return fetchMovieData(url, apiSource, apiUrls, retries - 1);
+                }
                 console.error(`Lỗi khi tải dữ liệu từ ${url}:`, error);
                 return null;
             }
         }
 
         function observeImages() {
-            const images = document.querySelectorAll('.movie-poster img');
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.src = img.dataset.src;
-                        img.onload = () => img.classList.add('loaded');
-                        observer.unobserve(img);
-                    }
+            const images = document.querySelectorAll('.movie-poster img, .banner-item img');
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src;
+                            img.onload = () => img.classList.add('loaded');
+                            img.onerror = () => {
+                                console.error(`Không thể tải ảnh: ${img.dataset.src}`);
+                                img.src = 'https://via.placeholder.com/200x300?text=No+Image';
+                            };
+                            observer.unobserve(img);
+                        }
+                    });
+                }, { threshold: 0.1 });
+                images.forEach(img => observer.observe(img));
+            } else {
+                // Fallback cho trình duyệt không hỗ trợ IntersectionObserver
+                images.forEach(img => {
+                    img.src = img.dataset.src;
+                    img.onload = () => img.classList.add('loaded');
+                    img.onerror = () => {
+                        console.error(`Không thể tải ảnh: ${img.dataset.src}`);
+                        img.src = 'https://via.placeholder.com/200x300?text=No+Image';
+                    };
                 });
-            }, { threshold: 0.1 });
-            images.forEach(img => observer.observe(img));
+            }
         }
 
         function shuffleArray(array) {
@@ -1097,8 +1119,8 @@
                     : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}`;
                 const bannerItem = document.createElement('div');
                 bannerItem.classList.add('banner-item');
-                bannerItem.style.backgroundImage = `url(${movie.banner_url})`;
                 bannerItem.innerHTML = `
+                    <img data-src="${movie.banner_url}" alt="${movie.name}">
                     <div class="banner-content">
                         <h3>${movie.name}</h3>
                         <p>${movie.content}</p>
@@ -1147,6 +1169,19 @@
             const allMovies = [...customMovies, ...seriesMovies, ...singleMovies];
             const isMobile = window.innerWidth <= 480;
             const movieLimit = isMobile ? 999999999 : 40000;
+
+            // Kiểm tra cache
+            const cachedData = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+            const now = Date.now();
+            if (cachedData[currentPage] && (now - cachedData.timestamp) < CACHE_EXPIRY) {
+                bannerMovies = cachedData[currentPage].bannerMovies;
+                renderBanner();
+                cachedData[currentPage].movies.forEach(movie => {
+                    renderMovieItem(movie, elements.recommendedList);
+                });
+                observeImages();
+                return;
+            }
 
             // Tạo danh sách phim cho banner từ API
             let apiMovies = [];
@@ -1264,10 +1299,19 @@
                 }
 
                 observeImages();
+
+                // Lưu vào cache
+                const cacheData = {
+                    [currentPage]: {
+                        bannerMovies,
+                        movies: [...pageMovies, ...apiMovies.slice(0, movieLimit - pageMovies.length)],
+                        timestamp: Date.now()
+                    }
+                };
+                localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
             }
 
             function renderMovieItem(movie, container) {
-                // Đảm bảo apiSource và slug hợp lệ
                 if (!movie.apiSource || !['ophim1', 'phimapi', 'phimnguonc', 'custom'].includes(movie.apiSource)) {
                     console.warn(`apiSource không hợp lệ cho phim: ${movie.name}`, movie.apiSource);
                     movie.apiSource = 'custom';
@@ -1281,7 +1325,6 @@
                     ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
                     : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}`;
 
-                // Xử lý badge ngôn ngữ: Chỉ hiển thị dấu xanh cho Thuyết Minh (TM) và Lồng Tiếng (LT), Vietsub (VS) chỉ hiển thị chữ
                 const langText = movie.lang && movie.lang.toLowerCase().includes('thuyết minh') ? 'TM' :
                                 movie.lang && movie.lang.toLowerCase().includes('lồng tiếng') ? 'LT' : 'VS';
                 const langBadge = langText === 'VS' ? langText : `<i class="fas fa-check check-icon"></i> ${langText}`;
@@ -1291,7 +1334,7 @@
                 movieItem.innerHTML = `
                     <div class="movie-poster">
                         <a href="${detailUrl}">
-                            <img data-src="${movie.poster_url}" alt="${movie.name}" onerror="this.src='poster-not-found.jpg'">
+                            <img data-src="${movie.poster_url}" alt="${movie.name}">
                             <span class="episode-badge">${movie.episode_total} tập | ${langBadge}</span>
                             <div class="movie-overlay">
                                 <p>${movie.content}</p>
@@ -1320,7 +1363,6 @@
             }
         }
 
-        // Xử lý tìm kiếm
         elements.searchInput.addEventListener('input', () => {
             const searchTerm = elements.searchInput.value.trim();
             elements.clearSearch.classList.toggle('visible', searchTerm.length > 0);
@@ -1344,7 +1386,6 @@
             renderMovies(allApiUrls, customMovies, seriesMovies, singleMovies);
         });
 
-        // Tải dữ liệu
         Promise.all([
             loadApiUrls(),
             loadCustomMovies('customapi.txt'),
