@@ -900,7 +900,7 @@
                 episode_current: movie.episode_current || movie.current_episode || 'Tập 1',
                 time: movie.time || 'Không rõ',
                 quality: movie.quality || 'HD',
-                lang: movie.lang || movie.language || 'Vietsub',
+                lang: movie.lang || movie.language || 'Vietsub', // Mặc định là Vietsub nếu không có thông tin
                 year: year || 'Không rõ',
                 actors: Array.isArray(movie.actor) ? movie.actor.join(', ') : (movie.casts || 'Không có thông tin'),
                 directors: Array.isArray(movie.director) ? movie.director.join(', ') : (movie.director || 'Không có thông tin'),
@@ -1005,7 +1005,7 @@
                             type: episodeCount > 1 ? 'series' : 'movie',
                             apiSource,
                             apiUrl,
-                            lang: 'Vietsub'
+                            lang: 'Vietsub' // Mặc định là Vietsub, cần cập nhật trong file customapi.txt nếu là TM hoặc LT
                         });
                     }
                 }
@@ -1051,7 +1051,7 @@
                 if ((data.status === true || data.status === 'success') && data.movie) {
                     const movieData = normalizeMovieData(data, apiSource);
                     movieData.pageTag = apiUrls.find(api => api.url === url)?.pageTag || 'khac';
-                    movieData.apiSource = apiSource; // Đảm bảo apiSource được gán
+                    movieData.apiSource = apiSource;
                     return movieData;
                 }
                 return null;
@@ -1094,7 +1094,7 @@
             bannerMovies.forEach(movie => {
                 const detailUrl = movie.apiSource === 'custom'
                     ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
-                    : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`;
+                    : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}`;
                 const bannerItem = document.createElement('div');
                 bannerItem.classList.add('banner-item');
                 bannerItem.style.backgroundImage = `url(${movie.banner_url})`;
@@ -1270,7 +1270,7 @@
                 // Đảm bảo apiSource và slug hợp lệ
                 if (!movie.apiSource || !['ophim1', 'phimapi', 'phimnguonc', 'custom'].includes(movie.apiSource)) {
                     console.warn(`apiSource không hợp lệ cho phim: ${movie.name}`, movie.apiSource);
-                    movie.apiSource = 'custom'; // Mặc định là custom nếu sai
+                    movie.apiSource = 'custom';
                 }
                 if (!movie.slug) {
                     console.warn(`Slug không hợp lệ cho phim: ${movie.name}`);
@@ -1280,9 +1280,12 @@
                 const detailUrl = movie.apiSource === 'custom'
                     ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
                     : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}`;
-                const langText = movie.lang.toLowerCase().includes('thuyết minh') ? 'TM' :
-                                movie.lang.toLowerCase().includes('lồng tiếng') ? 'LT' : 'VS';
-                const langBadge = langText === 'Vietsub' ? langText : `<i class="fas fa-check check-icon"></i> ${langText}`;
+
+                // Xử lý badge ngôn ngữ: Chỉ hiển thị dấu xanh cho Thuyết Minh (TM) và Lồng Tiếng (LT), Vietsub (VS) chỉ hiển thị chữ
+                const langText = movie.lang && movie.lang.toLowerCase().includes('thuyết minh') ? 'TM' :
+                                movie.lang && movie.lang.toLowerCase().includes('lồng tiếng') ? 'LT' : 'VS';
+                const langBadge = langText === 'VS' ? langText : `<i class="fas fa-check check-icon"></i> ${langText}`;
+
                 const movieItem = document.createElement('div');
                 movieItem.classList.add('movie-item');
                 movieItem.innerHTML = `
