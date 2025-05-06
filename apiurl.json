@@ -91,16 +91,15 @@
   "https://phimapi.com/phim/trung-tam-cham-soc-chan-thuong",
   "https://phim.nguonc.com/api/film/nu-hoang-nuoc-mat",
   "https://phim.nguonc.com/api/film/ban-trai-toi-la-ho-ly-phan-2",
-  "https://phim.nguonc.com/api/film/ban-trai-toi-la-ho-ly-phan-1",
+  "https://ophim1.com/phim/ban-trai-toi-la-ho-ly",
   "https://phim.nguonc.com/api/film/tang-lop-itaewon",
   "https://phim.nguonc.com/api/film/co-dau-thuy-than",
   "https://phim.nguonc.com/api/film/mua-he-yeu-dau-cua-chung-ta",
   "https://phim.nguonc.com/api/film/tan-the-gioi",
   "https://phimapi.com/phim/quan-vuong-bat-diet",
-  "https://phim.nguonc.com/api/film/bac-si-ma",
+  "https://ophim1.com/phim/bac-si-ma",
   "https://phimapi.com/phim/vien-da-bi-an",
   "https://phim.nguonc.com/api/film/mot-ngay-no-ke-huy-diet-go-cua-nha-toi",
-  "https://phim.nguonc.com/api/film/chuyen-tinh-ai-cua-chun-hwa",
   "https://phimapi.com/phim/hoi-ban-trai-cua-bunny"
 ] },
 
@@ -113,24 +112,27 @@
   "https://phimapi.com/phim/lat-mat-6-tam-ve-dinh-menh",
   "https://phimapi.com/phim/7-nam-chua-cuoi-se-chia-tay",
   "https://phimapi.com/phim/mai-2024",
-  "https://phimapi.com/phim/my-nhan-ke"
+  "https://phimapi.com/phim/my-nhan-ke",
+  "https://phimapi.com/phim/lam-giau-voi-ma",
+  "https://phimapi.com/phim/gap-lai-chi-bau",
+  "https://phimapi.com/phim/dat-rung-phuong-nam",
+  "https://phimapi.com/phim/cha-toi-nguoi-o-lai",
+  "https://phimapi.com/phim/hanh-phuc-bi-danh-cap"
 ] },
 
 
 { "phim-my": [
 "https://phimapi.com/phim/plankton-ban-dien-anh",
-"https://ophim1.com/phim/one-day",
-"https://ophim1.com/phim/one-piece-2023",
-"https://phimapi.com/phim/daredevil-tai-xuat",
-"https://ophim1.com/phim/ke-dong-hanh",
-"https://ophim1.com/phim/star-trek-bo-phan-31",
-"https://ophim1.com/phim/mufasa-vua-su-tu",
+"https://phim.nguonc.com/api/film/one-piece-live-action",
+"https://phim.nguonc.com/api/film/daredevil-tai-sinh-phan-1",
 "https://ophim1.com/phim/nickel-boys",
 "https://ophim1.com/phim/hiem-hoa-tren-khong",
 "https://ophim1.com/phim/villa-ngot-ngao",
-"https://ophim1.com/phim/hem-nui",
+"https://phimapi.com/phim/hem-nui",
 "https://ophim1.com/phim/nguoi-nhen-khong-con-nha",
-"https://ophim1.com/phim/nhim-sonic-3"
+"https://phim.nguonc.com/api/film/nhim-sonic-3",
+"https://phim.nguonc.com/api/film/buoi-hen-ho-kinh-hoang",
+"https://phim.nguonc.com/api/film/nguoi-ve-tu-sao-hoa"
 ] },
 
 { "truyen-hinh": [
@@ -156,7 +158,13 @@
 ] },
 
 { "hoat-hinh": [
-
+  "https://phim.nguonc.com/api/film/chuyen-phieu-luu-phep-thuat",
+  "https://phim.nguonc.com/api/film/cong-chua-toc-xu",
+  "https://phim.nguonc.com/api/film/ralph-dap-pha-pha-dao-the-gioi-ao",
+  "https://phim.nguonc.com/api/film/hanh-trinh-cua-moana-2",
+  "https://phim.nguonc.com/api/film/nu-hoang-bang-gia-2",
+  "https://phim.nguonc.com/api/film/khach-san-huyen-bi-4-ma-ca-rong-bien-hinh",
+  "https://phim.nguonc.com/api/film/cong-ty-quai-vat",
   "https://phim.nguonc.com/api/film/hoa-hong-versailles",
   "https://phim.nguonc.com/api/film/cocoon-mua-ha-mong-manh",
   "https://phim.nguonc.com/api/film/nguoi-doi-ninja-doi-dau-lien-minh-yakuza",
