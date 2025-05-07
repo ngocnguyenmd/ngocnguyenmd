@@ -159,7 +159,7 @@
 
         .nav-menu {
             display: flex;
-            gap: 15px;
+           肢: 15px;
             flex-wrap: wrap;
             justify-content: flex-end;
             align-items: center;
@@ -786,6 +786,7 @@
         let bannerMovies = [], currentBannerIndex = 0;
         const CACHE_KEY = 'movie_data_cache';
         const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+        const BATCH_SIZE = 5; // Giới hạn số lượng API gọi cùng lúc
 
         // Theme Toggle
         elements.themeToggle.addEventListener('click', () => {
@@ -908,14 +909,14 @@
                 modified: movie.modified?.time || movie.modified || 'Không rõ',
                 episodes: uniqueEpisodes,
                 servers,
-                view: movie.view || 0,
+                view: movie.view || 0
             };
         }
 
         async function loadCustomMovies(file) {
             try {
-                const response = await fetch(file);
-                if (!response.ok) throw new Error(`Không thể tải file ${file}`);
+                const response = await fetch(file, { cache: 'force-cache' });
+                if (!response.ok) return [];
                 const text = await response.text();
                 const lines = text.split('\n').map(line => line.trim()).filter(line => line);
                 const movies = [];
@@ -988,7 +989,6 @@
                         }
 
                         if (!slug) {
-                            console.warn(`Slug không hợp lệ cho phim: ${movieName}`);
                             slug = `custom-${Date.now()}`;
                         }
 
@@ -1016,15 +1016,14 @@
                 }
                 return movies;
             } catch (error) {
-                console.error(`Lỗi khi tải ${file}:`, error);
                 return [];
             }
         }
 
         async function loadApiUrls() {
             try {
-                const response = await fetch('apiurl.json');
-                if (!response.ok) throw new Error('Không thể tải apiurl.json');
+                const response = await fetch('apiurl.json', { cache: 'force-cache' });
+                if (!response.ok) return [];
                 const data = await response.json();
                 const apiUrls = [];
                 data.forEach(item => {
@@ -1040,15 +1039,18 @@
                 });
                 return apiUrls;
             } catch (error) {
-                console.error('Lỗi khi tải apiurl.json:', error);
                 return [];
             }
         }
 
-        async function fetchMovieData(url, apiSource, apiUrls, retries = 2) {
+        async function fetchMovieData(url, apiSource, apiUrls, retries = 1) {
             try {
-                const response = await fetch(url, { mode: 'cors' });
-                if (!response.ok) throw new Error(`Không thể tải dữ liệu từ ${url}`);
+                const response = await fetch(url, {
+                    mode: 'cors',
+                    cache: 'force-cache',
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (!response.ok) return null;
                 const data = await response.json();
                 if ((data.status === true || data.status === 'success') && data.movie) {
                     const movieData = normalizeMovieData(data, apiSource);
@@ -1059,10 +1061,8 @@
                 return null;
             } catch (error) {
                 if (retries > 0) {
-                    console.warn(`Thử lại ${url}, còn ${retries} lần`);
                     return fetchMovieData(url, apiSource, apiUrls, retries - 1);
                 }
-                console.error(`Lỗi khi tải dữ liệu từ ${url}:`, error);
                 return null;
             }
         }
@@ -1075,10 +1075,12 @@
                         if (entry.isIntersecting) {
                             const img = entry.target;
                             img.src = img.dataset.src;
+                            img.loading = 'lazy';
+                            img.decoding = 'async';
                             img.onload = () => img.classList.add('loaded');
                             img.onerror = () => {
-                                console.error(`Không thể tải ảnh: ${img.dataset.src}`);
                                 img.src = 'https://via.placeholder.com/200x300?text=No+Image';
+                                img.classList.add('loaded');
                             };
                             observer.unobserve(img);
                         }
@@ -1086,13 +1088,14 @@
                 }, { threshold: 0.1 });
                 images.forEach(img => observer.observe(img));
             } else {
-                // Fallback cho trình duyệt không hỗ trợ IntersectionObserver
                 images.forEach(img => {
                     img.src = img.dataset.src;
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
                     img.onload = () => img.classList.add('loaded');
                     img.onerror = () => {
-                        console.error(`Không thể tải ảnh: ${img.dataset.src}`);
                         img.src = 'https://via.placeholder.com/200x300?text=No+Image';
+                        img.classList.add('loaded');
                     };
                 });
             }
@@ -1168,12 +1171,12 @@
             const filteredUrls = apiUrls.filter(({ pageTag }) => pageTag === currentPage);
             const allMovies = [...customMovies, ...seriesMovies, ...singleMovies];
             const isMobile = window.innerWidth <= 480;
-            const movieLimit = isMobile ? 999999999 : 40000;
+            const movieLimit = isMobile ? 60 : 100; // Tăng giới hạn để hiển thị nhiều phim hơn
 
             // Kiểm tra cache
             const cachedData = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
             const now = Date.now();
-            if (cachedData[currentPage] && (now - cachedData.timestamp) < CACHE_EXPIRY) {
+            if (cachedData[currentPage] && (now - cachedData.timestamp) < CACHE_EXPIRY && !searchTerm) {
                 bannerMovies = cachedData[currentPage].bannerMovies;
                 renderBanner();
                 cachedData[currentPage].movies.forEach(movie => {
@@ -1186,23 +1189,25 @@
             // Tạo danh sách phim cho banner từ API
             let apiMovies = [];
             let bannerUrls = currentPage === 'index' ? apiUrls : apiUrls.filter(({ pageTag }) => pageTag === currentPage);
-            const apiPromises = bannerUrls.slice(0, 10).map(({ url, apiSource }) =>
-                fetchMovieData(url, apiSource, apiUrls).then(data => {
-                    if (data && (currentPage === 'index' || data.pageTag === currentPage)) {
-                        apiMovies.push({ ...data, apiSource });
-                    }
-                })
-            );
-            await Promise.all(apiPromises);
+            const bannerPromises = [];
+            for (let i = 0; i < bannerUrls.length && i < 10; i += BATCH_SIZE) {
+                const batch = bannerUrls.slice(i, i + BATCH_SIZE).map(({ url, apiSource }) =>
+                    fetchMovieData(url, apiSource, apiUrls).then(data => {
+                        if (data && (currentPage === 'index' || data.pageTag === currentPage)) {
+                            apiMovies.push({ ...data, apiSource });
+                        }
+                    })
+                );
+                bannerPromises.push(...batch);
+            }
+            await Promise.all(bannerPromises);
 
             bannerMovies = shuffleArray(apiMovies).slice(0, isMobile ? 3 : 3);
             renderBanner();
 
-            // Xử lý tìm kiếm
             if (searchTerm) {
                 const normalizedSearch = normalizeSearchText(searchTerm);
                 const searchResults = [];
-
                 allMovies.forEach(movie => {
                     if (
                         normalizeSearchText(movie.name).includes(normalizedSearch) ||
@@ -1214,18 +1219,22 @@
                     }
                 });
 
-                const apiSearchPromises = apiUrls.slice(0, 10).map(({ url, apiSource }) =>
-                    fetchMovieData(url, apiSource, apiUrls).then(data => {
-                        if (data && (
-                            normalizeSearchText(data.name).includes(normalizedSearch) ||
-                            normalizeSearchText(data.origin_name || '').includes(normalizedSearch) ||
-                            normalizeSearchText(data.categories || '').includes(normalizedSearch) ||
-                            normalizeSearchText(data.countries || '').includes(normalizedSearch)
-                        )) {
-                            searchResults.push({ ...data, apiSource });
-                        }
-                    })
-                );
+                const apiSearchPromises = [];
+                for (let i = 0; i < apiUrls.length && i < 10; i += BATCH_SIZE) {
+                    const batch = apiUrls.slice(i, i + BATCH_SIZE).map(({ url, apiSource }) =>
+                        fetchMovieData(url, apiSource, apiUrls).then(data => {
+                            if (data && (
+                                normalizeSearchText(data.name).includes(normalizedSearch) ||
+                                normalizeSearchText(data.origin_name || '').includes(normalizedSearch) ||
+                                normalizeSearchText(data.categories || '').includes(normalizedSearch) ||
+                                normalizeSearchText(data.countries || '').includes(normalizedSearch)
+                            )) {
+                                searchResults.push({ ...data, apiSource });
+                            }
+                        })
+                    );
+                    apiSearchPromises.push(...batch);
+                }
                 await Promise.all(apiSearchPromises);
 
                 elements.searchSuggestions.innerHTML = '';
@@ -1258,14 +1267,18 @@
                         renderMovieItem(movie, elements.recommendedList);
                     });
 
-                    filteredUrls.slice(0, movieLimit - pageMovies.length).forEach(({ url, apiSource }) => {
-                        fetchMovieData(url, apiSource, apiUrls).then(data => {
-                            if (data) {
-                                renderMovieItem(data, elements.recommendedList);
-                                observeImages();
-                            }
-                        });
-                    });
+                    const apiPromises = [];
+                    for (let i = 0; i < filteredUrls.length && i < (movieLimit - pageMovies.length); i += BATCH_SIZE) {
+                        const batch = filteredUrls.slice(i, i + BATCH_SIZE).map(({ url, apiSource }) =>
+                            fetchMovieData(url, apiSource, apiUrls).then(data => {
+                                if (data) {
+                                    renderMovieItem(data, elements.recommendedList);
+                                }
+                            })
+                        );
+                        apiPromises.push(...batch);
+                    }
+                    await Promise.all(apiPromises);
                 }
 
                 // Section "Phim bánh mì"
@@ -1313,11 +1326,9 @@
 
             function renderMovieItem(movie, container) {
                 if (!movie.apiSource || !['ophim1', 'phimapi', 'phimnguonc', 'custom'].includes(movie.apiSource)) {
-                    console.warn(`apiSource không hợp lệ cho phim: ${movie.name}`, movie.apiSource);
                     movie.apiSource = 'custom';
                 }
                 if (!movie.slug) {
-                    console.warn(`Slug không hợp lệ cho phim: ${movie.name}`);
                     movie.slug = movie.name.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-') || `custom-${Date.now()}`;
                 }
 
@@ -1406,8 +1417,7 @@
 
             adjustMainContentPadding();
             highlightActiveMenu();
-        }).catch(error => {
-            console.error('Lỗi khi tải dữ liệu ban đầu:', error);
+        }).catch(() => {
             elements.recommendedList.innerHTML = '<p>Lỗi tải dữ liệu phim.</p>';
         });
 
