@@ -54,7 +54,6 @@
             flex-direction: column;
             overflow-x: hidden;
             width: 100vw;
-            transform: scale(1);
         }
 
         .header {
@@ -195,7 +194,7 @@
         }
 
         .main-content {
-            max-width: 2000px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 100px 20px 40px;
             flex: 1;
@@ -203,9 +202,9 @@
 
         .banner-section {
             position: relative;
-            margin-bottom: 10px;
+            margin-bottom: 40px;
             overflow: hidden;
-            height: 220px;
+            height: 400px;
         }
 
         .banner-slider {
@@ -219,9 +218,8 @@
             height: 100%;
             display: flex;
             align-items: flex-end;
-            padding-top: 5px;
             position: relative;
-            background-size: contain;
+            background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
         }
@@ -229,7 +227,7 @@
         .banner-item img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             position: absolute;
             top: 0;
             left: 0;
@@ -244,8 +242,14 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             z-index: 1;
+        }
+
+        .banner-item.skeleton::before {
+            background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
         }
 
         .banner-content {
@@ -286,6 +290,7 @@
 
         .banner-content a:hover {
             background: var(--primary-hover);
+            transform: translateY(-2px);
         }
 
         .banner-nav {
@@ -320,12 +325,12 @@
         }
 
         .movie-section {
-            margin-bottom: 60px;
+            margin-bottom: 40px;
         }
 
         .movie-section h2 {
             font-size: 2em;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             font-weight: 700;
             color: var(--primary-color);
             text-align: left;
@@ -336,15 +341,12 @@
 
         .movie-list {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
             justify-content: center;
         }
 
         .movie-item {
-            width: 100%;
-            max-width: 200px;
-            height: 360px;
             position: relative;
             transition: var(--transition);
             display: flex;
@@ -356,14 +358,14 @@
         }
 
         .movie-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
         }
 
         .movie-poster {
-            flex: 1;
             position: relative;
             overflow: hidden;
+            aspect-ratio: 2 / 3;
         }
 
         .movie-poster a {
@@ -382,9 +384,21 @@
             transition: opacity 0.3s ease;
         }
 
+        .movie-poster.skeleton::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            z-index: 1;
+        }
+
         .movie-poster img:not(.loaded) {
             opacity: 0;
-            background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23333"/%3E%3C/svg%3E') center/cover;
         }
 
         .movie-poster img.loaded {
@@ -393,25 +407,23 @@
 
         .episode-badge {
             position: absolute;
-            top: 5px;
-            right: 5px;
+            top: 8px;
+            right: 8px;
             background: var(--primary-color);
             color: var(--text-white);
-            padding: 4px 8px;
-            border-radius: 3px;
-            font-size: 0.75em;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             white-space: nowrap;
-            overflow: hidden;
-            line-height: 1.2;
         }
 
         .episode-badge .check-icon {
             color: var(--green-check);
-            font-size: 0.6em;
+            font-size: 0.7em;
         }
 
         .movie-overlay {
@@ -420,7 +432,7 @@
             left: 0;
             right: 0;
             background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-            padding: 15px;
+            padding: 10px;
             opacity: 0;
             transition: var(--transition);
         }
@@ -430,7 +442,7 @@
         }
 
         .movie-overlay p {
-            font-size: 0.9em;
+            font-size: 0.85em;
             color: var(--text-gray);
             overflow: hidden;
             text-overflow: ellipsis;
@@ -489,6 +501,7 @@
         .footer-btn:hover {
             background: var(--primary-hover);
             transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
         .footer-text {
@@ -523,20 +536,23 @@
             display: flex;
         }
 
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
         @media (max-width: 1024px) {
             .movie-list {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 30px;
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 15px;
             }
 
             .banner-section {
-                height: 90%;
-                gap: 20px;
+                height: 350px;
             }
 
             .movie-item {
                 max-width: 180px;
-                height: 340px;
             }
 
             .movie-title {
@@ -544,7 +560,7 @@
             }
 
             .episode-badge {
-                font-size: 0.75em;
+                font-size: 0.8em;
             }
         }
 
@@ -583,13 +599,12 @@
             }
 
             .movie-list {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 12px;
             }
 
             .movie-item {
                 max-width: 160px;
-                height: 320px;
             }
 
             .movie-title {
@@ -601,15 +616,15 @@
             }
 
             .banner-section {
-                height: 250px;
+                height: 300px;
             }
 
             .banner-content h3 {
-                font-size: 1.4em;
+                font-size: 1.6em;
             }
 
             .banner-content p {
-                font-size: 0.85em;
+                font-size: 0.9em;
                 -webkit-line-clamp: 1;
             }
 
@@ -620,12 +635,8 @@
             }
 
             .episode-badge {
-                font-size: 0.7em;
-                padding: 3px 6px;
-            }
-
-            .episode-badge .check-icon {
-                font-size: 0.7em;
+                font-size: 0.75em;
+                padding: 4px 8px;
             }
         }
 
@@ -653,19 +664,16 @@
             }
 
             .movie-list {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
-                justify-items: center;
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 10px;
             }
 
             .movie-item {
-                max-width: 110px;
-                height: 260px;
-                aspect-ratio: 2/3;
+                max-width: 120px;
             }
 
             .movie-title {
-                font-size: 0.8em;
+                font-size: 0.85em;
             }
 
             .movie-section h2 {
@@ -673,15 +681,15 @@
             }
 
             .banner-section {
-                height: 200px;
+                height: 250px;
             }
 
             .banner-content h3 {
-                font-size: 1.2em;
+                font-size: 1.4em;
             }
 
             .banner-content p {
-                font-size: 0.8em;
+                font-size: 0.85em;
                 -webkit-line-clamp: 1;
             }
 
@@ -694,10 +702,6 @@
             .episode-badge {
                 font-size: 0.7em;
                 padding: 3px 6px;
-            }
-
-            .episode-badge .check-icon {
-                font-size: 0.7em;
             }
         }
     </style>
@@ -785,7 +789,7 @@
         let allApiUrls = [], customMovies = [], seriesMovies = [], singleMovies = [];
         let bannerMovies = [], currentBannerIndex = 0;
         const CACHE_KEY = 'movie_data_cache';
-        const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+        const CACHE_EXPIRY = 24 * 60 * 60 * 1000;
 
         // Theme Toggle
         elements.themeToggle.addEventListener('click', () => {
@@ -810,7 +814,7 @@
         });
 
         function adjustMainContentPadding() {
-            const headerHeight = document.querySelector('.header').getBoundingClientRect().height;
+            const headerHeight = document.querySelector('.header').offsetHeight;
             document.querySelector('.main-content').style.paddingTop = `${headerHeight + 20}px`;
         }
 
@@ -825,25 +829,13 @@
             const movie = data.movie;
             let categories = [], countries = [], year = movie.year, episodes = [], servers = [];
 
-            if (apiSource === 'ophim1') {
+            if (apiSource === 'ophim1' || apiSource === 'phimapi') {
                 categories = movie.category?.map(c => c.name) || [];
                 countries = movie.country?.map(c => c.name) || [];
-                servers = data.episodes?.map(server => ({
-                    server_name: server.server_name || 'Server ' + (servers.length + 1),
+                servers = data.episodes?.map((server, index) => ({
+                    server_name: server.server_name || `Server ${index + 1}`,
                     server_data: (server.server_data || []).map(ep => ({
-                        name: ep.name.replace('Tập ', '').trim(),
-                        link_m3u8: ep.link_m3u8 || '',
-                        link_embed: ep.link_embed || '',
-                        link_video: ep.link_video || ''
-                    }))
-                })) || [];
-            } else if (apiSource === 'phimapi') {
-                categories = movie.category?.map(c => c.name) || [];
-                countries = movie.country?.map(c => c.name) || [];
-                servers = data.episodes?.map(server => ({
-                    server_name: server.server_name || 'Server ' + (servers.length + 1),
-                    server_data: (server.server_data || []).map(ep => ({
-                        name: ep.name.replace('Tập ', '').trim(),
+                        name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
                         link_m3u8: ep.link_m3u8 || '',
                         link_embed: ep.link_embed || '',
                         link_video: ep.link_video || ''
@@ -852,19 +844,15 @@
             } else if (apiSource === 'phimnguonc') {
                 if (movie.category && typeof movie.category === 'object') {
                     Object.values(movie.category).forEach(group => {
-                        if (group.group.name === 'Thể loại') {
-                            categories = group.list.map(item => item.name);
-                        } else if (group.group.name === 'Quốc gia') {
-                            countries = group.list.map(item => item.name);
-                        } else if (group.group.name === 'Năm') {
-                            year = group.list[0]?.name || year;
-                        }
+                        if (group.group.name === 'Thể loại') categories = group.list.map(item => item.name);
+                        else if (group.group.name === 'Quốc gia') countries = group.list.map(item => item.name);
+                        else if (group.group.name === 'Năm') year = group.list[0]?.name || year;
                     });
                 }
-                servers = data.movie.episodes?.map(server => ({
-                    server_name: server.server_name || 'Server ' + (servers.length + 1),
+                servers = movie.episodes?.map((server, index) => ({
+                    server_name: server.server_name || `Server ${index + 1}`,
                     server_data: (server.items || []).map(ep => ({
-                        name: ep.name.replace('Tập ', '').trim(),
+                        name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
                         link_m3u8: ep.m3u8 || '',
                         link_embed: ep.embed || '',
                         link_video: ep.link_video || ''
@@ -873,42 +861,27 @@
             }
 
             episodes = servers.flatMap(server => server.server_data);
-            const uniqueEpisodes = [];
-            const seen = new Set();
-            episodes.forEach(ep => {
-                const key = `${ep.name}|${ep.link_m3u8}|${ep.link_embed}|${ep.link_video}`;
-                if (!seen.has(key)) {
-                    seen.add(key);
-                    uniqueEpisodes.push(ep);
-                }
-            });
-
             return {
                 id: movie._id || movie.id,
                 name: movie.name,
                 slug: movie.slug,
-                origin_name: movie.origin_name || movie.original_name,
-                poster_url: movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/200x300?text=No+Image',
-                banner_url: movie.banner_url || movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/200x300?text=No+Image',
-                thumb_url: movie.thumb_url || movie.poster_url || 'https://via.placeholder.com/200x300?text=No+Image',
+                origin_name: movie.origin_name || movie.original_name || 'Không có',
+                poster_url: movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/200x300',
+                banner_url: movie.banner_url || movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/1200x400',
                 content: movie.content || movie.description || 'Không có nội dung',
-                type: movie.type || (uniqueEpisodes.length > 1 ? 'series' : 'movie'),
+                type: movie.type || (episodes.length > 1 ? 'series' : 'movie'),
                 status: movie.status || movie.current_episode || 'unknown',
-                episode_total: parseInt((movie.episode_total || movie.total_episodes || uniqueEpisodes.length || '1').toString().replace('Tập', '').trim()) || 1,
-                episode_current: movie.episode_current || movie.current_episode || 'Tập 1',
+                episode_total: parseInt((movie.episode_total || episodes.length || '1').toString().replace('Tập', '').trim()) || 1,
                 time: movie.time || 'Không rõ',
                 quality: movie.quality || 'HD',
                 lang: movie.lang || movie.language || 'Vietsub',
                 year: year || 'Không rõ',
-                actors: Array.isArray(movie.actor) ? movie.actor.join(', ') : (movie.casts || 'Không có thông tin'),
-                directors: Array.isArray(movie.director) ? movie.director.join(', ') : (movie.director || 'Không có thông tin'),
-                categories: categories.join(', '),
-                countries: countries.join(', '),
-                created: movie.created?.time || movie.created || 'Không rõ',
-                modified: movie.modified?.time || movie.modified || 'Không rõ',
-                episodes: uniqueEpisodes,
-                servers,
-                view: movie.view || 0,
+                actors: Array.isArray(movie.actor) ? movie.actor.join(', ') : (typeof movie.actor === 'string' ? movie.actor : (movie.casts || 'Không có thông tin')),
+                directors: Array.isArray(movie.director) ? movie.director.join(', ') : (typeof movie.director === 'string' ? movie.director : (movie.director || 'Không có thông tin')),
+                categories: categories.join(', ') || 'Không rõ',
+                countries: countries.join(', ') || 'Không rõ',
+                episodes,
+                servers
             };
         }
 
@@ -953,7 +926,7 @@
                             } else if (lines[j].startsWith('https')) {
                                 if (lines[j].endsWith('.m3u8')) {
                                     link_m3u8 = lines[j];
-                                } else if (lines[j].includes('youtube.com') || link.includes('vimeo.com') || lines[j].includes('drive.google.com')) {
+                                } else if (lines[j].includes('youtube.com') || lines[j].includes('vimeo.com') || lines[j].includes('drive.google.com')) {
                                     link_embed = lines[j];
                                 } else {
                                     link_video = lines[j];
@@ -992,7 +965,7 @@
                             slug = `custom-${Date.now()}`;
                         }
 
-                        const validPosterUrl = posterUrl && posterUrl.startsWith('http') ? posterUrl : 'https://via.placeholder.com/200x300?text=No+Image';
+                        const validPosterUrl = posterUrl && posterUrl.startsWith('http') ? posterUrl : 'https://via.placeholder.com/200x300';
 
                         movies.push({
                             pageTag,
@@ -1002,15 +975,20 @@
                             banner_url: validPosterUrl,
                             quality: quality || 'HD',
                             content: 'Nội dung không có trong thư viện',
-                            actors: 'Không có thông tin diễn viên',
-                            directors: 'Không có thông tin đạo diễn',
-                            countries: 'Không có thông tin quốc gia',
+                            actors: 'Không có thông tin',
+                            directors: 'Không có thông tin',
+                            countries: 'Không rõ',
+                            categories: pageTag || 'Không rõ',
+                            year: 'Không rõ',
+                            time: 'Không rõ',
+                            lang: 'Vietsub',
+                            origin_name: 'Không có',
+                            status: 'unknown',
                             episodes,
                             episode_total: episodeCount || 1,
                             type: episodeCount > 1 ? 'series' : 'movie',
                             apiSource,
-                            apiUrl,
-                            lang: 'Vietsub'
+                            apiUrl
                         });
                     }
                 }
@@ -1048,7 +1026,7 @@
         async function fetchMovieData(url, apiSource, apiUrls, retries = 2) {
             try {
                 const response = await fetch(url, { mode: 'cors' });
-                if (!response.ok) throw new Error(`Không thể tải dữ liệu từ ${url}`);
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                 const data = await response.json();
                 if ((data.status === true || data.status === 'success') && data.movie) {
                     const movieData = normalizeMovieData(data, apiSource);
@@ -1074,26 +1052,41 @@
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             const img = entry.target;
+                            const parent = img.closest('.movie-poster, .banner-item');
                             img.src = img.dataset.src;
-                            img.onload = () => img.classList.add('loaded');
+                            img.onload = () => {
+                                img.classList.add('loaded');
+                                parent.classList.remove('skeleton');
+                            };
                             img.onerror = () => {
                                 console.error(`Không thể tải ảnh: ${img.dataset.src}`);
-                                img.src = 'https://via.placeholder.com/200x300?text=No+Image';
+                                img.src = parent.classList.contains('banner-item') ? 'https://via.placeholder.com/1200x400' : 'https://via.placeholder.com/200x300';
+                                img.classList.add('loaded');
+                                parent.classList.remove('skeleton');
                             };
                             observer.unobserve(img);
                         }
                     });
-                }, { threshold: 0.1 });
-                images.forEach(img => observer.observe(img));
-            } else {
-                // Fallback cho trình duyệt không hỗ trợ IntersectionObserver
+                }, { threshold: 0.2 });
                 images.forEach(img => {
+                    img.closest('.movie-poster, .banner-item').classList.add('skeleton');
+                    observer.observe(img);
+                });
+            } else {
+                images.forEach(img => {
+                    const parent = img.closest('.movie-poster, .banner-item');
                     img.src = img.dataset.src;
-                    img.onload = () => img.classList.add('loaded');
+                    img.onload = () => {
+                        img.classList.add('loaded');
+                        parent.classList.remove('skeleton');
+                    };
                     img.onerror = () => {
                         console.error(`Không thể tải ảnh: ${img.dataset.src}`);
-                        img.src = 'https://via.placeholder.com/200x300?text=No+Image';
+                        img.src = parent.classList.contains('banner-item') ? 'https://via.placeholder.com/1200x400' : 'https://via.placeholder.com/200x300';
+                        img.classList.add('loaded');
+                        parent.classList.remove('skeleton');
                     };
+                    parent.classList.add('skeleton');
                 });
             }
         }
@@ -1115,7 +1108,7 @@
             }
             bannerMovies.forEach(movie => {
                 const detailUrl = movie.apiSource === 'custom'
-                    ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
+                    ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&categories=${encodeURIComponent(movie.categories)}&year=${encodeURIComponent(movie.year)}&time=${encodeURIComponent(movie.time)}&lang=${encodeURIComponent(movie.lang)}&origin_name=${encodeURIComponent(movie.origin_name)}&status=${encodeURIComponent(movie.status)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
                     : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}`;
                 const bannerItem = document.createElement('div');
                 bannerItem.classList.add('banner-item');
@@ -1131,6 +1124,7 @@
             });
 
             updateBannerPosition();
+            observeImages();
             startBannerAutoSlide();
         }
 
@@ -1168,12 +1162,12 @@
             const filteredUrls = apiUrls.filter(({ pageTag }) => pageTag === currentPage);
             const allMovies = [...customMovies, ...seriesMovies, ...singleMovies];
             const isMobile = window.innerWidth <= 480;
-            const movieLimit = isMobile ? 999999999 : 40000;
+            const movieLimit = isMobile ? 12 : 20;
 
             // Kiểm tra cache
             const cachedData = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
             const now = Date.now();
-            if (cachedData[currentPage] && (now - cachedData.timestamp) < CACHE_EXPIRY) {
+            if (cachedData[currentPage] && (now - cachedData.timestamp) < CACHE_EXPIRY && !searchTerm) {
                 bannerMovies = cachedData[currentPage].bannerMovies;
                 renderBanner();
                 cachedData[currentPage].movies.forEach(movie => {
@@ -1185,8 +1179,8 @@
 
             // Tạo danh sách phim cho banner từ API
             let apiMovies = [];
-            let bannerUrls = currentPage === 'index' ? apiUrls : apiUrls.filter(({ pageTag }) => pageTag === currentPage);
-            const apiPromises = bannerUrls.slice(0, 10).map(({ url, apiSource }) =>
+            let bannerUrls = currentPage === 'index' ? apiUrls : filteredUrls;
+            const apiPromises = bannerUrls.slice(0, 5).map(({ url, apiSource }) =>
                 fetchMovieData(url, apiSource, apiUrls).then(data => {
                     if (data && (currentPage === 'index' || data.pageTag === currentPage)) {
                         apiMovies.push({ ...data, apiSource });
@@ -1195,7 +1189,7 @@
             );
             await Promise.all(apiPromises);
 
-            bannerMovies = shuffleArray(apiMovies).slice(0, isMobile ? 3 : 3);
+            bannerMovies = shuffleArray(apiMovies).slice(0, 3);
             renderBanner();
 
             // Xử lý tìm kiếm
@@ -1322,11 +1316,11 @@
                 }
 
                 const detailUrl = movie.apiSource === 'custom'
-                    ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
+                    ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&categories=${encodeURIComponent(movie.categories)}&year=${encodeURIComponent(movie.year)}&time=${encodeURIComponent(movie.time)}&lang=${encodeURIComponent(movie.lang)}&origin_name=${encodeURIComponent(movie.origin_name)}&status=${encodeURIComponent(movie.status)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
                     : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}`;
 
-                const langText = movie.lang && movie.lang.toLowerCase().includes('thuyết minh') ? 'TM' :
-                                movie.lang && movie.lang.toLowerCase().includes('lồng tiếng') ? 'LT' : 'VS';
+                const langText = movie.lang.toLowerCase().includes('thuyết minh') ? 'TM' :
+                                movie.lang.toLowerCase().includes('lồng tiếng') ? 'LT' : 'VS';
                 const langBadge = langText === 'VS' ? langText : `<i class="fas fa-check check-icon"></i> ${langText}`;
 
                 const movieItem = document.createElement('div');
