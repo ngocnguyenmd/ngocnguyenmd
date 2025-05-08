@@ -13,8 +13,6 @@
 "https://phim.nguonc.com/api/film/thanh-pho-dong-vat-phi-vu-dong-troi",
 "https://phim.nguonc.com/api/film/bang-thuong-giai-te"
 
-
-
   ] },
   
   { "phim-trung": [
@@ -229,6 +227,13 @@
   "https://phim.nguonc.com/api/film/cam-on-bac-si"
 
 
-
-    ] }
+    ] },
+    { "Netflix": [
+      "https://phim.nguonc.com/api/film/bo-tam-phan-1",
+      "https://phimapi.com/phim/nhung-bac-si-tai-hoa-phan-1",
+      "https://phimapi.com/phim/nhung-bac-si-tai-hoa-phan-2",
+      "https://phim.nguonc.com/api/film/tro-choi-con-muc-phan-1",
+      "https://phim.nguonc.com/api/film/tro-choi-con-muc-phan-2",
+      "https://phim.nguonc.com/api/film/chuyen-tau-sinh-tu"
+      ] }
     ]

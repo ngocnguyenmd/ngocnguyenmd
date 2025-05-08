@@ -200,130 +200,6 @@
             flex: 1;
         }
 
-        .banner-section {
-            position: relative;
-            margin-bottom: 40px;
-            overflow: hidden;
-            height: 400px;
-        }
-
-        .banner-slider {
-            display: flex;
-            transition: transform 0.5s ease;
-            height: 100%;
-        }
-
-        .banner-item {
-            flex: 0 0 100%;
-            height: 100%;
-            display: flex;
-            align-items: flex-end;
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-
-        .banner-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .banner-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 1;
-        }
-
-        .banner-item.skeleton::before {
-            background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
-            background-size: 200% 100%;
-            animation: skeleton-loading 1.5s infinite;
-        }
-
-        .banner-content {
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-            padding: 20px;
-            width: 100%;
-            position: relative;
-            z-index: 2;
-        }
-
-        .banner-content h3 {
-            font-size: 2em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-            color: var(--text-white);
-        }
-
-        .banner-content p {
-            font-size: 1em;
-            color: var(--text-gray);
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-
-        .banner-content a {
-            text-decoration: none;
-            background: var(--primary-color);
-            color: var(--text-white);
-            padding: 10px 20px;
-            border-radius: var(--border-radius);
-            display: inline-block;
-            transition: var(--transition);
-        }
-
-        .banner-content a:hover {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
-        }
-
-        .banner-nav {
-            position: absolute;
-            top: 50%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            transform: translateY(-50%);
-            padding: 0 10px;
-            z-index: 2;
-        }
-
-        .banner-nav button {
-            background: rgba(0, 0, 0, 0.5);
-            border: none;
-            color: var(--text-white);
-            font-size: 1.5em;
-            padding: 8px;
-            cursor: pointer;
-            transition: var(--transition);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .banner-nav button:hover {
-            background: var(--primary-color);
-        }
-
         .movie-section {
             margin-bottom: 40px;
         }
@@ -547,10 +423,6 @@
                 gap: 15px;
             }
 
-            .banner-section {
-                height: 350px;
-            }
-
             .movie-item {
                 max-width: 180px;
             }
@@ -615,25 +487,6 @@
                 font-size: 1.8em;
             }
 
-            .banner-section {
-                height: 300px;
-            }
-
-            .banner-content h3 {
-                font-size: 1.6em;
-            }
-
-            .banner-content p {
-                font-size: 0.9em;
-                -webkit-line-clamp: 1;
-            }
-
-            .banner-nav button {
-                font-size: 1.2em;
-                width: 35px;
-                height: 35px;
-            }
-
             .episode-badge {
                 font-size: 0.75em;
                 padding: 4px 8px;
@@ -680,25 +533,6 @@
                 font-size: 1.6em;
             }
 
-            .banner-section {
-                height: 250px;
-            }
-
-            .banner-content h3 {
-                font-size: 1.4em;
-            }
-
-            .banner-content p {
-                font-size: 0.85em;
-                -webkit-line-clamp: 1;
-            }
-
-            .banner-nav button {
-                width: 30px;
-                height: 30px;
-                font-size: 1em;
-            }
-
             .episode-badge {
                 font-size: 0.7em;
                 padding: 3px 6px;
@@ -724,6 +558,7 @@
                 <a href="phim-my.html">Phim Mỹ</a>
                 <a href="truyen-hinh.html">Truyền hình</a>
                 <a href="hoat-hinh.html">Hoạt hình</a>
+                <a href="Netflix.html">Netflix</a>
                 <a href="khac.html">Khác</a>
                 <button class="theme-toggle" id="theme-toggle">
                     <i class="fas fa-moon"></i>
@@ -732,13 +567,6 @@
         </div>
     </header>
     <main class="main-content">
-        <section class="banner-section">
-            <div class="banner-slider" id="banner-slider"></div>
-            <div class="banner-nav">
-                <button id="banner-prev"><i class="fas fa-chevron-left"></i></button>
-                <button id="banner-next"><i class="fas fa-chevron-right"></i></button>
-            </div>
-        </section>
         <section class="movie-section">
             <h2>Phim đề cử</h2>
             <div class="movie-list" id="recommended-list"></div>
@@ -780,14 +608,10 @@
             clearSearch: document.getElementById('clear-search'),
             searchSuggestions: document.getElementById('search-suggestions'),
             scrollTop: document.getElementById('scroll-top'),
-            themeToggle: document.getElementById('theme-toggle'),
-            bannerSlider: document.getElementById('banner-slider'),
-            bannerPrev: document.getElementById('banner-prev'),
-            bannerNext: document.getElementById('banner-next')
+            themeToggle: document.getElementById('theme-toggle')
         };
         const currentPage = window.location.pathname.split('/').pop().split('.')[0] || 'index';
         let allApiUrls = [], customMovies = [], seriesMovies = [], singleMovies = [];
-        let bannerMovies = [], currentBannerIndex = 0;
         const CACHE_KEY = 'movie_data_cache';
         const CACHE_EXPIRY = 24 * 60 * 60 * 1000;
 
@@ -867,7 +691,6 @@
                 slug: movie.slug,
                 origin_name: movie.origin_name || movie.original_name || 'Không có',
                 poster_url: movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/200x300',
-                banner_url: movie.banner_url || movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/1200x400',
                 content: movie.content || movie.description || 'Không có nội dung',
                 type: movie.type || (episodes.length > 1 ? 'series' : 'movie'),
                 status: movie.status || movie.current_episode || 'unknown',
@@ -926,7 +749,7 @@
                             } else if (lines[j].startsWith('https')) {
                                 if (lines[j].endsWith('.m3u8')) {
                                     link_m3u8 = lines[j];
-                                } else if (lines[j].includes('youtube.com') || lines[j].includes('vimeo.com') || lines[j].includes('drive.google.com')) {
+                                } else if (lines[j].includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) {
                                     link_embed = lines[j];
                                 } else {
                                     link_video = lines[j];
@@ -972,7 +795,6 @@
                             name: movieName,
                             slug,
                             poster_url: validPosterUrl,
-                            banner_url: validPosterUrl,
                             quality: quality || 'HD',
                             content: 'Nội dung không có trong thư viện',
                             actors: 'Không có thông tin',
@@ -1046,13 +868,13 @@
         }
 
         function observeImages() {
-            const images = document.querySelectorAll('.movie-poster img, .banner-item img');
+            const images = document.querySelectorAll('.movie-poster img');
             if ('IntersectionObserver' in window) {
                 const observer = new IntersectionObserver((entries, observer) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             const img = entry.target;
-                            const parent = img.closest('.movie-poster, .banner-item');
+                            const parent = img.closest('.movie-poster');
                             img.src = img.dataset.src;
                             img.onload = () => {
                                 img.classList.add('loaded');
@@ -1060,7 +882,7 @@
                             };
                             img.onerror = () => {
                                 console.error(`Không thể tải ảnh: ${img.dataset.src}`);
-                                img.src = parent.classList.contains('banner-item') ? 'https://via.placeholder.com/1200x400' : 'https://via.placeholder.com/200x300';
+                                img.src = 'https://via.placeholder.com/200x300';
                                 img.classList.add('loaded');
                                 parent.classList.remove('skeleton');
                             };
@@ -1069,12 +891,12 @@
                     });
                 }, { threshold: 0.2 });
                 images.forEach(img => {
-                    img.closest('.movie-poster, .banner-item').classList.add('skeleton');
+                    img.closest('.movie-poster').classList.add('skeleton');
                     observer.observe(img);
                 });
             } else {
                 images.forEach(img => {
-                    const parent = img.closest('.movie-poster, .banner-item');
+                    const parent = img.closest('.movie-poster');
                     img.src = img.dataset.src;
                     img.onload = () => {
                         img.classList.add('loaded');
@@ -1082,7 +904,7 @@
                     };
                     img.onerror = () => {
                         console.error(`Không thể tải ảnh: ${img.dataset.src}`);
-                        img.src = parent.classList.contains('banner-item') ? 'https://via.placeholder.com/1200x400' : 'https://via.placeholder.com/200x300';
+                        img.src = 'https://via.placeholder.com/200x300';
                         img.classList.add('loaded');
                         parent.classList.remove('skeleton');
                     };
@@ -1099,55 +921,6 @@
             }
             return shuffled;
         }
-
-        function renderBanner() {
-            elements.bannerSlider.innerHTML = '';
-            if (bannerMovies.length === 0) {
-                elements.bannerSlider.innerHTML = '<p>Không có phim cho banner.</p>';
-                return;
-            }
-            bannerMovies.forEach(movie => {
-                const detailUrl = movie.apiSource === 'custom'
-                    ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&categories=${encodeURIComponent(movie.categories)}&year=${encodeURIComponent(movie.year)}&time=${encodeURIComponent(movie.time)}&lang=${encodeURIComponent(movie.lang)}&origin_name=${encodeURIComponent(movie.origin_name)}&status=${encodeURIComponent(movie.status)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
-                    : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}`;
-                const bannerItem = document.createElement('div');
-                bannerItem.classList.add('banner-item');
-                bannerItem.innerHTML = `
-                    <img data-src="${movie.banner_url}" alt="${movie.name}">
-                    <div class="banner-content">
-                        <h3>${movie.name}</h3>
-                        <p>${movie.content}</p>
-                        <a href="${detailUrl}">Xem ngay</a>
-                    </div>
-                `;
-                elements.bannerSlider.appendChild(bannerItem);
-            });
-
-            updateBannerPosition();
-            observeImages();
-            startBannerAutoSlide();
-        }
-
-        function updateBannerPosition() {
-            elements.bannerSlider.style.transform = `translateX(-${currentBannerIndex * 100}%)`;
-        }
-
-        function startBannerAutoSlide() {
-            setInterval(() => {
-                currentBannerIndex = (currentBannerIndex + 1) % bannerMovies.length;
-                updateBannerPosition();
-            }, 5000);
-        }
-
-        elements.bannerPrev.addEventListener('click', () => {
-            currentBannerIndex = (currentBannerIndex - 1 + bannerMovies.length) % bannerMovies.length;
-            updateBannerPosition();
-        });
-
-        elements.bannerNext.addEventListener('click', () => {
-            currentBannerIndex = (currentBannerIndex + 1) % bannerMovies.length;
-            updateBannerPosition();
-        });
 
         function normalizeSearchText(text) {
             return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -1168,29 +941,12 @@
             const cachedData = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
             const now = Date.now();
             if (cachedData[currentPage] && (now - cachedData.timestamp) < CACHE_EXPIRY && !searchTerm) {
-                bannerMovies = cachedData[currentPage].bannerMovies;
-                renderBanner();
                 cachedData[currentPage].movies.forEach(movie => {
                     renderMovieItem(movie, elements.recommendedList);
                 });
                 observeImages();
                 return;
             }
-
-            // Tạo danh sách phim cho banner từ API
-            let apiMovies = [];
-            let bannerUrls = currentPage === 'index' ? apiUrls : filteredUrls;
-            const apiPromises = bannerUrls.slice(0, 5).map(({ url, apiSource }) =>
-                fetchMovieData(url, apiSource, apiUrls).then(data => {
-                    if (data && (currentPage === 'index' || data.pageTag === currentPage)) {
-                        apiMovies.push({ ...data, apiSource });
-                    }
-                })
-            );
-            await Promise.all(apiPromises);
-
-            bannerMovies = shuffleArray(apiMovies).slice(0, 3);
-            renderBanner();
 
             // Xử lý tìm kiếm
             if (searchTerm) {
@@ -1297,8 +1053,7 @@
                 // Lưu vào cache
                 const cacheData = {
                     [currentPage]: {
-                        bannerMovies,
-                        movies: [...pageMovies, ...apiMovies.slice(0, movieLimit - pageMovies.length)],
+                        movies: [...pageMovies, ...filteredUrls.slice(0, movieLimit - pageMovies.length).map(({ url, apiSource }) => ({ url, apiSource }))],
                         timestamp: Date.now()
                     }
                 };
