@@ -78,6 +78,7 @@
  ] },
 
  { "phim-han": [
+  "https://phim.nguonc.com/api/film/bo-tam-phan-1",
   "https://phimapi.com/phim/bao-hiem-ly-hon",
   "https://phim.nguonc.com/api/film/chuyen-doi-bac-si-noi-tru",
   "https://ophim1.com/phim/hoa-du-ky",
@@ -127,20 +128,23 @@
 
 
 { "phim-my": [
-  "https://phim.nguonc.com/api/film/cai-chet-con-ky-lan",
-  "https://ophim1.com/phim/nguoi-hobbit-dai-chien-5-canh-quan-20-phut",
-  "https://phim.nguonc.com/api/film/nguoi-hobbit-hanh-trinh-vo-dinh",
-  "https://phim.nguonc.com/api/film/nguoi-hobbit-2-dai-chien-voi-rong-lua",
-  "https://phim.nguonc.com/api/film/nguoi-hobbit-3-dai-chien-5-canh-quan",
-  "https://phimapi.com/phim/plankton-ban-dien-anh",
+"https://phim.nguonc.com/api/film/cuoc-song-nhiem-mau",
+"https://phim.nguonc.com/api/film/dau-truong-am-nhac",
+"https://phim.nguonc.com/api/film/ban-be-hang-xom", 
+"https://phim.nguonc.com/api/film/nhung-nguoi-con-sot-lai-phan-2",
+"https://ophim1.com/phim/ky-uc-chien-tranh",
+"https://phim.nguonc.com/api/film/chuyen-hang-phim",
+"https://phim.nguonc.com/api/film/canh-sat-beverly-hills-axel-f",
+"https://phim.nguonc.com/api/film/yeu-lai-tu-dau-2024",
+"https://phim.nguonc.com/api/film/cai-chet-con-ky-lan",
+"https://phim.nguonc.com/api/film/nguoi-hobbit-dai-chien-5-canh-quan-20-phut",
+"https://phim.nguonc.com/api/film/nguoi-hobbit-hanh-trinh-vo-dinh",
+"https://phim.nguonc.com/api/film/nguoi-hobbit-2-dai-chien-voi-rong-lua",
+"https://phim.nguonc.com/api/film/nguoi-hobbit-3-dai-chien-5-canh-quan",
 "https://phim.nguonc.com/api/film/one-piece-live-action",
 "https://phim.nguonc.com/api/film/daredevil-tai-sinh-phan-1",
-"https://ophim1.com/phim/nickel-boys",
-"https://ophim1.com/phim/hiem-hoa-tren-khong",
-"https://ophim1.com/phim/villa-ngot-ngao",
-"https://phimapi.com/phim/hem-nui",
-"https://ophim1.com/phim/nguoi-nhen-khong-con-nha",
-"https://phim.nguonc.com/api/film/nhim-sonic-3",
+"https://phim.nguonc.com/api/film/villa-ngot-ngao",
+"https://phim.nguonc.com/api/film/hem-nui",
 "https://phim.nguonc.com/api/film/buoi-hen-ho-kinh-hoang",
 "https://phim.nguonc.com/api/film/nguoi-ve-tu-sao-hoa"
 ] },
