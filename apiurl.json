@@ -1,6 +1,7 @@
 [
   
   { "index": [
+    "https://phim.nguonc.com/api/film/mua-xuan-tuoi-tre",
 "https://phim.nguonc.com/api/film/hoai-thuy-truc-dinh",
 "https://phim.nguonc.com/api/film/chuyen-doi-bac-si-noi-tru",
 "https://phim.nguonc.com/api/film/cung-dien-ma-am",
@@ -32,7 +33,7 @@
 "https://phimapi.com/phim/bay-kiep-may-man",
 "https://phimapi.com/phim/thieu-nien-ca-hanh",
 "https://phimapi.com/phim/ky-kim-trieu",
-"https://phimapi.comm/phim/luu-ly-my-nhan-sat",
+"https://phimapi.com/phim/luu-ly-my-nhan-sat",
 "https://phim.nguonc.com/api/film/du-sinh-xin-chi-giao-nhieu-hon-quang-doi-con-lai-xin-chi-giao-nhieu-hon",
 "https://phimapi.com/phim/thuong-lan-quyet",
 "https://phimapi.com/phim/lien-hoa-lau",

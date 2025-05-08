@@ -217,7 +217,6 @@
 
         .video-container {
             width: 100%;
-            max-width: 900px;
             margin: 0 auto 25px;
             background: #000;
             border-radius: var(--border-radius);
@@ -524,6 +523,24 @@
                 padding: 10px 16px;
                 font-size: 1em;
                 min-width: 60px;
+            }
+
+            /* Fixed video size for desktop */
+            .video-container {
+                width: 900px;
+                max-width: 900px;
+                height: calc(900px * 9 / 16); /* Maintain 16:9 aspect ratio */
+            }
+
+            .video-player {
+                width: 900px;
+                height: calc(900px * 9 / 16);
+                object-fit: contain; /* Ensure video content fits without stretching */
+            }
+
+            .video-player iframe {
+                width: 900px;
+                height: calc(900px * 9 / 16);
             }
         }
 
@@ -1233,25 +1250,36 @@
             elements.episodeTitle.textContent = `Tập: ${episodeName || 'Tập 1'}`;
 
             if (linkType === 'm3u8' && linkUrl) {
-                elements.playerContainer.innerHTML = '<video id="video-player" class="video-player" controls crossorigin playsinline></video>';
+                elements.playerContainer.innerHTML = '<video id="video-player" class="video-player" controls crossorigin playsinline preload="metadata"></video>';
                 videoElement = document.getElementById('video-player');
                 try {
                     if (Hls.isSupported()) {
-                        const hls = new Hls();
+                        const hls = new Hls({
+                            autoStartLoad: false,
+                            maxBufferLength: 30,
+                            maxMaxBufferLength: 60,
+                            startLevel: -1, // Auto quality selection
+                            capLevelToPlayerSize: true // Match video quality to player size
+                        });
                         hls.loadSource(linkUrl);
                         hls.attachMedia(videoElement);
                         hls.on(Hls.Events.ERROR, () => {
                             showSubtitleMessage('Lỗi khi tải video.', true);
                         });
+                        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                            hls.startLoad();
+                        });
                         player = new Plyr(videoElement, {
                             controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'fullscreen'],
-                            captions: { active: true, update: true }
+                            captions: { active: true, update: true },
+                            quality: { default: 'auto', options: ['auto', 1080, 720, 480] }
                         });
                     } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
                         videoElement.src = linkUrl;
                         player = new Plyr(videoElement, {
                             controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'fullscreen'],
-                            captions: { active: true, update: true }
+                            captions: { active: true, update: true },
+                            quality: { default: 'auto', options: ['auto', 1080, 720, 480] }
                         });
                     } else {
                         throw new Error('Trình duyệt không hỗ trợ HLS');
@@ -1311,7 +1339,7 @@
                 elements.server2List.querySelector('h2').textContent = server2.server_name;
                 const m3u8Links = apiSource === 'phimnguonc' ? [] : server2.server_data.filter(ep => ep.link_m3u8);
                 const embedLinks = server2.server_data.filter(ep => ep.link_embed);
-                elements.server2M3u8.innerHTML = m3u8Links.length > 0 ? m3u8Links.map(ep => {
+                elements.server1M3u8.innerHTML = m3u8Links.length > 0 ? m3u8Links.map(ep => {
                     const displayName = ep.name === 'Tập 1' ? '1' : ep.name;
                     const isActive = ep.name === episodeName && linkType === 'm3u8' && ep.link_m3u8 === linkUrl;
                     return `<li><a href="watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(ep.name)}&type=m3u8&url=${encodeURIComponent(ep.link_m3u8)}&name=${encodeURIComponent(movieName || movieData.name)}${customEpisodesQuery}" class="${isActive ? 'active' : ''}">${displayName}</a></li>`;
@@ -1369,7 +1397,7 @@
                     episodeName = nextEpisode.name;
                     linkType = nextEpisode.link_m3u8 ? 'm3u8' : 'embed';
                     linkUrl = nextEpisode.link_m3u8 || nextEpisode.link_embed;
-                    window.location.href = `watch.html?slug=${encodeURIComponent(slug)}&apibook:apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(episodeName)}&type=${linkType}&url=${encodeURIComponent(linkUrl)}&name=${encodeURIComponent(movieName || movieData.name)}${customEpisodesQuery}`;
+                    window.location.href = `watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(episodeName)}&type=${linkType}&url=${encodeURIComponent(linkUrl)}&name=${encodeURIComponent(movieName || movieData.name)}${customEpisodesQuery}`;
                 }
             });
 

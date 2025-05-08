@@ -1162,7 +1162,7 @@
             const filteredUrls = apiUrls.filter(({ pageTag }) => pageTag === currentPage);
             const allMovies = [...customMovies, ...seriesMovies, ...singleMovies];
             const isMobile = window.innerWidth <= 480;
-            const movieLimit = isMobile ? 12 : 20;
+            const movieLimit = isMobile ? 99999 : 2000000000;
 
             // Kiểm tra cache
             const cachedData = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
