@@ -551,7 +551,7 @@
                 <div class="search-suggestions" id="search-suggestions"></div>
             </div>
             <div class="nav-menu">
-                <a href="index.html" class="active">Trang chủ</a>
+                <a href="index.html">Trang chủ</a>
                 <a href="phim-han.html">Phim Hàn</a>
                 <a href="phim-trung.html">Phim Trung</a>
                 <a href="phim-viet.html">Phim Việt</a>
@@ -610,7 +610,7 @@
             scrollTop: document.getElementById('scroll-top'),
             themeToggle: document.getElementById('theme-toggle')
         };
-        const currentPage = window.location.pathname.split('/').pop().split('.')[0] || 'index';
+        const currentPage = window.location.pathname.split('/').pop().split('.')[0] || 'Netflix';
         let allApiUrls = [], customMovies = [], seriesMovies = [], singleMovies = [];
         const CACHE_KEY = 'movie_data_cache';
         const CACHE_EXPIRY = 24 * 60 * 60 * 1000;
