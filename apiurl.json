@@ -150,23 +150,7 @@
 
 { "truyen-hinh": [
 
-"https://phim.nguonc.com/api/film/tieu-tien-chi-dao",
-"https://phim.nguonc.com/api/film/thai-co-chien-hon",
-"https://phim.nguonc.com/api/film/su-huynh-cua-ta-qua-manh",
-"https://phim.nguonc.com/api/film/su-huynh-cua-ta-qua-manh",
-"https://phim.nguonc.com/api/film/hoa-giang-ho-chi-bat-luong-nhan-phan-7",
-"https://phim.nguonc.com/api/film/sieu-nang-lap-phuong-sieu-pham",
-"https://phim.nguonc.com/api/film/tran-hon-nhai-4",
-"https://phim.nguonc.com/api/film/thang-cap-manh-nhat",
-"https://phim.nguonc.com/api/film/truong-ca-hanh-3d",
-"https://phim.nguonc.com/api/film/tinh-than-bien-6",
-"https://phim.nguonc.com/api/film/phong-vat-yeu-tru",
-"https://phim.nguonc.com/api/film/dau-chien-thien-ha",
-"https://phim.nguonc.com/api/film/thien-menh-dai-chua-te",
-"https://phim.nguonc.com/api/film/thieu-nien-ca-hanh-phan-4",
-"https://phim.nguonc.com/api/film/nguoi-dai-dien-thoi-gian-phan-3",
-"https://phim.nguonc.com/api/film/man-hoang-tien-gioi",
-"https://phim.nguonc.com/api/film/tan-tu-chi-vuong"
+"https://phimapi.com/phim/van-co-vay"
 
 ] },
 
@@ -229,7 +213,7 @@
 
 
     ] },
-    { "Netflix": [
+    { "netflix": [
       "https://phim.nguonc.com/api/film/bo-tam-phan-1",
       "https://phimapi.com/phim/nhung-bac-si-tai-hoa-phan-1",
       "https://phimapi.com/phim/nhung-bac-si-tai-hoa-phan-2",
