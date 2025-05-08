@@ -551,14 +551,14 @@
                 <div class="search-suggestions" id="search-suggestions"></div>
             </div>
             <div class="nav-menu">
-                <a href="index.html" class="active">Trang chủ</a>
+                <a href="index.html">Trang chủ</a>
                 <a href="phim-han.html">Phim Hàn</a>
                 <a href="phim-trung.html">Phim Trung</a>
                 <a href="phim-viet.html">Phim Việt</a>
                 <a href="phim-my.html">Phim Mỹ</a>
                 <a href="truyen-hinh.html">Truyền hình</a>
                 <a href="hoat-hinh.html">Hoạt hình</a>
-                <a href="Netflix.html">Netflix</a>
+                <a href="netflix.html">Netflix</a>
                 <a href="khac.html">Khác</a>
                 <button class="theme-toggle" id="theme-toggle">
                     <i class="fas fa-moon"></i>
@@ -610,7 +610,14 @@
             scrollTop: document.getElementById('scroll-top'),
             themeToggle: document.getElementById('theme-toggle')
         };
-        const currentPage = window.location.pathname.split('/').pop().split('.')[0] || 'index';
+
+        // Tự động xác định currentPage từ tên file HTML
+        const currentPage = (() => {
+            const path = window.location.pathname.split('/').pop();
+            const fileName = path.split('.')[0].toLowerCase();
+            return fileName || 'index'; // Fallback nếu không xác định được
+        })();
+
         let allApiUrls = [], customMovies = [], seriesMovies = [], singleMovies = [];
         const CACHE_KEY = 'movie_data_cache';
         const CACHE_EXPIRY = 24 * 60 * 60 * 1000;
@@ -644,51 +651,51 @@
 
         function highlightActiveMenu() {
             document.querySelectorAll('.nav-menu a').forEach(link => {
-                const linkPage = link.getAttribute('href').split('.')[0];
+                const linkPage = link.getAttribute('href').split('.')[0].toLowerCase();
                 link.classList.toggle('active', linkPage === currentPage);
             });
         }
 
         function normalizeMovieData(data, apiSource) {
-            const movie = data.movie;
-            let categories = [], countries = [], year = movie.year, episodes = [], servers = [];
+            const movie = data.movie || {};
+            let categories = [], countries = [], year = movie.year || 'Không rõ', episodes = [], servers = [];
 
             if (apiSource === 'ophim1' || apiSource === 'phimapi') {
-                categories = movie.category?.map(c => c.name) || [];
-                countries = movie.country?.map(c => c.name) || [];
-                servers = data.episodes?.map((server, index) => ({
+                categories = (movie.category || []).map(c => c.name || '').filter(Boolean);
+                countries = (movie.country || []).map(c => c.name || '').filter(Boolean);
+                servers = (data.episodes || []).map((server, index) => ({
                     server_name: server.server_name || `Server ${index + 1}`,
                     server_data: (server.server_data || []).map(ep => ({
-                        name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
+                        name: (ep.name || 'Tập 1').replace('Tập ', '').trim(),
                         link_m3u8: ep.link_m3u8 || '',
                         link_embed: ep.link_embed || '',
                         link_video: ep.link_video || ''
                     }))
-                })) || [];
+                }));
             } else if (apiSource === 'phimnguonc') {
                 if (movie.category && typeof movie.category === 'object') {
                     Object.values(movie.category).forEach(group => {
-                        if (group.group.name === 'Thể loại') categories = group.list.map(item => item.name);
-                        else if (group.group.name === 'Quốc gia') countries = group.list.map(item => item.name);
-                        else if (group.group.name === 'Năm') year = group.list[0]?.name || year;
+                        if (group.group?.name === 'Thể loại') categories = (group.list || []).map(item => item.name || '');
+                        else if (group.group?.name === 'Quốc gia') countries = (group.list || []).map(item => item.name || '');
+                        else if (group.group?.name === 'Năm') year = (group.list?.[0]?.name) || year;
                     });
                 }
-                servers = movie.episodes?.map((server, index) => ({
+                servers = (movie.episodes || []).map((server, index) => ({
                     server_name: server.server_name || `Server ${index + 1}`,
                     server_data: (server.items || []).map(ep => ({
-                        name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
+                        name: (ep.name || 'Tập 1').replace('Tập ', '').trim(),
                         link_m3u8: ep.m3u8 || '',
                         link_embed: ep.embed || '',
                         link_video: ep.link_video || ''
                     }))
-                })) || [];
+                }));
             }
 
             episodes = servers.flatMap(server => server.server_data);
             return {
-                id: movie._id || movie.id,
-                name: movie.name,
-                slug: movie.slug,
+                id: movie._id || movie.id || '',
+                name: movie.name || 'Không có tiêu đề',
+                slug: movie.slug || '',
                 origin_name: movie.origin_name || movie.original_name || 'Không có',
                 poster_url: movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/200x300',
                 content: movie.content || movie.description || 'Không có nội dung',
@@ -698,7 +705,7 @@
                 time: movie.time || 'Không rõ',
                 quality: movie.quality || 'HD',
                 lang: movie.lang || movie.language || 'Vietsub',
-                year: year || 'Không rõ',
+                year,
                 actors: Array.isArray(movie.actor) ? movie.actor.join(', ') : (typeof movie.actor === 'string' ? movie.actor : (movie.casts || 'Không có thông tin')),
                 directors: Array.isArray(movie.director) ? movie.director.join(', ') : (typeof movie.director === 'string' ? movie.director : (movie.director || 'Không có thông tin')),
                 categories: categories.join(', ') || 'Không rõ',
@@ -749,7 +756,7 @@
                             } else if (lines[j].startsWith('https')) {
                                 if (lines[j].endsWith('.m3u8')) {
                                     link_m3u8 = lines[j];
-                                } else if (lines[j].includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) {
+                                } else if (lines[j].includes('youtube.com') || lines[j].includes('vimeo.com') || lines[j].includes('drive.google.com')) {
                                     link_embed = lines[j];
                                 } else {
                                     link_video = lines[j];
@@ -834,7 +841,7 @@
                             let apiSource = 'ophim1';
                             if (url.includes('phimapi.com')) apiSource = 'phimapi';
                             else if (url.includes('phim.nguonc.com')) apiSource = 'phimnguonc';
-                            apiUrls.push({ url, pageTag, apiSource });
+                            apiUrls.push({ url, pageTag: pageTag.toLowerCase(), apiSource });
                         }
                     });
                 });
@@ -1157,7 +1164,7 @@
             highlightActiveMenu();
         }).catch(error => {
             console.error('Lỗi khi tải dữ liệu ban đầu:', error);
-            elements.recommendedList.innerHTML = '<p>Lỗi tải dữ liệu phim.</p>';
+            elements.recommendedList.innerHTML = '<p>Lỗi tải dữ liệu phim. Vui lòng kiểm tra kết nối hoặc file dữ liệu.</p>';
         });
 
         window.addEventListener('resize', adjustMainContentPadding);
