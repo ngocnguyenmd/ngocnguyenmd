@@ -724,7 +724,7 @@
                 <a href="phim-my.html">Phim Mỹ</a>
                 <a href="truyen-hinh.html">Truyền hình</a>
                 <a href="hoat-hinh.html">Hoạt hình</a>
-                <a href="Netflix.html">Netflix</a>
+                <a href="netflix.html">Netflix</a> <!-- Thêm liên kết Netflix -->
                 <a href="khac.html">Khác</a>
                 <button class="theme-toggle" id="theme-toggle">
                     <i class="fas fa-moon"></i>
@@ -927,7 +927,7 @@
                             } else if (lines[j].startsWith('https')) {
                                 if (lines[j].endsWith('.m3u8')) {
                                     link_m3u8 = lines[j];
-                                } else if (lines[j].includes('youtube.com') || lines[j].includes('vimeo.com') || lines[j].includes('drive.google.com')) {
+                                } else if (lines[j].includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) {
                                     link_embed = lines[j];
                                 } else {
                                     link_video = lines[j];
