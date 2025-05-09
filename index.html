@@ -783,7 +783,7 @@
 <body>
     <header class="header">
         <div class="header-content">
-            <img src="https://media.giphy.com/media/RheLAYS1yN0nuckczp/giphy.gif?cid=ecf05e47iinv5d2s3monnif8y7c12g2kmzslfwo5aorpm3ys&ep=v1_stickers_search&rid=giphy.gif&ct=s" alt="Phim Hay" class="logo">
+            <img src="https://www.freeiconspng.com/uploads/star-icon-11.png" alt="Phim Hay" class="logo">
             <div class="search-bar">
                 <input type="text" id="search-input" placeholder="Tìm kiếm phim...">
                 <i class="fas fa-times clear-search" id="clear-search"></i>
@@ -958,9 +958,9 @@
                     server_name: server.server_name || `Server ${index + 1}`,
                     server_data: (server.items || []).map(ep => ({
                         name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
-                        link_m3u8: ep.m3u8 || '',
+                        link_m3u8: '', // Vô hiệu hóa m3u8 cho phimnguonc
                         link_embed: ep.embed || '',
-                        link_video: ep.link_video || ''
+                        link_video: ep.link_video || ep.m3u8 || '' // Sử dụng link_video hoặc m3u8 làm link_video
                     }))
                 })) || [];
             }
@@ -1021,20 +1021,24 @@
                             if (linkMatch) {
                                 const [, name, link] = linkMatch;
                                 epName = name.replace('Tập ', '').trim();
-                                if (link.endsWith('.m3u8')) {
+                                if (link.endsWith('.m3u8') && apiSource !== 'phimnguonc') {
                                     link_m3u8 = link;
                                 } else if (link.includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) {
                                     link_embed = link;
-                                } else {
+                                } else if (link.match(/\.(mp4|webm|ogg|avi|mkv)$/i)) {
                                     link_video = link;
+                                } else {
+                                    link_video = link; // Mặc định dùng link_video cho các link khác
                                 }
                             } else if (lines[j].startsWith('https')) {
-                                if (lines[j].endsWith('.m3u8')) {
+                                if (lines[j].endsWith('.m3u8') && apiSource !== 'phimnguonc') {
                                     link_m3u8 = lines[j];
                                 } else if (lines[j].includes('youtube.com') || lines[j].includes('vimeo.com') || lines[j].includes('drive.google.com')) {
                                     link_embed = lines[j];
-                                } else {
+                                } else if (lines[j].match(/\.(mp4|webm|ogg|avi|mkv)$/i)) {
                                     link_video = lines[j];
+                                } else {
+                                    link_video = lines[j]; // Mặc định dùng link_video
                                 }
                             }
 

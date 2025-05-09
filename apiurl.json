@@ -16,7 +16,7 @@
   ] },
   
   { "phim-trung": [
-    "https://phimapi.com/phim/khe-uoc-bi-mat-cua-phu-thuy",
+"https://phimapi.com/phim/khe-uoc-bi-mat-cua-phu-thuy",
 "https://phim.nguonc.com/api/film/nuoc-quyt-co-ga",
 "https://phim.nguonc.com/api/film/anh-la-nang-am-ban-trua-cua-em",
 "https://phimapi.com/phim/suyt-quoc-vuong-dang-ngu-dong",
@@ -78,6 +78,8 @@
  ] },
 
  { "phim-han": [
+  "https://phimapi.com/phim/chuyen-tinh-cam-lanh",
+  "https://phim.nguonc.com/api/film/phu-luc-tinh-yeu",
   "https://phim.nguonc.com/api/film/bo-tam-phan-1",
   "https://phimapi.com/phim/bao-hiem-ly-hon",
   "https://ophim1.com/phim/hoa-du-ky",
