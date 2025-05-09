@@ -73,7 +73,8 @@
 "https://phimapi.com/phim/gap-lai-tieu-dao",
 "https://phimapi.com/phim/toi-da-gap-duoc-vi-cuu-tinh",
 "https://phimapi.com/phim/khu-rung-nho-cua-hai-nguoi",
-"https://phimapi.com/phim/hoa-gian-nhat-khuynh-thanh"
+"https://phimapi.com/phim/hoa-gian-nhat-khuynh-thanh",
+"https://phim.nguonc.com/api/film/phien-dich-vien-xinh-dep"
  ] },
 
  { "phim-han": [
@@ -151,7 +152,9 @@
 "https://phim.nguonc.com/api/film/kono-subarashii-sekai-ni-shukufuku-wo-2",
 "https://phimapi.com/phim/van-co-vay",
 "https://phim.nguonc.com/api/film/saikyou-no-ousama-nidome-no-jinsei-wa-nani-wo-suru",
-"https://phim.nguonc.com/api/film/doraemon-2005"
+"https://phim.nguonc.com/api/film/doraemon-2005",
+"https://phim.nguonc.com/api/film/huong-vi-cua-bien-phan-1",
+"https://phim.nguonc.com/api/film/huong-vi-cua-bien-phan-2"
 
 ] },
 
@@ -194,7 +197,7 @@
   
   ] },
   
-  { "khac": [
+  { "ykhoa": [
   "https://phim.nguonc.com/api/film/benh-vien-pitt",
   "https://phim.nguonc.com/api/film/mach-song",
   "https://phim.nguonc.com/api/film/bac-si-x-ngoai-khoa-daimon-michiko-phan-1",
