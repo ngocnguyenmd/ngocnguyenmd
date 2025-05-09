@@ -8,10 +8,10 @@
 "https://phim.nguonc.com/api/film/cung-dien-ma-am",
 "https://phimapi.com/phim/mat-vu-phu-ho",
 "https://phimapi.com/phim/trai-tim-chon-vui",
-"https://phimapi.com/phim/bac-thay-dam-phan",
 "https://phimapi.com/phim/lanh-dia-tu-chien",
 "https://phim.nguonc.com/api/film/thanh-pho-dong-vat-phi-vu-dong-troi",
-"https://phim.nguonc.com/api/film/bang-thuong-giai-te"
+"https://phim.nguonc.com/api/film/bang-thuong-giai-te",
+"https://phimapi.com/phim/lien-minh-thu-cung"
 
   ] },
   
@@ -79,7 +79,6 @@
  { "phim-han": [
   "https://phim.nguonc.com/api/film/bo-tam-phan-1",
   "https://phimapi.com/phim/bao-hiem-ly-hon",
-  "https://phim.nguonc.com/api/film/chuyen-doi-bac-si-noi-tru",
   "https://ophim1.com/phim/hoa-du-ky",
   "https://phim.nguonc.com/api/film/chuyen-doi-bac-si-noi-tru",
   "https://phim.nguonc.com/api/film/khoe-truoc-yeu-sau",
@@ -149,12 +148,18 @@
 ] },
 
 { "truyen-hinh": [
-
-"https://phimapi.com/phim/van-co-vay"
+"https://phim.nguonc.com/api/film/kono-subarashii-sekai-ni-shukufuku-wo-2",
+"https://phimapi.com/phim/van-co-vay",
+"https://phim.nguonc.com/api/film/saikyou-no-ousama-nidome-no-jinsei-wa-nani-wo-suru",
+"https://phim.nguonc.com/api/film/doraemon-2005"
 
 ] },
 
 { "hoat-hinh": [
+  "https://phim.nguonc.com/api/film/doraemon-movie-36-nobita-va-nuoc-nhat-thoi-nguyen-thuy",
+  "https://phim.nguonc.com/api/film/thanh-guom-diet-quy-quyet-chien-ky-vien-tran",
+  "https://phim.nguonc.com/api/film/dang-cap-thu-cung",
+  "https://phim.nguonc.com/api/film/dang-cap-thu-cung-2",
   "https://phim.nguonc.com/api/film/one-piece",
   "https://phim.nguonc.com/api/film/chuyen-phieu-luu-phep-thuat",
   "https://phim.nguonc.com/api/film/cong-chua-toc-xu",
