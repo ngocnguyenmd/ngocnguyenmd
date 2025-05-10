@@ -1,6 +1,6 @@
 [
   
-  { "index": [
+  { "index1": [
 "https://phim.nguonc.com/api/film/dau-xuoi-duoi-dut-lot",
 "https://ophim1.com/phim/mat-danh-ke-toan-2",
 "https://phimapi.com/phim/lanh-dia-tu-chien",
@@ -16,7 +16,6 @@
   ] },
   
   { "phim-trung": [
-"https://ophim1.com/phim/tan-tay-du-ky-2010",
 "https://ophim1.com/phim/tan-tay-du-ky",
 "https://phim.nguonc.com/api/film/ho-yeu-tieu-hong-nuong-nguyet-hong-thien",
 "https://phimapi.com/phim/khe-uoc-bi-mat-cua-phu-thuy",
@@ -81,6 +80,7 @@
  ] },
 
  { "phim-han": [
+  "https://phim.nguonc.com/api/film/chut-nang-am-moi-ngay",
   "https://phimapi.com/phim/chuyen-tinh-cam-lanh",
   "https://phim.nguonc.com/api/film/phu-luc-tinh-yeu",
   "https://phim.nguonc.com/api/film/bo-tam-phan-1",
