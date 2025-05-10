@@ -540,20 +540,20 @@
 
             /* Fixed video size for desktop */
             .video-container {
-                width: 900px;
-                max-width: 900px;
-                height: calc(900px * 9 / 16); /* Maintain 16:9 aspect ratio */
+                width: 820px;
+                max-width: 820px;
+                height: calc(820px * 9 / 16); /* Maintain 16:9 aspect ratio */
             }
 
             .video-player {
-                width: 900px;
-                height: calc(900px * 9 / 16);
+                width: auto;
+                height: calc(820px * 9 / 16);
                 object-fit: contain; /* Ensure video content fits without stretching */
             }
 
             .video-player iframe {
-                width: 900px;
-                height: calc(900px * 9 / 16);
+                width: 820px;
+                height: calc(820px * 9 / 16);
             }
         }
 
@@ -1179,7 +1179,7 @@
             return {
                 name: movie.name || 'Không xác định',
                 slug: movie.slug || '',
-                poster_url: movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/200x300',
+                poster_url: movie.poster_url || movie.thumb_url || '',
                 content: movie.content || movie.description || 'Không có nội dung',
                 actors: Array.isArray(movie.actor) ? movie.actor.join(', ') : (typeof movie.actor === 'string' ? movie.actor : (movie.casts || 'Không có thông tin')),
                 directors: Array.isArray(movie.director) ? movie.director.join(', ') : (typeof movie.director === 'string' ? movie.director : (movie.director || 'Không có thông tin')),
