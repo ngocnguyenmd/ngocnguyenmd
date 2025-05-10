@@ -1,17 +1,17 @@
 [
   
   { "index": [
-"https://phim.nguonc.com/api/film/meo-map-mang-10-mang",
-"https://phim.nguonc.com/api/film/vu-dieu-tuoi-tre",
-"https://phim.nguonc.com/api/film/mua-xuan-tuoi-tre",
-"https://phim.nguonc.com/api/film/hoai-thuy-truc-dinh",
-"https://phim.nguonc.com/api/film/cung-dien-ma-am",
-"https://phimapi.com/phim/mat-vu-phu-ho",
-"https://phimapi.com/phim/trai-tim-chon-vui",
+"https://phim.nguonc.com/api/film/dau-xuoi-duoi-dut-lot",
+"https://ophim1.com/phim/mat-danh-ke-toan-2",
 "https://phimapi.com/phim/lanh-dia-tu-chien",
-"https://phim.nguonc.com/api/film/thanh-pho-dong-vat-phi-vu-dong-troi",
-"https://phim.nguonc.com/api/film/bang-thuong-giai-te",
-"https://phimapi.com/phim/lien-minh-thu-cung"
+"https://phimapi.com/phim/buoi-hen-ho-kinh-hoang",
+"https://phimapi.com/phim/cai-chet-con-ky-lan",
+"https://phimapi.com/phim/nu-bac-si-do-thi",
+"https://phimapi.com/phim/hoai-thuy-truc-dinh",
+"https://phim.nguonc.com/api/film/cung-dien-ma-am",
+"https://phimapi.com/phim/chuyen-doi-bac-si-noi-tru",
+"https://phimapi.com/phim/biet-doi-bat-hao",
+"https://phimapi.com/phim/ban-ma-phien-toai"
 
   ] },
   
@@ -202,6 +202,7 @@
   ] },
   
   { "ykhoa": [
+  "https://phimapi.com/phim/con-tau-y-duc",
   "https://phim.nguonc.com/api/film/benh-vien-pitt",
   "https://phim.nguonc.com/api/film/mach-song",
   "https://phim.nguonc.com/api/film/bac-si-x-ngoai-khoa-daimon-michiko-phan-1",
