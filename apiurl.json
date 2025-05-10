@@ -2,7 +2,7 @@
   
   { "index": [
 "https://phim.nguonc.com/api/film/meo-map-mang-10-mang",
-"https://phim.nguonc.com/api/film/ho-yeu-tieu-hong-nuong-nguyet-hong-thien",
+"https://phim.nguonc.com/api/film/vu-dieu-tuoi-tre",
 "https://phim.nguonc.com/api/film/mua-xuan-tuoi-tre",
 "https://phim.nguonc.com/api/film/hoai-thuy-truc-dinh",
 "https://phim.nguonc.com/api/film/cung-dien-ma-am",
@@ -16,6 +16,7 @@
   ] },
   
   { "phim-trung": [
+"https://phim.nguonc.com/api/film/ho-yeu-tieu-hong-nuong-nguyet-hong-thien",
 "https://phimapi.com/phim/khe-uoc-bi-mat-cua-phu-thuy",
 "https://phim.nguonc.com/api/film/nuoc-quyt-co-ga",
 "https://phim.nguonc.com/api/film/anh-la-nang-am-ban-trua-cua-em",
@@ -151,6 +152,7 @@
 ] },
 
 { "truyen-hinh": [
+  "https://phim.nguonc.com/api/film/linh-kiem-ton",
 "https://phim.nguonc.com/api/film/kono-subarashii-sekai-ni-shukufuku-wo-2",
 "https://phimapi.com/phim/van-co-vay",
 "https://phim.nguonc.com/api/film/saikyou-no-ousama-nidome-no-jinsei-wa-nani-wo-suru",
