@@ -135,7 +135,6 @@
 
 
 
-
 { "phim-my": [
 "https://phimapi.com/phim/nhung-cuoc-phieu-luu-cua-tintin-phan-1",
 "https://ophim1.com/phim/nhung-cuoc-phieu-luu-cua-tintin-phan-2",
@@ -178,23 +177,25 @@
 "https://ophim1.com/phim/tri-lieu-su-bi-duoi-khoi-to-doi-lai-la-nguoi-manh-nhat",
 "https://phim.nguonc.com/api/film/kono-subarashii-sekai-ni-shukufuku-wo-2",
 "https://phim.nguonc.com/api/film/tham-tu-lung-danh-conan",
-"https://ophim1.com/phim/the-gioi-phep-thuat"
-
+"https://ophim1.com/phim/the-gioi-phep-thuat",
+"https://phim.nguonc.com/api/film/boruto-naruto-next-generations",
+"https://phim.nguonc.com/api/film/naruto-shippuuden",
+"https://phim.nguonc.com/api/film/7-vien-ngoc-rong",
+"https://phim.nguonc.com/api/film/one-piece"
 
 
 ] },
 
+
+
+
 { "hoat-hinh": [
   "https://phim.nguonc.com/api/film/doraemon-doi-ban-than-2",
   "https://phim.nguonc.com/api/film/pokemon-sun-moon",
-  "https://phim.nguonc.com/api/film/boruto-naruto-next-generations",
-  "https://phim.nguonc.com/api/film/naruto-shippuuden",
-  "https://phim.nguonc.com/api/film/7-vien-ngoc-rong",
   "https://ophim1.com/phim/chu-rong-cua-cha-toi",
   "https://phim.nguonc.com/api/film/doraemon-movie-36-nobita-va-nuoc-nhat-thoi-nguyen-thuy",
   "https://phim.nguonc.com/api/film/thanh-guom-diet-quy-quyet-chien-ky-vien-tran",
   "https://phim.nguonc.com/api/film/dang-cap-thu-cung-2",
-  "https://phim.nguonc.com/api/film/one-piece",
   "https://phim.nguonc.com/api/film/chuyen-phieu-luu-phep-thuat",
   "https://phim.nguonc.com/api/film/cong-chua-toc-xu",
   "https://phim.nguonc.com/api/film/ralph-dap-pha-pha-dao-the-gioi-ao",
