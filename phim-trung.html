@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Phim Hay - Xem phim online miễn phí, chất lượng cao">
-    <meta name="keywords" content="phim truyền hình, phim bộ, phim lẻ, xem phim online, phim chất lượng cao">
+    <meta name="keywords" content="phim Hàn, phim bộ, phim lẻ, xem phim online, phim chất lượng cao">
     <meta name="author" content="Phim Hay">
-    <title>Phim Hay - Truyền Hình</title>
-    <link rel="icon" href="" type="image/png">
+    <title>Phim Hay - Trang chủ</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -418,35 +417,6 @@
             margin-left: 10px;
         }
 
-        .error-toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #d32f2f;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            z-index: 2000;
-            display: none;
-            font-size: 0.9em;
-        }
-
-        .error-toast.visible {
-            display: block;
-            animation: slideUp 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
-
-        @keyframes fadeOut {
-            to { opacity: 0; }
-        }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -526,11 +496,6 @@
                 font-size: 0.75em;
                 padding: 4px 8px;
             }
-
-            .movie-item:hover {
-                transform: none;
-                box-shadow: none;
-            }
         }
 
         @media (max-width: 480px) {
@@ -583,7 +548,7 @@
 <body>
     <header class="header">
         <div class="header-content">
-            <img src="https://www.freeiconspng.com/uploads/star-icon-11.png" alt="Phim Hay" class="logo" onerror="this.src='https://placehold.co/50x50'; console.warn('Logo cục bộ không tồn tại');">
+            <img src="https://www.freeiconspng.com/uploads/star-icon-11.png" alt="Phim Hay" class="logo">
             <div class="search-bar">
                 <input type="text" id="search-input" placeholder="Tìm kiếm phim...">
                 <i class="fas fa-times clear-search" id="clear-search"></i>
@@ -606,8 +571,6 @@
             </div>
         </div>
     </header>
-    <div class="error-toast" id="error-toast"></div>
-
     <main class="main-content">
         <section class="movie-section">
             <h2>Phim đề cử</h2>
@@ -652,40 +615,18 @@
             searchSuggestions: document.getElementById('search-suggestions'),
             scrollTop: document.getElementById('scroll-top'),
             themeToggle: document.getElementById('theme-toggle'),
-            loadingSpinner: document.getElementById('loading-spinner'),
-            errorToast: document.getElementById('error-toast')
+            loadingSpinner: document.getElementById('loading-spinner')
         };
-        const currentPage = window.location.pathname.split('/').pop().split('.')[0] || 'truyen-hinh';
+        const currentPage = window.location.pathname.split('/').pop().split('.')[0] || 'index';
         let allApiUrls = [], customMovies = [], seriesMovies = [], singleMovies = [];
         const CACHE_KEY = 'movie_data_cache';
         const CACHE_EXPIRY = 24 * 60 * 60 * 1000;
-        const SEARCH_CACHE_KEY = 'search_cache';
-        const SEARCH_CACHE_EXPIRY = 60 * 60 * 1000;
-        const MOVIES_PER_PAGE = 20000;
+        const MOVIES_PER_PAGE = 100;
         let isLoading = false;
         let hasMoreMovies = true;
-        const DEFAULT_POSTER = '';
+        let currentPageNumber = 1;
 
-        function showErrorToast(message) {
-            elements.errorToast.textContent = message;
-            elements.errorToast.classList.add('visible');
-            setTimeout(() => elements.errorToast.classList.remove('visible'), 3000);
-        }
-
-        async function checkFileExists(file) {
-            try {
-                const response = await fetch(file, { method: 'HEAD', cache: 'no-store' });
-                if (!response.ok) {
-                    console.error(`File ${file} không tồn tại hoặc không thể truy cập: ${response.status}`);
-                    return false;
-                }
-                return true;
-            } catch (error) {
-                console.error(`Lỗi khi kiểm tra file ${file}:`, error);
-                return false;
-            }
-        }
-
+        // Theme Toggle
         elements.themeToggle.addEventListener('click', () => {
             const currentTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
             document.body.dataset.theme = currentTheme;
@@ -693,10 +634,12 @@
             localStorage.setItem('theme', currentTheme);
         });
 
+        // Load saved theme
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.body.dataset.theme = savedTheme;
         elements.themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'light' ? 'moon' : 'sun'}"></i>`;
 
+        // Scroll Top Button
         window.addEventListener('scroll', () => {
             elements.scrollTop.classList.toggle('visible', window.scrollY > 300);
         });
@@ -706,7 +649,7 @@
         });
 
         function adjustMainContentPadding() {
-            const headerHeight = document.querySelector('.header').offsetHeight || 80;
+            const headerHeight = document.querySelector('.header').offsetHeight;
             document.querySelector('.main-content').style.paddingTop = `${headerHeight + 20}px`;
         }
 
@@ -718,65 +661,55 @@
         }
 
         function normalizeMovieData(data, apiSource) {
-            const movie = data.movie || {};
-            let categories = [];
-            let countries = [];
-            let year = movie.year || 'Không rõ';
-            let episodes = [];
-            let servers = [];
+            const movie = data.movie;
+            let categories = [], countries = [], year = movie.year, episodes = [], servers = [];
 
             if (apiSource === 'ophim1' || apiSource === 'phimapi') {
-                categories = Array.isArray(movie.category) ? movie.category.map(c => c.name || 'Không rõ') : [];
-                countries = Array.isArray(movie.country) ? movie.country.map(c => c.name || 'Không rõ') : [];
-                servers = Array.isArray(data.episodes) ? data.episodes.map((server, index) => ({
+                categories = movie.category?.map(c => c.name) || [];
+                countries = movie.country?.map(c => c.name) || [];
+                servers = data.episodes?.map((server, index) => ({
                     server_name: server.server_name || `Server ${index + 1}`,
-                    server_data: Array.isArray(server.server_data) ? server.server_data.map(ep => ({
-                        name: (ep.name || 'Tập 1').replace('Tập ', '').trim(),
+                    server_data: (server.server_data || []).map(ep => ({
+                        name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
                         link_m3u8: ep.link_m3u8 || '',
                         link_embed: ep.link_embed || '',
                         link_video: ep.link_video || ''
-                    })) : []
-                })) : [];
+                    }))
+                })) || [];
             } else if (apiSource === 'phimnguonc') {
                 if (movie.category && typeof movie.category === 'object') {
                     Object.values(movie.category).forEach(group => {
-                        if (group && group.group && group.group.name === 'Thể loại' && Array.isArray(group.list)) {
-                            categories = group.list.map(item => item.name || 'Không rõ');
-                        } else if (group && group.group && group.group.name === 'Quốc gia' && Array.isArray(group.list)) {
-                            countries = group.list.map(item => item.name || 'Không rõ');
-                        }
+                        if (group.group.name === 'Thể loại') categories = group.list.map(item => item.name);
+                        else if (group.group.name === 'Quốc gia') countries = group.list.map(item => item.name);
+                        else if (group.group.name === 'Năm') year = group.list[0]?.name || year;
                     });
                 }
-            } else if (apiSource === 'custom') {
-                categories = movie.categories ? [movie.categories] : ['Không rõ'];
-                countries = movie.countries ? [movie.countries] : ['Không rõ'];
-                servers = [{
-                    server_name: 'Custom Server',
-                    server_data: Array.isArray(movie.episodes) ? movie.episodes.map(ep => ({
-                        name: ep.name || 'Tập 1',
-                        link_m3u8: ep.link_m3u8 || '',
-                        link_embed: ep.link_embed || '',
-                        link_video: ep.link_video || ''
-                    })) : []
-                }];
+                servers = movie.episodes?.map((server, index) => ({
+                    server_name: server.server_name || `Server ${index + 1}`,
+                    server_data: (server.items || []).map(ep => ({
+                        name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
+                        link_m3u8: '',
+                        link_embed: ep.embed || '',
+                        link_video: ep.link_video || ep.m3u8 || ''
+                    }))
+                })) || [];
             }
 
-            episodes = servers.flatMap(server => Array.isArray(server.server_data) ? server.server_data : []);
-
+            episodes = servers.flatMap(server => server.server_data);
             return {
-                id: movie._id || movie.id || `id-${Date.now()}`,
-                name: movie.name || 'Không có tên',
-                slug: movie.slug || `slug-${Date.now()}`,
+                id: movie._id || movie.id,
+                name: movie.name,
+                slug: movie.slug,
                 origin_name: movie.origin_name || movie.original_name || 'Không có',
-                poster_url: movie.poster_url || movie.thumb_url || DEFAULT_POSTER,
+                poster_url: movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/200x300',
                 content: movie.content || movie.description || 'Không có nội dung',
                 type: movie.type || (episodes.length > 1 ? 'series' : 'movie'),
                 status: movie.status || movie.current_episode || 'unknown',
                 episode_total: parseInt((movie.episode_total || episodes.length || '1').toString().replace('Tập', '').trim()) || 1,
                 time: movie.time || 'Không rõ',
                 quality: movie.quality || 'HD',
-                lang: typeof movie.lang === 'string' ? movie.lang : (typeof movie.language === 'string' ? movie.language : 'Vietsub'),
-                year: year,
+                lang: movie.lang || movie.language || 'Vietsub',
+                year: year || 'Không rõ',
                 actors: Array.isArray(movie.actor) && movie.actor.length ? movie.actor.join(', ') : (typeof movie.actor === 'string' ? movie.actor : (movie.casts || 'Không có thông tin')),
                 directors: Array.isArray(movie.director) && movie.director.length ? movie.director.join(', ') : (typeof movie.director === 'string' ? movie.director : (movie.director || 'Không có thông tin')),
                 categories: categories.join(', ') || 'Không rõ',
@@ -787,39 +720,19 @@
         }
 
         async function loadCustomMovies(file) {
-            if (!(await checkFileExists(file))) {
-                console.error(`File ${file} không tồn tại`);
-                showErrorToast(`File ${file} không tồn tại`);
-                return [];
-            }
             try {
-                const response = await fetch(file, { cache: 'no-store' });
-                if (!response.ok) {
-                    console.error(`Không thể tải file ${file}: ${response.status}`);
-                    showErrorToast(`Không thể tải file ${file}`);
-                    return [];
-                }
+                const response = await fetch(file);
+                if (!response.ok) throw new Error(`Không thể tải file ${file}`);
                 const text = await response.text();
                 const lines = text.split('\n').map(line => line.trim()).filter(line => line);
                 const movies = [];
-                const episodeRegex = /^(.+?)\|(.+?)\|(.+?)?\|(.+?)$/;
+                const episodeRegex = /^(.+?)\|(.+?)\|(.+?)\|(.+?)$/;
                 const linkRegex = /^(.+?)\|(.+?)$/;
-                const urlRegex = /^https?:\/\/.+/;
-
-                if (lines.length === 0) {
-                    console.warn(`File ${file} rỗng hoặc không có dữ liệu hợp lệ`);
-                    showErrorToast(`File ${file} không chứa dữ liệu phim`);
-                    return [];
-                }
 
                 for (let i = 0; i < lines.length; i++) {
                     const match = lines[i].match(episodeRegex);
                     if (match && !lines[i].includes('|sv2|')) {
                         const [, pageTag, movieName, posterUrl, quality] = match;
-                        if (!pageTag || !movieName || !quality) {
-                            console.warn(`Dòng lỗi trong ${file} tại dòng ${i + 1}: ${lines[i]}`);
-                            continue;
-                        }
                         const episodes = [];
                         let apiSource = 'custom';
                         let apiUrl = null;
@@ -846,20 +759,16 @@
                                 } else {
                                     link_video = link;
                                 }
-                            } else if (lines[j].match(urlRegex)) {
-                                const link = lines[j];
-                                if (link.endsWith('.m3u8') && apiSource !== 'phimnguonc') {
-                                    link_m3u8 = link;
-                                } else if (link.includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) {
-                                    link_embed = link;
-                                } else if (link.match(/\.(mp4|webm|ogg|avi|mkv)$/i)) {
-                                    link_video = link;
+                            } else if (lines[j].startsWith('https')) {
+                                if (lines[j].endsWith('.m3u8') && apiSource !== 'phimnguonc') {
+                                    link_m3u8 = lines[j];
+                                } else if (lines[j].includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) {
+                                    link_embed = lines[j];
+                                } else if (lines[j].match(/\.(mp4|webm|ogg|avi|mkv)$/i)) {
+                                    link_video = lines[j];
                                 } else {
-                                    link_video = link;
+                                    link_video = lines[j];
                                 }
-                            } else {
-                                console.warn(`Dòng không hợp lệ trong ${file} tại dòng ${j + 1}: ${lines[j]}`);
-                                continue;
                             }
 
                             const linkKey = link_m3u8 || link_embed || link_video;
@@ -889,10 +798,7 @@
                             }
                         }
 
-                        const validPosterUrl = (posterUrl && typeof posterUrl === 'string' && posterUrl.startsWith('http')) ? posterUrl : DEFAULT_POSTER;
-                        if (validPosterUrl !== DEFAULT_POSTER) {
-                            console.log(`Poster URL for ${movieName}: ${validPosterUrl}`);
-                        }
+                        const validPosterUrl = posterUrl && posterUrl.startsWith('http') ? posterUrl : 'https://via.placeholder.com/200x300';
 
                         movies.push({
                             pageTag,
@@ -916,110 +822,62 @@
                             apiSource,
                             apiUrl
                         });
-                        i += episodes.length;
-                    } else {
-                        console.warn(`Dòng không hợp lệ trong ${file} tại dòng ${i + 1}: ${lines[i]}`);
                     }
-                }
-
-                console.log(`Loaded ${movies.length} movies from ${file}`);
-                if (movies.length === 0) {
-                    showErrorToast(`Không tìm thấy phim hợp lệ trong ${file}`);
                 }
                 return movies;
             } catch (error) {
                 console.error(`Lỗi khi tải ${file}:`, error);
-                showErrorToast(`Không thể tải file ${file}: ${error.message}`);
                 return [];
             }
         }
 
         async function loadApiUrls() {
-            if (!(await checkFileExists('apiurl.json'))) {
-                console.error('File apiurl.json không tồn tại');
-                showErrorToast('File apiurl.json không tồn tại');
-                return [];
-            }
             try {
-                const response = await fetch('apiurl.json', { cache: 'no-store' });
-                if (!response.ok) {
-                    console.error(`Không thể tải apiurl.json: ${response.status}`);
-                    showErrorToast('Không thể tải danh sách API');
-                    return [];
-                }
+                const response = await fetch('apiurl.json');
+                if (!response.ok) throw new Error('Không thể tải apiurl.json');
                 const data = await response.json();
-                if (!Array.isArray(data)) {
-                    console.error('Dữ liệu apiurl.json không phải mảng:', data);
-                    showErrorToast('Dữ liệu API không hợp lệ');
-                    return [];
-                }
                 const apiUrls = [];
                 data.forEach(item => {
-                    if (!item || typeof item !== 'object') {
-                        console.warn('Bỏ qua item không hợp lệ trong apiurl.json:', item);
-                        return;
-                    }
                     const pageTag = Object.keys(item)[0];
-                    const urls = item[pageTag];
-                    if (!Array.isArray(urls)) {
-                        console.warn(`Danh sách URL không hợp lệ cho pageTag ${pageTag}:`, urls);
-                        return;
-                    }
-                    urls.forEach(url => {
-                        if (url && typeof url === 'string' && url.startsWith('http')) {
+                    item[pageTag].forEach(url => {
+                        if (url) {
                             let apiSource = 'ophim1';
                             if (url.includes('phimapi.com')) apiSource = 'phimapi';
                             else if (url.includes('phim.nguonc.com')) apiSource = 'phimnguonc';
                             apiUrls.push({ url, pageTag, apiSource });
-                        } else {
-                            console.warn(`Bỏ qua URL không hợp lệ trong apiurl.json: ${url}`);
                         }
                     });
                 });
-                console.log(`Loaded ${apiUrls.length} API URLs from apiurl.json`);
                 return apiUrls;
             } catch (error) {
                 console.error('Lỗi khi tải apiurl.json:', error);
-                showErrorToast('Không thể tải danh sách API: ' + error.message);
                 return [];
             }
         }
 
         async function fetchMovieData(url, apiSource, apiUrls, retries = 2) {
-            if (!url || typeof url !== 'string' || !url.startsWith('http')) {
-                console.warn(`Bỏ qua URL không hợp lệ: ${url}`);
-                return null;
-            }
             try {
-                const response = await fetch(url, { mode: 'cors', cache: 'no-store' });
-                if (!response.ok) {
-                    throw new Error(`HTTP error: ${response.status}`);
-                }
+                const response = await fetch(url, { mode: 'cors' });
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                 const data = await response.json();
-                if (!data || typeof data !== 'object' || !data.movie || !(data.status === true || data.status === 'success')) {
-                    console.warn(`Dữ liệu không hợp lệ từ ${url}:`, data);
-                    return null;
+                if ((data.status === true || data.status === 'success') && data.movie) {
+                    const movieData = normalizeMovieData(data, apiSource);
+                    movieData.pageTag = apiUrls.find(api => api.url === url)?.pageTag || 'khac';
+                    movieData.apiSource = apiSource;
+                    return movieData;
                 }
-                const movieData = normalizeMovieData(data, apiSource);
-                if (!movieData.name || !movieData.poster_url) {
-                    console.warn(`Phim không hợp lệ từ ${url}: Thiếu tên hoặc poster`);
-                    return null;
-                }
-                movieData.pageTag = apiUrls.find(api => api.url === url)?.pageTag || 'khac';
-                movieData.apiSource = apiSource;
-                return movieData;
+                return null;
             } catch (error) {
                 if (retries > 0) {
-                    console.warn(`Thử lại ${url}, còn ${retries} lần: ${error.message}`);
+                    console.warn(`Thử lại ${url}, còn ${retries} lần`);
                     return fetchMovieData(url, apiSource, apiUrls, retries - 1);
                 }
-                console.error(`Lỗi khi tải dữ liệu từ ${url}: ${error.message}`);
+                console.error(`Lỗi khi tải dữ liệu từ ${url}:`, error);
                 return null;
             }
         }
 
         function normalizeSearchText(text) {
-            if (typeof text !== 'string') return '';
             return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
         }
 
@@ -1035,50 +893,7 @@
             };
         }
 
-        async function renderMovieItem(movie, container) {
-            if (!movie || typeof movie !== 'object' || !movie.name || !movie.poster_url) {
-                console.warn('Dữ liệu phim không hợp lệ hoặc thiếu thông tin cần thiết:', movie);
-                return null;
-            }
-
-            if (!movie.apiSource || !['ophim1', 'phimapi', 'phimnguonc', 'custom'].includes(movie.apiSource)) {
-                movie.apiSource = 'custom';
-            }
-            if (!movie.slug) {
-                movie.slug = (movie.name || 'unknown').toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-') || `custom-${Date.now()}`;
-            }
-            if (!movie.poster_url || typeof movie.poster_url !== 'string' || !movie.poster_url.startsWith('http')) {
-                console.warn(`Poster URL không hợp lệ cho phim ${movie.name}: ${movie.poster_url}`);
-                movie.poster_url = DEFAULT_POSTER;
-            }
-
-            const detailUrlBase = movie.apiSource === 'custom'
-                ? `detail.html?name=${encodeURIComponent(movie.name || '')}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality || 'HD')}&content=${encodeURIComponent(movie.content || '')}&actors=${encodeURIComponent(movie.actors || '')}&directors=${encodeURIComponent(movie.directors || '')}&countries=${encodeURIComponent(movie.countries || '')}&categories=${encodeURIComponent(movie.categories || '')}&year=${encodeURIComponent(movie.year || '')}&time=${encodeURIComponent(movie.time || '')}&lang=${encodeURIComponent(movie.lang || '')}&origin_name=${encodeURIComponent(movie.origin_name || '')}&status=${encodeURIComponent(movie.status || '')}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes || []))}&episode_total=${movie.episode_total || 1}&type=${movie.type || 'movie'}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
-                : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name || '')}`;
-            const detailUrl = await checkFileExists('detail.html') ? detailUrlBase : '#';
-
-            const langText = (movie.lang && typeof movie.lang === 'string' && movie.lang.toLowerCase().includes('thuyết minh')) ? 'TM' :
-                            (movie.lang && typeof movie.lang === 'string' && movie.lang.toLowerCase().includes('lồng tiếng')) ? 'LT' : 'VS';
-            const langBadge = langText === 'VS' ? langText : `<i class="fas fa-check check-icon"></i> ${langText}`;
-
-            const movieItem = document.createElement('div');
-            movieItem.classList.add('movie-item');
-            movieItem.innerHTML = `
-                <div class="movie-poster">
-                    <a href="${detailUrl}">
-                        <img src="${movie.poster_url}" alt="${movie.name || 'Phim không tên'}" loading="lazy" onerror="this.src='${DEFAULT_POSTER}'; console.warn('Poster failed to load: ${movie.poster_url}');">
-                        <span class="episode-badge">${movie.episode_total || 1} tập | ${langBadge}</span>
-                        <div class="movie-overlay">
-                            <p>${movie.content || 'Không có nội dung'}</p>
-                        </div>
-                    </a>
-                </div>
-                <a href="${detailUrl}" class="movie-title">${movie.name || 'Phim không tên'} (${movie.quality || 'HD'})</a>
-            `;
-            return movieItem;
-        }
-
-        async function renderMovies(apiUrls = [], customMovies = [], seriesMovies = [], singleMovies = [], searchTerm = '', page = 1, append = false) {
+        async function renderMovies(apiUrls, customMovies, seriesMovies, singleMovies, searchTerm = '', page = 1, append = false) {
             if (isLoading || !hasMoreMovies) return;
             isLoading = true;
             elements.loadingSpinner.classList.add('visible');
@@ -1086,51 +901,24 @@
             const start = (page - 1) * MOVIES_PER_PAGE;
             const end = start + MOVIES_PER_PAGE;
 
-            let cachedData = {};
-            let searchCache = {};
-            try {
-                cachedData = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
-                searchCache = JSON.parse(localStorage.getItem(SEARCH_CACHE_KEY) || '{}');
-            } catch (error) {
-                console.error('Lỗi khi parse cache:', error);
-                localStorage.removeItem(CACHE_KEY);
-                localStorage.removeItem(SEARCH_CACHE_KEY);
-                cachedData = {};
-                searchCache = {};
-            }
-
+            // Kiểm tra cache
+            const cachedData = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
             const now = Date.now();
-            if (!append && page === 1) {
-                if (searchTerm && searchCache[searchTerm] && (now - searchCache[searchTerm].timestamp) < SEARCH_CACHE_EXPIRY) {
-                    const fragment = document.createDocumentFragment();
-                    const cachedMovies = searchCache[searchTerm].movies.slice(start, end) || [];
-                    for (const movie of cachedMovies) {
-                        if (!movie || !movie.name || !movie.poster_url) continue;
-                        const movieItem = await renderMovieItem(movie, elements.recommendedList);
-                        if (movieItem) fragment.appendChild(movieItem);
-                    }
-                    elements.recommendedList.appendChild(fragment);
-                    isLoading = false;
-                    elements.loadingSpinner.classList.remove('visible');
-                    return;
-                } else if (!searchTerm && cachedData[currentPage] && (now - cachedData[currentPage].timestamp) < CACHE_EXPIRY) {
-                    const fragment = document.createDocumentFragment();
-                    const cachedMovies = cachedData[currentPage].movies.slice(start, end) || [];
-                    for (const movie of cachedMovies) {
-                        if (!movie || !movie.name || !movie.poster_url) continue;
-                        const movieItem = await renderMovieItem(movie, elements.recommendedList);
-                        if (movieItem) fragment.appendChild(movieItem);
-                    }
-                    elements.recommendedList.appendChild(fragment);
-                    isLoading = false;
-                    elements.loadingSpinner.classList.remove('visible');
-                    return;
-                }
+            if (cachedData[currentPage] && (now - cachedData.timestamp) < CACHE_EXPIRY && !searchTerm && page === 1 && !append) {
+                const fragment = document.createDocumentFragment();
+                cachedData[currentPage].movies.slice(start, end).forEach(movie => {
+                    renderMovieItem(movie, fragment);
+                });
+                elements.recommendedList.appendChild(fragment);
+                isLoading = false;
+                elements.loadingSpinner.classList.remove('visible');
+                return;
             }
 
-            const filteredUrls = Array.isArray(apiUrls) ? apiUrls.filter(({ pageTag }) => pageTag === currentPage) : [];
-            const allMovies = [...(Array.isArray(customMovies) ? customMovies : []), ...(Array.isArray(seriesMovies) ? seriesMovies : []), ...(Array.isArray(singleMovies) ? singleMovies : [])];
+            const filteredUrls = apiUrls.filter(({ pageTag }) => pageTag === currentPage);
+            const allMovies = [...customMovies, ...seriesMovies, ...singleMovies];
 
+            // Xóa danh sách phim nếu không append
             if (!append) {
                 elements.recommendedList.innerHTML = '';
                 elements.banhmiList.innerHTML = '';
@@ -1138,12 +926,12 @@
                 elements.movieList.innerHTML = '';
             }
 
+            // Xử lý tìm kiếm
             if (searchTerm) {
                 const normalizedSearch = normalizeSearchText(searchTerm);
                 const searchResults = [];
 
                 allMovies.forEach(movie => {
-                    if (!movie || typeof movie !== 'object' || !movie.name || !movie.poster_url) return;
                     if (
                         normalizeSearchText(movie.name).includes(normalizedSearch) ||
                         normalizeSearchText(movie.origin_name || '').includes(normalizedSearch) ||
@@ -1154,29 +942,25 @@
                     }
                 });
 
-                const apiMovies = [];
-                const apiSearchPromises = filteredUrls.slice(start, end).map(async ({ url, apiSource }) => {
-                    const data = await fetchMovieData(url, apiSource, apiUrls);
-                    if (data && data.name && data.poster_url) {
-                        if (
+                const apiSearchPromises = filteredUrls.slice(start, end).map(({ url, apiSource }) =>
+                    fetchMovieData(url, apiSource, apiUrls).then(data => {
+                        if (data && (
                             normalizeSearchText(data.name).includes(normalizedSearch) ||
                             normalizeSearchText(data.origin_name || '').includes(normalizedSearch) ||
                             normalizeSearchText(data.categories || '').includes(normalizedSearch) ||
                             normalizeSearchText(data.countries || '').includes(normalizedSearch)
-                        ) {
-                            apiMovies.push(data);
+                        )) {
+                            searchResults.push(data); // Chỉ push data nếu hợp lệ, không cần thêm apiSource vì nó đã được gán trong fetchMovieData
                         }
-                    }
-                });
-                await Promise.all(apiSearchPromises);
-                searchResults.push(...apiMovies);
+                    })
+                );
+                await Promise.allSettled(apiSearchPromises);
 
                 elements.searchSuggestions.innerHTML = '';
                 if (searchTerm) {
                     const suggestions = searchResults.slice(0, 5);
-                    const suggestionFragment = document.createDocumentFragment();
+                    const fragment = document.createDocumentFragment();
                     suggestions.forEach(movie => {
-                        if (!movie || !movie.name) return;
                         const suggestionItem = document.createElement('div');
                         suggestionItem.textContent = movie.name;
                         suggestionItem.addEventListener('click', () => {
@@ -1185,9 +969,9 @@
                             window.history.pushState({}, '', `?search=${encodeURIComponent(movie.name)}`);
                             renderMovies(apiUrls, customMovies, seriesMovies, singleMovies, movie.name, 1);
                         });
-                        suggestionFragment.appendChild(suggestionItem);
+                        fragment.appendChild(suggestionItem);
                     });
-                    elements.searchSuggestions.appendChild(suggestionFragment);
+                    elements.searchSuggestions.appendChild(fragment);
                     elements.searchSuggestions.classList.add('visible');
                 } else {
                     elements.searchSuggestions.classList.remove('visible');
@@ -1197,123 +981,134 @@
                 if (slicedResults.length === 0) {
                     hasMoreMovies = false;
                     elements.recommendedList.innerHTML = '<p>Không tìm thấy phim nào.</p>';
-                    showErrorToast('Không tìm thấy phim phù hợp');
                 } else {
-                    const fragment = document.createDocumentFragment();
-                    for (const movie of slicedResults) {
-                        if (!movie || !movie.name || !movie.poster_url) continue;
-                        const movieItem = await renderMovieItem(movie, elements.recommendedList);
-                        if (movieItem) fragment.appendChild(movieItem);
-                    }
-                    elements.recommendedList.appendChild(fragment);
-
-                    if (searchResults.length > 0) {
-                        try {
-                            const searchCacheData = {
-                                [searchTerm]: {
-                                    movies: searchResults,
-                                    timestamp: Date.now()
-                                }
-                            };
-                            localStorage.setItem(SEARCH_CACHE_KEY, JSON.stringify(searchCacheData));
-                        } catch (error) {
-                            console.error('Lỗi khi lưu search cache:', error);
-                        }
-                    }
+                    renderSearchResults(slicedResults);
                 }
             } else {
-                const pageMovies = Array.isArray(customMovies) ? customMovies.filter(movie => movie && movie.pageTag === currentPage && movie.name && movie.poster_url).slice(start, end) : [];
+                // Section "Phim đề cử"
+                const pageMovies = customMovies.filter(movie => movie.pageTag === currentPage).slice(start, end);
                 const apiMoviesToFetch = filteredUrls.slice(start, end - pageMovies.length);
-
-                const recommendedFragment = document.createDocumentFragment();
-                for (const movie of pageMovies) {
-                    if (!movie || !movie.name || !movie.poster_url) continue;
-                    const movieItem = await renderMovieItem(movie, elements.recommendedList);
-                    if (movieItem) recommendedFragment.appendChild(movieItem);
-                }
-
                 const apiMovies = [];
-                const apiPromises = apiMoviesToFetch.map(async ({ url, apiSource }) => {
-                    const data = await fetchMovieData(url, apiSource, apiUrls);
-                    if (data && data.name && data.poster_url) {
-                        apiMovies.push(data);
-                    }
-                });
-                await Promise.all(apiPromises);
 
-                for (const movie of apiMovies) {
-                    if (!movie || !movie.name || !movie.poster_url) continue;
-                    const movieItem = await renderMovieItem(movie, elements.recommendedList);
-                    if (movieItem) recommendedFragment.appendChild(movieItem);
-                }
-
-                if (pageMovies.length === 0 && apiMovies.length === 0) {
+                if (pageMovies.length === 0 && apiMoviesToFetch.length === 0) {
                     hasMoreMovies = false;
                     elements.recommendedList.innerHTML = '<p>Không có phim đề cử.</p>';
-                    showErrorToast('Không có dữ liệu phim đề cử');
                 } else {
-                    elements.recommendedList.appendChild(recommendedFragment);
+                    const fragment = document.createDocumentFragment();
+                    pageMovies.forEach(movie => {
+                        renderMovieItem(movie, fragment);
+                    });
+                    elements.recommendedList.appendChild(fragment);
+
+                    const apiPromises = apiMoviesToFetch.map(({ url, apiSource }) =>
+                        fetchMovieData(url, apiSource, apiUrls).then(data => {
+                            if (data) {
+                                renderMovieItem(data, elements.recommendedList);
+                                apiMovies.push(data);
+                            }
+                        })
+                    );
+                    await Promise.allSettled(apiPromises);
                 }
 
-                const banhmiFiltered = Array.isArray(customMovies) ? customMovies.filter(movie => movie && movie.pageTag === currentPage && movie.name && movie.poster_url).slice(start, end) : [];
-                const banhmiFragment = document.createDocumentFragment();
+                // Section "Phim bánh mì"
+                const banhmiFiltered = customMovies.filter(movie => movie.pageTag === currentPage).slice(start, end);
                 if (banhmiFiltered.length === 0) {
                     elements.banhmiList.innerHTML = '<p>Không có phim bánh mì.</p>';
                 } else {
-                    for (const movie of banhmiFiltered) {
-                        if (!movie || !movie.name || !movie.poster_url) continue;
-                        const movieItem = await renderMovieItem(movie, elements.banhmiList);
-                        if (movieItem) banhmiFragment.appendChild(movieItem);
-                    }
-                    elements.banhmiList.appendChild(banhmiFragment);
+                    const fragment = document.createDocumentFragment();
+                    banhmiFiltered.forEach(movie => {
+                        renderMovieItem(movie, fragment);
+                    });
+                    elements.banhmiList.appendChild(fragment);
                 }
 
-                const seriesFiltered = Array.isArray(seriesMovies) ? seriesMovies.filter(movie => movie && movie.pageTag === currentPage && movie.name && movie.poster_url).slice(start, end) : [];
-                const seriesFragment = document.createDocumentFragment();
+                // Section "Phim bộ"
+                const seriesFiltered = seriesMovies.filter(movie => movie.pageTag === currentPage).slice(start, end);
                 if (seriesFiltered.length === 0) {
                     elements.seriesList.innerHTML = '<p>Không có phim bộ.</p>';
                 } else {
-                    for (const movie of seriesFiltered) {
-                        if (!movie || !movie.name || !movie.poster_url) continue;
-                        const movieItem = await renderMovieItem(movie, elements.seriesList);
-                        if (movieItem) seriesFragment.appendChild(movieItem);
-                    }
-                    elements.seriesList.appendChild(seriesFragment);
+                    const fragment = document.createDocumentFragment();
+                    seriesFiltered.forEach(movie => {
+                        renderMovieItem(movie, fragment);
+                    });
+                    elements.seriesList.appendChild(fragment);
                 }
 
-                const singleFiltered = Array.isArray(singleMovies) ? singleMovies.filter(movie => movie && movie.pageTag === currentPage && movie.name && movie.poster_url).slice(start, end) : [];
-                const singleFragment = document.createDocumentFragment();
+                // Section "Phim lẻ"
+                const singleFiltered = singleMovies.filter(movie => movie.pageTag === currentPage).slice(start, end);
                 if (singleFiltered.length === 0) {
-                    elements.movieList.innerHTML = '<p>Không có phim lẻ hoặc file le.txt không hợp lệ.</p>';
-                    console.warn(`No movies found in le.txt for pageTag: ${currentPage}`);
+                    elements.movieList.innerHTML = '<p>Không có phim lẻ.</p>';
                 } else {
-                    for (const movie of singleFiltered) {
-                        if (!movie || !movie.name || !movie.poster_url) continue;
-                        const movieItem = await renderMovieItem(movie, elements.movieList);
-                        if (movieItem) singleFragment.appendChild(movieItem);
-                    }
-                    elements.movieList.appendChild(singleFragment);
+                    const fragment = document.createDocumentFragment();
+                    singleFiltered.forEach(movie => {
+                        renderMovieItem(movie, fragment);
+                    });
+                    elements.movieList.appendChild(fragment);
                 }
 
-                if (pageMovies.length + apiMovies.length < MOVIES_PER_PAGE) {
+                // Kiểm tra còn phim để tải không
+                if (pageMovies.length + apiMoviesToFetch.length < MOVIES_PER_PAGE) {
                     hasMoreMovies = false;
                 }
 
-                try {
-                    const cacheData = {
-                        [currentPage]: {
-                            movies: [...pageMovies, ...apiMovies],
-                            timestamp: Date.now()
-                        }
-                    };
-                    localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
-                } catch (error) {
-                    console.error('Lỗi khi lưu cache:', error);
-                }
+                // Lưu vào cache
+                const cacheData = {
+                    [currentPage]: {
+                        movies: [...pageMovies, ...apiMovies.slice(0, MOVIES_PER_PAGE - pageMovies.length)],
+                        timestamp: Date.now()
+                    }
+                };
+                localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
             }
 
             isLoading = false;
             elements.loadingSpinner.classList.remove('visible');
+
+            function renderMovieItem(movie, container) {
+                if (!movie.apiSource || !['ophim1', 'phimapi', 'phimnguonc', 'custom'].includes(movie.apiSource)) {
+                    movie.apiSource = 'custom';
+                }
+                if (!movie.slug) {
+                    movie.slug = movie.name.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-') || `custom-${Date.now()}`;
+                }
+
+                const detailUrl = movie.apiSource === 'custom'
+                    ? `detail.html?name=${encodeURIComponent(movie.name)}&poster=${encodeURIComponent(movie.poster_url)}&quality=${encodeURIComponent(movie.quality)}&content=${encodeURIComponent(movie.content)}&actors=${encodeURIComponent(movie.actors)}&directors=${encodeURIComponent(movie.directors)}&countries=${encodeURIComponent(movie.countries)}&categories=${encodeURIComponent(movie.categories)}&year=${encodeURIComponent(movie.year)}&time=${encodeURIComponent(movie.time)}&lang=${encodeURIComponent(movie.lang)}&origin_name=${encodeURIComponent(movie.origin_name)}&status=${encodeURIComponent(movie.status)}&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}&episode_total=${movie.episode_total}&type=${movie.type}&slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}`
+                    : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}`;
+
+                const langText = movie.lang.toLowerCase().includes('thuyết minh') ? 'TM' :
+                                movie.lang.toLowerCase().includes('lồng tiếng') ? 'LT' : 'VS';
+                const langBadge = langText === 'VS' ? langText : `<i class="fas fa-check check-icon"></i> ${langText}`;
+
+                const movieItem = document.createElement('div');
+                movieItem.classList.add('movie-item');
+                movieItem.innerHTML = `
+                    <div class="movie-poster">
+                        <a href="${detailUrl}">
+                            <img src="${movie.poster_url}" alt="${movie.name}" loading="lazy">
+                            <span class="episode-badge">${movie.episode_total} tập | ${langBadge}</span>
+                            <div class="movie-overlay">
+                                <p>${movie.content}</p>
+                            </div>
+                        </a>
+                    </div>
+                    <a href="${detailUrl}" class="movie-title">${movie.name} (${movie.quality})</a>
+                `;
+                container.appendChild(movieItem);
+            }
+
+            function renderSearchResults(results) {
+                if (results.length === 0) {
+                    elements.recommendedList.innerHTML = '<p>Không tìm thấy phim nào.</p>';
+                } else {
+                    const fragment = document.createDocumentFragment();
+                    results.forEach(movie => {
+                        renderMovieItem(movie, fragment);
+                    });
+                    elements.recommendedList.appendChild(fragment);
+                }
+            }
         }
 
         const debouncedRenderMovies = debounce((...args) => renderMovies(...args), 300);
@@ -1322,6 +1117,7 @@
             const searchTerm = elements.searchInput.value.trim();
             elements.clearSearch.classList.toggle('visible', searchTerm.length > 0);
             hasMoreMovies = true;
+            currentPageNumber = 1;
             debouncedRenderMovies(allApiUrls, customMovies, seriesMovies, singleMovies, searchTerm);
         });
 
@@ -1330,6 +1126,7 @@
                 const searchTerm = elements.searchInput.value.trim();
                 window.history.pushState({}, '', `?search=${encodeURIComponent(searchTerm)}`);
                 hasMoreMovies = true;
+                currentPageNumber = 1;
                 renderMovies(allApiUrls, customMovies, seriesMovies, singleMovies, searchTerm);
                 elements.searchSuggestions.classList.remove('visible');
             }
@@ -1341,72 +1138,45 @@
             elements.searchSuggestions.classList.remove('visible');
             window.history.pushState({}, '', window.location.pathname);
             hasMoreMovies = true;
+            currentPageNumber = 1;
             renderMovies(allApiUrls, customMovies, seriesMovies, singleMovies);
         });
 
-        async function initialize() {
-            try {
-                const [apiUrls, customMoviesData, seriesMoviesData, singleMoviesData] = await Promise.all([
-                    loadApiUrls().catch(error => {
-                        console.error('Lỗi tải API URLs:', error);
-                        return [];
-                    }),
-                    loadCustomMovies('customapi.txt').catch(error => {
-                        console.error('Lỗi tải customapi.txt:', error);
-                        return [];
-                    }),
-                    loadCustomMovies('bo.txt').catch(error => {
-                        console.error('Lỗi tải bo.txt:', error);
-                        return [];
-                    }),
-                    loadCustomMovies('le.txt').catch(error => {
-                        console.error('Lỗi tải le.txt:', error);
-                        return [];
-                    })
-                ]);
+        Promise.all([
+            loadApiUrls(),
+            loadCustomMovies('customapi.txt'),
+            loadCustomMovies('bo.txt'),
+            loadCustomMovies('le.txt')
+        ]).then(([apiUrls, customMoviesData, seriesMoviesData, singleMoviesData]) => {
+            allApiUrls = apiUrls;
+            customMovies = customMoviesData;
+            seriesMovies = seriesMoviesData;
+            singleMovies = singleMoviesData;
 
-                allApiUrls = Array.isArray(apiUrls) ? apiUrls : [];
-                customMovies = Array.isArray(customMoviesData) ? customMoviesData : [];
-                seriesMovies = Array.isArray(seriesMoviesData) ? seriesMoviesData : [];
-                singleMovies = Array.isArray(singleMoviesData) ? singleMoviesData : [];
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchTerm = urlParams.get('search') || '';
+            elements.searchInput.value = searchTerm;
+            elements.clearSearch.classList.toggle('visible', searchTerm.length > 0);
 
-                console.log('Custom movies:', customMovies.length);
-                console.log('Series movies (bo.txt):', seriesMovies.length);
-                console.log('Single movies (le.txt):', singleMovies.length);
-                console.log('API URLs:', allApiUrls.length);
+            renderMovies(apiUrls, customMovies, seriesMovies, singleMovies, searchTerm);
 
-                const urlParams = new URLSearchParams(window.location.search);
-                const searchTerm = urlParams.get('search') || '';
-                elements.searchInput.value = searchTerm;
-                elements.clearSearch.classList.toggle('visible', searchTerm.length > 0);
-
-                await renderMovies(allApiUrls, customMovies, seriesMovies, singleMovies, searchTerm);
-
-                adjustMainContentPadding();
-                highlightActiveMenu();
-            } catch (error) {
-                console.error('Lỗi khi khởi tạo dữ liệu:', error);
-                elements.recommendedList.innerHTML = '<p>Lỗi tải dữ liệu phim. Vui lòng thử lại.</p>';
-                elements.banhmiList.innerHTML = '<p>Lỗi tải dữ liệu phim.</p>';
-                elements.seriesList.innerHTML = '<p>Lỗi tải dữ liệu phim.</p>';
-                elements.movieList.innerHTML = '<p>Lỗi tải dữ liệu phim.</p>';
-                showErrorToast('Không thể tải dữ liệu phim: ' + error.message);
-            } finally {
-                isLoading = false;
-                elements.loadingSpinner.classList.remove('visible');
-            }
-        }
-
-        initialize();
+            adjustMainContentPadding();
+            highlightActiveMenu();
+        }).catch(error => {
+            console.error('Lỗi khi tải dữ liệu ban đầu:', error);
+            elements.recommendedList.innerHTML = '<p>Lỗi tải dữ liệu phim.</p>';
+            isLoading = false;
+            elements.loadingSpinner.classList.remove('visible');
+        });
 
         window.addEventListener('resize', adjustMainContentPadding);
 
+        // Infinite scroll
         window.addEventListener('scroll', () => {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading && hasMoreMovies) {
-                const currentMovies = document.querySelectorAll('.movie-item').length;
-                const page = Math.floor(currentMovies / MOVIES_PER_PAGE) + 1;
+                currentPageNumber++;
                 const searchTerm = elements.searchInput.value.trim();
-                renderMovies(allApiUrls, customMovies, seriesMovies, singleMovies, searchTerm, page, true);
+                renderMovies(allApiUrls, customMovies, seriesMovies, singleMovies, searchTerm, currentPageNumber, true);
             }
         });
     </script>
