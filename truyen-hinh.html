@@ -663,7 +663,7 @@
         const showErrorToast = (msg) => showToast(msg, 'error');
 
         // Fetch with Timeout
-        async function fetchWithTimeout(url, options = {}, timeout = 10000) {
+        async function fetchWithTimeout(url, options = {}, timeout = 15000) {
             const controller = new AbortController();
             const id = setTimeout(() => controller.abort(), timeout);
             try {
@@ -690,18 +690,30 @@
         async function loadApiUrls() {
             if (!(await checkFileExists('apiurl.json'))) {
                 console.error('File apiurl.json không tồn tại');
+                showErrorToast('Không tìm thấy apiurl.json');
                 return [];
             }
             try {
                 const response = await fetchWithTimeout('apiurl.json', { cache: 'no-store' });
                 if (!response.ok) {
                     console.error('Không thể tải apiurl.json:', response.status);
+                    showErrorToast('Lỗi tải apiurl.json');
                     return [];
                 }
                 const data = await response.json();
-                return data.flatMap(item => item[currentPage] || []);
+                console.log('Raw apiurl.json data:', data);
+                const urls = data
+                    .filter(item => item && item[currentPage])
+                    .flatMap(item => item[currentPage] || []);
+                console.log('Extracted API URLs:', urls);
+                if (urls.length === 0) {
+                    console.warn('Không tìm thấy URL nào cho trang', currentPage);
+                    showErrorToast('Không có URL API cho trang truyền hình');
+                }
+                return urls;
             } catch (error) {
                 console.error('Lỗi khi tải apiurl.json:', error);
+                showErrorToast('Không thể tải apiurl.json');
                 return [];
             }
         }
@@ -866,6 +878,7 @@
 
         // Normalize Movie Data
         function normalizeMovieData(data, apiSource) {
+            console.log(`Normalizing data for ${apiSource}:`, data);
             const movie = data.movie || data;
             let categories = [];
             let countries = [];
@@ -955,35 +968,42 @@
                 apiSource,
                 apiUrl: data.apiUrl || null
             };
-            console.debug(`Normalized movie data:`, normalized);
+            console.log(`Normalized movie data for ${apiSource}:`, normalized);
             return normalized;
         }
 
         // Fetch Movie Data
-        async function fetchMovieData(url, apiSource, retries = 2) {
+        async function fetchMovieData(url, apiSource, retries = 3) {
+            console.log(`Fetching data from ${url} (Source: ${apiSource})`);
             try {
-                const response = await fetchWithTimeout(url, { mode: 'cors', cache: 'no-store' }, 10000);
+                const response = await fetchWithTimeout(url, { mode: 'cors', cache: 'no-store' }, 15000);
                 if (!response.ok) {
                     throw new Error(`HTTP error: ${response.status}`);
                 }
                 const data = await response.json();
+                console.log(`Raw API response from ${url}:`, data);
                 if ((data.status === true || data.status === 'success') && data.movie) {
-                    return normalizeMovieData({ ...data, apiUrl: url }, apiSource);
+                    const normalizedData = normalizeMovieData({ ...data, apiUrl: url }, apiSource);
+                    console.log(`Normalized data from ${url}:`, normalizedData);
+                    return normalizedData;
                 }
+                console.warn(`Dữ liệu không hợp lệ từ ${url}`);
                 return null;
             } catch (error) {
                 if (retries > 0) {
-                    console.warn(`Thử lại ${url}, còn ${retries} lần`);
-                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    console.warn(`Thử lại ${url}, còn ${retries} lần. Lỗi:`, error.message);
+                    await new Promise(resolve => setTimeout(resolve, 2000));
                     return fetchMovieData(url, apiSource, retries - 1);
                 }
                 console.error(`Lỗi khi tải dữ liệu từ ${url}:`, error);
+                showErrorToast(`Không thể tải dữ liệu từ ${apiSource}`);
                 return null;
             }
         }
 
         // Process API Queue
         async function processApiQueue(urls, limit = 5) {
+            console.log('Processing API queue with URLs:', urls);
             const results = [];
             const queue = [...urls];
             const active = new Set();
@@ -992,13 +1012,24 @@
                 if (queue.length === 0 && active.size === 0) return;
                 while (active.size < limit && queue.length > 0) {
                     const url = queue.shift();
+                    if (!url || typeof url !== 'string') {
+                        console.warn('URL không hợp lệ:', url);
+                        continue;
+                    }
                     active.add(url);
                     const apiSource = url.includes('ophim1.com') ? 'ophim1' : url.includes('phimapi.com') ? 'phimapi' : 'phimnguonc';
+                    console.log(`Queue processing: ${url} (${apiSource})`);
                     fetchMovieData(url, apiSource).then(data => {
-                        if (data) results.push(data);
+                        if (data) {
+                            console.log(`Successfully fetched movie from ${url}:`, data.name);
+                            results.push(data);
+                        } else {
+                            console.warn(`No valid data from ${url}`);
+                        }
                         active.delete(url);
                         return processNext();
-                    }).catch(() => {
+                    }).catch(error => {
+                        console.error(`Error processing ${url}:`, error);
                         active.delete(url);
                         processNext();
                     });
@@ -1006,6 +1037,7 @@
             }
 
             await Promise.all(Array(limit).fill().map(() => processNext()));
+            console.log(`Processed ${results.length} movies from API queue`);
             return results.filter(movie => movie !== null);
         }
 
@@ -1015,6 +1047,8 @@
                 console.warn('Dữ liệu phim không hợp lệ:', movie);
                 return null;
             }
+
+            console.log(`Rendering movie: ${movie.name} (${movie.apiSource})`);
 
             movie.apiSource = movie.apiSource || 'custom';
             movie.slug = movie.slug || (movie.name.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-') || `custom-${Date.now()}`);
@@ -1114,34 +1148,46 @@
 
         // Render Movies
         async function renderMovies(apiUrls, customMovies, seriesMovies, singleMovies, searchTerm = '') {
+            console.log('Rendering movies with:', { apiUrls, customMovies, seriesMovies, singleMovies, searchTerm });
             const allMovies = [...customMovies, ...seriesMovies, ...singleMovies];
             let filteredMovies = searchTerm
                 ? allMovies.filter(movie => movie.name.toLowerCase().includes(searchTerm.toLowerCase()))
                 : allMovies;
 
             if (apiUrls.length > 0) {
+                console.log('Fetching API movies...');
                 const apiMovies = await processApiQueue(apiUrls);
+                console.log(`Fetched ${apiMovies.length} API movies:`, apiMovies);
                 filteredMovies = filteredMovies.concat(
                     searchTerm
                         ? apiMovies.filter(movie => movie.name.toLowerCase().includes(searchTerm.toLowerCase()))
                         : apiMovies
                 );
+            } else {
+                console.log('No API URLs to fetch.');
             }
 
+            console.log(`Total filtered movies: ${filteredMovies.length}`);
             if (filteredMovies.length === 0) {
                 elements.recommendedList.innerHTML = '<p class="error-message">Không tìm thấy phim nào.</p>';
+                showErrorToast('Không tìm thấy phim phù hợp');
                 return;
             }
 
             const fragment = document.createDocumentFragment();
             for (const movie of filteredMovies) {
                 const movieItem = await renderMovieItem(movie, elements.recommendedList);
-                if (movieItem) fragment.appendChild(movieItem);
+                if (movieItem) {
+                    fragment.appendChild(movieItem);
+                } else {
+                    console.warn(`Failed to render movie: ${movie.name}`);
+                }
             }
 
             elements.recommendedList.innerHTML = '';
             elements.recommendedList.appendChild(fragment);
             observeImages();
+            console.log('Movies rendered successfully');
         }
 
         // Adjust Main Content Padding
@@ -1214,6 +1260,7 @@
         // Initialize
         async function initialize() {
             try {
+                console.log('Initializing page...');
                 if (!(await checkFileExists('detail.html'))) {
                     console.error('Trang detail.html không tồn tại');
                     showErrorToast('Trang chi tiết không khả dụng. Vui lòng kiểm tra file detail.html');
@@ -1234,10 +1281,12 @@
                 seriesMovies = Array.isArray(seriesMoviesData) ? seriesMoviesData.filter(m => m.pageTag === currentPage) : [];
                 singleMovies = Array.isArray(singleMoviesData) ? singleMoviesData.filter(m => m.pageTag === currentPage) : [];
 
-                console.log('Custom movies:', customMovies.length);
-                console.log('Series movies:', seriesMovies.length);
-                console.log('Single movies:', singleMovies.length);
-                console.log('API URLs:', allApiUrls.length);
+                console.log('Initialization data:', {
+                    apiUrls: allApiUrls.length,
+                    customMovies: customMovies.length,
+                    seriesMovies: seriesMovies.length,
+                    singleMovies: singleMovies.length
+                });
 
                 const urlParams = new URLSearchParams(window.location.search);
                 const searchTerm = urlParams.get('search') || '';
