@@ -13,7 +13,7 @@
     <style>
         :root {
             --primary-color: #e50914;
-            --primary-hover: #b20710;
+            --lprimary-hover: #b20710;
             --bg-dark: #181818;
             --bg-section: #222;
             --text-white: #fff;
@@ -675,11 +675,7 @@
         async function checkFileExists(file) {
             try {
                 const response = await fetch(file, { method: 'HEAD', cache: 'no-store' });
-                if (!response.ok) {
-                    console.error(`File ${file} không tồn tại hoặc không thể truy cập: ${response.status}`);
-                    return false;
-                }
-                return true;
+                return response.ok;
             } catch (error) {
                 console.error(`Lỗi khi kiểm tra file ${file}:`, error);
                 return false;
@@ -717,6 +713,86 @@
             });
         }
 
+        function parseEpisodeTotal(totalEpisodes, status, episodes) {
+            let total = null;
+            // Ưu tiên total_episodes
+            if (totalEpisodes !== null && totalEpisodes !== undefined) {
+                const parsedTotal = parseInt(totalEpisodes);
+                if (!isNaN(parsedTotal) && parsedTotal > 0) {
+                    total = parsedTotal;
+                    console.debug(`Parsed episode total from total_episodes "${totalEpisodes}": ${total}`);
+                    return total;
+                }
+            }
+            // Tiếp theo phân tích status
+            if (status && typeof status === 'string') {
+                const patterns = [
+                    /\((\d+)\/(\d+)\)/, // (16/16)
+                    /Tập\s*(\d+)\/(\d+)/i, // Tập 16/16
+                    /Hoàn tất\s*(\d+)\/(\d+)/i, // Hoàn tất 16/16
+                    /(\d+)\s*tập/i // 16 tập
+                ];
+                for (const pattern of patterns) {
+                    const match = status.match(pattern);
+                    if (match) {
+                        total = parseInt(match[2] || match[1]);
+                        if (!isNaN(total) && total > 0) {
+                            console.debug(`Parsed episode total from status "${status}": ${total}`);
+                            return total;
+                        }
+                    }
+                }
+            }
+            // Cuối cùng dùng episodes.length
+            if (episodes && Array.isArray(episodes) && episodes.length > 0) {
+                total = episodes.length;
+                console.debug(`Using episodes.length: ${total}`);
+                return total;
+            }
+            // Nếu không có dữ liệu hợp lệ
+            console.warn(`No valid episode total found for total_episodes: "${totalEpisodes}", status: "${status}", episodes: ${episodes?.length || 0}`);
+            return 1; // Mặc định chỉ khi không có dữ liệu
+        }
+
+        function determineMovieType(episodeTotal, status, episodes) {
+            const total = parseEpisodeTotal(episodeTotal, status, episodes);
+            const type = total > 1 ? 'series' : 'movie';
+            console.debug(`Determined movie type: ${type} (episode_total: ${total})`);
+            return type;
+        }
+
+        function normalizeLanguage(lang) {
+            if (!lang) return 'Vietsub';
+            const str = Array.isArray(lang) ? lang.join(' ') : (typeof lang === 'string' ? lang : '');
+            const lower = str.toLowerCase().trim();
+            if (lower.includes('thuyết minh') || lower.includes('thuyet minh') || lower.includes('tm')) {
+                return 'Thuyết Minh';
+            }
+            if (lower.includes('lồng tiếng') || lower.includes('long tieng') || lower.includes('lt')) {
+                return 'Lồng Tiếng';
+            }
+            return 'Vietsub';
+        }
+
+        function determineLanguage(movie) {
+            const fields = [
+                movie.language,
+                movie.lang,
+                movie.sub_docquyen,
+                movie.status,
+                movie.quality
+            ].filter(field => field);
+            for (const field of fields) {
+                const lang = normalizeLanguage(field);
+                if (lang !== 'Vietsub') {
+                    console.debug(`Determined language from field "${field}": ${lang}`);
+                    return lang;
+                }
+            }
+            console.debug(`Default language: Vietsub`);
+            return 'Vietsub';
+        }
+
         function normalizeMovieData(data, apiSource) {
             const movie = data.movie || {};
             let categories = [];
@@ -744,9 +820,20 @@
                             categories = group.list.map(item => item.name || 'Không rõ');
                         } else if (group && group.group && group.group.name === 'Quốc gia' && Array.isArray(group.list)) {
                             countries = group.list.map(item => item.name || 'Không rõ');
+                        } else if (group && group.group && group.group.name === 'Năm' && Array.isArray(group.list)) {
+                            year = group.list[0]?.name || 'Không rõ';
                         }
                     });
                 }
+                servers = Array.isArray(data.episodes) ? data.episodes.map((server, index) => ({
+                    server_name: server.server_name || `Server ${index + 1}`,
+                    server_data: Array.isArray(server.items) ? server.items.map(ep => ({
+                        name: (ep.name || 'Tập 1').replace('Tập ', '').trim(),
+                        link_m3u8: ep.m3u8 || '',
+                        link_embed: ep.embed || '',
+                        link_video: ep.video || ''
+                    })) : []
+                })) : [];
             } else if (apiSource === 'custom') {
                 categories = movie.categories ? [movie.categories] : ['Không rõ'];
                 countries = movie.countries ? [movie.countries] : ['Không rõ'];
@@ -762,28 +849,33 @@
             }
 
             episodes = servers.flatMap(server => Array.isArray(server.server_data) ? server.server_data : []);
+            const episodeTotal = parseEpisodeTotal(movie.total_episodes, movie.current_episode || movie.status, episodes);
+            const type = movie.type || determineMovieType(movie.total_episodes, movie.current_episode || movie.status, episodes);
+            const lang = determineLanguage(movie);
 
-            return {
-                id: movie._id || movie.id || `id-${Date.now()}`,
+            const normalized = {
+                id: movie.id || movie._id || `id-${Date.now()}`,
                 name: movie.name || 'Không có tên',
                 slug: movie.slug || `slug-${Date.now()}`,
-                origin_name: movie.origin_name || movie.original_name || 'Không có',
+                origin_name: movie.original_name || movie.origin_name || 'Không có',
                 poster_url: movie.poster_url || movie.thumb_url || DEFAULT_POSTER,
-                content: movie.content || movie.description || 'Không có nội dung',
-                type: movie.type || (episodes.length > 1 ? 'series' : 'movie'),
-                status: movie.status || movie.current_episode || 'unknown',
-                episode_total: parseInt((movie.episode_total || episodes.length || '1').toString().replace('Tập', '').trim()) || 1,
+                content: movie.description || movie.content || 'Không có nội dung',
+                type,
+                status: movie.current_episode || movie.status || 'unknown',
+                episode_total: episodeTotal,
                 time: movie.time || 'Không rõ',
                 quality: movie.quality || 'HD',
-                lang: typeof movie.lang === 'string' ? movie.lang : (typeof movie.language === 'string' ? movie.language : 'Vietsub'),
-                year: year,
-                actors: Array.isArray(movie.actor) && movie.actor.length ? movie.actor.join(', ') : (typeof movie.actor === 'string' ? movie.actor : (movie.casts || 'Không có thông tin')),
+                lang,
+                year,
+                actors: Array.isArray(movie.casts) && movie.casts.length ? movie.casts.join(', ') : (typeof movie.casts === 'string' ? movie.casts : (movie.actor || 'Không có thông tin')),
                 directors: Array.isArray(movie.director) && movie.director.length ? movie.director.join(', ') : (typeof movie.director === 'string' ? movie.director : (movie.director || 'Không có thông tin')),
                 categories: categories.join(', ') || 'Không rõ',
                 countries: countries.join(', ') || 'Không rõ',
                 episodes,
                 servers
             };
+            console.debug(`Normalized movie data:`, normalized);
+            return normalized;
         }
 
         async function loadCustomMovies(file) {
@@ -890,10 +982,6 @@
                         }
 
                         const validPosterUrl = (posterUrl && typeof posterUrl === 'string' && posterUrl.startsWith('http')) ? posterUrl : DEFAULT_POSTER;
-                        if (validPosterUrl !== DEFAULT_POSTER) {
-                            console.log(`Poster URL for ${movieName}: ${validPosterUrl}`);
-                        }
-
                         movies.push({
                             pageTag,
                             name: movieName,
@@ -907,9 +995,9 @@
                             categories: pageTag || 'Không rõ',
                             year: 'Không rõ',
                             time: 'Không rõ',
-                            lang: 'Vietsub',
+                            lang: normalizeLanguage(quality),
                             origin_name: 'Không có',
-                            status: 'unknown',
+                            status: episodeCount > 1 ? `Hoàn tất (${episodeCount}/${episodeCount})` : 'Hoàn tất',
                             episodes,
                             episode_total: episodeCount || 1,
                             type: episodeCount > 1 ? 'series' : 'movie',
@@ -1057,9 +1145,16 @@
                 : `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name || '')}`;
             const detailUrl = await checkFileExists('detail.html') ? detailUrlBase : '#';
 
-            const langText = (movie.lang && typeof movie.lang === 'string' && movie.lang.toLowerCase().includes('thuyết minh')) ? 'TM' :
-                            (movie.lang && typeof movie.lang === 'string' && movie.lang.toLowerCase().includes('lồng tiếng')) ? 'LT' : 'VS';
+            const lang = movie.lang || 'Vietsub';
+            let langText = 'VS';
+            if (lang.toLowerCase().includes('thuyết minh') || lang.toLowerCase().includes('thuyet minh') || lang.toLowerCase().includes('tm')) {
+                langText = 'TM';
+            } else if (lang.toLowerCase().includes('lồng tiếng') || lang.toLowerCase().includes('long tieng') || lang.toLowerCase().includes('lt')) {
+                langText = 'LT';
+            }
             const langBadge = langText === 'VS' ? langText : `<i class="fas fa-check check-icon"></i> ${langText}`;
+
+            const episodeDisplay = `${movie.episode_total} tập`;
 
             const movieItem = document.createElement('div');
             movieItem.classList.add('movie-item');
@@ -1067,7 +1162,7 @@
                 <div class="movie-poster">
                     <a href="${detailUrl}">
                         <img src="${movie.poster_url}" alt="${movie.name || 'Phim không tên'}" loading="lazy" onerror="this.src='${DEFAULT_POSTER}'; console.warn('Poster failed to load: ${movie.poster_url}');">
-                        <span class="episode-badge">${movie.episode_total || 1} tập | ${langBadge}</span>
+                        <span class="episode-badge">${episodeDisplay} | ${langBadge}</span>
                         <div class="movie-overlay">
                             <p>${movie.content || 'Không có nội dung'}</p>
                         </div>
