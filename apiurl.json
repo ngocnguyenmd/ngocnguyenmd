@@ -156,15 +156,24 @@
 ] },
 
 { "truyen-hinh": [
-"https://phim.nguonc.com/api/film/luyen-khi-muoi-van-nam",
-"https://phim.nguonc.com/api/film/linh-kiem-ton",
+"https://phim.nguonc.com/api/film/tho-ngoc-noi-cung-trang", 
+"https://phim.nguonc.com/api/film/duoc-su-tu-su-phan-2",
+"https://phim.nguonc.com/api/film/ta-la-quan-chu-ta-ac-cua-quoc-gia-o-giua-muon-vi-sao",
+"https://phim.nguonc.com/api/film/sat-thu-ve-vuon",
+"https://phim.nguonc.com/api/film/ke-ngay-tho-nguoi-tung-trai-va-cau-chuyen-tinh-cua-chung-ta",  
+"https://phimapi.com/phim/ket-hon-voi-nguoi-ma-toi-ghet-nhat",
+"https://ophim1.com/phim/tri-lieu-su-bi-duoi-khoi-to-doi-lai-la-nguoi-manh-nhat",
 "https://phim.nguonc.com/api/film/kono-subarashii-sekai-ni-shukufuku-wo-2",
-"https://phim.nguonc.com/api/film/saikyou-no-ousama-nidome-no-jinsei-wa-nani-wo-suru",
-"https://phim.nguonc.com/api/film/doraemon-2005"
+"https://phim.nguonc.com/api/film/tham-tu-lung-danh-conan",
+"https://ophim1.com/phim/the-gioi-phep-thuat"
+
+
+
 
 ] },
 
 { "hoat-hinh": [
+  "https://phim.nguonc.com/api/film/doraemon-doi-ban-than-2",
   "https://phim.nguonc.com/api/film/pokemon-sun-moon",
   "https://phim.nguonc.com/api/film/boruto-naruto-next-generations",
   "https://phim.nguonc.com/api/film/naruto-shippuuden",
@@ -186,10 +195,7 @@
   "https://phim.nguonc.com/api/film/sac-mau-cua-cam-xuc",
   "https://phim.nguonc.com/api/film/meo-ma-be-tha",
   "https://phim.nguonc.com/api/film/thieu-nien-va-chim-diec",
-  "https://phim.nguonc.com/api/film/tham-tu-lung-danh-conan",
-  "https://phim.nguonc.com/api/film/detective-conan-movie-026-black-iron-submarine",
   "https://phim.nguonc.com/api/film/doraemon-nobita-va-ban-giao-huong-dia-cau",
-  "https://phim.nguonc.com/api/film/detective-conan-movie-27-the-million-dollar-pentagram",
   "https://phim.nguonc.com/api/film/lau-dai-di-dong-cua-howl",
   "https://phim.nguonc.com/api/film/vung-dat-linh-hon",
   "https://phim.nguonc.com/api/film/mo-dom-dom",
