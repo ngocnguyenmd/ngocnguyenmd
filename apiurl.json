@@ -181,7 +181,8 @@
 "https://phim.nguonc.com/api/film/boruto-naruto-next-generations",
 "https://phim.nguonc.com/api/film/naruto-shippuuden",
 "https://phim.nguonc.com/api/film/7-vien-ngoc-rong",
-"https://phim.nguonc.com/api/film/one-piece"
+"https://phim.nguonc.com/api/film/one-piece",
+"https://phim.nguonc.com/api/film/pokemon-sun-moon"
 
 
 ] },
@@ -191,7 +192,6 @@
 
 { "hoat-hinh": [
   "https://phim.nguonc.com/api/film/doraemon-doi-ban-than-2",
-  "https://phim.nguonc.com/api/film/pokemon-sun-moon",
   "https://ophim1.com/phim/chu-rong-cua-cha-toi",
   "https://phim.nguonc.com/api/film/doraemon-movie-36-nobita-va-nuoc-nhat-thoi-nguyen-thuy",
   "https://phim.nguonc.com/api/film/thanh-guom-diet-quy-quyet-chien-ky-vien-tran",
