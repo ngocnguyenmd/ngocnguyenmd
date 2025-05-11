@@ -155,13 +155,11 @@
 ] },
 
 { "truyen-hinh": [
-  "https://phim.nguonc.com/api/film/linh-kiem-ton",
+"https://phim.nguonc.com/api/film/luyen-khi-muoi-van-nam",
+"https://phim.nguonc.com/api/film/linh-kiem-ton",
 "https://phim.nguonc.com/api/film/kono-subarashii-sekai-ni-shukufuku-wo-2",
-"https://phimapi.com/phim/van-co-vay",
 "https://phim.nguonc.com/api/film/saikyou-no-ousama-nidome-no-jinsei-wa-nani-wo-suru",
-"https://phim.nguonc.com/api/film/doraemon-2005",
-"https://phim.nguonc.com/api/film/huong-vi-cua-bien-phan-1",
-"https://phim.nguonc.com/api/film/huong-vi-cua-bien-phan-2"
+"https://phim.nguonc.com/api/film/doraemon-2005"
 
 ] },
 
