@@ -982,7 +982,7 @@
                             continue;
                         }
                         const episodes = [];
-                        let apiSource = 'custom';
+                        let apiSource = 'custom'; // Mặc định là custom
                         let apiUrl = null;
                         let slug = movieName.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-') || `custom-${Date.now()}`;
                         let episodeCount = 0;
@@ -1003,9 +1003,28 @@
                                 else link_video = link;
                             } else if (lines[j].match(urlRegex)) {
                                 const link = lines[j];
-                                if (link.endsWith('.m3u8')) link_m3u8 = link;
-                                else if (link.includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) link_embed = link;
-                                else link_video = link;
+                                if (link.includes('ophim1.com')) {
+                                    apiSource = 'ophim1';
+                                    apiUrl = link;
+                                    slug = link.split('/').pop();
+                                    continue; // Bỏ qua dòng này vì là API URL
+                                } else if (link.includes('phimapi.com')) {
+                                    apiSource = 'phimapi';
+                                    apiUrl = link;
+                                    slug = link.split('/').pop();
+                                    continue;
+                                } else if (link.includes('phim.nguonc.com')) {
+                                    apiSource = 'phimnguonc';
+                                    apiUrl = link;
+                                    slug = link.split('/').pop();
+                                    continue;
+                                } else if (link.endsWith('.m3u8')) {
+                                    link_m3u8 = link;
+                                } else if (link.includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) {
+                                    link_embed = link;
+                                } else {
+                                    link_video = link;
+                                }
                             } else {
                                 console.warn(`Invalid episode line: ${lines[j]}`);
                                 continue;
@@ -1018,23 +1037,9 @@
                                 episodeCount++;
                                 console.log(`Added episode: ${epName} with link ${linkKey}`);
                             }
-
-                            if (lines[j].includes('ophim1.com')) {
-                                apiSource = 'ophim1';
-                                apiUrl = lines[j];
-                                slug = lines[j].split('/').pop();
-                            } else if (lines[j].includes('phimapi.com')) {
-                                apiSource = 'phimapi';
-                                apiUrl = lines[j];
-                                slug = lines[j].split('/').pop();
-                            } else if (lines[j].includes('phim.nguonc.com')) {
-                                apiSource = 'phimnguonc';
-                                apiUrl = lines[j];
-                                slug = lines[j].split('/').pop();
-                            }
                         }
 
-                        if (episodes.length === 0) {
+                        if (episodes.length === 0 && apiSource === 'custom') {
                             console.warn(`No episodes found for ${movieName}, adding default episode`);
                             episodes.push({ name: 'Tập 1', link_m3u8: '', link_embed: '', link_video: '' });
                             episodeCount = 1;
@@ -1063,7 +1068,7 @@
                             apiUrl
                         });
                         i += episodes.length;
-                        console.log(`Parsed movie: ${movieName} with ${episodes.length} episodes`);
+                        console.log(`Parsed movie: ${movieName} with ${episodes.length} episodes, apiSource: ${apiSource}`);
                     }
                 }
 
@@ -1225,6 +1230,7 @@
             console.log(`Rendering movie: ${movie.name} (apiSource: ${movie.apiSource})`);
 
             if (!movie.apiSource || !['ophim1', 'phimapi', 'phimnguonc', 'custom'].includes(movie.apiSource)) {
+                console.warn(`Invalid apiSource for ${movie.name}: ${movie.apiSource}, defaulting to custom`);
                 movie.apiSource = 'custom';
             }
             if (!movie.slug) {
