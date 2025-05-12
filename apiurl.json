@@ -191,38 +191,39 @@
 
 
 { "hoat-hinh": [
-  "https://phim.nguonc.com/api/film/doraemon-doi-ban-than-2",
-  "https://ophim1.com/phim/chu-rong-cua-cha-toi",
-  "https://phim.nguonc.com/api/film/doraemon-movie-36-nobita-va-nuoc-nhat-thoi-nguyen-thuy",
-  "https://phim.nguonc.com/api/film/thanh-guom-diet-quy-quyet-chien-ky-vien-tran",
-  "https://phim.nguonc.com/api/film/dang-cap-thu-cung-2",
-  "https://phim.nguonc.com/api/film/chuyen-phieu-luu-phep-thuat",
-  "https://phim.nguonc.com/api/film/cong-chua-toc-xu",
-  "https://phim.nguonc.com/api/film/ralph-dap-pha-pha-dao-the-gioi-ao",
-  "https://phim.nguonc.com/api/film/hanh-trinh-cua-moana-2",
-  "https://phim.nguonc.com/api/film/nu-hoang-bang-gia-2",
-  "https://phim.nguonc.com/api/film/khach-san-huyen-bi-4-ma-ca-rong-bien-hinh",
-  "https://phim.nguonc.com/api/film/cong-ty-quai-vat",
-  "https://phim.nguonc.com/api/film/hoa-hong-versailles",
-  "https://phim.nguonc.com/api/film/cocoon-mua-ha-mong-manh",
-  "https://phim.nguonc.com/api/film/sac-mau-cua-cam-xuc",
-  "https://phim.nguonc.com/api/film/meo-ma-be-tha",
-  "https://phim.nguonc.com/api/film/thieu-nien-va-chim-diec",
-  "https://phim.nguonc.com/api/film/doraemon-nobita-va-ban-giao-huong-dia-cau",
-  "https://phim.nguonc.com/api/film/lau-dai-di-dong-cua-howl",
-  "https://phim.nguonc.com/api/film/vung-dat-linh-hon",
+
   "https://phim.nguonc.com/api/film/mo-dom-dom",
-  "https://phim.nguonc.com/api/film/cong-chua-mononoke",
   "https://phim.nguonc.com/api/film/hang-xom-cua-toi-la-totoro",
-  "https://phim.nguonc.com/api/film/laputa-lau-dai-tren-khong",
-  "https://phim.nguonc.com/api/film/nausicaa-cong-chua-cua-thung-lung-gio",
-  "https://phim.nguonc.com/api/film/chuyen-cong-chua-kaguya",
-  "https://phim.nguonc.com/api/film/loi-thi-tham-cua-trai-tim",
   "https://phim.nguonc.com/api/film/dich-vu-giao-hang-kiki",
-  "https://phim.nguonc.com/api/film/dich-vu-giao-hang-cua-phu-thuy-kiki"  
-  
+  "https://phim.nguonc.com/api/film/chi-con-ngay-hom-qua",
+  "https://phim.nguonc.com/api/film/chu-heo-mau-do",
+  "https://phim.nguonc.com/api/film/cuoc-chien-gau-meo",
+  "https://phim.nguonc.com/api/film/loi-thi-tham-cua-trai-tim",
+  "https://phim.nguonc.com/api/film/loi-thi-tham-cua-trai-tim",
+  "https://phim.nguonc.com/api/film/cong-chua-mononoke",
+  "https://phimapi.com/phim/gia-dinh-nha-yamada",
+  "https://phim.nguonc.com/api/film/vung-dat-linh-hon",
+  "https://phim.nguonc.com/api/film/loai-meo-tra-on",
+  "https://phim.nguonc.com/api/film/lau-dai-di-dong-cua-howl",
+  "https://phim.nguonc.com/api/film/huyen-thoai-dat-lien-va-dai-duong",
+  "https://phim.nguonc.com/api/film/co-be-nguoi-ca-ponyo",
+  "https://phim.nguonc.com/api/film/the-gioi-bi-mat-cua-arrietty",
+  "https://phim.nguonc.com/api/film/ngon-doi-hoa-hong-anh",
+  "https://phim.nguonc.com/api/film/gio-noi",
+  "https://phim.nguonc.com/api/film/chuyen-cong-chua-kaguya",
+  "https://phim.nguonc.com/api/film/marnie-trong-ky-uc",
+  "https://ophim1.com/phim/rua-do",
+  "https://phim.nguonc.com/api/film/earwig-va-phu-thuy",
+  "https://phim.nguonc.com/api/film/thieu-nien-va-chim-diec",
+  "https://phim.nguonc.com/api/film/sanzoku-no-musume-ronja",
+  "https://phim.nguonc.com/api/film/song-dai-duong",
+  "https://phimapi.com/phim/quai-thu-dai-nao-so-thu"
+
+
   ] },
   
+
+
   { "ykhoa": [
   "https://phim.nguonc.com/api/film/chut-nang-am-moi-ngay",  
   "https://ophim1.com/phim/bac-si-ma",
