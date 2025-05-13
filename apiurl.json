@@ -172,8 +172,6 @@
 
 { "phim-my": [
   "|Hoạt Hình|",
-"https://phimapi.com/phim/nhung-cuoc-phieu-luu-cua-tintin-phan-1",
-"https://ophim1.com/phim/nhung-cuoc-phieu-luu-cua-tintin-phan-2",
 "https://phimapi.com/phim/nhung-cuoc-phieu-luu-cua-tintin",
 "https://ophim1.com/phim/chung-toi-don-gian-la-gau-the-movie",
 "https://phimapi.com/phim/plankton-ban-dien-anh",
@@ -183,11 +181,10 @@
 "https://phimapi.com/phim/vut-bay",
 "https://phim.nguonc.com/api/film/nhung-manh-ghep-cam-xuc-2",
 "|Hollywood|",
+"https://phimapi.com/phim/nhung-cuoc-phieu-luu-cua-tintin-phan-1",
+"https://ophim1.com/phim/nhung-cuoc-phieu-luu-cua-tintin-phan-2",
 "https://phim.nguonc.com/api/film/aladdin",
 "https://phimapi.com/phim/quy-co-mang-nhen",  
-"https://phimapi.com/phim/cuoc-goi-khan-cap-911-phan-7",
-"https://phim.nguonc.com/api/film/ban-be-hang-xom", 
-"https://phim.nguonc.com/api/film/nhung-nguoi-con-sot-lai-phan-2",
 "https://ophim1.com/phim/ky-uc-chien-tranh",
 "https://phim.nguonc.com/api/film/chuyen-hang-phim",
 "https://phim.nguonc.com/api/film/canh-sat-beverly-hills-axel-f",
@@ -197,11 +194,15 @@
 "https://phim.nguonc.com/api/film/nguoi-hobbit-hanh-trinh-vo-dinh",
 "https://phim.nguonc.com/api/film/nguoi-hobbit-2-dai-chien-voi-rong-lua",
 "https://phim.nguonc.com/api/film/nguoi-hobbit-3-dai-chien-5-canh-quan",
-"https://phim.nguonc.com/api/film/one-piece-live-action",
+
 "|TV Show|",
 "https://phim.nguonc.com/api/film/daredevil-tai-sinh-phan-1",
 "https://phim.nguonc.com/api/film/buoi-hen-ho-kinh-hoang",
-"https://phim.nguonc.com/api/film/nguoi-ve-tu-sao-hoa"
+"https://phim.nguonc.com/api/film/nguoi-ve-tu-sao-hoa",
+"https://phimapi.com/phim/cuoc-goi-khan-cap-911-phan-7",
+"https://phim.nguonc.com/api/film/one-piece-live-action",
+"https://phim.nguonc.com/api/film/ban-be-hang-xom", 
+"https://phim.nguonc.com/api/film/nhung-nguoi-con-sot-lai-phan-2"
 
 ] },
 
@@ -335,7 +336,6 @@
       "https://phim.nguonc.com/api/film/tro-choi-con-muc-phan-2",
       "https://phim.nguonc.com/api/film/chuyen-tau-sinh-tu"
       
-
 
       ] }
     ]
