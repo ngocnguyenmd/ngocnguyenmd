@@ -165,13 +165,12 @@
 "https://phimapi.com/phim/bong-dung-muon-khoc"
 
 
-
 ] },
-
 
 
 { "phim-my": [
   "|Hoạt Hình|",
+"https://phim.nguonc.com/api/film/nang-bach-tuyet",
 "https://phimapi.com/phim/nhung-cuoc-phieu-luu-cua-tintin",
 "https://ophim1.com/phim/chung-toi-don-gian-la-gau-the-movie",
 "https://phimapi.com/phim/plankton-ban-dien-anh",
@@ -213,7 +212,6 @@
 "https://phim.nguonc.com/api/film/tho-ngoc-noi-cung-trang", 
 "https://phimapi.com/phim/sao-anh-bao-khong-thich-tre-con",
 "https://phimapi.com/phim/loi-the-nguyen-anh-trang",
-"https://phimapi.com/phim/sao-anh-bao-khong-thich-tre-con",
 "https://phimapi.com/phim/khi-mat-troi-lan-cung-la-luc-cac-vi-sao-xuat-hien",
 "https://phimapi.com/phim/thu-ky-kim-sao-the-ban-thai",
 "https://phimapi.com/phim/thuoc-vai-se-duyen",
