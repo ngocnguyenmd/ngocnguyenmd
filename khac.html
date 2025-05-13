@@ -634,7 +634,7 @@
 <body>
     <header class="header">
         <div class="header-content">
-            <img src="https://via.placeholder.com/50x50?text=Logo" alt="Phim Hay" class="logo" loading="eager" id="logo-img">
+            <img src="" alt="Phim Hay" class="logo" loading="eager" id="logo-img">
             <span class="logo-fallback" style="display:none;">Phim Nhà Bánh Mì</span>
             <div class="search-bar">
                 <input type="text" id="search-input" placeholder="Tìm kiếm phim...">
@@ -696,7 +696,7 @@
         const CACHE_KEY_LIST = 'movie_list_cache';
         const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 giờ
         const CACHE_EXPIRY_FILES = 7 * 24 * 60 * 60 * 1000; // 7 ngày
-        const MOVIES_PER_PAGE = 40;
+        const MOVIES_PER_PAGE = 99;
         let isLoading = false;
         let hasMoreMovies = true;
         let currentPageNumber = 1;
@@ -1135,7 +1135,7 @@
                 try {
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 15000);
-                    const response = await fetch(`https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=1${page}`, {
+                    const response = await fetch(` https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=${page}`, {
                         cache: 'no-cache',
                         signal: controller.signal
                     });
@@ -1195,7 +1195,7 @@
             }
         }
 
-        async function fetchLimited(promises, limit = 10) {
+        async function fetchLimited(promises, limit = 30) {
             const results = [];
             for (let i = 0; i < promises.length; i += limit) {
                 const batch = promises.slice(i, i + limit);
