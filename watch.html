@@ -28,6 +28,8 @@
             --transition: all 0.3s ease;
             --active-bg: #000;
             --active-text: #fff;
+            --sub1-color: #ffffff;
+            --sub2-color: #ffd700; /* Màu vàng cho phụ đề thứ 2 */
         }
 
         [data-theme="light"] {
@@ -37,6 +39,8 @@
             --text-gray: #666;
             --active-bg: #ddd;
             --active-text: #333;
+            --sub1-color: #000000;
+            --sub2-color: #d4a017;
         }
 
         * {
@@ -297,32 +301,72 @@
         }
 
         .subtitle-section label {
-            background: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
             color: var(--text-white);
-            padding: 10px 16px;
-            border-radius: 4px;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
             cursor: pointer;
             font-size: 0.95em;
+            font-weight: 500;
             transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .subtitle-section label:hover {
-            background: var(--primary-hover);
+            background: linear-gradient(135deg, var(--primary-hover), var(--primary-color));
+            transform: translateY(-2px);
+        }
+
+        .subtitle-section label[for="sub1"] {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+        }
+
+        .subtitle-section label[for="sub1"]:hover {
+            background: linear-gradient(135deg, #0056b3, #007bff);
+        }
+
+        .subtitle-section label[for="sub2"] {
+            background: linear-gradient(135deg, #ffca28, #d4a017);
+        }
+
+        .subtitle-section label[for="sub2"]:hover {
+            background: linear-gradient(135deg, #d4a017, #ffca28);
         }
 
         .subtitle-section button {
-            background: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
             color: var(--text-white);
             border: none;
-            padding: 10px 16px;
-            border-radius: 4px;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
             cursor: pointer;
             font-size: 0.95em;
+            font-weight: 500;
             transition: var(--transition);
+            box-shadow: var(--shadow);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .subtitle-section button:hover {
-            background: var(--primary-hover);
+            background: linear-gradient(135deg, var(--primary-hover), var(--primary-color));
+            transform: translateY(-2px);
+        }
+
+        .subtitle-section button#toggle-sub-btn {
+            background: linear-gradient(135deg, #17a2b8, #117a8b);
+        }
+
+        .subtitle-section button#toggle-sub-btn:hover {
+            background: linear-gradient(135deg, #117a8b, #17a2b8);
         }
 
         #subtitle-message {
@@ -404,9 +448,18 @@
         }
 
         video::cue(.sub1) {
-            color: white;
+            color: var(--sub1-color);
             background: rgba(0, 0, 0, 0.7);
             font-size: 1em;
+            font-weight: normal;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        video::cue(.sub2) {
+            color: var(--sub2-color);
+            background: rgba(224, 255, 85, 0.966);
+            font-size: 0.9em;
             font-weight: normal;
             line-height: 1.4;
             text-align: center;
@@ -524,7 +577,7 @@
             }
 
             .subtitle-section label, .subtitle-section button {
-                padding: 12px 20px;
+                padding: 12px 24px;
                 font-size: 1em;
             }
 
@@ -538,17 +591,16 @@
                 min-width: 60px;
             }
 
-            /* Fixed video size for desktop */
             .video-container {
                 width: 820px;
                 max-width: 820px;
-                height: calc(820px * 9 / 16); /* Maintain 16:9 aspect ratio */
+                height: calc(820px * 9 / 16);
             }
 
             .video-player {
                 width: auto;
                 height: calc(820px * 9 / 16);
-                object-fit: contain; /* Ensure video content fits without stretching */
+                object-fit: contain;
             }
 
             .video-player iframe {
@@ -581,7 +633,7 @@
             }
 
             .subtitle-section label, .subtitle-section button {
-                padding: 10px 14px;
+                padding: 10px 20px;
                 font-size: 0.9em;
             }
 
@@ -672,10 +724,11 @@
             }
 
             .subtitle-section label, .subtitle-section button {
-                padding: 8px 12px;
-                font-size: 0.85em;
+                padding: 10px 20px;
+                font-size: 0.9em;
                 width: 100%;
                 text-align: center;
+                border-radius: 25px;
             }
 
             .episode-list {
@@ -765,8 +818,9 @@
             }
 
             .subtitle-section label, .subtitle-section button {
-                padding: 7px 10px;
-                font-size: 0.8em;
+                padding: 10px 20px;
+                font-size: 0.85em;
+                border-radius: 20px;
             }
 
             .episode-list a {
@@ -833,9 +887,12 @@
             <button class="nav-btn" id="back-to-home-btn"><i class="fas fa-home"></i> Trang chủ</button>
         </div>
         <div class="subtitle-section">
-            <label for="sub1"><i class="fas fa-closed-captioning"></i> Chọn phụ đề</label>
+            <label for="sub1"><i class="fas fa-closed-captioning"></i> Phụ đề 1 (Trắng)</label>
             <input type="file" id="sub1" accept=".vtt,.srt">
+            <label for="sub2"><i class="fas fa-closed-captioning"></i> Phụ đề 2 (Vàng)</label>
+            <input type="file" id="sub2" accept=".vtt,.srt">
             <button id="load-sub-btn"><i class="fas fa-upload"></i> Tải phụ đề</button>
+            <button id="toggle-sub-btn"><i class="fas fa-eye"></i> Tắt phụ đề</button>
             <div id="subtitle-message"></div>
         </div>
         <section class="episode-list" id="server1-list">
@@ -883,687 +940,767 @@
         <i class="fas fa-arrow-up"></i>
     </button>
     <script>
-        const elements = {
-            playerContainer: document.getElementById('player-container'),
-            movieTitle: document.getElementById('movie-title'),
-            episodeTitle: document.getElementById('episode-title'),
-            prevEpisodeBtn: document.getElementById('prev-episode-btn'),
-            nextEpisodeBtn: document.getElementById('next-episode-btn'),
-            rewindBtn: document.getElementById('rewind-btn'),
-            forwardBtn: document.getElementById('forward-btn'),
-            backToDetailBtn: document.getElementById('back-to-detail-btn'),
-            backToHomeBtn: document.getElementById('back-to-home-btn'),
-            sub1Input: document.getElementById('sub1'),
-            loadSubBtn: document.getElementById('load-sub-btn'),
-            subtitleMessage: document.getElementById('subtitle-message'),
-            server1List: document.getElementById('server1-list'),
-            server1M3u8: document.getElementById('server1-m3u8'),
-            server1Embed: document.getElementById('server1-embed'),
-            server2List: document.getElementById('server2-list'),
-            server2M3u8: document.getElementById('server2-m3u8'),
-            server2Embed: document.getElementById('server2-embed'),
-            customList: document.getElementById('custom-list'),
-            customM3u8: document.getElementById('custom-m3u8'),
-            customEmbed: document.getElementById('custom-embed'),
-            customVideo: document.getElementById('custom-video'),
-            searchInput: document.getElementById('search-input'),
-            clearSearch: document.getElementById('clear-search'),
-            searchSuggestions: document.getElementById('search-suggestions'),
-            scrollTop: document.getElementById('scroll-top'),
-            themeToggle: document.getElementById('theme-toggle')
-        };
+        class MoviePlayer {
+            constructor() {
+                this.elements = {
+                    playerContainer: document.getElementById('player-container'),
+                    movieTitle: document.getElementById('movie-title'),
+                    episodeTitle: document.getElementById('episode-title'),
+                    prevEpisodeBtn: document.getElementById('prev-episode-btn'),
+                    nextEpisodeBtn: document.getElementById('next-episode-btn'),
+                    rewindBtn: document.getElementById('rewind-btn'),
+                    forwardBtn: document.getElementById('forward-btn'),
+                    backToDetailBtn: document.getElementById('back-to-detail-btn'),
+                    backToHomeBtn: document.getElementById('back-to-home-btn'),
+                    sub1Input: document.getElementById('sub1'),
+                    sub2Input: document.getElementById('sub2'),
+                    loadSubBtn: document.getElementById('load-sub-btn'),
+                    toggleSubBtn: document.getElementById('toggle-sub-btn'),
+                    subtitleMessage: document.getElementById('subtitle-message'),
+                    server1List: document.getElementById('server1-list'),
+                    server1M3u8: document.getElementById('server1-m3u8'),
+                    server1Embed: document.getElementById('server1-embed'),
+                    server2List: document.getElementById('server2-list'),
+                    server2M3u8: document.getElementById('server2-m3u8'),
+                    server2Embed: document.getElementById('server2-embed'),
+                    customList: document.getElementById('custom-list'),
+                    customM3u8: document.getElementById('custom-m3u8'),
+                    customEmbed: document.getElementById('custom-embed'),
+                    customVideo: document.getElementById('custom-video'),
+                    searchInput: document.getElementById('search-input'),
+                    clearSearch: document.getElementById('clear-search'),
+                    searchSuggestions: document.getElementById('search-suggestions'),
+                    scrollTop: document.getElementById('scroll-top'),
+                    themeToggle: document.getElementById('theme-toggle')
+                };
 
-        const urlParams = new URLSearchParams(window.location.search);
-        let slug = decodeURIComponent(urlParams.get('slug') || '');
-        let apiSource = decodeURIComponent(urlParams.get('apiSource') || '');
-        let episodeName = decodeURIComponent(urlParams.get('episode') || '');
-        let linkType = urlParams.get('type') || '';
-        let linkUrl = decodeURIComponent(urlParams.get('url') || '');
-        const movieName = decodeURIComponent(urlParams.get('name') || '');
-        const customEpisodesParam = urlParams.get('customEpisodes');
-        const isCustom = apiSource === 'custom';
-        let customEpisodes = [];
-        let player = null;
-        let videoElement = null;
-        let allEpisodes = [];
-        let blobUrls = [];
+                this.urlParams = new URLSearchParams(window.location.search);
+                this.state = {
+                    slug: decodeURIComponent(this.urlParams.get('slug') || ''),
+                    apiSource: decodeURIComponent(this.urlParams.get('apiSource') || ''),
+                    episodeName: decodeURIComponent(this.urlParams.get('episode') || ''),
+                    linkType: this.urlParams.get('type') || '',
+                    linkUrl: decodeURIComponent(this.urlParams.get('url') || ''),
+                    movieName: decodeURIComponent(this.urlParams.get('name') || ''),
+                    isCustom: this.urlParams.get('apiSource') === 'custom',
+                    customEpisodes: this.parseCustomEpisodes(this.urlParams.get('customEpisodes')),
+                    player: null,
+                    videoElement: null,
+                    allEpisodes: [],
+                    blobUrls: [],
+                    movieData: null,
+                    subtitlesEnabled: true
+                };
 
-        // Theme Toggle
-        elements.themeToggle.addEventListener('click', () => {
-            const currentTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
-            document.body.dataset.theme = currentTheme;
-            elements.themeToggle.innerHTML = `<i class="fas fa-${currentTheme === 'light' ? 'moon' : 'sun'}"></i>`;
-            localStorage.setItem('theme', currentTheme);
-        });
-
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        document.body.dataset.theme = savedTheme;
-        elements.themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'light' ? 'moon' : 'sun'}"></i>`;
-
-        // Scroll Top Button
-        window.addEventListener('scroll', () => {
-            elements.scrollTop.classList.toggle('visible', window.scrollY > 300);
-        });
-
-        elements.scrollTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Adjust main content padding
-        function adjustMainContentPadding() {
-            const headerHeight = document.querySelector('.header').offsetHeight;
-            document.querySelector('.main-content').style.paddingTop = `${headerHeight + 20}px`;
-        }
-
-        // Parse customEpisodes
-        if (customEpisodesParam) {
-            try {
-                customEpisodes = JSON.parse(decodeURIComponent(customEpisodesParam));
-            } catch (error) {
-                console.error('Lỗi khi parse customEpisodes:', error);
-                customEpisodes = [];
+                this.CACHE_KEY = 'movie_player_cache';
+                this.CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 1 ngày
             }
-        }
 
-        // Show subtitle message
-        function showSubtitleMessage(message, isError = false) {
-            elements.subtitleMessage.textContent = message;
-            elements.subtitleMessage.classList.toggle('error', isError);
-            elements.subtitleMessage.classList.add('show');
-            setTimeout(() => {
-                elements.subtitleMessage.classList.remove('show');
-            }, 3000);
-        }
+            async init() {
+                this.setupEventListeners();
+                this.loadTheme();
+                this.adjustMainContentPadding();
+                await this.loadMovieData();
+            }
 
-        // Validate subtitle file
-        function validateSubtitleFile(file) {
-            if (!file) return false;
-            const validExtensions = ['.vtt', '.srt'];
-            return validExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
-        }
+            setupEventListeners() {
+                this.elements.themeToggle.addEventListener('click', () => this.toggleTheme());
+                window.addEventListener('scroll', () => {
+                    this.elements.scrollTop.classList.toggle('visible', window.scrollY > 300);
+                });
+                this.elements.scrollTop.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+                window.addEventListener('resize', () => this.adjustMainContentPadding());
+                this.elements.searchInput.addEventListener('input', () => this.handleSearchInput());
+                this.elements.searchInput.addEventListener('keypress', (e) => this.handleSearchKeypress(e));
+                this.elements.clearSearch.addEventListener('click', () => this.clearSearch());
+            }
 
-        // Convert SRT to VTT
-        function convertSrtToVtt(srtContent) {
-            let vttContent = 'WEBVTT\n\n';
-            const lines = srtContent.trim().split(/\r?\n/);
-            let i = 0;
-            let cueCount = 0;
-            const position = 'line:10%';
+            loadTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                document.body.dataset.theme = savedTheme;
+                this.elements.themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'light' ? 'moon' : 'sun'}"></i>`;
+            }
 
-            while (i < lines.length) {
-                if (lines[i].trim() === '') {
-                    i++;
-                    continue;
+            toggleTheme() {
+                const currentTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+                document.body.dataset.theme = currentTheme;
+                this.elements.themeToggle.innerHTML = `<i class="fas fa-${currentTheme === 'light' ? 'moon' : 'sun'}"></i>`;
+                localStorage.setItem('theme', currentTheme);
+            }
+
+            adjustMainContentPadding() {
+                const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
+                document.querySelector('.main-content').style.paddingTop = `${headerHeight + 20}px`;
+            }
+
+            handleSearchInput() {
+                const searchTerm = this.elements.searchInput.value.trim();
+                this.elements.clearSearch.classList.toggle('visible', searchTerm.length > 0);
+                if (!searchTerm) {
+                    this.elements.searchSuggestions.classList.remove('visible');
                 }
-                if (/^\d+$/.test(lines[i].trim())) {
-                    i++;
-                    if (i < lines.length && lines[i].includes('-->')) {
-                        const timeLine = lines[i].replace(/,/g, '.');
-                        vttContent += `${timeLine} ${position} align:middle\n`;
+            }
+
+            handleSearchKeypress(e) {
+                if (e.key === 'Enter') {
+                    const searchTerm = this.elements.searchInput.value.trim();
+                    if (searchTerm) {
+                        window.location.href = `index.html?search=${encodeURIComponent(searchTerm)}`;
+                    }
+                }
+            }
+
+            clearSearch() {
+                this.elements.searchInput.value = '';
+                this.elements.clearSearch.classList.remove('visible');
+                this.elements.searchSuggestions.classList.remove('visible');
+            }
+
+            parseCustomEpisodes(param) {
+                if (!param) return [];
+                try {
+                    return JSON.parse(decodeURIComponent(param));
+                } catch (error) {
+                    console.error('Lỗi khi parse customEpisodes:', error);
+                    return [];
+                }
+            }
+
+            showSubtitleMessage(message, isError = false) {
+                this.elements.subtitleMessage.textContent = message;
+                this.elements.subtitleMessage.classList.toggle('error', isError);
+                this.elements.subtitleMessage.classList.add('show');
+                setTimeout(() => {
+                    this.elements.subtitleMessage.classList.remove('show');
+                }, 3000);
+            }
+
+            validateSubtitleFile(file) {
+                if (!file) return false;
+                return ['.vtt', '.srt'].some(ext => file.name.toLowerCase().endsWith(ext));
+            }
+
+            convertSrtToVtt(srtContent) {
+                let vttContent = 'WEBVTT\n\n';
+                const lines = srtContent.trim().split(/\r?\n/);
+                let i = 0;
+
+                while (i < lines.length) {
+                    if (lines[i].trim() === '') {
+                        i++;
+                        continue;
+                    }
+                    if (/^\d+$/.test(lines[i].trim())) {
+                        i++;
+                        if (i < lines.length && lines[i].includes('-->')) {
+                            const timeLine = lines[i].replace(/,/g, '.');
+                            vttContent += `${timeLine} align:middle\n`;
+                            i++;
+                            let subtitleText = '';
+                            while (i < lines.length && lines[i].trim() !== '' && !/^\d+$/.test(lines[i].trim())) {
+                                subtitleText += lines[i] + '\n';
+                                i++;
+                            }
+                            if (subtitleText.trim()) {
+                                const cleanText = subtitleText.trim().replace(/\n/g, ' ');
+                                vttContent += cleanText + '\n\n';
+                            }
+                        } else {
+                            i++;
+                        }
+                    } else {
+                        i++;
+                    }
+                }
+                return vttContent;
+            }
+
+            processVttFile(vttContent) {
+                let newVttContent = 'WEBVTT\n\n';
+                const lines = vttContent.trim().split(/\r?\n/);
+                let i = 1;
+
+                while (i < lines.length) {
+                    if (lines[i].includes('-->')) {
+                        newVttContent += `${lines[i]} align:middle\n`;
                         i++;
                         let subtitleText = '';
-                        while (i < lines.length && lines[i].trim() !== '' && !/^\d+$/.test(lines[i].trim())) {
+                        while (i < lines.length && lines[i].trim() !== '') {
                             subtitleText += lines[i] + '\n';
                             i++;
                         }
                         if (subtitleText.trim()) {
                             const cleanText = subtitleText.trim().replace(/\n/g, ' ');
-                            vttContent += `<c.sub1>${cleanText}</c.sub1>\n\n`;
-                            cueCount++;
+                            newVttContent += cleanText + '\n\n';
                         }
                     } else {
-                        console.warn(`Invalid SRT format at line ${i}`);
                         i++;
                     }
-                } else {
-                    console.warn(`Invalid SRT format at line ${i}`);
-                    i++;
                 }
+                return newVttContent;
             }
-            return vttContent;
-        }
 
-        // Process VTT file
-        function processVttFile(vttContent) {
-            let newVttContent = 'WEBVTT\n\n';
-            const lines = vttContent.trim().split(/\r?\n/);
-            let i = 1;
-            let cueCount = 0;
-            const position = 'line:10%';
+            mergeSubtitles(sub1Content, sub2Content) {
+                let vttContent = 'WEBVTT\n\n';
+                const sub1Lines = sub1Content.trim().split('\n\n').filter(block => block.includes('-->'));
+                const sub2Lines = sub2Content.trim().split('\n\n').filter(block => block.includes('-->'));
 
-            while (i < lines.length) {
-                if (lines[i].includes('-->')) {
-                    newVttContent += lines[i] + ` ${position} align:middle\n`;
-                    i++;
-                    let subtitleText = '';
-                    while (i < lines.length && lines[i].trim() !== '') {
-                        subtitleText += lines[i] + '\n';
-                        i++;
+                const maxLength = Math.max(sub1Lines.length, sub2Lines.length);
+                for (let i = 0; i < maxLength; i++) {
+                    const sub1Block = sub1Lines[i] || '';
+                    const sub2Block = sub2Lines[i] || '';
+                    const sub1Parts = sub1Block.split('\n');
+                    const sub2Parts = sub2Block.split('\n');
+                    const timeLine = sub1Parts[0]?.includes('-->') ? sub1Parts[0] : sub2Parts[0];
+
+                    if (timeLine && timeLine.includes('-->')) {
+                        vttContent += `${timeLine} line:10% align:middle\n`;
+                        const sub1Text = sub1Parts.slice(1).join(' ').trim() || ' ';
+                        vttContent += `<c.sub1>${sub1Text}</c>\n`;
+                        vttContent += `${timeLine} line:20% align:middle\n`;
+                        const sub2Text = sub2Parts.slice(1).join(' ').trim() || ' ';
+                        vttContent += `<c.sub2>${sub2Text}</c>\n\n`;
                     }
-                    if (subtitleText.trim()) {
-                        const cleanText = subtitleText.trim().replace(/\n/g, ' ');
-                        newVttContent += `<c.sub1>${cleanText}</c.sub1>\n\n`;
-                        cueCount++;
+                }
+                return vttContent;
+            }
+
+            clearSubtitleTracks() {
+                if (this.state.videoElement) {
+                    const tracks = this.state.videoElement.querySelectorAll('track');
+                    tracks.forEach(track => track.remove());
+                    this.state.blobUrls.forEach(url => URL.revokeObjectURL(url));
+                    this.state.blobUrls = [];
+                }
+            }
+
+            async processSubtitleFiles(sub1File, sub2File) {
+                if (!this.state.videoElement) {
+                    this.showSubtitleMessage('Không thể tải phụ đề: Không có video.', true);
+                    return false;
+                }
+
+                const files = [sub1File, sub2File].filter(file => file);
+                if (files.length === 0) {
+                    this.showSubtitleMessage('Vui lòng chọn ít nhất một file phụ đề.', true);
+                    return false;
+                }
+
+                for (const file of files) {
+                    if (!this.validateSubtitleFile(file)) {
+                        this.showSubtitleMessage(`File ${file.name} không hợp lệ. Chỉ hỗ trợ .vtt hoặc .srt!`, true);
+                        return false;
                     }
-                } else {
-                    i++;
                 }
-            }
-            return newVttContent;
-        }
 
-        // Clear subtitle tracks
-        function clearSubtitleTracks() {
-            if (videoElement) {
-                const tracks = videoElement.querySelectorAll('track');
-                tracks.forEach(track => track.remove());
-                blobUrls.forEach(url => URL.revokeObjectURL(url));
-                blobUrls = [];
-            }
-        }
+                const track = document.createElement('track');
+                track.kind = 'subtitles';
+                track.label = 'Phụ đề song ngữ';
+                track.srclang = 'vi';
 
-        // Process subtitle file
-        async function processSubtitleFile(file, label) {
-            if (!videoElement) {
-                showSubtitleMessage(`Không thể tải ${label}: Không có video.`, true);
-                return false;
-            }
+                try {
+                    const readFile = (file) => {
+                        const reader = new FileReader();
+                        reader.readAsText(file);
+                        return new Promise((resolve, reject) => {
+                            reader.onload = () => {
+                                const content = file.name.toLowerCase().endsWith('.vtt')
+                                    ? this.processVttFile(reader.result)
+                                    : this.convertSrtToVtt(reader.result);
+                                resolve(content);
+                            };
+                            reader.onerror = () => reject(new Error(`Lỗi khi đọc file ${file.name}`));
+                        });
+                    };
 
-            if (!validateSubtitleFile(file)) {
-                showSubtitleMessage(`Chỉ hỗ trợ file .vtt hoặc .srt!`, true);
-                return false;
-            }
+                    const sub1Content = sub1File ? await readFile(sub1File) : 'WEBVTT\n\n';
+                    const sub2Content = sub2File ? await readFile(sub2File) : 'WEBVTT\n\n';
+                    const mergedContent = this.mergeSubtitles(sub1Content, sub2Content);
 
-            const track = document.createElement('track');
-            track.kind = 'subtitles';
-            track.label = label;
-            track.srclang = 'vi';
+                    if (!mergedContent.includes('WEBVTT')) {
+                        throw new Error('Nội dung phụ đề không hợp lệ');
+                    }
 
-            try {
-                let vttContent = '';
-                if (file.name.toLowerCase().endsWith('.vtt')) {
-                    const reader = new FileReader();
-                    reader.readAsText(file);
-                    vttContent = await new Promise((resolve, reject) => {
-                        reader.onload = () => resolve(processVttFile(reader.result));
-                        reader.onerror = () => reject(new Error(`Error reading VTT file`));
+                    const vttBlob = new Blob([mergedContent], { type: 'text/vtt' });
+                    const blobUrl = URL.createObjectURL(vttBlob);
+                    this.state.blobUrls.push(blobUrl);
+                    track.src = blobUrl;
+                    this.state.videoElement.appendChild(track);
+
+                    await new Promise((resolve, reject) => {
+                        track.addEventListener('load', resolve, { once: true });
+                        track.addEventListener('error', () => reject(new Error('Không thể tải track')), { once: true });
                     });
-                } else if (file.name.toLowerCase().endsWith('.srt')) {
-                    const reader = new FileReader();
-                    reader.readAsText(file);
-                    vttContent = await new Promise((resolve, reject) => {
-                        reader.onload = () => resolve(convertSrtToVtt(reader.result));
-                        reader.onerror = () => reject(new Error(`Error reading SRT file`));
-                    });
+
+                    const textTrack = this.state.videoElement.textTracks[this.state.videoElement.textTracks.length - 1];
+                    textTrack.mode = this.state.subtitlesEnabled ? 'showing' : 'disabled';
+                    this.showSubtitleMessage('Phụ đề song ngữ đã được tải.');
+                    return true;
+                } catch (error) {
+                    this.showSubtitleMessage(`Lỗi khi tải phụ đề: ${error.message}`, true);
+                    return false;
                 }
-                if (!vttContent.includes('WEBVTT')) {
-                    throw new Error(`Invalid subtitle content`);
-                }
-                const vttBlob = new Blob([vttContent], { type: 'text/vtt' });
-                const blobUrl = URL.createObjectURL(vttBlob);
-                blobUrls.push(blobUrl);
-                track.src = blobUrl;
-                videoElement.appendChild(track);
-
-                await new Promise((resolve, reject) => {
-                    track.addEventListener('load', resolve, { once: true });
-                    track.addEventListener('error', () => reject(new Error(`Failed to load track`)), { once: true });
-                });
-
-                const textTrack = videoElement.textTracks[videoElement.textTracks.length - 1];
-                textTrack.mode = 'showing';
-                showSubtitleMessage(`${label} đã được tải.`);
-                return true;
-            } catch (error) {
-                showSubtitleMessage(`Lỗi khi tải ${label}.`, true);
-                return false;
-            }
-        }
-
-        // Normalize movie data
-        function normalizeMovieData(data, apiSource) {
-            const movie = data.movie || data;
-            let categories = [], countries = [], year = movie.year, episodes = [], servers = [];
-
-            if (apiSource === 'ophim1' || apiSource === 'phimapi') {
-                categories = movie.category?.map(c => c.name) || [];
-                countries = movie.country?.map(c => c.name) || [];
-                servers = data.episodes?.map((server, index) => ({
-                    server_name: server.server_name || `Server ${index + 1}`,
-                    server_data: (server.server_data || []).map(ep => ({
-                        name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
-                        link_m3u8: ep.link_m3u8 || '',
-                        link_embed: ep.link_embed || ''
-                    }))
-                })) || [];
-            } else if (apiSource === 'phimnguonc') {
-                if (movie.category && typeof movie.category === 'object') {
-                    Object.values(movie.category).forEach(group => {
-                        if (group.group.name === 'Thể loại') categories = group.list.map(item => item.name);
-                        else if (group.group.name === 'Quốc gia') countries = group.list.map(item => item.name);
-                        else if (group.group.name === 'Năm') year = group.list[0]?.name || year;
-                    });
-                }
-                servers = movie.episodes?.map((server, index) => ({
-                    server_name: server.server_name || `Server ${index + 1}`,
-                    server_data: (server.items || []).map(ep => ({
-                        name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
-                        link_m3u8: '',
-                        link_embed: ep.embed || ''
-                    }))
-                })) || [];
-            } else if (apiSource === 'custom') {
-                servers = [{
-                    server_name: 'Server Custom',
-                    server_data: (data.episodes || []).map(ep => ({
-                        name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
-                        link_m3u8: ep.link_m3u8 || '',
-                        link_embed: ep.link_embed || '',
-                        link_video: ep.link_video || ''
-                    }))
-                }];
             }
 
-            episodes = servers.flatMap(server => server.server_data);
-            const uniqueEpisodes = [];
-            const seen = new Set();
-            episodes.forEach(ep => {
-                const key = `${ep.name}|${ep.link_m3u8 || ''}|${ep.link_embed || ''}|${ep.link_video || ''}`;
-                if (!seen.has(key)) {
-                    seen.add(key);
-                    uniqueEpisodes.push(ep);
-                }
-            });
+            normalizeMovieData(data, apiSource) {
+                const movie = data.movie || data;
+                let categories = [], countries = [], year = movie.year, episodes = [], servers = [];
 
-            return {
-                name: movie.name || 'Không xác định',
-                slug: movie.slug || '',
-                poster_url: movie.poster_url || movie.thumb_url || '',
-                content: movie.content || movie.description || 'Không có nội dung',
-                actors: Array.isArray(movie.actor) ? movie.actor.join(', ') : (typeof movie.actor === 'string' ? movie.actor : (movie.casts || 'Không có thông tin')),
-                directors: Array.isArray(movie.director) ? movie.director.join(', ') : (typeof movie.director === 'string' ? movie.director : (movie.director || 'Không có thông tin')),
-                countries: countries.join(', ') || 'Không rõ',
-                categories: categories.join(', ') || 'Không rõ',
-                year: year || 'Không rõ',
-                time: movie.time || 'Không rõ',
-                quality: movie.quality || 'HD',
-                lang: movie.lang || movie.language || 'Vietsub',
-                status: movie.status || movie.current_episode || 'unknown',
-                episodes: uniqueEpisodes,
-                episode_total: parseInt((movie.episode_total || uniqueEpisodes.length || '1').toString().replace('Tập', '').trim()) || 1,
-                type: movie.type || (uniqueEpisodes.length > 1 ? 'series' : 'movie'),
-                servers
-            };
-        }
-
-        // Fetch movie data
-        async function fetchMovieData(slug, apiSource, retries = 2) {
-            const apiUrls = {
-                ophim1: `https://ophim1.com/phim/${slug}`,
-                phimapi: `https://phimapi.com/phim/${slug}`,
-                phimnguonc: `https://phim.nguonc.com/api/film/${slug}`
-            };
-            const url = apiUrls[apiSource];
-            if (!url) return null;
-
-            try {
-                const response = await fetch(url, { mode: 'cors' });
-                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-                const data = await response.json();
-                if ((data.status === true || data.status === 'success') && data.movie) {
-                    return normalizeMovieData(data, apiSource);
-                }
-                return null;
-            } catch (error) {
-                if (retries > 0) {
-                    return fetchMovieData(slug, apiSource, retries - 1);
-                }
-                console.error(`Lỗi khi tải dữ liệu từ ${url}:`, error);
-                return null;
-            }
-        }
-
-        // Load movie data
-        async function loadMovieData() {
-            let movieData = {};
-
-            if (isCustom && customEpisodes.length > 0) {
-                movieData = {
-                    name: movieName,
-                    poster_url: 'https://via.placeholder.com/200x300',
-                    quality: 'HD',
-                    content: 'Không có nội dung',
-                    actors: 'Không có thông tin',
-                    directors: 'Không có thông tin',
-                    countries: 'Không rõ',
-                    categories: 'Không rõ',
-                    year: 'Không rõ',
-                    time: 'Không rõ',
-                    lang: 'Vietsub',
-                    status: 'unknown',
-                    episodes: customEpisodes,
-                    episode_total: customEpisodes.length,
-                    type: customEpisodes.length > 1 ? 'series' : 'movie',
-                    slug: slug,
-                    servers: [{ server_name: 'Server Custom', server_data: customEpisodes }]
-                };
-            } else {
-                const data = await fetchMovieData(slug, apiSource);
-                if (!data) {
-                    elements.playerContainer.innerHTML = '<p class="error-message">Lỗi khi tải dữ liệu phim.</p>';
-                    elements.movieTitle.textContent = 'Lỗi tải phim';
-                    elements.episodeTitle.textContent = 'Không xác định';
-                    return;
-                }
-                movieData = data;
-                if (customEpisodes.length > 0) {
-                    movieData.servers.push({
+                if (apiSource === 'ophim1' || apiSource === 'phimapi') {
+                    categories = movie.category?.map(c => c.name) || [];
+                    countries = movie.country?.map(c => c.name) || [];
+                    servers = data.episodes?.map((server, index) => ({
+                        server_name: server.server_name || `Server ${index + 1}`,
+                        server_data: (server.server_data || []).map(ep => ({
+                            name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
+                            link_m3u8: ep.link_m3u8 || '',
+                            link_embed: ep.link_embed || ''
+                        }))
+                    })) || [];
+                } else if (apiSource === 'phimnguonc') {
+                    if (movie.category && typeof movie.category === 'object') {
+                        Object.values(movie.category).forEach(group => {
+                            if (group.group.name === 'Thể loại') categories = group.list.map(item => item.name);
+                            else if (group.group.name === 'Quốc gia') countries = group.list.map(item => item.name);
+                            else if (group.group.name === 'Năm') year = group.list[0]?.name || year;
+                        });
+                    }
+                    servers = movie.episodes?.map((server, index) => ({
+                        server_name: server.server_name || `Server ${index + 1}`,
+                        server_data: (server.items || []).map(ep => ({
+                            name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
+                            link_m3u8: '',
+                            link_embed: ep.embed || ''
+                        }))
+                    })) || [];
+                } else if (apiSource === 'custom') {
+                    servers = [{
                         server_name: 'Server Custom',
-                        server_data: customEpisodes
-                    });
-                    movieData.episodes = movieData.episodes.concat(customEpisodes);
+                        server_data: (data.episodes || []).map(ep => ({
+                            name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
+                            link_m3u8: ep.link_m3u8 || '',
+                            link_embed: ep.link_embed || '',
+                            link_video: ep.link_video || ''
+                        }))
+                    }];
                 }
-            }
 
-            if (!episodeName || !linkUrl) {
-                const firstEpisode = movieData.servers[0]?.server_data.find(ep => ep.link_m3u8 || ep.link_video || ep.link_embed) || customEpisodes[0];
-                if (firstEpisode) {
-                    episodeName = firstEpisode.name;
-                    if (firstEpisode.link_m3u8 && apiSource !== 'phimnguonc') {
-                        linkType = 'm3u8';
-                        linkUrl = firstEpisode.link_m3u8;
-                    } else if (firstEpisode.link_video && isCustom) {
-                        linkType = 'video';
-                        linkUrl = firstEpisode.link_video;
-                    } else {
-                        linkType = 'embed';
-                        linkUrl = firstEpisode.link_embed;
+                episodes = servers.flatMap(server => server.server_data);
+                const uniqueEpisodes = [];
+                const seen = new Set();
+                episodes.forEach(ep => {
+                    const key = `${ep.name}|${ep.link_m3u8 || ''}|${ep.link_embed || ''}|${ep.link_video || ''}`;
+                    if (!seen.has(key)) {
+                        seen.add(key);
+                        uniqueEpisodes.push(ep);
                     }
-                }
+                });
+
+                return {
+                    name: movie.name || 'Không xác định',
+                    slug: movie.slug || '',
+                    poster_url: movie.poster_url || movie.thumb_url || '',
+                    content: movie.content || movie.description || 'Không có nội dung',
+                    actors: Array.isArray(movie.actor) ? movie.actor.join(', ') : (typeof movie.actor === 'string' ? movie.actor : (movie.casts || 'Không có thông tin')),
+                    directors: Array.isArray(movie.director) ? movie.director.join(', ') : (typeof movie.director === 'string' ? movie.director : (movie.director || 'Không có thông tin')),
+                    countries: countries.join(', ') || 'Không rõ',
+                    categories: categories.join(', ') || 'Không rõ',
+                    year: year || 'Không rõ',
+                    time: movie.time || 'Không rõ',
+                    quality: movie.quality || 'HD',
+                    lang: movie.lang || movie.language || 'Vietsub',
+                    status: movie.status || movie.current_episode || 'unknown',
+                    episodes: uniqueEpisodes,
+                    episode_total: parseInt((movie.episode_total || uniqueEpisodes.length || '1').toString().replace('Tập', '').trim()) || 1,
+                    type: movie.type || (uniqueEpisodes.length > 1 ? 'series' : 'movie'),
+                    servers
+                };
             }
 
-            elements.movieTitle.textContent = movieName || movieData.name || 'Không xác định';
-            elements.episodeTitle.textContent = `Tập: ${episodeName || 'Tập 1'}`;
+            async fetchMovieData(slug, apiSource, retries = 2) {
+                const apiUrls = {
+                    ophim1: `https://ophim1.com/phim/${slug}`,
+                    phimapi: `https://phimapi.com/phim/${slug}`,
+                    phimnguonc: `https://phim.nguonc.com/api/film/${slug}`
+                };
+                const url = apiUrls[apiSource];
+                if (!url) return null;
 
-            if (linkType === 'm3u8' && linkUrl && apiSource !== 'phimnguonc') {
-                elements.playerContainer.innerHTML = '<video id="video-player" class="video-player" controls crossorigin playsinline preload="metadata"></video>';
-                videoElement = document.getElementById('video-player');
+                const cached = JSON.parse(localStorage.getItem(this.CACHE_KEY) || '{}');
+                const now = Date.now();
+                if (cached[slug] && (now - cached[slug].timestamp) < this.CACHE_EXPIRY) {
+                    return cached[slug].data;
+                }
+
                 try {
-                    if (Hls.isSupported()) {
-                        const hls = new Hls({
-                            autoStartLoad: false,
-                            maxBufferLength: 30,
-                            maxMaxBufferLength: 60,
-                            startLevel: -1,
-                            capLevelToPlayerSize: true
-                        });
-                        hls.loadSource(linkUrl);
-                        hls.attachMedia(videoElement);
-                        hls.on(Hls.Events.ERROR, () => {
-                            showSubtitleMessage('Lỗi khi tải video.', true);
-                        });
-                        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                            hls.startLoad();
-                        });
-                        player = new Plyr(videoElement, {
-                            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'fullscreen'],
-                            captions: { active: true, update: true },
-                            quality: { default: 'auto', options: ['auto', 1080, 720, 480] }
-                        });
-                    } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                        videoElement.src = linkUrl;
-                        player = new Plyr(videoElement, {
-                            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'fullscreen'],
-                            captions: { active: true, update: true },
-                            quality: { default: 'auto', options: ['auto', 1080, 720, 480] }
-                        });
-                    } else {
-                        throw new Error('Trình duyệt không hỗ trợ HLS');
+                    const response = await fetch(url, { mode: 'cors', cache: 'no-cache' });
+                    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                    const data = await response.json();
+                    if ((data.status === true || data.status === 'success') && data.movie) {
+                        const normalizedData = this.normalizeMovieData(data, apiSource);
+                        cached[slug] = { data: normalizedData, timestamp: now };
+                        localStorage.setItem(this.CACHE_KEY, JSON.stringify(cached));
+                        return normalizedData;
                     }
-                    elements.rewindBtn.disabled = false;
-                    elements.forwardBtn.disabled = false;
+                    return null;
                 } catch (error) {
-                    elements.playerContainer.innerHTML = '<p class="error-message">Lỗi khi tải video HLS.</p>';
-                    elements.rewindBtn.disabled = true;
-                    elements.forwardBtn.disabled = true;
+                    if (retries > 0) {
+                        return this.fetchMovieData(slug, apiSource, retries - 1);
+                    }
+                    console.error(`Lỗi khi tải dữ liệu từ ${url}:`, error);
+                    return null;
                 }
-            } else if (linkType === 'video' && linkUrl && isCustom) {
-                elements.playerContainer.innerHTML = '<video id="video-player" class="video-player" controls playsinline preload="metadata"></video>';
-                videoElement = document.getElementById('video-player');
-                try {
-                    videoElement.src = linkUrl;
-                    player = new Plyr(videoElement, {
-                        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'fullscreen'],
-                        captions: { active: true, update: true }
+            }
+
+            async loadMovieData() {
+                let movieData = {};
+
+                if (this.state.isCustom && this.state.customEpisodes.length > 0) {
+                    movieData = {
+                        name: this.state.movieName,
+                        poster_url: 'https://via.placeholder.com/200x300',
+                        quality: 'HD',
+                        content: 'Không có nội dung',
+                        actors: 'Không có thông tin',
+                        directors: 'Không có thông tin',
+                        countries: 'Không rõ',
+                        categories: 'Không rõ',
+                        year: 'Không rõ',
+                        time: 'Không rõ',
+                        lang: 'Vietsub',
+                        status: 'unknown',
+                        episodes: this.state.customEpisodes,
+                        episode_total: this.state.customEpisodes.length,
+                        type: this.state.customEpisodes.length > 1 ? 'series' : 'movie',
+                        slug: this.state.slug,
+                        servers: [{ server_name: 'Server Custom', server_data: this.state.customEpisodes }]
+                    };
+                } else {
+                    movieData = await this.fetchMovieData(this.state.slug, this.state.apiSource);
+                    if (!movieData) {
+                        this.elements.playerContainer.innerHTML = '<p class="error-message">Lỗi khi tải dữ liệu phim.</p>';
+                        this.elements.movieTitle.textContent = 'Lỗi tải phim';
+                        this.elements.episodeTitle.textContent = 'Không xác định';
+                        return;
+                    }
+                    if (this.state.customEpisodes.length > 0) {
+                        movieData.servers.push({
+                            server_name: 'Server Custom',
+                            server_data: this.state.customEpisodes
+                        });
+                        movieData.episodes = movieData.episodes.concat(this.state.customEpisodes);
+                    }
+                }
+
+                this.state.movieData = movieData;
+                this.setupPlayer();
+                this.renderEpisodeLists();
+                this.setupEpisodeNavigation();
+                this.setupSubtitleHandling();
+            }
+
+            setupPlayer() {
+                let { episodeName, linkType, linkUrl } = this.state;
+                const { movieData, movieName } = this.state;
+
+                if (!episodeName || !linkUrl) {
+                    const firstEpisode = movieData.servers[0]?.server_data.find(ep => ep.link_m3u8 || ep.link_video || ep.link_embed) || this.state.customEpisodes[0];
+                    if (firstEpisode) {
+                        episodeName = firstEpisode.name;
+                        if (firstEpisode.link_m3u8 && this.state.apiSource !== 'phimnguonc') {
+                            linkType = 'm3u8';
+                            linkUrl = firstEpisode.link_m3u8;
+                        } else if (firstEpisode.link_video && this.state.isCustom) {
+                            linkType = 'video';
+                            linkUrl = firstEpisode.link_video;
+                        } else {
+                            linkType = 'embed';
+                            linkUrl = firstEpisode.link_embed;
+                        }
+                    }
+                }
+
+                this.state.episodeName = episodeName;
+                this.state.linkType = linkType;
+                this.state.linkUrl = linkUrl;
+
+                this.elements.movieTitle.textContent = movieName || movieData.name || 'Không xác định';
+                this.elements.episodeTitle.textContent = `Tập: ${episodeName || 'Tập 1'}`;
+
+                if (linkType === 'm3u8' && linkUrl && this.state.apiSource !== 'phimnguonc') {
+                    this.elements.playerContainer.innerHTML = '<video id="video-player" class="video-player" controls crossorigin playsinline preload="metadata"></video>';
+                    this.state.videoElement = document.getElementById('video-player');
+                    try {
+                        if (Hls.isSupported()) {
+                            const hls = new Hls({
+                                autoStartLoad: false,
+                                maxBufferLength: 30,
+                                maxMaxBufferLength: 60,
+                                startLevel: -1,
+                                capLevelToPlayerSize: true
+                            });
+                            hls.loadSource(linkUrl);
+                            hls.attachMedia(this.state.videoElement);
+                            hls.on(Hls.Events.ERROR, () => this.showSubtitleMessage('Lỗi khi tải video.', true));
+                            hls.on(Hls.Events.MANIFEST_PARSED, () => hls.startLoad());
+                            this.state.player = new Plyr(this.state.videoElement, {
+                                controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'fullscreen'],
+                                captions: { active: true, update: true },
+                                quality: { default: 'auto', options: ['auto', 1080, 720, 480] }
+                            });
+                        } else if (this.state.videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                            this.state.videoElement.src = linkUrl;
+                            this.state.player = new Plyr(this.state.videoElement, {
+                                controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'fullscreen'],
+                                captions: { active: true, update: true },
+                                quality: { default: 'auto', options: ['auto', 1080, 720, 480] }
+                            });
+                        } else {
+                            throw new Error('Trình duyệt không hỗ trợ HLS');
+                        }
+                        this.elements.rewindBtn.disabled = false;
+                        this.elements.forwardBtn.disabled = false;
+                    } catch (error) {
+                        this.elements.playerContainer.innerHTML = '<p class="error-message">Lỗi khi tải video HLS.</p>';
+                        this.elements.rewindBtn.disabled = true;
+                        this.elements.forwardBtn.disabled = true;
+                    }
+                } else if (linkType === 'video' && linkUrl && this.state.isCustom) {
+                    this.elements.playerContainer.innerHTML = '<video id="video-player" class="video-player" controls playsinline preload="metadata"></video>';
+                    this.state.videoElement = document.getElementById('video-player');
+                    try {
+                        this.state.videoElement.src = linkUrl;
+                        this.state.player = new Plyr(this.state.videoElement, {
+                            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'fullscreen'],
+                            captions: { active: true, update: true }
+                        });
+                        this.state.videoElement.addEventListener('error', () => this.showSubtitleMessage('Lỗi khi tải video.', true));
+                        this.elements.rewindBtn.disabled = false;
+                        this.elements.forwardBtn.disabled = false;
+                    } catch (error) {
+                        this.elements.playerContainer.innerHTML = '<p class="error-message">Lỗi khi tải video.</p>';
+                        this.elements.rewindBtn.disabled = true;
+                        this.elements.forwardBtn.disabled = true;
+                    }
+                } else if (linkType === 'embed' && linkUrl) {
+                    this.elements.playerContainer.innerHTML = `<iframe id="video-player" class="video-player" src="${linkUrl}" allow="autoplay; fullscreen"></iframe>`;
+                    this.state.player = new Plyr(document.getElementById('video-player'), {
+                        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
                     });
-                    videoElement.addEventListener('error', () => {
-                        showSubtitleMessage('Lỗi khi tải video.', true);
+                    this.elements.rewindBtn.disabled = true;
+                    this.elements.forwardBtn.disabled = true;
+                } else {
+                    this.elements.playerContainer.innerHTML = '<p class="error-message">Không có link video khả dụng.</p>';
+                    this.elements.rewindBtn.disabled = true;
+                    this.elements.forwardBtn.disabled = true;
+                }
+            }
+
+            renderEpisodeLists() {
+                const { movieData, slug, apiSource, episodeName, linkType, linkUrl, movieName, customEpisodes } = this.state;
+                const customEpisodesQuery = customEpisodes.length > 0 ? `&customEpisodes=${encodeURIComponent(JSON.stringify(customEpisodes))}` : '';
+
+                this.state.allEpisodes = movieData.servers.flatMap(server => server.server_data.map(ep => ({
+                    name: ep.name,
+                    link_m3u8: ep.link_m3u8 || '',
+                    link_embed: ep.link_embed || '',
+                    link_video: ep.link_video || '',
+                    server_name: server.server_name
+                })));
+
+                const createEpisodeLink = (ep, type, url, displayName) => {
+                    const isActive = ep.name === episodeName && linkType === type && url === linkUrl;
+                    return `<li><a href="watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(ep.name)}&type=${type}&url=${encodeURIComponent(url)}&name=${encodeURIComponent(movieName || movieData.name)}${customEpisodesQuery}" class="${isActive ? 'active' : ''}">${displayName}</a></li>`;
+                };
+
+                const server1 = movieData.servers[0];
+                if (server1 && server1.server_data.length > 0 && server1.server_name !== 'Server Custom') {
+                    this.elements.server1List.querySelector('h2').textContent = server1.server_name;
+                    const fragmentM3u8 = document.createDocumentFragment();
+                    const fragmentEmbed = document.createDocumentFragment();
+                    const m3u8Links = apiSource === 'phimnguonc' ? [] : server1.server_data.filter(ep => ep.link_m3u8);
+                    const embedLinks = server1.server_data.filter(ep => ep.link_embed);
+                    m3u8Links.forEach(ep => {
+                        const li = document.createElement('li');
+                        li.innerHTML = createEpisodeLink(ep, 'm3u8', ep.link_m3u8, ep.name === 'Tập 1' ? '1' : ep.name);
+                        fragmentM3u8.appendChild(li);
                     });
-                    elements.rewindBtn.disabled = false;
-                    elements.forwardBtn.disabled = false;
-                } catch (error) {
-                    elements.playerContainer.innerHTML = '<p class="error-message">Lỗi khi tải video.</p>';
-                    elements.rewindBtn.disabled = true;
-                    elements.forwardBtn.disabled = true;
+                    embedLinks.forEach(ep => {
+                        const li = document.createElement('li');
+                        li.innerHTML = createEpisodeLink(ep, 'embed', ep.link_embed, `${ep.name}[e]`);
+                        fragmentEmbed.appendChild(li);
+                    });
+                    this.elements.server1M3u8.innerHTML = m3u8Links.length > 0 ? '' : '<p class="error-message">Không có link M3U8.</p>';
+                    this.elements.server1Embed.innerHTML = embedLinks.length > 0 ? '' : '<p class="error-message">Không có link nhúng.</p>';
+                    this.elements.server1M3u8.appendChild(fragmentM3u8);
+                    this.elements.server1Embed.appendChild(fragmentEmbed);
+                } else {
+                    this.elements.server1List.style.display = 'none';
                 }
-            } else if (linkType === 'embed' && linkUrl) {
-                elements.playerContainer.innerHTML = `<iframe id="video-player" class="video-player" src="${linkUrl}" allow="autoplay; fullscreen"></iframe>`;
-                player = new Plyr(document.getElementById('video-player'), {
-                    controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
-                });
-                elements.rewindBtn.disabled = true;
-                elements.forwardBtn.disabled = true;
-            } else {
-                elements.playerContainer.innerHTML = '<p class="error-message">Không có link random.</p>';
-                elements.rewindBtn.disabled = true;
-                elements.forwardBtn.disabled = true;
-            }
 
-            allEpisodes = movieData.servers.flatMap(server => server.server_data.map(ep => ({
-                name: ep.name,
-                link_m3u8: ep.link_m3u8 || '',
-                link_embed: ep.link_embed || '',
-                link_video: ep.link_video || '',
-                server_name: server.server_name
-            })));
-
-            const customEpisodesQuery = customEpisodes.length > 0 ? `&customEpisodes=${encodeURIComponent(JSON.stringify(customEpisodes))}` : '';
-
-            // Server 1
-            const server1 = movieData.servers[0];
-            if (server1 && server1.server_data.length > 0 && server1.server_name !== 'Server Custom') {
-                elements.server1List.querySelector('h2').textContent = server1.server_name;
-                const m3u8Links = apiSource === 'phimnguonc' ? [] : server1.server_data.filter(ep => ep.link_m3u8);
-                const embedLinks = server1.server_data.filter(ep => ep.link_embed);
-                elements.server1M3u8.innerHTML = m3u8Links.length > 0 ? m3u8Links.map(ep => {
-                    const displayName = ep.name === 'Tập 1' ? '1' : ep.name;
-                    const isActive = ep.name === episodeName && linkType === 'm3u8' && ep.link_m3u8 === linkUrl;
-                    return `<li><a href="watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(ep.name)}&type=m3u8&url=${encodeURIComponent(ep.link_m3u8)}&name=${encodeURIComponent(movieName || movieData.name)}${customEpisodesQuery}" class="${isActive ? 'active' : ''}">${displayName}</a></li>`;
-                }).join('') : '<p class="error-message">Không có link 01.</p>';
-                elements.server1Embed.innerHTML = embedLinks.length > 0 ? embedLinks.map(ep => {
-                    const displayName = `${ep.name}[e]`;
-                    const isActive = ep.name === episodeName && linkType === 'embed' && ep.link_embed === linkUrl;
-                    return `<li><a href="watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(ep.name)}&type=embed&url=${encodeURIComponent(ep.link_embed)}&name=${encodeURIComponent(movieName || movieData.name)}${customEpisodesQuery}" class="${isActive ? 'active' : ''}">${displayName}</a></li>`;
-                }).join('') : '<p class="error-message">Không có link 02.</p>';
-            } else {
-                elements.server1List.style.display = 'none';
-            }
-
-            // Server 2
-            const server2 = movieData.servers[1];
-            if (server2 && server2.server_data.length > 0 && server2.server_name !== 'Server Custom') {
-                elements.server2List.querySelector('h2').textContent = server2.server_name;
-                const m3u8Links = apiSource === 'phimnguonc' ? [] : server2.server_data.filter(ep => ep.link_m3u8);
-                const embedLinks = server2.server_data.filter(ep => ep.link_embed);
-                elements.server2M3u8.innerHTML = m3u8Links.length > 0 ? m3u8Links.map(ep => {
-                    const displayName = ep.name === 'Tập 1' ? '1' : ep.name;
-                    const isActive = ep.name === episodeName && linkType === 'm3u8' && ep.link_m3u8 === linkUrl;
-                    return `<li><a href="watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(ep.name)}&type=m3u8&url=${encodeURIComponent(ep.link_m3u8)}&name=${encodeURIComponent(movieName || movieData.name)}${customEpisodesQuery}" class="${isActive ? 'active' : ''}">${displayName}</a></li>`;
-                }).join('') : '<p class="error-message">Không có link 01.</p>';
-                elements.server2Embed.innerHTML = embedLinks.length > 0 ? embedLinks.map(ep => {
-                    const displayName = `${ep.name}[e]`;
-                    const isActive = ep.name === episodeName && linkType === 'embed' && ep.link_embed === linkUrl;
-                    return `<li><a href="watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(ep.name)}&type=embed&url=${encodeURIComponent(ep.link_embed)}&name=${encodeURIComponent(movieName || movieData.name)}${customEpisodesQuery}" class="${isActive ? 'active' : ''}">${displayName}</a></li>`;
-                }).join('') : '<p class="error-message">Không có link 02.</p>';
-            } else {
-                elements.server2List.style.display = 'none';
-            }
-
-            // Custom Server
-            const customServer = movieData.servers.find(s => s.server_name === 'Server Custom') || { server_data: customEpisodes };
-            if (customServer.server_data.length > 0) {
-                const m3u8Links = apiSource === 'phimnguonc' ? [] : customServer.server_data.filter(ep => ep.link_m3u8);
-                const embedLinks = customServer.server_data.filter(ep => ep.link_embed);
-                const videoLinks = customServer.server_data.filter(ep => ep.link_video);
-                elements.customM3u8.innerHTML = m3u8Links.length > 0 ? m3u8Links.map(ep => {
-                    const displayName = ep.name === 'Tập 1' ? '1' : ep.name;
-                    const isActive = ep.name === episodeName && linkType === 'm3u8' && ep.link_m3u8 === linkUrl;
-                    return `<li><a href="watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(ep.name)}&type=m3u8&url=${encodeURIComponent(ep.link_m3u8)}&name=${encodeURIComponent(movieName || movieData.name)}${customEpisodesQuery}" class="${isActive ? 'active' : ''}">${displayName}</a></li>`;
-                }).join('') : '<p class="error-message">Không có link 01.</p>';
-                elements.customEmbed.innerHTML = embedLinks.length > 0 ? embedLinks.map(ep => {
-                    const displayName = `${ep.name}[e]`;
-                    const isActive = ep.name === episodeName && linkType === 'embed' && ep.link_embed === linkUrl;
-                    return `<li><a href="watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(ep.name)}&type=embed&url=${encodeURIComponent(ep.link_embed)}&name=${encodeURIComponent(movieName || movieData.name)}${customEpisodesQuery}" class="${isActive ? 'active' : ''}">${displayName}</a></li>`;
-                }).join('') : '<p class="error-message">Không có link 02.</p>';
-                elements.customVideo.innerHTML = videoLinks.length > 0 ? videoLinks.map(ep => {
-                    const displayName = `${ep.name}[v]`;
-                    const isActive = ep.name === episodeName && linkType === 'video' && ep.link_video === linkUrl;
-                    return `<li><a href="watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(ep.name)}&type=video&url=${encodeURIComponent(ep.link_video)}&name=${encodeURIComponent(movieName || movieData.name)}${customEpisodesQuery}" class="${isActive ? 'active' : ''}">${displayName}</a></li>`;
-                }).join('') : '<p class="error-message">Không có link random.</p>';
-            } else {
-                elements.customList.style.display = 'none';
-            }
-
-            // Update episode buttons
-            const updateEpisodeButtons = () => {
-                const currentIndex = allEpisodes.findIndex(ep => ep.name === episodeName && (ep.link_m3u8 === linkUrl || ep.link_embed === linkUrl || ep.link_video === linkUrl));
-                elements.prevEpisodeBtn.disabled = currentIndex <= 0 || allEpisodes.length <= 1;
-                elements.nextEpisodeBtn.disabled = currentIndex >= allEpisodes.length - 1 || allEpisodes.length <= 1;
-            };
-            updateEpisodeButtons();
-
-            // Event listeners
-            elements.prevEpisodeBtn.addEventListener('click', () => {
-                const currentIndex = allEpisodes.findIndex(ep => ep.name === episodeName && (ep.link_m3u8 === linkUrl || ep.link_embed === linkUrl || ep.link_video === linkUrl));
-                if (currentIndex > 0) {
-                    const prevEpisode = allEpisodes[currentIndex - 1];
-                    episodeName = prevEpisode.name;
-                    if (prevEpisode.link_m3u8 && apiSource !== 'phimnguonc') {
-                        linkType = 'm3u8';
-                        linkUrl = prevEpisode.link_m3u8;
-                    } else if (prevEpisode.link_video && isCustom) {
-                        linkType = 'video';
-                        linkUrl = prevEpisode.link_video;
-                    } else {
-                        linkType = 'embed';
-                        linkUrl = prevEpisode.link_embed;
-                    }
-                    window.location.href = `watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(episodeName)}&type=${linkType}&url=${encodeURIComponent(linkUrl)}&name=${encodeURIComponent(movieName || movieData.name)}${customEpisodesQuery}`;
+                const server2 = movieData.servers[1];
+                if (server2 && server2.server_data.length > 0 && server2.server_name !== 'Server Custom') {
+                    this.elements.server2List.querySelector('h2').textContent = server2.server_name;
+                    const fragmentM3u8 = document.createDocumentFragment();
+                    const fragmentEmbed = document.createDocumentFragment();
+                    const m3u8Links = apiSource === 'phimnguonc' ? [] : server2.server_data.filter(ep => ep.link_m3u8);
+                    const embedLinks = server2.server_data.filter(ep => ep.link_embed);
+                    m3u8Links.forEach(ep => {
+                        const li = document.createElement('li');
+                        li.innerHTML = createEpisodeLink(ep, 'm3u8', ep.link_m3u8, ep.name === 'Tập 1' ? '1' : ep.name);
+                        fragmentM3u8.appendChild(li);
+                    });
+                    embedLinks.forEach(ep => {
+                        const li = document.createElement('li');
+                        li.innerHTML = createEpisodeLink(ep, 'embed', ep.link_embed, `${ep.name}[e]`);
+                        fragmentEmbed.appendChild(li);
+                    });
+                    this.elements.server2M3u8.innerHTML = m3u8Links.length > 0 ? '' : '<p class="error-message">Không có link M3U8.</p>';
+                    this.elements.server2Embed.innerHTML = embedLinks.length > 0 ? '' : '<p class="error-message">Không có link nhúng.</p>';
+                    this.elements.server2M3u8.appendChild(fragmentM3u8);
+                    this.elements.server2Embed.appendChild(fragmentEmbed);
+                } else {
+                    this.elements.server2List.style.display = 'none';
                 }
-            });
 
-            elements.nextEpisodeBtn.addEventListener('click', () => {
-                const currentIndex = allEpisodes.findIndex(ep => ep.name === episodeName && (ep.link_m3u8 === linkUrl || ep.link_embed === linkUrl || ep.link_video === linkUrl));
-                if (currentIndex < allEpisodes.length - 1) {
-                    const nextEpisode = allEpisodes[currentIndex + 1];
-                    episodeName = nextEpisode.name;
-                    if (nextEpisode.link_m3u8 && apiSource !== 'phimnguonc') {
-                        linkType = 'm3u8';
-                        linkUrl = nextEpisode.link_m3u8;
-                    } else if (nextEpisode.link_video && isCustom) {
-                        linkType = 'video';
-                        linkUrl = nextEpisode.link_video;
-                    } else {
-                        linkType = 'embed';
-                        linkUrl = nextEpisode.link_embed;
-                    }
-                    window.location.href = `watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(episodeName)}&type=${linkType}&url=${encodeURIComponent(linkUrl)}&name=${encodeURIComponent(movieName || movieData.name)}${customEpisodesQuery}`;
+                const customServer = movieData.servers.find(s => s.server_name === 'Server Custom') || { server_data: customEpisodes };
+                if (customServer.server_data.length > 0) {
+                    const fragmentM3u8 = document.createDocumentFragment();
+                    const fragmentEmbed = document.createDocumentFragment();
+                    const fragmentVideo = document.createDocumentFragment();
+                    const m3u8Links = apiSource === 'phimnguonc' ? [] : customServer.server_data.filter(ep => ep.link_m3u8);
+                    const embedLinks = customServer.server_data.filter(ep => ep.link_embed);
+                    const videoLinks = customServer.server_data.filter(ep => ep.link_video);
+                    m3u8Links.forEach(ep => {
+                        const li = document.createElement('li');
+                        li.innerHTML = createEpisodeLink(ep, 'm3u8', ep.link_m3u8, ep.name === 'Tập 1' ? '1' : ep.name);
+                        fragmentM3u8.appendChild(li);
+                    });
+                    embedLinks.forEach(ep => {
+                        const li = document.createElement('li');
+                        li.innerHTML = createEpisodeLink(ep, 'embed', ep.link_embed, `${ep.name}[e]`);
+                        fragmentEmbed.appendChild(li);
+                    });
+                    videoLinks.forEach(ep => {
+                        const li = document.createElement('li');
+                        li.innerHTML = createEpisodeLink(ep, 'video', ep.link_video, `${ep.name}[v]`);
+                        fragmentVideo.appendChild(li);
+                    });
+                    this.elements.customM3u8.innerHTML = m3u8Links.length > 0 ? '' : '<p class="error-message">Không có link M3U8.</p>';
+                    this.elements.customEmbed.innerHTML = embedLinks.length > 0 ? '' : '<p class="error-message">Không có link nhúng.</p>';
+                    this.elements.customVideo.innerHTML = videoLinks.length > 0 ? '' : '<p class="error-message">Không có link video.</p>';
+                    this.elements.customM3u8.appendChild(fragmentM3u8);
+                    this.elements.customEmbed.appendChild(fragmentEmbed);
+                    this.elements.customVideo.appendChild(fragmentVideo);
+                } else {
+                    this.elements.customList.style.display = 'none';
                 }
-            });
+            }
 
-            if (videoElement) {
-                elements.rewindBtn.addEventListener('click', () => {
-                    if (linkType === 'm3u8' || linkType === 'video') {
-                        videoElement.currentTime = Math.max(0, videoElement.currentTime - 10);
-                    } else {
-                        showSubtitleMessage('Tua video không hỗ trợ.', true);
+            setupEpisodeNavigation() {
+                const { allEpisodes, episodeName, linkUrl, slug, apiSource, movieName, customEpisodes } = this.state;
+                const customEpisodesQuery = customEpisodes.length > 0 ? `&customEpisodes=${encodeURIComponent(JSON.stringify(customEpisodes))}` : '';
+
+                const updateEpisodeButtons = () => {
+                    const currentIndex = allEpisodes.findIndex(ep => ep.name === episodeName && (ep.link_m3u8 === linkUrl || ep.link_embed === linkUrl || ep.link_video === linkUrl));
+                    this.elements.prevEpisodeBtn.disabled = currentIndex <= 0 || allEpisodes.length <= 1;
+                    this.elements.nextEpisodeBtn.disabled = currentIndex >= allEpisodes.length - 1 || allEpisodes.length <= 1;
+                };
+                updateEpisodeButtons();
+
+                this.elements.prevEpisodeBtn.addEventListener('click', () => {
+                    const currentIndex = allEpisodes.findIndex(ep => ep.name === episodeName && (ep.link_m3u8 === linkUrl || ep.link_embed === linkUrl || ep.link_video === linkUrl));
+                    if (currentIndex > 0) {
+                        const prevEpisode = allEpisodes[currentIndex - 1];
+                        const newLinkType = prevEpisode.link_m3u8 && apiSource !== 'phimnguonc' ? 'm3u8' :
+                                            prevEpisode.link_video && this.state.isCustom ? 'video' : 'embed';
+                        const newLinkUrl = newLinkType === 'm3u8' ? prevEpisode.link_m3u8 :
+                                          newLinkType === 'video' ? prevEpisode.link_video : prevEpisode.link_embed;
+                        window.location.href = `watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(prevEpisode.name)}&type=${newLinkType}&url=${encodeURIComponent(newLinkUrl)}&name=${encodeURIComponent(movieName || this.state.movieData.name)}${customEpisodesQuery}`;
                     }
                 });
 
-                elements.forwardBtn.addEventListener('click', () => {
-                    if (linkType === 'm3u8' || linkType === 'video') {
-                        videoElement.currentTime = Math.min(videoElement.duration, videoElement.currentTime + 10);
-                    } else {
-                        showSubtitleMessage('Tua video không hỗ trợ.', true);
+                this.elements.nextEpisodeBtn.addEventListener('click', () => {
+                    const currentIndex = allEpisodes.findIndex(ep => ep.name === episodeName && (ep.link_m3u8 === linkUrl || ep.link_embed === linkUrl || ep.link_video === linkUrl));
+                    if (currentIndex < allEpisodes.length - 1) {
+                        const nextEpisode = allEpisodes[currentIndex + 1];
+                        const newLinkType = nextEpisode.link_m3u8 && apiSource !== 'phimnguonc' ? 'm3u8' :
+                                            nextEpisode.link_video && this.state.isCustom ? 'video' : 'embed';
+                        const newLinkUrl = newLinkType === 'm3u8' ? nextEpisode.link_m3u8 :
+                                          newLinkType === 'video' ? nextEpisode.link_video : nextEpisode.link_embed;
+                        window.location.href = `watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(nextEpisode.name)}&type=${newLinkType}&url=${encodeURIComponent(newLinkUrl)}&name=${encodeURIComponent(movieName || this.state.movieData.name)}${customEpisodesQuery}`;
                     }
                 });
-            } else {
-                elements.rewindBtn.addEventListener('click', () => {
-                    showSubtitleMessage('Tua video không hỗ trợ.', true);
+
+                if (this.state.videoElement) {
+                    this.elements.rewindBtn.addEventListener('click', () => {
+                        if (this.state.linkType === 'm3u8' || this.state.linkType === 'video') {
+                            this.state.videoElement.currentTime = Math.max(0, this.state.videoElement.currentTime - 10);
+                        } else {
+                            this.showSubtitleMessage('Tua video không hỗ trợ.', true);
+                        }
+                    });
+
+                    this.elements.forwardBtn.addEventListener('click', () => {
+                        if (this.state.linkType === 'm3u8' || this.state.linkType === 'video') {
+                            this.state.videoElement.currentTime = Math.min(this.state.videoElement.duration, this.state.videoElement.currentTime + 10);
+                        } else {
+                            this.showSubtitleMessage('Tua video không hỗ trợ.', true);
+                        }
+                    });
+                } else {
+                    this.elements.rewindBtn.addEventListener('click', () => this.showSubtitleMessage('Tua video không hỗ trợ.', true));
+                    this.elements.forwardBtn.addEventListener('click', () => this.showSubtitleMessage('Tua video không hỗ trợ.', true));
+                }
+
+                this.elements.backToDetailBtn.addEventListener('click', () => {
+                    const customEpisodesQuery = customEpisodes.length > 0 ? `&episodes=${encodeURIComponent(JSON.stringify(customEpisodes))}` : '';
+                    window.location.href = `detail.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}${customEpisodesQuery}&name=${encodeURIComponent(movieName || this.state.movieData.name)}`;
                 });
 
-                elements.forwardBtn.addEventListener('click', () => {
-                    showSubtitleMessage('Tua video không hỗ trợ.', true);
+                this.elements.backToHomeBtn.addEventListener('click', () => {
+                    window.location.href = 'index.html';
                 });
             }
 
-            elements.backToDetailBtn.addEventListener('click', () => {
-                const customEpisodesQuery = customEpisodes.length > 0 ? `&episodes=${encodeURIComponent(JSON.stringify(customEpisodes))}` : '';
-                window.location.href = `detail.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}${customEpisodesQuery}&name=${encodeURIComponent(movieName || movieData.name)}`;
-            });
-
-            elements.backToHomeBtn.addEventListener('click', () => {
-                window.location.href = 'index.html';
-            });
-
-            // Subtitle handling
-            elements.loadSubBtn.addEventListener('click', async () => {
-                if (elements.sub1Input.files.length > 0) {
-                    clearSubtitleTracks();
-                    const success = await processSubtitleFile(elements.sub1Input.files[0], 'Phụ đề');
-                    if (success && player && videoElement) {
-                        player.captions.active = true;
+            setupSubtitleHandling() {
+                this.elements.loadSubBtn.addEventListener('click', async () => {
+                    const sub1File = this.elements.sub1Input.files[0];
+                    const sub2File = this.elements.sub2Input.files[0];
+                    if (!sub1File && !sub2File) {
+                        this.showSubtitleMessage('Vui lòng chọn ít nhất một file phụ đề.', true);
+                        return;
+                    }
+                    this.clearSubtitleTracks();
+                    const success = await this.processSubtitleFiles(sub1File, sub2File);
+                    if (success && this.state.player && this.state.videoElement) {
+                        this.state.player.captions.active = this.state.subtitlesEnabled;
                         setTimeout(() => {
-                            if (videoElement.textTracks.length > 0) {
-                                videoElement.textTracks[0].mode = 'showing';
+                            if (this.state.videoElement.textTracks.length > 0) {
+                                this.state.videoElement.textTracks[0].mode = this.state.subtitlesEnabled ? 'showing' : 'disabled';
                             }
                         }, 1500);
                     }
-                } else {
-                    showSubtitleMessage('Vui lòng chọn file phụ đề.', true);
-                }
-            });
+                });
 
-            // Search functionality
-            elements.searchInput.addEventListener('input', () => {
-                const searchTerm = elements.searchInput.value.trim();
-                elements.clearSearch.classList.toggle('visible', searchTerm.length > 0);
-                if (!searchTerm) {
-                    elements.searchSuggestions.classList.remove('visible');
-                }
-            });
-
-            elements.searchInput.addEventListener('keypress', e => {
-                if (e.key === 'Enter') {
-                    const searchTerm = elements.searchInput.value.trim();
-                    if (searchTerm) {
-                        window.location.href = `index.html?search=${encodeURIComponent(searchTerm)}`;
+                this.elements.toggleSubBtn.addEventListener('click', () => {
+                    if (this.state.videoElement && this.state.videoElement.textTracks.length > 0) {
+                        this.state.subtitlesEnabled = !this.state.subtitlesEnabled;
+                        const textTrack = this.state.videoElement.textTracks[0];
+                        textTrack.mode = this.state.subtitlesEnabled ? 'showing' : 'disabled';
+                        this.elements.toggleSubBtn.innerHTML = `<i class="fas fa-${this.state.subtitlesEnabled ? 'eye' : 'eye-slash'}"></i> ${this.state.subtitlesEnabled ? 'Tắt' : 'Bật'} phụ đề`;
+                        this.showSubtitleMessage(`Phụ đề đã được ${this.state.subtitlesEnabled ? 'bật' : 'tắt'}.`);
+                    } else {
+                        this.showSubtitleMessage('Không có phụ đề để bật/tắt.', true);
                     }
-                }
-            });
-
-            elements.clearSearch.addEventListener('click', () => {
-                elements.searchInput.value = '';
-                elements.clearSearch.classList.remove('visible');
-                elements.searchSuggestions.classList.remove('visible');
-            });
+                });
+            }
         }
 
-        // Initialize
-        loadMovieData();
-        adjustMainContentPadding();
-        window.addEventListener('resize', adjustMainContentPadding);
+        const app = new MoviePlayer();
+        app.init();
     </script>
 </body>
 </html>
