@@ -25,6 +25,8 @@
 "https://ophim1.com/phim/tan-tay-du-ky",
 "https://ophim1.com/phim/tan-tay-du-ky-2010",
  "|Cổ Trang+|",
+"https://phimapi.com/phim/tang-chau",
+"https://phimapi.com/phim/khom-lung",
 "https://phimapi.com/phim/dien-canh-ky",
 "https://phimapi.com/phim/khanh-khanh-tam-tu",
 "https://phimapi.com/phim/thien-ho-dai-nhan-than-men",
@@ -91,6 +93,7 @@
 
  { "phim-han": [
   "|Siêu Nhiên|",
+  "https://phimapi.com/phim/nuot-vang",
   "https://phimapi.com/phim/khach-san-ma-quai",
   "https://phim.nguonc.com/api/film/toi-khong-phai-robot",
   "https://phim.nguonc.com/api/film/tan-the-gioi",
@@ -146,6 +149,7 @@
 
 { "phim-viet": [
   "|Tình Cảm|",
+"https://phimapi.com/phim/do-danh-vo-yeu",
 "https://phimapi.com/phim/hai-muoi",
 "https://phimapi.com/phim/mat-biec",
 "https://phimapi.com/phim/dat-rung-phuong-nam",
@@ -219,6 +223,9 @@
 "https://phimapi.com/phim/nguoc-dong-thoi-gian-de-yeu-anh-2018",
 "https://phimapi.com/phim/nguoc-dong-thoi-gian-de-yeu-anh-2",
 "|Anime Series|",
+"https://phimapi.com/phim/farmagia",
+"https://phimapi.com/phim/nhan-vien-van-phong-duoc-trieu-hoi-thanh-tu-dai-thien-vuong-o-the-gioi-khac",
+"https://phimapi.com/phim/sasaki-va-pchan",
 "https://phim.nguonc.com/api/film/duoc-su-tu-su-phan-2",
 "https://phim.nguonc.com/api/film/ta-la-quan-chu-ta-ac-cua-quoc-gia-o-giua-muon-vi-sao",
 "https://phim.nguonc.com/api/film/sat-thu-ve-vuon",
@@ -275,8 +282,8 @@
 
   { "ykhoa": [
   "|Chữa lành|",
-  "https://phim.nguonc.com/api/film/chut-nang-am-moi-ngay",  
   "https://ophim1.com/phim/bac-si-ma",
+   "https://phim.nguonc.com/api/film/chut-nang-am-moi-ngay", 
   "https://phim.nguonc.com/api/film/chuyen-doi-bac-si-noi-tru",
   "https://phimapi.com/phim/trung-tam-cham-soc-chan-thuong",
   "https://phimapi.com/phim/con-tau-y-duc",
