@@ -2,7 +2,6 @@
   
 { "index1": [
 "|Phim 2025|",
-  "https://phimapi.com/phim/thieu-hoa-nhuoc-cam",
   "https://phim.nguonc.com/api/film/thieu-hoa-nhuoc-cam",
   "https://ophim1.com/phim/thieu-hoa-nhuoc-cam",
 "https://phimapi.com/phim/nang-bach-tuyet",
@@ -14,9 +13,7 @@
 "https://phimapi.com/phim/cai-chet-con-ky-lan",
 "https://phimapi.com/phim/hoai-thuy-truc-dinh",
 "https://phim.nguonc.com/api/film/cung-dien-ma-am",
-"https://phimapi.com/phim/chuyen-doi-bac-si-noi-tru",
-"https://phimapi.com/phim/biet-doi-bat-hao",
-"https://phimapi.com/phim/ban-ma-phien-toai"
+"https://phimapi.com/phim/chuyen-doi-bac-si-noi-tru"
 
   ] },
   
