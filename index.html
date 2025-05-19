@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Tim kiem phim tu thu muc hoac internet qua phimnguonc, phimapi, ophim1">
-    <meta name="keywords" content="tim phim, phim online, phimnguonc, phimapi, ophim1">
-    <meta name="author" content="Phim Tim Kiem">
-    <title>Banh Mi</title>
+    <meta name="description" content="Tìm kiếm phim nhanh chóng từ thư mục hoặc các nguồn trực tuyến như phimnguonc, phimapi, ophim1">
+    <meta name="keywords" content="tìm phim, phim online, phimnguonc, phimapi, ophim1">
+    <meta name="author" content="Phim Tìm Kiếm">
+    <title>Bánh Mì - Tìm Phim</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -20,6 +20,8 @@
             --shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             --border-radius: 8px;
             --transition: all 0.3s ease;
+            --success-color: #28a745;
+            --error-color: #dc3545;
         }
 
         * {
@@ -116,6 +118,11 @@
             color: var(--text-gray);
             font-size: 1.2em;
             cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-bar i:hover {
+            color: var(--text-white);
         }
 
         .search-bar .clear-search {
@@ -208,6 +215,7 @@
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            position: relative;
         }
 
         .movie-item:hover {
@@ -226,6 +234,42 @@
             height: 100%;
             object-fit: cover;
             display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .movie-poster img:hover {
+            transform: scale(1.05);
+        }
+
+        .language-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success-color);
+            color: var(--text-white);
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .language-badge i {
+            font-size: 0.9em;
+        }
+
+        .episode-badge {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--text-white);
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
         }
 
         .movie-info {
@@ -242,6 +286,53 @@
         }
 
         .movie-info a:hover {
+            color: var(--primary-color);
+        }
+
+        .source-posters {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .source-poster {
+            background: var(--bg-section);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            width: 200px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .source-poster:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .source-poster img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .source-info {
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9em;
+            color: var(--text-gray);
+        }
+
+        .source-info a {
+            color: var(--text-white);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .source-info a:hover {
             color: var(--primary-color);
         }
 
@@ -270,17 +361,20 @@
         }
 
         .error-message {
-            color: #dc3545;
+            color: var(--error-color);
             text-align: center;
             font-size: 1.2em;
             margin: 20px 0;
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             gap: 10px;
         }
 
-        /* Modal Styles */
+        .error-message.visible {
+            display: flex;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -288,7 +382,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 2000;
             justify-content: center;
             align-items: center;
@@ -302,6 +396,7 @@
             width: 90%;
             max-width: 400px;
             box-shadow: var(--shadow);
+            animation: slideIn 0.3s ease;
         }
 
         .modal-content h3 {
@@ -335,6 +430,11 @@
             display: flex;
         }
 
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -349,13 +449,26 @@
                 max-width: 100%;
             }
 
-            .movie-list {
+            .movie-list, .source-posters {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
                 gap: 15px;
             }
 
-            .movie-info a {
+            .movie-info a, .source-info a {
                 font-size: 0.9em;
+            }
+
+            .source-poster {
+                width: 150px;
+            }
+
+            .source-poster img {
+                height: 225px;
+            }
+
+            .language-badge, .episode-badge {
+                font-size: 0.7em;
+                padding: 4px 8px;
             }
         }
 
@@ -381,13 +494,26 @@
                 font-size: 0.9em;
             }
 
-            .movie-list {
+            .movie-list, .source-posters {
                 grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
                 gap: 10px;
             }
 
-            .movie-info a {
+            .movie-info a, .source-info a {
                 font-size: 0.85em;
+            }
+
+            .source-poster {
+                width: 120px;
+            }
+
+            .source-poster img {
+                height: 180px;
+            }
+
+            .language-badge, .episode-badge {
+                font-size: 0.65em;
+                padding: 3px 6px;
             }
 
             .modal-content {
@@ -398,44 +524,67 @@
 </head>
 <body>
     <div class="search-container">
-        <h1>Banh Mi Oi ?</h1>
+        <h1>Bánh Mì Ơi?</h1>
         <div class="button-group">
             <button class="mode-button" id="local-mode">Kho Bánh Mì</button>
-            <button class="mode-button active" id="online-mode">Ở lại đây tìm...</button>
+            <button class="mode-button active" id="online-mode">Tìm Trực Tuyến</button>
         </div>
         <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Nhap ten phim de tim kiem...">
-            <i class="fas fa-times clear-search" id="clear-search"></i>
-            <i class="fas fa-search" id="search-button"></i>
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Nhập tên phim để tìm kiếm..."
+                aria-label="Tìm kiếm phim"
+                autocomplete="off"
+            >
+            <i class="fas fa-times clear-search" id="clear-search" aria-label="Xóa tìm kiếm"></i>
+            <i class="fas fa-search" id="search-button" aria-label="Tìm kiếm"></i>
             <div class="search-suggestions" id="search-suggestions"></div>
         </div>
         <div class="search-actions">
-            <button class="search-button" id="search-submit">search</button>
-            <button class="stay-button" id="stay-online">here</button>
+            <button class="search-button" id="search-submit">Tìm Kiếm</button>
+            <button class="stay-button" id="stay-online">Tìm Tại Đây</button>
         </div>
     </div>
 
     <div class="movie-section">
-        <h2>Banh mi ???</h2>
+        <h2>Kết Quả Tìm Kiếm</h2>
         <div class="movie-list" id="movie-list"></div>
-        <div class="loading-spinner" id="loading-spinner">running</div>
-        <p class="error-message" id="error-message" style="display: none;"></p>
+        <div class="source-posters" id="source-posters"></div>
+        <div class="loading-spinner" id="loading-spinner">Đang tải...</div>
+        <div class="error-message" id="error-message"></div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal" id="api-modal">
+    <div class="modal" id="api-modal" role="dialog" aria-labelledby="modal-title">
         <div class="modal-content">
-            <h3>Chọn kênh:</h3>
+            <h3 id="modal-title">Chọn Kênh Tìm Kiếm</h3>
             <div class="modal-options">
-                <button class="modal-option" onclick="selectAPI('01')">01 (Bánh mì 01)</button>
-                <button class="modal-option" onclick="selectAPI('02')">02 (Bánh mì sơ cấp)</button>
-                <button class="modal-option" onclick="selectAPI('03')">03 (Bánh mì trung cấp)</button>
+                <button class="modal-option" data-api="01">01 (Phim 01)</button>
+                <button class="modal-option" data-api="02">02 (Phim 02)</button>
+                <button class="modal-option" data-api="03">03 (Phim 03)</button>
             </div>
         </div>
     </div>
 
     <script>
-        const elements = {
+        // Configuration
+        const CONFIG = {
+            API_ENDPOINTS: {
+                phimnguonc: 'https://phim.nguonc.com/api/film/',
+                phimapi: 'https://phimapi.com/phim/',
+                ophim1: 'https://ophim1.com/phim/'
+            },
+            LOCAL_FILES: ['customapi.txt', 'bo.txt', 'le.txt'],
+            API_TIMEOUT: 15000, // 5 seconds per API
+            SEARCH_TIMEOUT: 7000, // 7 seconds total
+            SUGGESTION_LIMIT: 5,
+            DEBOUNCE_DELAY: 300,
+            CACHE_EXPIRY: 1800000, // 30 minutes
+            FALLBACK_IMAGE: 'https://via.placeholder.com/200x300?text=No+Image'
+        };
+
+        // DOM Elements
+        const ELEMENTS = {
             localMode: document.getElementById('local-mode'),
             onlineMode: document.getElementById('online-mode'),
             searchInput: document.getElementById('search-input'),
@@ -444,538 +593,558 @@
             searchSubmit: document.getElementById('search-submit'),
             stayOnline: document.getElementById('stay-online'),
             movieList: document.getElementById('movie-list'),
+            sourcePosters: document.getElementById('source-posters'),
             loadingSpinner: document.getElementById('loading-spinner'),
             searchSuggestions: document.getElementById('search-suggestions'),
             errorMessage: document.getElementById('error-message'),
             apiModal: document.getElementById('api-modal')
         };
 
-        let currentMode = 'online';
-        let localMovies = [];
-        let currentQuery = '';
+        // State
+        const state = {
+            currentMode: 'online',
+            localMovies: [],
+            currentQuery: '',
+            suggestionCache: new Map(), // In-memory cache
+            sourceResults: {}
+        };
 
-        // Hàm chuẩn hóa văn bản, loại bỏ dấu và chuyển thành chữ thường
-        function normalizeSearchText(text) {
-            return text.toLowerCase().normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '') // Loại bỏ dấu
-                .replace(/[^a-z0-9\s-]/g, '') // Loại ký tự đặc biệt
-                .trim()
-                .replace(/\s+/g, '-');
-        }
+        // Utilities Module
+        const Utils = {
+            normalizeText(text) {
+                if (!text) return '';
+                const vietnameseMap = {
+                    'đ': 'd', 'Đ': 'D',
+                    'áàảãạăắằẳẵặâấầẩẫậ': 'a',
+                    'ÁÀẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬ': 'A',
+                    'éèẻẽẹêếềểễệ': 'e',
+                    'ÉÈẺẼẸÊẾỀỂỄỆ': 'E',
+                    'íìỉĩị': 'i',
+                    'ÍÌỈĨỊ': 'I',
+                    'óòỏõọôốồổỗộơớờởỡợ': 'o',
+                    'ÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢ': 'O',
+                    'úùủũụưứừửữự': 'u',
+                    'ÚÙỦŨỤƯỨỪỬỮỰ': 'U',
+                    'ýỳỷỹỵ': 'y',
+                    'ÝỲỶỸỴ': 'Y'
+                };
 
-        // Hàm chuẩn hóa dữ liệu phim
-        function normalizeMovieData(data, apiSource) {
-            const movie = data.movie || data.data || data;
-            let categories = [], countries = [], year = movie.year, episodes = [], servers = [];
-
-            if (apiSource === 'ophim1' || apiSource === 'phimapi') {
-                categories = movie.category?.map(c => c.name) || [];
-                countries = movie.country?.map(c => c.name) || [];
-                servers = data.episodes?.map((server, index) => ({
-                    server_name: server.server_name || `Server ${index + 1}`,
-                    server_data: (server.server_data || []).map(ep => ({
-                        name: ep.name.replace('Tap ', '').trim() || 'Tap 1',
-                        link_m3u8: ep.link_m3u8 || '',
-                        link_embed: ep.link_embed || '',
-                        link_video: ep.link_video || ''
-                    }))
-                })) || [];
-            } else if (apiSource === 'phimnguonc') {
-                if (movie.category && typeof movie.category === 'object') {
-                    Object.values(movie.category).forEach(group => {
-                        if (group.group.name === 'The loai') categories = group.list.map(item => item.name);
-                        else if (group.group.name === 'Quoc gia') countries = group.list.map(item => item.name);
-                        else if (group.group.name === 'Nam') year = group.list[0]?.name || year;
-                    });
-                }
-                servers = movie.episodes?.map((server, index) => ({
-                    server_name: server.server_name || `Server ${index + 1}`,
-                    server_data: (server.items || []).map(ep => ({
-                        name: ep.name.replace('Tap ', '').trim() || 'Tap 1',
-                        link_m3u8: '',
-                        link_embed: ep.embed || '',
-                        link_video: ep.link_video || ep.m3u8 || ''
-                    }))
-                })) || [];
-            }
-
-            episodes = servers.flatMap(server => server.server_data);
-            return {
-                id: movie._id || movie.id || movie.slug,
-                name: movie.name,
-                slug: movie.slug || normalizeSearchText(movie.name),
-                origin_name: movie.origin_name || movie.original_name || 'Khong co',
-                poster_url: movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/200x300',
-                content: movie.content || movie.description || 'Khong co noi dung',
-                type: movie.type || (episodes.length > 1 ? 'series' : 'movie'),
-                episode_total: parseInt((movie.episode_total || episodes.length || '1').toString().replace('Tap', '').trim()) || 1,
-                quality: movie.quality || 'HD',
-                lang: movie.lang || movie.language || 'Vietsub',
-                year: year || 'Khong ro',
-                apiSource: apiSource || 'custom',
-                episodes: episodes
-            };
-        }
-
-        // Hàm tải phim từ file txt
-        async function loadLocalMovies() {
-            try {
-                const files = ['customapi.txt', 'bo.txt', 'le.txt'];
-                const movies = [];
-                for (const file of files) {
-                    const response = await fetch(file);
-                    if (!response.ok) throw new Error(`Khong the tai file ${file}`);
-                    const text = await response.text();
-                    const lines = text.split('\n').map(line => line.trim()).filter(line => line);
-                    const episodeRegex = /^(.+?)\|(.+?)\|(.+?)\|(.+?)$/;
-                    const linkRegex = /^(.+?)\|(.+?)$/;
-
-                    for (let i = 0; i < lines.length; i++) {
-                        const match = lines[i].match(episodeRegex);
-                        if (match && !lines[i].includes('|sv2|')) {
-                            const [, pageTag, movieName, posterUrl, quality] = match;
-                            const episodes = [];
-                            let episodeCount = 0;
-                            const seenLinks = new Set();
-
-                            for (let j = i + 1; j < lines.length && !lines[j].match(episodeRegex); j++) {
-                                let epName = `Tap ${episodeCount + 1}`;
-                                let link_m3u8 = '';
-                                let link_embed = '';
-                                let link_video = '';
-
-                                const linkMatch = lines[j].match(linkRegex);
-                                if (linkMatch) {
-                                    const [, name, link] = linkMatch;
-                                    epName = name.replace('Tap ', '').trim();
-                                    if (link.endsWith('.m3u8')) link_m3u8 = link;
-                                    else if (link.includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) link_embed = link;
-                                    else if (link.match(/\.(mp4|webm|ogg|avi|mkv)$/i)) link_video = link;
-                                    else link_video = link;
-                                } else if (lines[j].startsWith('https')) {
-                                    if (lines[j].endsWith('.m3u8')) link_m3u8 = lines[j];
-                                    else if (lines[j].includes('youtube.com') || lines[j].includes('vimeo.com') || link.includes('drive.google.com')) link_embed = lines[j];
-                                    else if (lines[j].match(/\.(mp4|webm|ogg|avi|mkv)$/i)) link_video = lines[j];
-                                    else link_video = lines[j];
-                                }
-
-                                const linkKey = link_m3u8 || link_embed || link_video;
-                                if (linkKey && !seenLinks.has(linkKey)) {
-                                    seenLinks.add(linkKey);
-                                    episodes.push({ name: epName, link_m3u8, link_embed, link_video });
-                                    episodeCount++;
-                                }
-                            }
-
-                            const validPosterUrl = posterUrl && posterUrl.startsWith('http') ? posterUrl : 'https://via.placeholder.com/200x300';
-                            movies.push({
-                                name: movieName,
-                                slug: normalizeSearchText(movieName),
-                                poster_url: validPosterUrl,
-                                content: 'Noi dung tu thu muc',
-                                episode_total: episodeCount || 1,
-                                quality: quality || 'HD',
-                                lang: 'Vietsub',
-                                year: 'Khong ro',
-                                type: episodeCount > 1 ? 'series' : 'movie',
-                                apiSource: 'custom',
-                                episodes: episodes
-                            });
-                        }
+                let normalized = text.toLowerCase();
+                for (const [chars, replacement] of Object.entries(vietnameseMap)) {
+                    for (const char of chars) {
+                        normalized = normalized.replace(new RegExp(char, 'g'), replacement);
                     }
                 }
-                return movies;
-            } catch (error) {
-                console.error('Loi khi tai phim tu thu muc:', error);
-                return [];
-            }
-        }
+                return normalized.replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-');
+            },
 
-        // Hàm lấy dữ liệu phim từ phimnguonc bằng slug (gọi trực tiếp)
-        async function fetchPhimNguonC(slug) {
-            try {
-                const response = await fetch(`https://phim.nguonc.com/api/film/${slug}`);
-                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-                const data = await response.json();
-                if (data.status === 'success' && data.movie) {
-                    return normalizeMovieData(data, 'phimnguonc');
+            sanitizeInput(input) {
+                const div = document.createElement('div');
+                div.textContent = input;
+                return div.innerHTML;
+            },
+
+            showError(message, showModal = false) {
+                ELEMENTS.errorMessage.innerHTML = message;
+                ELEMENTS.errorMessage.classList.add('visible');
+                if (showModal) ELEMENTS.apiModal.classList.add('visible');
+            },
+
+            hideError() {
+                ELEMENTS.errorMessage.classList.remove('visible');
+            },
+
+            debounce(func, delay) {
+                let timeout;
+                return (...args) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func(...args), delay);
+                };
+            },
+
+            async fetchWithTimeout(url, timeout = CONFIG.API_TIMEOUT) {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), timeout);
+                try {
+                    const response = await fetch(url, { 
+                        signal: controller.signal,
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    clearTimeout(timeoutId);
+                    return response;
+                } catch (error) {
+                    clearTimeout(timeoutId);
+                    throw error;
                 }
-                return null;
-            } catch (error) {
-                console.error(`Loi khi tai du lieu tu phimnguonc: ${error}`);
-                return null;
             }
-        }
+        };
 
-        // Hàm lấy dữ liệu phim từ phimapi bằng slug (gọi trực tiếp)
-        async function fetchPhimAPI(slug) {
-            try {
-                const response = await fetch(`https://phimapi.com/phim/${slug}`);
-                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-                const data = await response.json();
-                if (data.status === true && data.movie) {
-                    return normalizeMovieData(data, 'phimapi');
-                }
-                return null;
-            } catch (error) {
-                console.error(`Loi khi tai du lieu tu phimapi: ${error}`);
-                return null;
-            }
-        }
+        // Data Module
+        const Data = {
+            normalizeMovieData(data, apiSource) {
+                const movie = data.movie || data.data || data;
+                let episodes = [];
 
-        // Hàm lấy dữ liệu phim từ ophim1 bằng slug (gọi trực tiếp)
-        async function fetchOphim1(slug) {
-            try {
-                const response = await fetch(`https://ophim1.com/phim/${slug}`);
-                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-                const data = await response.json();
-                if (data.status === true && data.movie) {
-                    return normalizeMovieData(data, 'ophim1');
-                }
-                return null;
-            } catch (error) {
-                console.error(`Loi khi tai du lieu tu ophim1: ${error}`);
-                return null;
-            }
-        }
-
-        // Hàm tìm kiếm phim từ internet dựa trên từ khóa
-        async function searchOnlineMovies(query) {
-            elements.loadingSpinner.classList.add('visible');
-            elements.movieList.innerHTML = '';
-            elements.errorMessage.style.display = 'none';
-            const results = [];
-            const normalizedQuery = normalizeSearchText(query);
-
-            // Timeout 40 giây
-            const timeoutPromise = new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve('timeout');
-                }, 10000); // 40 giây
-            });
-
-            // Hàm tìm kiếm chính
-            const searchPromise = (async () => {
-                // Thử tìm kiếm với slug chính xác từ phimnguonc
-                const phimNguonCResult = await fetchPhimNguonC(normalizedQuery);
-                if (phimNguonCResult && normalizeSearchText(phimNguonCResult.name).includes(normalizedQuery)) {
-                    results.push(phimNguonCResult);
+                if (apiSource === 'ophim1' || apiSource === 'phimapi') {
+                    episodes = (data.episodes || [])
+                        .flatMap((server, index) => (server.server_data || []).map(ep => ({
+                            name: ep.name?.replace('Tap ', '').trim() || `Tập ${index + 1}`,
+                            link_m3u8: ep.link_m3u8 || '',
+                            link_embed: ep.link_embed || '',
+                            link_video: ep.link_video || ''
+                        })));
+                } else if (apiSource === 'phimnguonc') {
+                    episodes = (movie.episodes || [])
+                        .flatMap((server, index) => (server.items || []).map(ep => ({
+                            name: ep.name?.replace('Tap ', '').trim() || `Tập ${index + 1}`,
+                            link_m3u8: '',
+                            link_embed: ep.embed || '',
+                            link_video: ep.link_video || ep.m3u8 || ''
+                        })));
                 }
 
-                // Tìm kiếm từ phimapi và ophim1 với slug
+                return {
+                    id: movie._id || movie.id || movie.slug || '',
+                    name: movie.name || 'Không rõ',
+                    slug: movie.slug || Utils.normalizeText(movie.name),
+                    origin_name: movie.origin_name || movie.original_name || 'Không rõ',
+                    poster_url: movie.poster_url || movie.thumb_url || CONFIG.FALLBACK_IMAGE,
+                    content: movie.content || movie.description || 'Không có mô tả',
+                    type: movie.type || (episodes.length > 1 ? 'series' : 'movie'),
+                    episode_total: parseInt((movie.episode_total || episodes.length || '1').toString().replace('Tap', '').trim()) || 1,
+                    quality: movie.quality || 'HD',
+                    lang: movie.lang || movie.language || 'Vietsub',
+                    year: movie.year || 'Không rõ',
+                    apiSource: apiSource || 'custom',
+                    episodes
+                };
+            },
+
+            async loadLocalMovies() {
+                try {
+                    const movies = [];
+                    for (const file of CONFIG.LOCAL_FILES) {
+                        const response = await fetch(file);
+                        if (!response.ok) {
+                            console.warn(`Không thể tải file ${file}: ${response.status}`);
+                            continue;
+                        }
+                        const text = await response.text();
+                        const lines = text.split('\n').map(line => line.trim()).filter(line => line);
+                        const episodeRegex = /^(.+?)\|(.+?)\|(.+?)\|(.+?)$/;
+                        const linkRegex = /^(.+?)\|(.+?)$/;
+
+                        for (let i = 0; i < lines.length; i++) {
+                            const match = lines[i].match(episodeRegex);
+                            if (match && !lines[i].includes('|sv2|')) {
+                                const [, , movieName, posterUrl, quality] = match;
+                                const episodes = [];
+                                let episodeCount = 0;
+
+                                for (let j = i + 1; j < lines.length && !lines[j].match(episodeRegex); j++) {
+                                    const linkMatch = lines[j].match(linkRegex);
+                                    if (linkMatch) {
+                                        const [, name, link] = linkMatch;
+                                        episodes.push({
+                                            name: name.replace('Tap ', '').trim() || `Tập ${episodeCount + 1}`,
+                                            link_m3u8: link.endsWith('.m3u8') ? link : '',
+                                            link_embed: link.includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com') ? link : '',
+                                            link_video: link.match(/\.(mp4|webm|ogg|avi|mkv)$/i) ? link : link
+                                        });
+                                        episodeCount++;
+                                    }
+                                }
+
+                                movies.push({
+                                    name: movieName,
+                                    slug: Utils.normalizeText(movieName),
+                                    poster_url: posterUrl && posterUrl.startsWith('http') ? posterUrl : CONFIG.FALLBACK_IMAGE,
+                                    content: 'Nội dung từ thư mục',
+                                    episode_total: episodeCount || 1,
+                                    quality: quality || 'HD',
+                                    lang: 'Vietsub',
+                                    year: 'Không rõ',
+                                    type: episodeCount > 1 ? 'series' : 'movie',
+                                    apiSource: 'custom',
+                                    episodes
+                                });
+                            }
+                        }
+                    }
+                    console.log('Phim từ thư mục:', movies);
+                    return movies;
+                } catch (error) {
+                    console.error('Lỗi tải phim từ thư mục:', error);
+                    return [];
+                }
+            }
+        };
+
+        // API Module
+        const API = {
+            async fetchPhimNguonC(slug) {
+                try {
+                    const response = await Utils.fetchWithTimeout(`${CONFIG.API_ENDPOINTS.phimnguonc}${slug}`);
+                    if (!response.ok) {
+                        console.warn(`phimnguonc thất bại: ${response.status}`);
+                        return null;
+                    }
+                    const data = await response.json();
+                    console.log('phimnguonc response:', data);
+                    return data.status === 'success' && data.movie ? Data.normalizeMovieData(data, 'phimnguonc') : null;
+                } catch (error) {
+                    console.error('Lỗi fetch phimnguonc:', error.message);
+                    return null;
+                }
+            },
+
+            async fetchPhimAPI(slug) {
+                try {
+                    console.log('Đang fetch phimapi:', `${CONFIG.API_ENDPOINTS.phimapi}${slug}`);
+                    const response = await Utils.fetchWithTimeout(`${CONFIG.API_ENDPOINTS.phimapi}${slug}`);
+                    if (!response.ok) {
+                        console.warn(`phimapi thất bại: ${response.status}`);
+                        return null;
+                    }
+                    const data = await response.json();
+                    console.log('phimapi raw response:', data);
+                    if (data && (data.movie || data.data || data.name || data.slug || Object.keys(data).length > 0)) {
+                        console.log('phimapi dữ liệu hợp lệ:', data);
+                        return Data.normalizeMovieData(data, 'phimapi');
+                    }
+                    console.warn('phimapi dữ liệu không hợp lệ: thiếu trường cần thiết');
+                    return null;
+                } catch (error) {
+                    console.error('Lỗi fetch phimapi:', error.message);
+                    return null;
+                }
+            },
+
+            async fetchOphim1(slug) {
+                try {
+                    const response = await Utils.fetchWithTimeout(`${CONFIG.API_ENDPOINTS.ophim1}${slug}`);
+                    if (!response.ok) {
+                        console.warn(`ophim1 thất bại: ${response.status}`);
+                        return null;
+                    }
+                    const data = await response.json();
+                    console.log('ophim1 response:', data);
+                    return data.status === true && data.movie ? Data.normalizeMovieData(data, 'ophim1') : null;
+                } catch (error) {
+                    console.error('Lỗi fetch ophim1:', error.message);
+                    return null;
+                }
+            }
+        };
+
+        // Search Module
+        const Search = {
+            async searchOnlineMovies(query) {
+                ELEMENTS.loadingSpinner.classList.add('visible');
+                ELEMENTS.movieList.innerHTML = '';
+                ELEMENTS.sourcePosters.innerHTML = '';
+                Utils.hideError();
+
+                const normalizedQuery = Utils.normalizeText(query);
+                console.log('Tìm kiếm query:', normalizedQuery);
+                state.sourceResults = {};
+                const results = [];
+
+                // Kiểm tra cache
+                const cached = state.suggestionCache.get(normalizedQuery);
+                if (cached && Date.now() - cached.timestamp < CONFIG.CACHE_EXPIRY) {
+                    console.log('Sử dụng cache cho query:', normalizedQuery);
+                    cached.results.forEach(movie => {
+                        state.sourceResults[movie.apiSource] = movie;
+                        results.push(movie);
+                    });
+                    ELEMENTS.loadingSpinner.classList.remove('visible');
+                    UI.renderSourcePosters();
+                    return results;
+                }
+
                 const apiSources = [
-                    { fetchFn: fetchPhimAPI, apiSource: 'phimapi' },
-                    { fetchFn: fetchOphim1, apiSource: 'ophim1' }
+                    { fetchFn: API.fetchPhimNguonC, apiSource: 'phimnguonc' },
+                    { fetchFn: API.fetchPhimAPI, apiSource: 'phimapi' },
+                    { fetchFn: API.fetchOphim1, apiSource: 'ophim1' }
                 ];
 
                 const searchPromises = apiSources.map(async ({ fetchFn, apiSource }) => {
-                    const data = await fetchFn(normalizedQuery);
-                    if (data && normalizeSearchText(data.name).includes(normalizedQuery)) {
-                        results.push(data);
+                    let data = await fetchFn(normalizedQuery);
+                    if (!data && apiSource === 'phimapi') {
+                        // Thử lại với query gốc nếu phimapi thất bại
+                        console.log('Thử lại phimapi với query gốc:', query.toLowerCase().replace(/\s+/g, '-'));
+                        data = await fetchFn(query.toLowerCase().replace(/\s+/g, '-'));
                     }
+                    if (data) {
+                        const queryLower = normalizedQuery.toLowerCase();
+                        const nameLower = Utils.normalizeText(data.name || '').toLowerCase();
+                        const originNameLower = Utils.normalizeText(data.origin_name || '').toLowerCase();
+                        const slugLower = Utils.normalizeText(data.slug || '').toLowerCase();
+                        if (nameLower.includes(queryLower) || originNameLower.includes(queryLower) || slugLower === queryLower) {
+                            console.log(`Tìm thấy khớp cho ${apiSource}:`, { name: data.name, origin_name: data.origin_name, slug: data.slug });
+                            state.sourceResults[apiSource] = data;
+                            return data;
+                        } else {
+                            console.warn(`Không khớp cho ${apiSource}:`, { queryLower, nameLower, originNameLower, slugLower });
+                        }
+                    }
+                    return null;
                 });
 
-                await Promise.allSettled(searchPromises);
+                const searchResults = await Promise.allSettled(searchPromises);
+                const validResults = searchResults
+                    .filter(result => result.status === 'fulfilled' && result.value)
+                    .map(result => result.value);
 
-                // Nếu không tìm thấy, thử tìm kiếm mở rộng
-                if (results.length === 0) {
-                    const allMovies = [];
-                    const fetchAllPromises = apiSources.map(async ({ fetchFn }) => {
-                        const data = await fetchFn(normalizedQuery);
-                        if (data) return data;
-                        return null;
-                    });
+                ELEMENTS.loadingSpinner.classList.remove('visible');
 
-                    const allData = (await Promise.allSettled(fetchAllPromises))
-                        .filter(result => result.status === 'fulfilled' && result.value)
-                        .map(result => result.value);
-
-                    allMovies.push(...allData.filter(movie =>
-                        normalizeSearchText(movie.name).includes(normalizedQuery) ||
-                        normalizeSearchText(movie.origin_name || '').includes(normalizedQuery)
-                    ));
-
-                    if (allMovies.length > 0) {
-                        results.push(...allMovies.slice(0, 10)); // Giới hạn 10 kết quả
-                    }
+                if (validResults.length === 0) {
+                    console.error('Không tìm thấy kết quả cho query:', query);
+                    state.currentQuery = query;
+                    Utils.showError(`
+                        Không tìm thấy phim "${Utils.sanitizeInput(query)}". Vui lòng thử lại hoặc chọn kênh tìm kiếm.<br>
+                        <button class="redirect-button" onclick="UI.showModal()">Chọn kênh tìm kiếm</button>
+                    `, true);
+                    return null;
                 }
 
+                results.push(...validResults);
+                state.suggestionCache.set(normalizedQuery, { results, timestamp: Date.now() });
+                UI.renderSourcePosters();
+                console.log('Kết quả cuối cùng:', results);
                 return results;
-            })();
+            },
 
-            // Chạy tìm kiếm hoặc timeout
-            const raceResult = await Promise.race([searchPromise, timeoutPromise]);
+            searchLocalMovies(query) {
+                const normalizedQuery = Utils.normalizeText(query);
+                return state.localMovies.filter(movie =>
+                    Utils.normalizeText(movie.name).includes(normalizedQuery) ||
+                    Utils.normalizeText(movie.origin_name || '').includes(normalizedQuery)
+                );
+            },
 
-            elements.loadingSpinner.classList.remove('visible');
-
-            if (raceResult === 'timeout' || results.length === 0) {
-                currentQuery = query; // Lưu query hiện tại để dùng trong modal
-                elements.errorMessage.innerHTML = `
-                    Khong tim thay phim sau 40 giay. Vui long thu lai voi tu khoa khac (vi du: "hoai thuy truc dinh").<br>
-                    <button class="redirect-button" onclick="showModal()">Chuyen sang trang chi tiet</button>
-                `;
-                elements.errorMessage.style.display = 'flex';
-                showModal(); // Tự động hiển thị modal sau 40 giây
-                return null;
-            }
-
-            return results;
-        }
-
-        // Hàm hiển thị modal
-        function showModal() {
-            elements.apiModal.classList.add('visible');
-        }
-
-        // Hàm chọn API và chuyển hướng
-        function selectAPI(apiCode) {
-            const query = currentQuery;
-            const slug = normalizeSearchText(query);
-            let apiSource;
-
-            switch (apiCode) {
-                case '01':
-                    apiSource = 'phimnguonc';
-                    break;
-                case '02':
-                    apiSource = 'phimapi';
-                    break;
-                case '03':
-                    apiSource = 'ophim1';
-                    break;
-                default:
-                    apiSource = 'phimnguonc';
-            }
-
-            const detailUrl = `detail.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&name=${encodeURIComponent(query)}`;
-            window.location.href = detailUrl;
-            elements.apiModal.classList.remove('visible');
-        }
-
-        // Hàm tìm kiếm gợi ý (autocomplete) dựa trên từ khóa
-        async function fetchSuggestions(query) {
-            const suggestions = [];
-            const normalizedQuery = normalizeSearchText(query);
-
-            // Timeout 40 giây cho gợi ý
-            const timeoutPromise = new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve('timeout');
-                }, 40000); // 40 giây
-            });
-
-            const suggestionPromise = (async () => {
-                // Thử lấy gợi ý từ phimnguonc
-                const phimNguonCResult = await fetchPhimNguonC(normalizedQuery);
-                if (phimNguonCResult && normalizeSearchText(phimNguonCResult.name).includes(normalizedQuery)) {
-                    suggestions.push(phimNguonCResult);
+            async fetchSuggestions(query) {
+                const normalizedQuery = Utils.normalizeText(query);
+                const cached = state.suggestionCache.get(normalizedQuery);
+                if (cached && Date.now() - cached.timestamp < CONFIG.CACHE_EXPIRY) {
+                    return cached.results.slice(0, CONFIG.SUGGESTION_LIMIT);
                 }
-
-                // Tìm kiếm từ phimapi và ophim1
-                const apiSources = [
-                    { fetchFn: fetchPhimAPI, apiSource: 'phimapi' },
-                    { fetchFn: fetchOphim1, apiSource: 'ophim1' }
-                ];
-
-                const suggestionPromises = apiSources.map(async ({ fetchFn, apiSource }) => {
-                    const data = await fetchFn(normalizedQuery);
-                    if (data && normalizeSearchText(data.name).includes(normalizedQuery)) {
-                        suggestions.push(data);
-                    }
-                });
-
-                await Promise.allSettled(suggestionPromises);
-
-                // Mở rộng gợi ý nếu cần
-                if (suggestions.length === 0) {
-                    const allMovies = [];
-                    const fetchAllPromises = apiSources.map(async ({ fetchFn }) => {
-                        const data = await fetchFn(normalizedQuery);
-                        if (data) return data;
-                        return null;
-                    });
-
-                    const allData = (await Promise.allSettled(fetchAllPromises))
-                        .filter(result => result.status === 'fulfilled' && result.value)
-                        .map(result => result.value);
-
-                    allMovies.push(...allData.filter(movie =>
-                        normalizeSearchText(movie.name).includes(normalizedQuery) ||
-                        normalizeSearchText(movie.origin_name || '').includes(normalizedQuery)
-                    ));
-
-                    suggestions.push(...allMovies.slice(0, 5)); // Giới hạn 5 gợi ý
-                }
-
-                return suggestions;
-            })();
-
-            const raceResult = await Promise.race([suggestionPromise, timeoutPromise]);
-
-            if (raceResult === 'timeout') {
-                currentQuery = query;
-                showModal(); // Tự động hiển thị modal sau 40 giây
                 return [];
             }
+        };
 
-            return suggestions;
-        }
+        // UI Module
+        const UI = {
+            renderMovies(movies) {
+                if (!movies || movies.length === 0) {
+                    console.warn('Không có phim để hiển thị');
+                    ELEMENTS.movieList.innerHTML = '<p>Không tìm thấy phim nào.</p>';
+                    return;
+                }
 
-        // Hiển thị gợi ý tìm kiếm
-        async function renderSuggestions(query) {
-            if (!query) {
-                elements.searchSuggestions.classList.remove('visible');
-                return;
-            }
+                console.log('Hiển thị phim:', movies);
+                const fragment = document.createDocumentFragment();
+                movies.forEach(movie => {
+                    const detailUrl = `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}`;
+                    const languageBadge = movie.lang.toLowerCase().includes('thuyết minh') || movie.lang.toLowerCase() === 'tm'
+                        ? '<span class="language-badge"><i class="fas fa-check"></i> TM</span>'
+                        : movie.lang.toLowerCase().includes('lồng tiếng') || movie.lang.toLowerCase() === 'lt'
+                            ? '<span class="language-badge"><i class="fas fa-check"></i> LT</span>'
+                            : '';
 
-            const suggestions = await fetchSuggestions(query);
-            elements.searchSuggestions.innerHTML = '';
-
-            if (suggestions.length > 0) {
-                suggestions.forEach(movie => {
-                    const suggestionItem = document.createElement('div');
-                    suggestionItem.textContent = movie.name;
-                    suggestionItem.addEventListener('click', () => {
-                        elements.searchInput.value = movie.name;
-                        elements.searchSuggestions.classList.remove('visible');
-                        searchOnlineMovies(movie.name).then(results => renderMovies(results));
-                    });
-                    elements.searchSuggestions.appendChild(suggestionItem);
+                    const movieItem = document.createElement('div');
+                    movieItem.classList.add('movie-item');
+                    movieItem.innerHTML = `
+                        <div class="movie-poster">
+                            <img src="${movie.poster_url}" alt="${Utils.sanitizeInput(movie.name)}" loading="lazy" onerror="this.src='${CONFIG.FALLBACK_IMAGE}'">
+                            ${languageBadge}
+                            <span class="episode-badge">${movie.episode_total} tập</span>
+                        </div>
+                        <div class="movie-info">
+                            <a href="${detailUrl}" target="_blank">${Utils.sanitizeInput(movie.name)} (${movie.year})</a>
+                        </div>
+                    `;
+                    fragment.appendChild(movieItem);
                 });
-                elements.searchSuggestions.classList.add('visible');
-            } else {
-                elements.searchSuggestions.classList.remove('visible');
-            }
-        }
+                ELEMENTS.movieList.appendChild(fragment);
+            },
 
-        // Hàm tìm kiếm phim từ thư mục
-        function searchLocalMovies(query) {
-            const normalizedQuery = normalizeSearchText(query);
-            return localMovies.filter(movie =>
-                normalizeSearchText(movie.name).includes(normalizedQuery) ||
-                normalizeSearchText(movie.origin_name || '').includes(normalizedQuery)
-            );
-        }
+            renderSourcePosters() {
+                console.log('Hiển thị poster nguồn:', state.sourceResults);
+                const fragment = document.createDocumentFragment();
+                const sources = [
+                    { apiSource: 'phimnguonc', name: 'Phim 01' },
+                    { apiSource: 'phimapi', name: 'Phim 02' },
+                    { apiSource: 'ophim1', name: 'Phim 03' }
+                ];
 
-        // Hàm hiển thị kết quả
-        function renderMovies(movies) {
-            if (!movies || movies.length === 0) {
-                elements.movieList.innerHTML = '<p>Khong tim thay phim nao.</p>';
-                return;
-            }
+                sources.forEach(({ apiSource, name }) => {
+                    const movie = state.sourceResults[apiSource];
+                    if (movie) {
+                        const detailUrl = `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}`;
+                        const languageBadge = movie.lang.toLowerCase().includes('thuyết minh') || movie.lang.toLowerCase() === 'tm'
+                            ? '<span class="language-badge"><i class="fas fa-check"></i> TM</span>'
+                            : movie.lang.toLowerCase().includes('lồng tiếng') || movie.lang.toLowerCase() === 'lt'
+                                ? '<span class="language-badge"><i class="fas fa-check"></i> LT</span>'
+                                : '';
 
-            elements.movieList.innerHTML = '';
-            movies.forEach(movie => {
-                const detailUrl = `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}`;
-
-                const movieItem = document.createElement('div');
-                movieItem.classList.add('movie-item');
-                movieItem.innerHTML = `
-                    <div class="movie-poster">
-                        <img src="${movie.poster_url}" alt="${movie.name}">
-                    </div>
-                    <div class="movie-info">
-                        <a href="${detailUrl}" target="_blank">${movie.name} (${movie.year})</a>
-                    </div>
-                `;
-                elements.movieList.appendChild(movieItem);
-            });
-        }
-
-        // Xử lý chế độ tìm kiếm
-        elements.localMode.addEventListener('click', () => {
-            window.location.href = 'index1.html';
-        });
-
-        elements.onlineMode.addEventListener('click', () => {
-            currentMode = 'online';
-            elements.onlineMode.classList.add('active');
-            elements.localMode.classList.remove('active');
-            elements.movieList.innerHTML = '';
-            elements.searchInput.value = '';
-            elements.clearSearch.classList.remove('visible');
-            elements.errorMessage.style.display = 'none';
-        });
-
-        elements.stayOnline.addEventListener('click', () => {
-            currentMode = 'online';
-            elements.onlineMode.classList.add('active');
-            elements.localMode.classList.remove('active');
-            elements.movieList.innerHTML = '';
-            elements.searchInput.value = '';
-            elements.clearSearch.classList.remove('visible');
-            elements.errorMessage.style.display = 'none';
-        });
-
-        // Xử lý sự kiện tìm kiếm
-        elements.searchButton.addEventListener('click', async () => {
-            const query = elements.searchInput.value.trim();
-            if (query) {
-                if (currentMode === 'online') {
-                    const results = await searchOnlineMovies(query);
-                    renderMovies(results);
-                } else {
-                    const results = searchLocalMovies(query);
-                    renderMovies(results);
-                }
-            }
-        });
-
-        elements.searchSubmit.addEventListener('click', async () => {
-            const query = elements.searchInput.value.trim();
-            if (query) {
-                if (currentMode === 'online') {
-                    const results = await searchOnlineMovies(query);
-                    renderMovies(results);
-                } else {
-                    const results = searchLocalMovies(query);
-                    renderMovies(results);
-                }
-            }
-        });
-
-        elements.searchInput.addEventListener('keypress', async (e) => {
-            if (e.key === 'Enter') {
-                const query = elements.searchInput.value.trim();
-                if (query) {
-                    if (currentMode === 'online') {
-                        const results = await searchOnlineMovies(query);
-                        renderMovies(results);
-                    } else {
-                        const results = searchLocalMovies(query);
-                        renderMovies(results);
+                        const posterItem = document.createElement('div');
+                        posterItem.classList.add('source-poster');
+                        posterItem.innerHTML = `
+                            <img src="${movie.poster_url}" alt="${Utils.sanitizeInput(movie.name)}" loading="lazy" onerror="this.src='${CONFIG.FALLBACK_IMAGE}'">
+                            ${languageBadge}
+                            <span class="episode-badge">${movie.episode_total} tập</span>
+                            <div class="source-info">
+                                <a href="${detailUrl}" target="_blank">${name}</a>
+                            </div>
+                        `;
+                        fragment.appendChild(posterItem);
                     }
+                });
+                ELEMENTS.sourcePosters.appendChild(fragment);
+            },
+
+            async renderSuggestions(query) {
+                if (!query) {
+                    ELEMENTS.searchSuggestions.classList.remove('visible');
+                    return;
                 }
+
+                const suggestions = await Search.fetchSuggestions(query);
+                ELEMENTS.searchSuggestions.innerHTML = '';
+
+                if (suggestions.length > 0) {
+                    const fragment = document.createDocumentFragment();
+                    suggestions.forEach(movie => {
+                        const suggestionItem = document.createElement('div');
+                        suggestionItem.textContent = movie.name;
+                        suggestionItem.addEventListener('click', () => {
+                            ELEMENTS.searchInput.value = movie.name;
+                            ELEMENTS.searchSuggestions.classList.remove('visible');
+                            Search.searchOnlineMovies(movie.name).then(UI.renderMovies);
+                        });
+                        fragment.appendChild(suggestionItem);
+                    });
+                    ELEMENTS.searchSuggestions.appendChild(fragment);
+                    ELEMENTS.searchSuggestions.classList.add('visible');
+                } else {
+                    ELEMENTS.searchSuggestions.classList.remove('visible');
+                }
+            },
+
+            showModal() {
+                ELEMENTS.apiModal.classList.add('visible');
+                ELEMENTS.apiModal.querySelector('.modal-option').focus();
+            },
+
+            selectAPI(apiCode) {
+                const query = state.currentQuery;
+                const slug = Utils.normalizeText(query);
+                let apiSource;
+
+                switch (apiCode) {
+                    case '01': apiSource = 'phimnguonc'; break;
+                    case '02': apiSource = 'phimapi'; break;
+                    case '03': apiSource = 'ophim1'; break;
+                    default: apiSource = 'phimnguonc';
+                }
+
+                const detailUrl = `detail.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&name=${encodeURIComponent(query)}`;
+                window.location.href = detailUrl;
+                ELEMENTS.apiModal.classList.remove('visible');
+            },
+
+            resetSearch() {
+                ELEMENTS.movieList.innerHTML = '';
+                ELEMENTS.sourcePosters.innerHTML = '';
+                ELEMENTS.searchInput.value = '';
+                ELEMENTS.clearSearch.classList.remove('visible');
+                Utils.hideError();
             }
-        });
+        };
 
-        elements.searchInput.addEventListener('input', () => {
-            const query = elements.searchInput.value.trim();
-            elements.clearSearch.classList.toggle('visible', query.length > 0);
-            renderSuggestions(query);
-        });
+        // Event Handlers
+        const Events = {
+            setupEventListeners() {
+                ELEMENTS.localMode.addEventListener('click', () => {
+                    window.location.href = 'index1.html';
+                });
 
-        elements.clearSearch.addEventListener('click', () => {
-            elements.searchInput.value = '';
-            elements.clearSearch.classList.remove('visible');
-            elements.searchSuggestions.classList.remove('visible');
-            elements.movieList.innerHTML = '';
-            elements.errorMessage.style.display = 'none';
-        });
+                ELEMENTS.onlineMode.addEventListener('click', () => {
+                    state.currentMode = 'online';
+                    ELEMENTS.onlineMode.classList.add('active');
+                    ELEMENTS.localMode.classList.remove('active');
+                    UI.resetSearch();
+                });
 
-        // Tải phim từ thư mục khi khởi động
-        loadLocalMovies().then(movies => {
-            localMovies = movies;
-        }).catch(error => {
-            console.error('Loi khi tai phim tu thu muc:', error);
-        });
+                ELEMENTS.stayOnline.addEventListener('click', () => {
+                    state.currentMode = 'online';
+                    ELEMENTS.onlineMode.classList.add('active');
+                    ELEMENTS.localMode.classList.remove('active');
+                    UI.resetSearch();
+                });
 
-        // Đóng modal khi nhấp ra ngoài
-        window.addEventListener('click', (e) => {
-            if (e.target === elements.apiModal) {
-                elements.apiModal.classList.remove('visible');
+                ELEMENTS.searchButton.addEventListener('click', Events.handleSearch);
+                ELEMENTS.searchSubmit.addEventListener('click', Events.handleSearch);
+
+                ELEMENTS.searchInput.addEventListener('keypress', e => {
+                    if (e.key === 'Enter') Events.handleSearch();
+                });
+
+                ELEMENTS.searchInput.addEventListener('input', Utils.debounce(() => {
+                    const query = ELEMENTS.searchInput.value.trim();
+                    ELEMENTS.clearSearch.classList.toggle('visible', query.length > 0);
+                    UI.renderSuggestions(query);
+                }, CONFIG.DEBOUNCE_DELAY));
+
+                ELEMENTS.clearSearch.addEventListener('click', () => {
+                    ELEMENTS.searchInput.value = '';
+                    ELEMENTS.clearSearch.classList.remove('visible');
+                    ELEMENTS.searchSuggestions.classList.remove('visible');
+                    ELEMENTS.movieList.innerHTML = '';
+                    ELEMENTS.sourcePosters.innerHTML = '';
+                    Utils.hideError();
+                });
+
+                ELEMENTS.apiModal.addEventListener('click', e => {
+                    if (e.target === ELEMENTS.apiModal) {
+                        ELEMENTS.apiModal.classList.remove('visible');
+                    }
+                });
+
+                ELEMENTS.apiModal.querySelectorAll('.modal-option').forEach(button => {
+                    button.addEventListener('click', () => UI.selectAPI(button.dataset.api));
+                });
+
+                ELEMENTS.apiModal.addEventListener('keydown', e => {
+                    if (e.key === 'Escape') ELEMENTS.apiModal.classList.remove('visible');
+                });
+            },
+
+            async handleSearch() {
+                const query = Utils.sanitizeInput(ELEMENTS.searchInput.value.trim());
+                if (!query) return;
+
+                const results = state.currentMode === 'online'
+                    ? await Search.searchOnlineMovies(query)
+                    : Search.searchLocalMovies(query);
+                UI.renderMovies(results);
             }
-        });
+        };
+
+        // Initialization
+        async function init() {
+            try {
+                state.localMovies = await Data.loadLocalMovies();
+                Events.setupEventListeners();
+            } catch (error) {
+                console.error('Lỗi khởi tạo:', error);
+                Utils.showError('Có lỗi khi khởi tạo ứng dụng. Vui lòng thử lại.');
+            }
+        }
+
+        init();
     </script>
 </body>
 </html>
