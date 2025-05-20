@@ -477,7 +477,7 @@
 
         @media (max-width: 480px) {
             .movie-list {
-                grid-template-columns: repeat(2, minmax(120px, 1fr));
+                grid-template-columns: repeat(3, minmax(120px, 1fr));
                 gap: 10px;
             }
 
@@ -535,815 +535,794 @@
     <button class="scroll-top" id="scroll-top">
         <i class="fas fa-arrow-up"></i>
     </button>
-    <script>
-        class MovieStreamingApp {
-            constructor() {
-                this.elements = {
-                    mainContent: document.getElementById('main-content'),
-                    searchInput: document.getElementById('search-input'),
-                    clearSearch: document.getElementById('clear-search'),
-                    searchSuggestions: document.getElementById('search-suggestions'),
-                    scrollTop: document.getElementById('scroll-top'),
-                    themeToggle: document.getElementById('theme-toggle'),
-                    loadingSpinner: document.getElementById('loading-spinner')
-                };
-                this.CACHE_KEY = 'movie_app_cache';
-                this.CACHE_EXPIRY = 5 * 60 * 1000; // 5 phút
-                this.MOVIES_PER_PAGE = 220;
-                this.currentPage = window.location.pathname.split('/').pop().split('.')[0] || 'index';
-                console.log(`Current page: ${this.currentPage}`);
-                this.pageTitles = {
-                    index: 'Trang chủ',
-                    index1: 'Phim Đề Cử',
-                    'phim-han': 'Phim Hàn',
-                    'phim-trung': 'Phim Trung',
-                    'phim-viet': 'Phim Việt',
-                    'phim-my': 'Phim Mỹ',
-                    'truyen-hinh': 'Truyền hình',
-                    'hoat-hinh': 'Hoạt hình',
-                    netflix: 'Netflix',
-                    ykhoa: 'Y Khoa'
-                };
-                this.isLoading = false;
+   <script>
+class MovieStreamingApp {
+    constructor() {
+        this.elements = {
+            mainContent: document.getElementById('main-content'),
+            searchInput: document.getElementById('search-input'),
+            clearSearch: document.getElementById('clear-search'),
+            searchSuggestions: document.getElementById('search-suggestions'),
+            scrollTop: document.getElementById('scroll-top'),
+            themeToggle: document.getElementById('theme-toggle'),
+            loadingSpinner: document.getElementById('loading-spinner'),
+            hamburger: document.getElementById('hamburger'),
+            navMenu: document.getElementById('nav-menu')
+        };
+        this.CACHE_KEY = 'movie_app_cache';
+        this.CACHE_EXPIRY = 60 * 60 * 1000; // 60 phút
+        this.MOVIES_PER_PAGE = 80;
+        this.MAX_CONCURRENT_REQUESTS = 100;
+        this.API_SOURCES = {
+            'a': { baseUrl: 'https://ophim1.com/phim/', apiSource: 'ophim1' },
+            'b': { baseUrl: 'https://phimapi.com/phim/', apiSource: 'phimapi' },
+            'c': { baseUrl: 'https://phim.nguonc.com/api/film/', apiSource: 'phimnguonc' }
+        };
+        this.currentPage = window.location.pathname.split('/').pop().split('.')[0] || 'index';
+        this.pageTitles = {
+            index: 'Trang chủ',
+            index1: 'Phim Đề Cử',
+            'phim-han': 'Phim Hàn',
+            'phim-trung': 'Phim Trung',
+            'phim-viet': 'Phim Việt',
+            'phim-my': 'Phim Mỹ',
+            'truyen-hinh': 'Truyền hình',
+            'hoat-hinh': 'Hoạt hình',
+            netflix: 'Netflix',
+            ykhoa: 'Y Khoa'
+        };
+        this.isLoading = false;
+        this.hasMoreMovies = true;
+        this.currentPageNumber = 1;
+        this.allMovies = [];
+        this.sections = [];
+        this.sectionObserver = typeof IntersectionObserver !== 'undefined' ? 
+            new IntersectionObserver(this.loadSection.bind(this), { rootMargin: '300px' }) : 
+            { observe: (el) => this.loadSection([{ target: el, isIntersecting: true }]) };
+        this.imageObserver = typeof IntersectionObserver !== 'undefined' ? 
+            new IntersectionObserver(this.lazyLoadImages.bind(this), { rootMargin: '100px' }) : 
+            { observe: (img) => { img.src = img.dataset.src; img.removeAttribute('data-src'); } };
+        this.storageAvailable = this.isStorageAvailable();
+        this.searchCache = new Map();
+    }
+
+    isStorageAvailable() {
+        try {
+            localStorage.setItem('__test__', '__test__');
+            localStorage.removeItem('__test__');
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    safeStorageOperation(operation, fallback = null) {
+        if (!this.storageAvailable) return fallback;
+        try {
+            return operation();
+        } catch (e) {
+            if (e.name === 'QuotaExceededError') {
+                this.clearOldCache();
+            }
+            return fallback;
+        }
+    }
+
+    clearOldCache() {
+        this.safeStorageOperation(() => {
+            const cache = JSON.parse(localStorage.getItem(this.CACHE_KEY) || '{}');
+            const now = Date.now();
+            for (const key in cache.files) {
+                if (now - cache.files[key].timestamp > this.CACHE_EXPIRY) {
+                    delete cache.files[key];
+                }
+            }
+            for (const key in cache.sections) {
+                if (now - cache.sections[key].timestamp > this.CACHE_EXPIRY) {
+                    delete cache.sections[key];
+                }
+            }
+            localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
+        });
+    }
+
+    async init() {
+        this.setupEventListeners();
+        if (!this.storageAvailable && window.location.protocol === 'file:') {
+            this.elements.mainContent.innerHTML = '<div class="error-message">Vui lòng chạy trên server để sử dụng đầy đủ tính năng.<button onclick="location.reload()">Thử lại</button></div>';
+            return;
+        }
+        await this.loadInitialData();
+        this.adjustMainContentPadding();
+        this.highlightActiveMenu();
+        document.title = `Phim Hay - ${this.pageTitles[this.currentPage] || 'Phim Đề Cử'}`;
+    }
+
+    setupEventListeners() {
+        const logoImg = document.getElementById('logo-img');
+        logoImg?.addEventListener('error', (e) => {
+            e.target.style.display = 'none';
+            e.target.nextElementSibling.style.display = 'block';
+        });
+
+        this.elements.themeToggle?.addEventListener('click', () => {
+            const theme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+            document.body.dataset.theme = theme;
+            this.elements.themeToggle.innerHTML = `<i class="fas fa-${theme === 'light' ? 'moon' : 'sun'}"></i>`;
+            this.safeStorageOperation(() => localStorage.setItem('theme', theme));
+        });
+
+        const savedTheme = this.safeStorageOperation(() => localStorage.getItem('theme'), 'dark');
+        document.body.dataset.theme = savedTheme;
+        this.elements.themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'light' ? 'moon' : 'sun'}"></i>`;
+
+        this.elements.hamburger?.addEventListener('click', () => {
+            this.elements.navMenu.classList.toggle('active');
+            this.elements.hamburger.innerHTML = this.elements.navMenu.classList.contains('active') ? 
+                '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!this.elements.navMenu.contains(e.target) && !this.elements.hamburger.contains(e.target)) {
+                this.elements.navMenu.classList.remove('active');
+                this.elements.hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        window.addEventListener('scroll', () => {
+            this.elements.scrollTop.classList.toggle('visible', window.scrollY > 300);
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 300 && !this.isLoading && this.hasMoreMovies) {
+                this.currentPageNumber++;
+                requestAnimationFrame(() => this.renderMovies(this.elements.searchInput?.value.trim() || '', this.currentPageNumber, true));
+            }
+        });
+
+        this.elements.scrollTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        this.elements.searchInput?.addEventListener('input', () => {
+            const searchTerm = this.elements.searchInput.value.trim();
+            this.elements.clearSearch.classList.toggle('visible', searchTerm.length > 0);
+            this.hasMoreMovies = true;
+            this.currentPageNumber = 1;
+            this.debounce(this.renderMovies.bind(this), 300)(searchTerm);
+        });
+
+        this.elements.searchInput?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const searchTerm = this.elements.searchInput.value.trim();
+                window.history.pushState({}, '', `?search=${encodeURIComponent(searchTerm)}`);
                 this.hasMoreMovies = true;
                 this.currentPageNumber = 1;
-                this.allMovies = [];
-                this.sections = [];
-                this.debounce = this.debounce.bind(this);
-                this.renderMovies = this.renderMovies.bind(this);
-                this.debouncedRenderMovies = this.debounce(this.renderMovies, 300);
-                this.imageObserver = new IntersectionObserver(this.lazyLoadImages.bind(this), { 
-                    rootMargin: '50px',
-                    threshold: 0.1
-                });
-                this.storageAvailable = this.isStorageAvailable();
+                this.renderMovies(searchTerm);
+                this.elements.searchSuggestions.classList.remove('visible');
             }
+        });
 
-            isStorageAvailable() {
-                try {
-                    const testKey = '__test__';
-                    localStorage.setItem(testKey, testKey);
-                    localStorage.removeItem(testKey);
-                    return true;
-                } catch (e) {
-                    console.warn('localStorage không khả dụng:', e.message);
-                    return false;
-                }
+        this.elements.clearSearch?.addEventListener('click', () => {
+            this.elements.searchInput.value = '';
+            this.elements.clearSearch.classList.remove('visible');
+            this.elements.searchSuggestions.classList.remove('visible');
+            window.history.pushState({}, '', window.location.pathname);
+            this.hasMoreMovies = true;
+            this.currentPageNumber = 1;
+            this.renderMovies();
+        });
+
+        window.addEventListener('resize', () => this.adjustMainContentPadding());
+    }
+
+    adjustMainContentPadding() {
+        const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
+        this.elements.mainContent.style.paddingTop = `${headerHeight + 15}px`;
+    }
+
+    highlightActiveMenu() {
+        const currentPageFile = window.location.pathname.split('/').pop() || 'index1.html';
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === currentPageFile);
+        });
+    }
+
+    generateHash(content) {
+        let hash = 0;
+        for (let i = 0; i < content.length; i++) {
+            const char = content.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        return hash.toString();
+    }
+
+    async loadCachedFile(file) {
+        const cache = this.safeStorageOperation(() => JSON.parse(localStorage.getItem(this.CACHE_KEY) || '{}'), {});
+        const now = Date.now();
+        try {
+            const response = await fetch(`${file}?_=${Date.now()}`, { cache: 'no-cache', signal: AbortSignal.timeout(6000) });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const text = await response.text();
+            const contentHash = this.generateHash(text);
+            const data = await this.loadCustomMovies(file, text);
+            this.safeStorageOperation(() => {
+                cache.files = cache.files || {};
+                cache.files[file] = { data: data.slice(0, 100), hash: contentHash, timestamp: now };
+                localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
+            });
+            console.log(`Loaded ${file} with ${data.length} movies`);
+            return { data, usedCache: false };
+        } catch (error) {
+            console.warn(`Failed to fetch ${file}: ${error.message}`);
+            if (cache.files?.[file]?.data && (now - cache.files[file].timestamp) < this.CACHE_EXPIRY) {
+                this.elements.mainContent.insertAdjacentHTML('afterbegin', `<div class="warning-message">Dùng dữ liệu cũ do lỗi tải file ${file}</div>`);
+                return { data: cache.files[file].data, usedCache: true };
             }
+            return { data: [], usedCache: false };
+        }
+    }
 
-            safeStorageOperation(operation, fallback = null) {
-                if (this.storageAvailable) {
-                    try {
-                        return operation();
-                    } catch (e) {
-                        console.warn('Lỗi truy cập localStorage:', e.message);
-                        return fallback;
-                    }
-                }
-                return fallback;
-            }
-
-            async init() {
-                this.setupEventListeners();
-                if (!this.storageAvailable && window.location.protocol === 'file:') {
-                    this.elements.mainContent.innerHTML = `
-                        <div class="error-message">
-                            Vui lòng chạy trang trên server (http:// hoặc https://) để sử dụng đầy đủ tính năng.
-                            <button onclick="window.location.reload()">Thử lại</button>
-                        </div>`;
-                    return;
-                }
-                await this.loadInitialData();
-                this.adjustMainContentPadding();
-                this.highlightActiveMenu();
-                document.title = `Phim Hay - ${this.pageTitles[this.currentPage] || 'Phim Đề Cử'}`;
-            }
-
-            setupEventListeners() {
-                const logoImg = document.getElementById('logo-img');
-                if (logoImg) {
-                    logoImg.addEventListener('error', (e) => {
-                        e.target.style.display = 'none';
-                        if (e.target.nextElementSibling) {
-                            e.target.nextElementSibling.style.display = 'block';
-                        }
-                    });
-                }
-                if (this.elements.themeToggle) {
-                    this.elements.themeToggle.addEventListener('click', () => {
-                        const currentTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
-                        document.body.dataset.theme = currentTheme;
-                        this.elements.themeToggle.innerHTML = `<i class="fas fa-${currentTheme === 'light' ? 'moon' : 'sun'}"></i>`;
-                        this.safeStorageOperation(() => localStorage.setItem('theme', currentTheme));
-                    });
-                }
-                const savedTheme = this.safeStorageOperation(() => localStorage.getItem('theme')) || 'dark';
-                document.body.dataset.theme = savedTheme;
-                if (this.elements.themeToggle) {
-                    this.elements.themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'light' ? 'moon' : 'sun'}"></i>`;
-                }
-                window.addEventListener('scroll', () => {
-                    if (this.elements.scrollTop) {
-                        this.elements.scrollTop.classList.toggle('visible', window.scrollY > 300);
-                    }
-                    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !this.isLoading && this.hasMoreMovies) {
-                        this.currentPageNumber++;
-                        const searchTerm = this.elements.searchInput?.value.trim() || '';
-                        this.renderMovies(searchTerm, this.currentPageNumber, true);
-                    }
-                });
-                if (this.elements.scrollTop) {
-                    this.elements.scrollTop.addEventListener('click', () => {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    });
-                }
-                if (this.elements.searchInput) {
-                    this.elements.searchInput.addEventListener('input', () => {
-                        const searchTerm = this.elements.searchInput.value.trim();
-                        if (this.elements.clearSearch) {
-                            this.elements.clearSearch.classList.toggle('visible', searchTerm.length > 0);
-                        }
-                        this.hasMoreMovies = true;
-                        this.currentPageNumber = 1;
-                        this.debouncedRenderMovies(searchTerm);
-                    });
-                    this.elements.searchInput.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') {
-                            const searchTerm = this.elements.searchInput.value.trim();
-                            window.history.pushState({}, '', `?search=${encodeURIComponent(searchTerm)}`);
-                            this.hasMoreMovies = true;
-                            this.currentPageNumber = 1;
-                            this.renderMovies(searchTerm);
-                            if (this.elements.searchSuggestions) {
-                                this.elements.searchSuggestions.classList.remove('visible');
-                            }
-                        }
-                    });
-                }
-                if (this.elements.clearSearch) {
-                    this.elements.clearSearch.addEventListener('click', () => {
-                        if (this.elements.searchInput) {
-                            this.elements.searchInput.value = '';
-                        }
-                        if (this.elements.clearSearch) {
-                            this.elements.clearSearch.classList.remove('visible');
-                        }
-                        if (this.elements.searchSuggestions) {
-                            this.elements.searchSuggestions.classList.remove('visible');
-                        }
-                        window.history.pushState({}, '', window.location.pathname);
-                        this.hasMoreMovies = true;
-                        this.currentPageNumber = 1;
-                        this.renderMovies();
-                    });
-                }
-                window.addEventListener('resize', () => this.adjustMainContentPadding());
-            }
-
-            adjustMainContentPadding() {
-                const header = document.querySelector('.header');
-                if (header && this.elements.mainContent) {
-                    const headerHeight = header.offsetHeight;
-                    this.elements.mainContent.style.paddingTop = `${headerHeight + 20}px`;
-                }
-            }
-
-            highlightActiveMenu() {
-                const currentPageFile = window.location.pathname.split('/').pop() || 'index1.html';
-                document.querySelectorAll('.nav-menu a').forEach(link => {
-                    const linkHref = link.getAttribute('href');
-                    link.classList.toggle('active', linkHref === currentPageFile);
-                });
-            }
-
-            normalizeMovieData(data, apiSource) {
-                const movie = data.movie || data;
-                let categories = [], countries = [], year = movie.year || 'Không rõ', episodes = [], servers = [];
-                if (apiSource === 'ophim1' || apiSource === 'phimapi') {
-                    categories = movie.category?.map(c => c.name) || [];
-                    countries = movie.country?.map(c => c.name) || [];
-                    servers = Array.isArray(data.episodes) ? data.episodes.map((server, index) => ({
-                        server_name: server.server_name || `Server ${index + 1}`,
-                        server_data: Array.isArray(server.server_data) ? server.server_data.map(ep => ({
-                            name: (ep.name || '').replace('Tập ', '').trim() || 'Tập 1',
-                            link_m3u8: ep.link_m3u8 || '',
-                            link_embed: ep.link_embed || '',
-                            link_video: ep.link_video || ''
-                        })) : []
-                    })) : [];
-                } else if (apiSource === 'phimnguonc') {
-                    if (movie.category && typeof movie.category === 'object') {
-                        Object.values(movie.category).forEach(group => {
-                            if (group.group.name === 'Thể loại') categories = group.list.map(item => item.name);
-                            else if (group.group.name === 'Quốc gia') countries = group.list.map(item => item.name);
-                            else if (group.group.name === 'Năm') year = group.list[0]?.name || year;
-                        });
-                    }
-                    servers = movie.episodes?.map((server, index) => ({
-                        server_name: server.server_name || `Server ${index + 1}`,
-                        server_data: (server.items || []).map(ep => ({
-                            name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
-                            link_m3u8: '',
-                            link_embed: ep.embed || '',
-                            link_video: ep.link_video || ep.m3u8 || ''
-                        }))
-                    })) || [];
-                } else if (apiSource === 'custom') {
-                    categories = movie.categories?.split(', ') || [movie.pageTag || 'Không rõ'];
-                    countries = movie.countries?.split(', ') || ['Không rõ'];
-                    servers = Array.isArray(movie.episodes) && movie.episodes.length ? [{
-                        server_name: 'Server Custom',
-                        server_data: movie.episodes.map(ep => ({
-                            name: ep.name || 'Tập 1',
-                            link_m3u8: ep.link_m3u8 || '',
-                            link_embed: ep.link_embed || '',
-                            link_video: ep.link_video || ''
-                        }))
-                    }] : [];
-                }
-                episodes = servers.flatMap(server => server.server_data);
-                return {
-                    id: movie._id || movie.id || `custom-${Date.now()}`,
-                    name: movie.name || 'Không có tên',
-                    slug: movie.slug || (movie.name ? movie.name.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-') : 'custom-movie'),
-                    origin_name: movie.origin_name || movie.original_name || 'Không có',
-                    poster_url: movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/200x300',
-                    content: movie.content || movie.description || 'Không có nội dung',
-                    type: movie.type || (episodes.length > 1 ? 'series' : 'movie'),
-                    status: movie.status || movie.current_episode || 'unknown',
-                    episode_total: parseInt((movie.episode_total || episodes.length || '1').toString().replace('Tập', '').trim()) || 1,
-                    time: movie.time || 'Không rõ',
-                    quality: movie.quality || 'HD',
-                    lang: movie.lang || movie.language || 'Vietsub',
-                    year,
-                    actors: Array.isArray(movie.actor) ? movie.actor.join(', ') : (typeof movie.actor === 'string' ? movie.actor : (movie.actors || 'Không có thông tin')),
-                    directors: Array.isArray(movie.director) ? movie.director.join(', ') : (typeof movie.director === 'string' ? movie.director : (movie.directors || 'Không có thông tin')),
-                    categories: categories.join(', ') || 'Không rõ',
-                    countries: countries.join(', ') || 'Không rõ',
-                    episodes: episodes.length ? episodes : [{ name: 'Tập 1', link_m3u8: '', link_embed: '', link_video: '' }],
-                    servers,
-                    apiSource,
-                    pageTag: movie.pageTag,
-                    sourceFile: movie.sourceFile,
-                    apiUrl: movie.apiUrl
-                };
-            }
-
-            async loadCachedFile(file) {
-                const cache = this.safeStorageOperation(() => JSON.parse(localStorage.getItem(this.CACHE_KEY) || '{}'), {});
-                const now = Date.now();
-                if (cache.files?.[file]?.data && (now - cache.files[file].timestamp) < this.CACHE_EXPIRY) {
-                    console.log(`Tải ${file} từ cache`);
-                    return cache.files[file].data;
-                }
-                try {
-                    const data = await this.loadCustomMovies(file);
-                    this.safeStorageOperation(() => {
-                        cache.files = cache.files || {};
-                        cache.files[file] = { data, timestamp: now };
-                        localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
-                    });
-                    return data;
-                } catch (error) {
-                    console.error(`Lỗi tải ${file}: ${error.message}`);
-                    return [];
-                }
-            }
-
-            async loadCustomMovies(file) {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 50000); // Tăng timeout lên 50s
-                try {
-                    const response = await fetch(`${file}?_=${Date.now()}`, { cache: 'no-cache', signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    const text = await response.text();
-                    const lines = text.split('\n').map(line => line.trim()).filter(line => line);
-                    const movies = [];
-                    const episodeRegex = /^(.+?)\|(.+?)\|(.+?)\|(.+?)$/;
-                    const linkRegex = /^(.+?)\|(.+?)$/;
-                    for (let i = 0; i < lines.length; i++) {
-                        const match = lines[i].match(episodeRegex);
-                        if (match && !lines[i].includes('|sv2|')) {
-                            if (match.length !== 5) {
-                                console.warn(`Dòng không hợp lệ trong ${file}: ${lines[i]}`);
+    async loadCustomMovies(file, text) {
+        try {
+            const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
+            if (!lines.length) return [];
+            const movies = [];
+            const episodeRegex = /^(.+?)\|(.+?)\|(.+?)\|(.+?)$/;
+            const linkRegex = /^(.+?)\|(.+?)$/;
+            for (let i = 0; i < lines.length; i++) {
+                const match = lines[i].match(episodeRegex);
+                if (match && !lines[i].includes('|sv2|')) {
+                    let [, pageTag, movieName, posterUrl, quality] = match;
+                    pageTag = pageTag.toLowerCase().replace(/\s+/g, '-') || 'index';
+                    const episodes = [];
+                    let apiSource = 'custom';
+                    let apiUrl = null;
+                    let slug = movieName.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-') || 'custom-movie';
+                    let episodeCount = 0;
+                    const seenLinks = new Set();
+                    for (let j = i + 1; j < lines.length && !lines[j].match(episodeRegex); j++) {
+                        let epName = `Tập ${episodeCount + 1}`;
+                        let link_m3u8 = '';
+                        let link_embed = '';
+                        let link_video = '';
+                        const linkMatch = lines[j].match(linkRegex);
+                        if (linkMatch) {
+                            const [, name, link] = linkMatch;
+                            epName = name.replace('Tập ', '').trim();
+                            if (link.endsWith('.m3u8') && apiSource !== 'phimnguonc') link_m3u8 = link;
+                            else if (link.includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) link_embed = link;
+                            else if (link.match(/\.(mp4|webm|ogg|avi|mkv)$/i)) link_video = link;
+                            else link_video = link;
+                        } else if (lines[j].startsWith('https') && lines[j].endsWith('.m3u8')) {
+                            link_m3u8 = lines[j];
+                        } else if (lines[j].startsWith('|') && lines[j].endsWith('|')) {
+                            const sourceMatch = lines[j].match(/^\|([abc])\|(.+)$/);
+                            if (sourceMatch) {
+                                const [, sourceCode, sourceSlug] = sourceMatch;
+                                if (this.API_SOURCES[sourceCode]) {
+                                    apiSource = this.API_SOURCES[sourceCode].apiSource;
+                                    apiUrl = `${this.API_SOURCES[sourceCode].baseUrl}${sourceSlug}`;
+                                    slug = sourceSlug;
+                                }
                                 continue;
                             }
-                            let [, pageTag, movieName, posterUrl, quality] = match;
-                            pageTag = pageTag.toLowerCase().replace(/\s+/g, '-');
-                            console.log(`Đọc pageTag từ ${file}: ${pageTag}`);
-                            if (!this.pageTitles[pageTag]) {
-                                console.warn(`pageTag không hợp lệ: ${pageTag}, sử dụng default 'index'`);
-                                pageTag = 'index';
-                            }
-                            const episodes = [];
-                            let apiSource = 'custom';
-                            let apiUrl = null;
-                            let slug = movieName.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-') || 'custom-movie';
-                            let episodeCount = 0;
-                            const seenLinks = new Set();
-                            for (let j = i + 1; j < lines.length && !lines[j].match(episodeRegex); j++) {
-                                let epName = `Tập ${episodeCount + 1}`;
-                                let link_m3u8 = '';
-                                let link_embed = '';
-                                let link_video = '';
-                                const linkMatch = lines[j].match(linkRegex);
-                                if (linkMatch) {
-                                    const [, name, link] = linkMatch;
-                                    epName = name.replace('Tập ', '').trim();
-                                    if (link.endsWith('.m3u8') && apiSource !== 'phimnguonc') {
-                                        link_m3u8 = link;
-                                    } else if (link.includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) {
-                                        link_embed = link;
-                                    } else if (link.match(/\.(mp4|webm|ogg|avi|mkv)$/i)) {
-                                        link_video = link;
-                                    } else {
-                                        link_video = link;
-                                    }
-                                } else if (lines[j].startsWith('https') && lines[j].endsWith('.m3u8')) {
-                                    link_m3u8 = lines[j];
-                                    epName = `Tập ${episodeCount + 1}`;
-                                } else if (lines[j].includes('ophim1.com') || lines[j].includes('phimapi.com') || lines[j].includes('phim.nguonc.com')) {
-                                    apiSource = lines[j].includes('ophim1.com') ? 'ophim1' : lines[j].includes('phimapi.com') ? 'phimapi' : 'phimnguonc';
-                                    apiUrl = lines[j];
-                                    slug = lines[j].split('/').pop().replace(/\.html$/, '');
-                                    continue;
-                                }
-                                const linkKey = link_m3u8 || link_embed || link_video;
-                                if (linkKey && !seenLinks.has(linkKey)) {
-                                    seenLinks.add(linkKey);
-                                    episodes.push({ name: epName, link_m3u8, link_embed, link_video });
-                                    episodeCount++;
-                                }
-                            }
-                            const validPosterUrl = posterUrl.match(/^https?:\/\/[^\s/$.?#].[^\s]*$/i) ? posterUrl : 'https://via.placeholder.com/200x300';
-                            movies.push({
-                                pageTag,
-                                name: movieName,
-                                slug,
-                                poster_url: validPosterUrl,
-                                quality: quality || 'HD',
-                                content: 'Nội dung không có trong thư viện',
-                                actors: 'Không có thông tin',
-                                directors: 'Không có thông tin',
-                                countries: 'Không rõ',
-                                categories: pageTag || 'Không rõ',
-                                year: 'Không rõ',
-                                time: 'Không rõ',
-                                lang: quality.toLowerCase().includes('nonsub') ? 'Nonsub' : 'Vietsub',
-                                origin_name: 'Không có',
-                                status: 'unknown',
-                                episodes,
-                                episode_total: episodeCount || 1,
-                                type: episodeCount > 1 ? 'series' : 'movie',
-                                apiSource,
-                                apiUrl,
-                                sourceFile: file
-                            });
+                        } else if (lines[j].includes('ophim1.com') || lines[j].includes('phimapi.com') || lines[j].includes('phim.nguonc.com')) {
+                            apiSource = lines[j].includes('ophim1.com') ? 'ophim1' : lines[j].includes('phimapi.com') ? 'phimapi' : 'phimnguonc';
+                            apiUrl = lines[j];
+                            slug = lines[j].split('/').pop().replace(/\.html$/, '');
+                            continue;
+                        }
+                        const linkKey = link_m3u8 || link_embed || link_video;
+                        if (linkKey && !seenLinks.has(linkKey)) {
+                            seenLinks.add(linkKey);
+                            episodes.push({ name: epName, link_m3u8, link_embed, link_video });
+                            episodeCount++;
                         }
                     }
-                    console.log(`Tải ${file}: ${movies.length} phim, ${movies.reduce((sum, m) => sum + m.episode_total, 0)} tập`);
-                    return movies;
-                } catch (error) {
-                    console.error(`Lỗi tải ${file}: ${error.message}`);
-                    return [];
-                } finally {
-                    clearTimeout(timeoutId);
-                }
-            }
-
-            async loadApiUrls() {
-                const cache = this.safeStorageOperation(() => JSON.parse(localStorage.getItem(this.CACHE_KEY) || '{}'), {});
-                const now = Date.now();
-                if (cache.apiUrls?.data && (now - cache.apiUrls.timestamp) < this.CACHE_EXPIRY) {
-                    console.log('Tải apiurl.json từ cache');
-                    return cache.apiUrls.data;
-                }
-                try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 10000); // Tăng timeout
-                    const response = await fetch(`apiurl.json?_=${Date.now()}`, { cache: 'no-cache', signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    const data = await response.json();
-                    const apiUrls = [];
-                    const sections = [];
-                    let sectionCounter = 0;
-                    data.forEach(item => {
-                        const pageTag = Object.keys(item)[0];
-                        const urls = item[pageTag];
-                        let currentSectionTitle = this.pageTitles[pageTag] || 'Danh sách phim';
-                        let currentSectionUrls = [];
-                        urls.forEach(url => {
-                            if (url.startsWith('|') && url.endsWith('|')) {
-                                if (currentSectionUrls.length > 0) {
-                                    sections.push({
-                                        id: `section-${sectionCounter++}`,
-                                        pageTag,
-                                        title: currentSectionTitle,
-                                        urls: [...currentSectionUrls]
-                                    });
-                                    currentSectionUrls = [];
-                                }
-                                currentSectionTitle = url.slice(1, -1);
-                            } else if (url && url.startsWith('http')) {
-                                let apiSource = 'ophim1';
-                                if (url.includes('phimapi.com')) apiSource = 'phimapi';
-                                else if (url.includes('phim.nguonc.com')) apiSource = 'phimnguonc';
-                                apiUrls.push({ url, pageTag, apiSource });
-                                currentSectionUrls.push({ url, apiSource });
-                            }
-                        });
-                        if (currentSectionUrls.length > 0) {
-                            sections.push({
-                                id: `section-${sectionCounter++}`,
-                                pageTag,
-                                title: currentSectionTitle,
-                                urls: [...currentSectionUrls]
-                            });
-                        }
+                    movies.push({
+                        pageTag,
+                        name: movieName,
+                        slug,
+                        poster_url: posterUrl.match(/^https?:\/\//) ? posterUrl : 'https://via.placeholder.com/200x300',
+                        quality: quality || 'HD',
+                        content: 'Nội dung không có',
+                        actors: 'Không có thông tin',
+                        directors: 'Không có thông tin',
+                        countries: 'Không rõ',
+                        categories: pageTag,
+                        year: 'Không rõ',
+                        lang: quality.toLowerCase().includes('nonsub') ? 'Nonsub' : 'Vietsub',
+                        origin_name: 'Không có',
+                        status: 'unknown',
+                        episodes,
+                        episode_total: episodeCount || 1,
+                        type: episodeCount > 1 ? 'series' : 'movie',
+                        apiSource,
+                        apiUrl,
+                        sourceFile: file
                     });
-                    this.safeStorageOperation(() => {
-                        cache.apiUrls = { data: { apiUrls, sections }, timestamp: now };
-                        localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
-                    });
-                    return { apiUrls, sections };
-                } catch (error) {
-                    console.error('Lỗi tải apiurl.json:', error.message);
-                    return { apiUrls: [], sections: [] };
                 }
             }
+            return movies;
+        } catch (error) {
+            console.error(`Error parsing ${file}: ${error.message}`);
+            return [];
+        }
+    }
 
-            async fetchWithRetry(url, options, retries = 3, delay = 1000) {
-                for (let i = 0; i < retries; i++) {
-                    try {
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), 10000); // Tăng timeout
-                        const response = await fetch(url, { ...options, signal: controller.signal });
-                        clearTimeout(timeoutId);
-                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                        return response;
-                    } catch (error) {
-                        if (i === retries - 1) throw error;
-                        console.warn(`Thử lại ${url} (${i + 1}/${retries}): ${error.message}`);
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                    }
-                }
-            }
-
-            async fetchMovieData(url, apiSource) {
-                const cache = this.safeStorageOperation(() => JSON.parse(localStorage.getItem(this.CACHE_KEY) || '{}'), {});
-                const now = Date.now();
-                if (cache.movies?.[url]?.data && (now - cache.movies[url].timestamp) < this.CACHE_EXPIRY) {
-                    return cache.movies[url].data;
-                }
-                try {
-                    const response = await this.fetchWithRetry(url, { mode: 'cors', cache: 'no-cache' });
-                    const data = await response.json().catch(() => {
-                        throw new Error('Dữ liệu JSON không hợp lệ');
-                    });
-                    if (!data || (!data.movie && !data.status)) {
-                        throw new Error('Dữ liệu API không hợp lệ hoặc thiếu movie');
-                    }
-                    if ((data.status === true || data.status === 'success') && data.movie) {
-                        const movieData = this.normalizeMovieData(data, apiSource);
-                        movieData.slug = data.movie?.slug || movieData.slug;
-                        movieData.apiUrl = url;
-                        this.safeStorageOperation(() => {
-                            cache.movies = cache.movies || {};
-                            cache.movies[url] = { data: movieData, timestamp: now };
-                            localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
-                        });
-                        return movieData;
-                    }
-                    return null;
-                } catch (error) {
-                    console.error(`Lỗi tải ${url}: ${error.message}`);
-                    return null;
-                }
-            }
-
-            async fetchLimited(promises, limit = 3) {
-                const results = [];
-                for (let i = 0; i < promises.length; i += limit) {
-                    const batch = promises.slice(i, i + limit);
-                    const batchResults = await Promise.allSettled(batch);
-                    results.push(...batchResults.filter(r => r.status === 'fulfilled').map(r => r.value));
-                }
-                return results;
-            }
-
-            normalizeSearchText(text) {
-                return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            }
-
-            debounce(func, wait) {
-                let timeout;
-                return function (...args) {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => func(...args), wait);
-                };
-            }
-
-            lazyLoadImages(entries, observer) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.src = img.dataset.src;
-                        img.removeAttribute('data-src');
-                        observer.unobserve(img);
-                    }
-                });
-            }
-
-            renderSkeletonLoader(sectionElement) {
-                if (!(sectionElement instanceof HTMLElement)) {
-                    console.error('renderSkeletonLoader: sectionElement không phải là phần tử DOM');
-                    return;
-                }
-                const movieList = sectionElement.querySelector('.movie-list');
-                if (!movieList) {
-                    console.error('renderSkeletonLoader: Không tìm thấy .movie-list');
-                    return;
-                }
-                for (let i = 0; i < 6; i++) {
-                    const skeletonItem = document.createElement('div');
-                    skeletonItem.classList.add('movie-item');
-                    skeletonItem.innerHTML = `
-                        <div class="movie-poster skeleton"></div>
-                        <div class="skeleton-title"></div>
-                    `;
-                    movieList.appendChild(skeletonItem);
-                }
-            }
-
-            async renderMovies(searchTerm = '', page = 1, append = false) {
-                if (this.isLoading || !this.hasMoreMovies) return;
-                this.isLoading = true;
-                if (this.elements.loadingSpinner) {
-                    this.elements.loadingSpinner.classList.add('visible');
-                }
-                try {
-                    const start = (page - 1) * this.MOVIES_PER_PAGE;
-                    const end = start + this.MOVIES_PER_PAGE;
-                    if (!append && this.elements.mainContent) {
-                        this.elements.mainContent.innerHTML = '';
-                    }
-                    const pageSections = this.sections.filter(section => section.pageTag === this.currentPage);
-                    if (!pageSections.length && !searchTerm && !this.allMovies.some(m => m.pageTag === this.currentPage)) {
-                        if (this.elements.mainContent) {
-                            this.elements.mainContent.innerHTML = `
-                                <div class="error-message">
-                                    Không có phim cho trang ${this.pageTitles[this.currentPage] || this.currentPage}.
-                                    <button onclick="window.location.reload()">Thử lại</button>
-                                </div>`;
+    async loadApiUrls() {
+        const cache = this.safeStorageOperation(() => JSON.parse(localStorage.getItem(this.CACHE_KEY) || '{}'), {});
+        const now = Date.now();
+        try {
+            const response = await fetch(`apiurl.json?_=${Date.now()}`, { cache: 'no-cache', signal: AbortSignal.timeout(6000) });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const text = await response.text();
+            const contentHash = this.generateHash(text);
+            const data = JSON.parse(text);
+            const apiUrls = [];
+            const sections = [];
+            let sectionCounter = 0;
+            console.log('Parsing apiurl.json...');
+            data.forEach(item => {
+                const pageTag = Object.keys(item)[0];
+                if (pageTag !== this.currentPage && this.currentPage !== 'index') return;
+                const urls = item[pageTag];
+                let currentSectionTitle = this.pageTitles[pageTag] || 'Danh sách phim';
+                let currentSectionUrls = [];
+                console.log(`Processing pageTag: ${pageTag}, URLs: ${urls.length}`);
+                urls.forEach(url => {
+                    if (url.startsWith('|') && url.endsWith('|') && !url.match(/^\|[abc]\|/)) {
+                        if (currentSectionUrls.length) {
+                            sections.push({ id: `section-${sectionCounter++}`, pageTag, title: currentSectionTitle, urls: [...currentSectionUrls] });
+                            console.log(`Added section: ${currentSectionTitle} with ${currentSectionUrls.length} URLs`);
+                            currentSectionUrls = [];
                         }
-                        return;
-                    }
-                    if (searchTerm) {
-                        const normalizedSearch = this.normalizeSearchText(searchTerm);
-                        const searchResults = this.allMovies.filter(movie => (
-                            this.normalizeSearchText(movie.name).includes(normalizedSearch) ||
-                            this.normalizeSearchText(movie.origin_name || '').includes(normalizedSearch) ||
-                            this.normalizeSearchText(movie.categories || '').includes(normalizedSearch) ||
-                            this.normalizeSearchText(movie.countries || '').includes(normalizedSearch)
-                        ));
-                        const apiMovies = [];
-                        const fetchPromises = [];
-                        for (const section of pageSections) {
-                            const apiMoviesToFetch = section.urls.slice(start, end);
-                            apiMoviesToFetch.forEach(({ url, apiSource }) => {
-                                fetchPromises.push(this.fetchMovieData(url, apiSource));
-                            });
-                        }
-                        const fetchedMovies = await this.fetchLimited(fetchPromises);
-                        apiMovies.push(...fetchedMovies.filter(movie => movie && (
-                            this.normalizeSearchText(movie.name).includes(normalizedSearch) ||
-                            this.normalizeSearchText(movie.origin_name || '').includes(normalizedSearch) ||
-                            this.normalizeSearchText(movie.categories || '').includes(normalizedSearch) ||
-                            this.normalizeSearchText(movie.countries || '').includes(normalizedSearch)
-                        )));
-                        if (this.elements.searchSuggestions) {
-                            this.elements.searchSuggestions.innerHTML = '';
-                            if (searchTerm) {
-                                const suggestions = [...searchResults, ...apiMovies].slice(0, 5);
-                                const fragment = document.createDocumentFragment();
-                                suggestions.forEach(movie => {
-                                    const suggestionItem = document.createElement('div');
-                                    suggestionItem.textContent = movie.name;
-                                    suggestionItem.addEventListener('click', () => {
-                                        if (this.elements.searchInput) {
-                                            this.elements.searchInput.value = movie.name;
-                                        }
-                                        if (this.elements.searchSuggestions) {
-                                            this.elements.searchSuggestions.classList.remove('visible');
-                                        }
-                                        window.history.pushState({}, '', `?search=${encodeURIComponent(movie.name)}`);
-                                        this.renderMovies(movie.name, 1);
-                                    });
-                                    fragment.appendChild(suggestionItem);
-                                });
-                                this.elements.searchSuggestions.appendChild(fragment);
-                                this.elements.searchSuggestions.classList.add('visible');
-                            }
-                        }
-                        const slicedResults = [...searchResults, ...apiMovies].slice(start, end);
-                        const section = document.createElement('section');
-                        section.classList.add('movie-section');
-                        section.innerHTML = `<h2>Kết quả tìm kiếm</h2><div class="movie-list"></div>`;
-                        this.renderSkeletonLoader(section);
-                        const movieList = section.querySelector('.movie-list');
-                        if (slicedResults.length === 0) {
-                            this.hasMoreMovies = false;
-                            movieList.innerHTML = `<p>Không tìm thấy phim nào cho "${searchTerm}".</p>`;
-                        } else {
-                            this.renderMovieItems(slicedResults, movieList);
-                        }
-                        if (!append || !this.elements.mainContent.querySelector('.movie-section')) {
-                            this.elements.mainContent.appendChild(section);
-                        } else {
-                            const existingSection = this.elements.mainContent.querySelector('.movie-section');
-                            existingSection.querySelector('.movie-list').innerHTML = movieList.innerHTML;
-                        }
+                        currentSectionTitle = url.slice(1, -1);
                     } else {
-                        for (const section of pageSections) {
-                            const sectionElement = append ?
-                                this.elements.mainContent.querySelector(`.movie-section[data-section-id="${section.id}"]`) ||
-                                document.createElement('section') :
-                                document.createElement('section');
-                            sectionElement.classList.add('movie-section');
-                            sectionElement.setAttribute('data-section-id', section.id);
-                            if (!sectionElement.querySelector('.movie-list')) {
-                                sectionElement.innerHTML = `<h2>${section.title}</h2><div class="movie-list"></div>`;
-                                this.renderSkeletonLoader(sectionElement);
-                            }
-                            this.elements.mainContent.appendChild(sectionElement);
-                            const movieList = sectionElement.querySelector('.movie-list');
-                            movieList.innerHTML = '';
-                            const apiMovies = await this.fetchSectionMovies(section, start, end);
-                            if (apiMovies.length === 0) {
-                                movieList.innerHTML = `<p>Không có phim trong "${section.title}".</p>`;
+                        let apiSource, finalUrl;
+                        const sourceMatch = url.match(/^\|([abc])\|(.+)$/);
+                        if (sourceMatch) {
+                            const [, sourceCode, slug] = sourceMatch;
+                            if (this.API_SOURCES[sourceCode]) {
+                                apiSource = this.API_SOURCES[sourceCode].apiSource;
+                                finalUrl = `${this.API_SOURCES[sourceCode].baseUrl}${slug}`;
                             } else {
-                                this.renderMovieItems(apiMovies, movieList);
+                                console.warn(`Invalid API source code: ${sourceCode}`);
+                                return;
                             }
+                        } else if (url.startsWith('http')) {
+                            apiSource = url.includes('phimapi.com') ? 'phimapi' : url.includes('phim.nguonc.com') ? 'phimnguonc' : 'ophim1';
+                            finalUrl = url;
+                        } else {
+                            console.warn(`Invalid URL format: ${url}`);
+                            return;
                         }
-                        await this.renderTxtSections(start, end, append);
-                        if (pageSections.every(section => section.urls.length <= end)) {
-                            this.hasMoreMovies = false;
-                        }
+                        apiUrls.push({ url: finalUrl, pageTag, apiSource });
+                        currentSectionUrls.push({ url: finalUrl, apiSource });
                     }
-                } catch (error) {
-                    console.error('Lỗi render phim:', error.message);
-                    if (this.elements.mainContent) {
-                        this.elements.mainContent.innerHTML = `
-                            <div class="error-message">
-                                Không thể tải dữ liệu. Vui lòng kiểm tra kết nối mạng hoặc thử lại sau!
-                                <button onclick="window.location.reload()">Thử lại</button>
-                            </div>`;
-                    }
-                } finally {
-                    this.isLoading = false;
-                    if (this.elements.loadingSpinner) {
-                        this.elements.loadingSpinner.classList.remove('visible');
-                    }
-                }
-            }
-
-            async renderTxtSections(start, end, append) {
-                const txtSections = [
-                    { 
-                        title: 'Phim bánh mì', 
-                        movies: this.allMovies.filter(m => m.apiSource === 'custom' && m.sourceFile === 'customapi.txt' && m.pageTag === this.currentPage), 
-                        id: 'banhmi-list' 
-                    },
-                    { 
-                        title: 'Phim bộ', 
-                        movies: this.allMovies.filter(m => m.type === 'series' && m.sourceFile === 'bo.txt' && m.pageTag === this.currentPage), 
-                        id: 'series-list' 
-                    },
-                    { 
-                        title: 'Phim lẻ', 
-                        movies: this.allMovies.filter(m => m.sourceFile === 'le.txt' && m.pageTag === this.currentPage), 
-                        id: 'movie-list' 
-                    }
-                ];
-
-                for (const { title, movies, id } of txtSections) {
-                    const filteredMovies = movies.slice(start, end);
-                    console.log(`Danh mục ${title} (trang ${this.currentPage}): ${filteredMovies.length} phim (tổng ${movies.length})`);
-
-                    const sectionElement = append ? 
-                        this.elements.mainContent.querySelector(`#${id}`)?.parentElement || document.createElement('section') : 
-                        document.createElement('section');
-                    sectionElement.classList.add('movie-section');
-                    if (!sectionElement.querySelector('.movie-list')) {
-                        sectionElement.innerHTML = `<h2>${title}</h2><div class="movie-list" id="${id}"></div>`;
-                        this.renderSkeletonLoader(sectionElement);
-                    }
-                    const movieList = sectionElement.querySelector('.movie-list');
-                    movieList.innerHTML = '';
-                    if (filteredMovies.length === 0) {
-                        movieList.innerHTML = `<p>Không có phim trong "${title}".</p>`;
-                    } else {
-                        this.renderMovieItems(filteredMovies, movieList);
-                    }
-                    this.elements.mainContent.appendChild(sectionElement);
-                }
-            }
-
-            renderMovieItems(movies, container) {
-                if (!(container instanceof HTMLElement)) {
-                    console.error('renderMovieItems: container không phải là phần tử DOM');
-                    return;
-                }
-                const fragment = document.createDocumentFragment();
-                movies.forEach(movie => {
-                    console.log(`Hiển thị phim: ${movie.name}, pageTag: ${movie.pageTag}, currentPage: ${this.currentPage}`);
-                    if (!movie.apiSource) movie.apiSource = 'custom';
-                    if (!movie.slug) movie.slug = movie.name.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-') || 'custom-movie';
-                    const movieId = `${movie.apiSource}-${movie.slug}`;
-                    this.safeStorageOperation(() => {
-                        localStorage.setItem(`movie_${movieId}`, JSON.stringify(movie));
-                        console.log(`Lưu phim vào localStorage: movie_${movieId}`);
-                    });
-                    const episodesQuery = movie.apiSource === 'custom' ? `&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}` : '';
-                    const detailUrl = `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}&episode_total=${movie.episode_total}&type=${movie.type}${episodesQuery}`;
-                    console.log(`Tạo URL cho phim: ${movie.name}, slug: ${movie.slug}, apiSource: ${movie.apiSource}, URL: ${detailUrl}`);
-                    const langText = movie.lang.toLowerCase().includes('thuyết minh') ? 'TM' :
-                                    movie.lang.toLowerCase().includes('lồng tiếng') ? 'LT' : 
-                                    movie.lang.toLowerCase().includes('nonsub') ? 'NS' : 'VS';
-                    const langBadge = langText === 'VS' || langText === 'NS' ? langText : `<i class="fas fa-check check-icon"></i> ${langText}`;
-                    const movieItem = document.createElement('div');
-                    movieItem.classList.add('movie-item');
-                    movieItem.innerHTML = `
-                        <div class="movie-poster">
-                            <a href="${detailUrl}">
-                                <img data-src="${movie.poster_url}" src="https://via.placeholder.com/200x300" alt="${movie.name}" loading="lazy" sizes="(max-width: 600px) 150px, 200px">
-                                <span class="episode-badge">${movie.episode_total} ${movie.sourceFile === 'le.txt' ? 'tập' : 'tập'} | ${langBadge}</span>
-                                <div class="movie-overlay">
-                                    <p>${movie.content}</p>
-                                </div>
-                            </a>
-                        </div>
-                        <a href="${detailUrl}" class="movie-title">${movie.name} (${movie.quality})</a>
-                    `;
-                    const img = movieItem.querySelector('img');
-                    if (img.dataset.src) this.imageObserver.observe(img);
-                    fragment.appendChild(movieItem);
                 });
-                requestAnimationFrame(() => container.appendChild(fragment));
-            }
-
-            async fetchSectionMovies(section, start, end) {
-                const apiMoviesToFetch = section.urls.slice(start, end);
-                const fetchPromises = apiMoviesToFetch.map(({ url, apiSource }) => this.fetchMovieData(url, apiSource));
-                const fetchedMovies = await this.fetchLimited(fetchPromises);
-                return fetchedMovies.filter(movie => movie);
-            }
-
-            async loadInitialData() {
-                if (this.elements.loadingSpinner) {
-                    this.elements.loadingSpinner.classList.add('visible');
+                if (currentSectionUrls.length) {
+                    sections.push({ id: `section-${sectionCounter++}`, pageTag, title: currentSectionTitle, urls: [...currentSectionUrls] });
+                    console.log(`Added section: ${currentSectionTitle} with ${currentSectionUrls.length} URLs`);
                 }
-                try {
-                    this.safeStorageOperation(() => localStorage.removeItem(this.CACHE_KEY));
-                    const [apiData, customMovies, seriesMovies, singleMovies] = await Promise.allSettled([
-                        this.loadApiUrls(),
-                        this.loadCachedFile('customapi.txt'),
-                        this.loadCachedFile('bo.txt'),
-                        this.loadCachedFile('le.txt')
-                    ]).then(results => results.map(r => r.status === 'fulfilled' ? r.value : []));
-                    this.sections = apiData.sections || [];
-                    this.allMovies = [...customMovies, ...seriesMovies, ...singleMovies];
-                    console.log(`Tổng số phim: ${this.allMovies.length}, pageTags: ${[...new Set(this.allMovies.map(m => m.pageTag))]}`);
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const searchTerm = urlParams.get('search') || '';
-                    if (this.elements.searchInput) {
-                        this.elements.searchInput.value = searchTerm;
-                    }
-                    if (this.elements.clearSearch) {
-                        this.elements.clearSearch.classList.toggle('visible', searchTerm.length > 0);
-                    }
-                    await this.renderMovies(searchTerm);
-                } catch (error) {
-                    console.error('Lỗi tải dữ liệu:', error.message);
-                    if (this.elements.mainContent) {
-                        this.elements.mainContent.innerHTML = `
-                            <div class="error-message">
-                                Không thể tải dữ liệu. Vui lòng kiểm tra kết nối mạng hoặc thử lại sau!
-                                <button onclick="window.location.reload()">Thử lại</button>
-                            </div>`;
-                    }
-                } finally {
-                    if (this.elements.loadingSpinner) {
-                        this.elements.loadingSpinner.classList.remove('visible');
-                    }
-                }
+            });
+            this.safeStorageOperation(() => {
+                cache.apiUrls = { data: { apiUrls, sections }, hash: contentHash, timestamp: now };
+                localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
+            });
+            console.log(`Loaded apiurl.json with ${sections.length} sections, ${apiUrls.length} URLs`);
+            return { data: { apiUrls, sections }, usedCache: false };
+        } catch (error) {
+            console.warn(`Failed to fetch apiurl.json: ${error.message}`);
+            if (cache.apiUrls?.data && (now - cache.apiUrls.timestamp) < this.CACHE_EXPIRY) {
+                this.elements.mainContent.insertAdjacentHTML('afterbegin', '<div class="warning-message">Dùng dữ liệu cũ do lỗi tải apiurl.json</div>');
+                return { data: cache.apiUrls.data, usedCache: true };
+            }
+            return { data: { apiUrls: [], sections: [] }, usedCache: false };
+        }
+    }
+
+    async fetchWithRetry(url, options, retries = 3) {
+        for (let i = 0; i < retries; i++) {
+            try {
+                const response = await fetch(url, { ...options, signal: AbortSignal.timeout(6000) });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response;
+            } catch (error) {
+                console.warn(`Fetch retry ${i + 1}/${retries} for ${url}: ${error.message}`);
+                if (i === retries - 1) return null;
+                await new Promise(resolve => setTimeout(resolve, 300 * (i + 1)));
             }
         }
+    }
 
-        const app = new MovieStreamingApp();
-        app.init();
+    async fetchMovieData(url, apiSource) {
+        const cache = this.safeStorageOperation(() => JSON.parse(localStorage.getItem(this.CACHE_KEY) || '{}'), {});
+        const now = Date.now();
+        const sectionId = url.split('/').slice(0, -1).join('/') + '/' + apiSource;
+        try {
+            console.log(`Fetching movie data: ${url}`);
+            const response = await this.fetchWithRetry(url, { mode: 'cors', cache: 'no-cache' });
+            if (!response) throw new Error('No response');
+            const data = await response.json();
+            if ((data.status === true || data.status === 'success') && data.movie) {
+                const movieData = this.normalizeMovieData(data, apiSource);
+                movieData.slug = data.movie?.slug || movieData.slug;
+                movieData.apiUrl = url;
+                this.safeStorageOperation(() => {
+                    cache.sections = cache.sections || {};
+                    cache.sections[sectionId] = cache.sections[sectionId] || { data: [], timestamp: now };
+                    const existingMovies = cache.sections[sectionId].data.filter(m => m.apiUrl !== url);
+                    cache.sections[sectionId] = { data: [...existingMovies, movieData].slice(-100), timestamp: now };
+                    localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
+                });
+                console.log(`Fetched movie: ${movieData.name}`);
+                return movieData;
+            }
+            console.warn(`Invalid movie data for ${url}`);
+            return null;
+        } catch (error) {
+            console.warn(`Failed to fetch ${url}: ${error.message}`);
+            if (cache.sections?.[sectionId]?.data && (now - cache.sections[sectionId].timestamp) < this.CACHE_EXPIRY) {
+                const cachedMovie = cache.sections[sectionId].data.find(movie => movie.apiUrl === url);
+                if (cachedMovie) {
+                    console.log(`Using cached movie for ${url}: ${cachedMovie.name}`);
+                    return cachedMovie;
+                }
+            }
+            return null;
+        }
+    }
+
+    normalizeMovieData(data, apiSource) {
+        const movie = data.movie || data;
+        let categories = [], countries = [], year = movie.year || 'Không rõ', servers = [];
+        if (apiSource === 'ophim1' || apiSource === 'phimapi') {
+            categories = movie.category?.map(c => c.name) || [];
+            countries = movie.country?.map(c => c.name) || [];
+            servers = Array.isArray(data.episodes) ? data.episodes.map((server, i) => ({
+                server_name: server.server_name || `Server ${i + 1}`,
+                server_data: server.server_data?.map(ep => ({
+                    name: ep.name?.replace('Tập ', '').trim() || 'Tập 1',
+                    link_m3u8: ep.link_m3u8 || '',
+                    link_embed: ep.link_embed || '',
+                    link_video: ep.link_video || ''
+                })) || []
+            })) : [];
+        } else if (apiSource === 'phimnguonc') {
+            if (movie.category) {
+                Object.values(movie.category).forEach(group => {
+                    if (group.group.name === 'Thể loại') categories = group.list.map(item => item.name);
+                    else if (group.group.name === 'Quốc gia') countries = group.list.map(item => item.name);
+                    else if (group.group.name === 'Năm') year = group.list[0]?.name || year;
+                });
+            }
+            servers = movie.episodes?.map((server, i) => ({
+                server_name: server.server_name || `Server ${i + 1}`,
+                server_data: server.items?.map(ep => ({
+                    name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
+                    link_m3u8: '',
+                    link_embed: ep.embed || '',
+                    link_video: ep.link_video || ep.m3u8 || ''
+                })) || []
+            })) || [];
+        } else {
+            categories = movie.categories?.split(', ') || [movie.pageTag || 'Không rõ'];
+            countries = movie.countries?.split(', ') || ['Không rõ'];
+            servers = movie.episodes?.length ? [{
+                server_name: 'Server Custom',
+                server_data: movie.episodes.map(ep => ({
+                    name: ep.name || 'Tập 1',
+                    link_m3u8: ep.link_m3u8 || '',
+                    link_embed: ep.link_embed || '',
+                    link_video: ep.link_video || ''
+                }))
+            }] : [];
+        }
+        const episodes = servers.flatMap(s => s.server_data);
+        return {
+            id: movie._id || movie.id || `custom-${Date.now()}`,
+            name: movie.name || 'Không có tên',
+            slug: movie.slug || movie.name?.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-') || 'custom-movie',
+            origin_name: movie.origin_name || movie.original_name || 'Không có',
+            poster_url: movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/200x300',
+            content: movie.content || movie.description || 'Không có nội dung',
+            type: movie.type || (episodes.length > 1 ? 'series' : 'movie'),
+            status: movie.status || movie.current_episode || 'unknown',
+            episode_total: parseInt((movie.episode_total || episodes.length || 1).toString().replace('Tập', '').trim()) || 1,
+            quality: movie.quality || 'HD',
+            lang: movie.lang || movie.language || 'Vietsub',
+            year,
+            actors: Array.isArray(movie.actor) ? movie.actor.join(', ') : movie.actor || movie.actors || 'Không có thông tin',
+            directors: Array.isArray(movie.director) ? movie.director.join(', ') : movie.director || movie.directors || 'Không có thông tin',
+            categories: categories.join(', ') || 'Không rõ',
+            countries: countries.join(', ') || 'Không rõ',
+            episodes: episodes.length ? episodes : [{ name: 'Tập 1', link_m3u8: '', link_embed: '', link_video: '' }],
+            servers,
+            apiSource,
+            pageTag: movie.pageTag,
+            sourceFile: movie.sourceFile,
+            apiUrl: movie.apiUrl
+        };
+    }
+
+    async fetchLimited(promises) {
+        console.log(`Fetching ${promises.length} URLs`);
+        const results = [];
+        for (let i = 0; i < promises.length; i += this.MAX_CONCURRENT_REQUESTS) {
+            const batch = promises.slice(i, i + this.MAX_CONCURRENT_REQUESTS);
+            const batchResults = await Promise.allSettled(batch).then(results => 
+                results.filter(r => r.status === 'fulfilled' && r.value).map(r => r.value)
+            );
+            results.push(...batchResults);
+        }
+        console.log(`Fetched ${results.length} valid movies`);
+        return results;
+    }
+
+    debounce(func, wait) {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
+    lazyLoadImages(entries, observer) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.srcset = img.dataset.srcset || img.dataset.src;
+                img.removeAttribute('data-src');
+                img.removeAttribute('data-srcset');
+                observer.unobserve(img);
+            }
+        });
+    }
+
+    async loadSection(entries) {
+        for (const entry of entries) {
+            if (entry.isIntersecting) {
+                const sectionElement = entry.target;
+                const sectionId = sectionElement.dataset.sectionId;
+                const section = this.sections.find(s => s.id === sectionId);
+                if (section && !sectionElement.dataset.loaded) {
+                    console.log(`Loading section: ${section.title} (ID: ${sectionId}, URLs: ${section.urls.length})`);
+                    sectionElement.dataset.loaded = 'true';
+                    const movieList = sectionElement.querySelector('.movie-list');
+                    movieList.innerHTML = '';
+                    const apiMovies = await this.fetchSectionMovies(section, 0, this.MOVIES_PER_PAGE);
+                    if (apiMovies.length) {
+                        console.log(`Rendering ${apiMovies.length} movies for ${section.title}`);
+                        this.renderMovieItems(apiMovies, movieList, sectionId);
+                    } else {
+                        console.warn(`No movies found for section: ${section.title}`);
+                        movieList.innerHTML = `<p>Không có phim trong "${section.title}".</p>`;
+                    }
+                }
+                this.sectionObserver.unobserve?.(sectionElement);
+            }
+        }
+    }
+
+    renderSkeletonLoader(sectionElement) {
+        const movieList = sectionElement.querySelector('.movie-list');
+        if (!movieList) return;
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < this.MOVIES_PER_PAGE; i++) {
+            const div = document.createElement('div');
+            div.className = 'movie-item';
+            div.innerHTML = '<div class="movie-poster skeleton"></div><div class="skeleton-title"></div>';
+            fragment.appendChild(div);
+        }
+        movieList.appendChild(fragment);
+    }
+
+    async renderMovies(searchTerm = '', page = 1, append = false) {
+        if (this.isLoading || !this.hasMoreMovies) return;
+        this.isLoading = true;
+        this.elements.loadingSpinner.classList.add('visible');
+        try {
+            const start = (page - 1) * this.MOVIES_PER_PAGE;
+            const end = start + this.MOVIES_PER_PAGE;
+            if (!append) this.elements.mainContent.innerHTML = '';
+            const pageSections = this.sections.filter(section => section.pageTag === this.currentPage);
+            console.log(`Rendering page ${page}, search: "${searchTerm}", sections: ${pageSections.length}`);
+            if (!pageSections.length && !searchTerm && !this.allMovies.some(m => m.pageTag === this.currentPage)) {
+                console.warn('No sections or movies found for current page');
+                this.elements.mainContent.innerHTML = '<div class="error-message">Không tìm thấy phim nào.<button onclick="location.reload()">Thử lại</button></div>';
+                return;
+            }
+            if (searchTerm) {
+                const cacheKey = `${searchTerm}-${page}`;
+                if (this.searchCache.has(cacheKey)) {
+                    const cachedResults = this.searchCache.get(cacheKey);
+                    this.renderSearchResults(cachedResults, append);
+                    this.isLoading = false;
+                    this.elements.loadingSpinner.classList.remove('visible');
+                    return;
+                }
+                const normalizedSearch = searchTerm.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                const searchResults = this.allMovies.filter(movie => (
+                    movie.name.toLowerCase().includes(normalizedSearch) ||
+                    movie.origin_name?.toLowerCase().includes(normalizedSearch) ||
+                    movie.categories?.toLowerCase().includes(normalizedSearch) ||
+                    movie.countries?.toLowerCase().includes(normalizedSearch)
+                ));
+                const apiMovies = [];
+                const fetchPromises = [];
+                for (const section of pageSections) {
+                    const apiMoviesToFetch = section.urls.slice(start, end);
+                    apiMoviesToFetch.forEach(({ url, apiSource }) => fetchPromises.push(this.fetchMovieData(url, apiSource)));
+                }
+                const fetchedMovies = await this.fetchLimited(fetchPromises);
+                apiMovies.push(...fetchedMovies.filter(movie => movie && (
+                    movie.name.toLowerCase().includes(normalizedSearch) ||
+                    movie.origin_name?.toLowerCase().includes(normalizedSearch) ||
+                    movie.categories?.toLowerCase().includes(normalizedSearch) ||
+                    movie.countries?.toLowerCase().includes(normalizedSearch)
+                )));
+                this.elements.searchSuggestions.innerHTML = '';
+                if (searchTerm) {
+                    const suggestions = [...new Set([...searchResults, ...apiMovies].map(m => JSON.stringify(m)))].map(s => JSON.parse(s)).slice(0, 5);
+                    const fragment = document.createDocumentFragment();
+                    suggestions.forEach(movie => {
+                        const div = document.createElement('div');
+                        div.textContent = movie.name;
+                        fragment.appendChild(div);
+                    });
+                    this.elements.searchSuggestions.appendChild(fragment);
+                    this.elements.searchSuggestions.querySelectorAll('div').forEach((item, i) => {
+                        item.addEventListener('click', () => {
+                            this.elements.searchInput.value = suggestions[i].name;
+                            this.elements.searchSuggestions.classList.remove('visible');
+                            window.history.pushState({}, '', `?search=${encodeURIComponent(suggestions[i].name)}`);
+                            this.renderMovies(suggestions[i].name, 1);
+                        });
+                    });
+                    this.elements.searchSuggestions.classList.add('visible');
+                }
+                const slicedResults = [...new Set([...searchResults, ...apiMovies].map(m => JSON.stringify(m)))].map(s => JSON.parse(s)).slice(start, end);
+                this.searchCache.set(cacheKey, slicedResults);
+                this.renderSearchResults(slicedResults, append);
+            } else {
+                for (const section of pageSections) {
+                    const sectionElement = append ?
+                        this.elements.mainContent.querySelector(`.movie-section[data-section-id="${section.id}"]`) || document.createElement('section') :
+                        document.createElement('section');
+                    sectionElement.classList.add('movie-section');
+                    sectionElement.dataset.sectionId = section.id;
+                    if (!sectionElement.querySelector('.movie-list')) {
+                        sectionElement.innerHTML = `<h2>${section.title}</h2><div class="movie-list"></div>`;
+                        this.renderSkeletonLoader(sectionElement);
+                    }
+                    this.elements.mainContent.appendChild(sectionElement);
+                    this.sectionObserver.observe(sectionElement);
+                }
+                await this.renderTxtSections(start, end, append);
+                this.hasMoreMovies = pageSections.some(section => section.urls.length > end);
+                console.log(`hasMoreMovies: ${this.hasMoreMovies}`);
+            }
+        } catch (error) {
+            console.error(`Error rendering movies: ${error.message}`);
+            this.elements.mainContent.innerHTML = '<div class="error-message">Lỗi tải dữ liệu. Vui lòng kiểm tra kết nối mạng hoặc thử lại sau!<button onclick="location.reload()">Thử lại</button></div>';
+        } finally {
+            this.isLoading = false;
+            this.elements.loadingSpinner.classList.remove('visible');
+        }
+    }
+
+    renderSearchResults(slicedResults, append) {
+        const section = document.createElement('section');
+        section.classList.add('movie-section');
+        section.innerHTML = '<h2>Kết quả tìm kiếm</h2><div class="movie-list"></div>';
+        this.renderSkeletonLoader(section);
+        const movieList = section.querySelector('.movie-list');
+        if (slicedResults.length === 0) {
+            this.hasMoreMovies = false;
+            movieList.innerHTML = `<p>Không tìm thấy phim nào cho "${this.elements.searchInput.value}".</p>`;
+        } else {
+            this.renderMovieItems(slicedResults, movieList, 'search');
+        }
+        if (!append || !this.elements.mainContent.querySelector('.movie-section')) {
+            this.elements.mainContent.appendChild(section);
+        } else {
+            this.elements.mainContent.querySelector('.movie-section .movie-list').innerHTML = movieList.innerHTML;
+        }
+    }
+
+    async renderTxtSections(start, end, append) {
+        const txtSections = [
+            { title: 'Phim bánh mì', movies: this.allMovies.filter(m => m.apiSource === 'custom' && m.sourceFile === 'customapi.txt' && m.pageTag === this.currentPage), id: 'banhmi-list' },
+            { title: 'Phim bộ', movies: this.allMovies.filter(m => m.type === 'series' && m.sourceFile === 'bo.txt' && m.pageTag === this.currentPage), id: 'series-list' },
+            { title: 'Phim lẻ', movies: this.allMovies.filter(m => m.sourceFile === 'le.txt' && m.pageTag === this.currentPage), id: 'movie-list' }
+        ];
+        for (const { title, movies, id } of txtSections) {
+            const filteredMovies = movies.slice(start, end);
+            const sectionElement = append ? this.elements.mainContent.querySelector(`#${id}`)?.parentElement || document.createElement('section') : document.createElement('section');
+            sectionElement.classList.add('movie-section');
+            sectionElement.dataset.sectionId = id;
+            if (!sectionElement.querySelector('.movie-list')) {
+                sectionElement.innerHTML = `<h2>${title}</h2><div class="movie-list" id="${id}"></div>`;
+                this.renderSkeletonLoader(sectionElement);
+            }
+            const movieList = sectionElement.querySelector('.movie-list');
+            movieList.innerHTML = '';
+            if (filteredMovies.length) {
+                console.log(`Rendering ${filteredMovies.length} movies for txt section: ${title}`);
+                this.renderMovieItems(filteredMovies, movieList, id);
+            } else {
+                console.log(`No movies for txt section: ${title}`);
+                movieList.innerHTML = `<p>Không có phim trong "${title}".</p>`;
+            }
+            this.elements.mainContent.appendChild(sectionElement);
+        }
+    }
+
+    renderMovieItems(movies, container, sectionId) {
+        if (!(container instanceof HTMLElement)) return;
+        const fragment = document.createDocumentFragment();
+        movies.forEach(movie => {
+            movie.apiSource = movie.apiSource || 'custom';
+            movie.slug = movie.slug || movie.name.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-') || 'custom-movie';
+            const movieId = `${movie.apiSource}-${movie.slug}-${sectionId}`;
+            this.safeStorageOperation(() => localStorage.setItem(`movie_${movieId}`, JSON.stringify(movie)));
+            const episodesQuery = movie.apiSource === 'custom' ? `&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}` : '';
+            const detailUrl = `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}&episode_total=${movie.episode_total}&type=${movie.type}${episodesQuery}`;
+            const langText = movie.lang.toLowerCase().includes('thuyết minh') ? 'TM' : movie.lang.toLowerCase().includes('lồng tiếng') ? 'LT' : movie.lang.toLowerCase().includes('nonsub') ? 'NS' : 'VS';
+            const langBadge = langText === 'VS' || langText === 'NS' ? langText : `<i class="fas fa-check check-icon"></i> ${langText}`;
+            const newBadge = movie.sourceFile === 'customapi.txt' ? '<span class="new-badge">New</span>' : '';
+            const div = document.createElement('div');
+            div.className = 'movie-item';
+            div.innerHTML = `
+                <div class="movie-poster">
+                    <a href="${detailUrl}">
+                        ${newBadge}
+                        <img data-src="${movie.poster_url}" data-srcset="${movie.poster_url} 1x, ${movie.poster_url.replace('.jpg', '-small.jpg')} 0.5x" src="https://via.placeholder.com/200x300" alt="${movie.name}" loading="lazy" sizes="(max-width: 600px) 150px, 200px">
+                        <span class="episode-badge">${movie.episode_total} ${movie.sourceFile === 'le.txt' ? 'phim' : 'tập'} | ${langBadge}</span>
+                        <div class="movie-overlay"><p>${movie.content}</p></div>
+                    </a>
+                </div>
+                <a href="${detailUrl}" class="movie-title">${movie.name} (${movie.quality})</a>`;
+            fragment.appendChild(div);
+        });
+        container.appendChild(fragment);
+        container.querySelectorAll('img[data-src]').forEach(img => this.imageObserver.observe(img));
+    }
+
+    async fetchSectionMovies(section, start, end) {
+        const apiMoviesToFetch = section.urls.slice(start, end);
+        console.log(`Fetching ${apiMoviesToFetch.length} movies for section: ${section.title}`);
+        const fetchedMovies = await this.fetchLimited(apiMoviesToFetch.map(({ url, apiSource }) => this.fetchMovieData(url, apiSource)));
+        return fetchedMovies.filter(Boolean);
+    }
+
+    async loadInitialData() {
+        this.elements.loadingSpinner.classList.add('visible');
+        try {
+            const [apiResult, customResult, seriesResult, singleResult] = await Promise.allSettled([
+                this.loadApiUrls(),
+                this.loadCachedFile('customapi.txt'),
+                this.loadCachedFile('bo.txt'),
+                this.loadCachedFile('le.txt')
+            ]).then(results => results.map(r => r.status === 'fulfilled' ? r.value : { data: [], usedCache: false }));
+            this.sections = apiResult.data.sections || [];
+            this.allMovies = [...customResult.data, ...seriesResult.data, ...singleResult.data].slice(0, 500);
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchTerm = urlParams.get('search') || '';
+            this.elements.searchInput.value = searchTerm;
+            this.elements.clearSearch.classList.toggle('visible', searchTerm.length > 0);
+            console.log(`Initial load complete, rendering with search: "${searchTerm}"`);
+            await this.renderMovies(searchTerm);
+        } catch (error) {
+            console.error(`Initial load error: ${error.message}`);
+            this.elements.mainContent.innerHTML = '<div class="error-message">Lỗi tải dữ liệu. Vui lòng kiểm tra kết nối mạng hoặc thử lại sau!<button onclick="location.reload()">Thử lại</button></div>';
+        } finally {
+            this.elements.loadingSpinner.classList.remove('visible');
+        }
+    }
+}
+
+const app = new MovieStreamingApp();
+app.init();
     </script>
 </body>
 </html>
