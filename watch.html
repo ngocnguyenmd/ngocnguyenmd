@@ -674,6 +674,8 @@
                 <ul id="server1-m3u8"></ul>
                 <h3>Bánh mì trung cấp</h3>
                 <ul id="server1-embed"></ul>
+                <h3>Bánh mì happy</h3>
+                <ul id="server1-video"></ul>
             </div>
         </section>
         <section class="episode-list" id="server2-list" aria-label="Danh sách tập Server 2">
@@ -683,16 +685,18 @@
                 <ul id="server2-m3u8"></ul>
                 <h3>Bánh mì trung cấp</h3>
                 <ul id="server2-embed"></ul>
+                <h3>Bánh mì happy</h3>
+                <ul id="server2-video"></ul>
             </div>
         </section>
         <section class="episode-list" id="custom-list" aria-label="Danh sách tập tùy chỉnh">
             <h2>Tùy chỉnh</h2>
             <div>
-                <h3>Bánh mì sơ cấp</h3>
+                <h3>Website</h3>
                 <ul id="custom-m3u8"></ul>
-                <h3>Bánh mì trung cấp</h3>
+                <h3>Bên ngoài Website</h3>
                 <ul id="custom-embed"></ul>
-                <h3>Bánh mì Happy</h3>
+                <h3>Random bánh mì</h3>
                 <ul id="custom-video"></ul>
             </div>
         </section>
@@ -712,7 +716,7 @@
         <i class="fas fa-arrow-up"></i>
     </button>
     <script>
-        // Hàm sanitization tham số URL (nới lỏng hơn)
+        // Hàm sanitization tham số URL
         const sanitizeParam = (param) => {
             if (!param) return '';
             return param.replace(/[<>"]/g, '');
@@ -738,9 +742,11 @@
                     server1List: document.getElementById('server1-list'),
                     server1M3u8: document.getElementById('server1-m3u8'),
                     server1Embed: document.getElementById('server1-embed'),
+                    server1Video: document.getElementById('server1-video'),
                     server2List: document.getElementById('server2-list'),
                     server2M3u8: document.getElementById('server2-m3u8'),
                     server2Embed: document.getElementById('server2-embed'),
+                    server2Video: document.getElementById('server2-video'),
                     customList: document.getElementById('custom-list'),
                     customM3u8: document.getElementById('custom-m3u8'),
                     customEmbed: document.getElementById('custom-embed'),
@@ -840,7 +846,13 @@
             parseCustomEpisodes(param) {
                 if (!param) return [];
                 try {
-                    return JSON.parse(decodeURIComponent(param));
+                    const episodes = JSON.parse(decodeURIComponent(param));
+                    return episodes.map(ep => ({
+                        name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
+                        link_m3u8: ep.link_m3u8 || '',
+                        link_embed: ep.link_embed || '',
+                        link_video: ep.link_video || ''
+                    }));
                 } catch (error) {
                     console.error('Lỗi khi parse customEpisodes:', error);
                     return [];
@@ -1028,15 +1040,16 @@
                         server_data: (server.server_data || []).map(ep => ({
                             name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
                             link_m3u8: ep.link_m3u8 || '',
-                            link_embed: ep.link_embed || ''
+                            link_embed: ep.link_embed || '',
+                            link_video: ep.link_video || ''
                         }))
                     })) || [];
                 } else if (apiSource === 'phimnguonc') {
                     if (movie.category && typeof movie.category === 'object') {
                         Object.values(movie.category).forEach(group => {
-                            if (group.group.name === 'Thể loại') categories = group.list.map(item => item.name);
-                            else if (group.group.name === 'Quốc gia') countries = group.list.map(item => item.name);
-                            else if (group.group.name === 'Năm') year = group.list[0]?.name || year;
+                            if (group.group?.name === 'Thể loại') categories = group.list?.map(item => item.name) || [];
+                            else if (group.group?.name === 'Quốc gia') countries = group.list?.map(item => item.name) || [];
+                            else if (group.group?.name === 'Năm') year = group.list?.[0]?.name || year;
                         });
                     }
                     servers = movie.episodes?.map((server, index) => ({
@@ -1044,7 +1057,8 @@
                         server_data: (server.items || []).map(ep => ({
                             name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
                             link_m3u8: '',
-                            link_embed: ep.embed || ''
+                            link_embed: ep.embed || '',
+                            link_video: ep.link_video || ep.m3u8 || ''
                         }))
                     })) || [];
                 } else if (apiSource === 'custom') {
@@ -1109,7 +1123,6 @@
                         const normalizedData = this.normalizeMovieData(data, apiSource);
                         cached[slug] = { data: normalizedData, timestamp: now };
 
-                        // Giới hạn kích thước cache
                         const keys = Object.keys(cached);
                         if (keys.length > this.MAX_CACHE_SIZE) {
                             const oldestKey = keys.sort((a, b) => cached[a].timestamp - cached[b].timestamp)[0];
@@ -1304,7 +1317,7 @@
                     return li;
                 };
 
-                const renderServer = (server, serverList, m3u8List, embedList, index) => {
+                const renderServer = (server, serverList, m3u8List, embedList, videoList, index) => {
                     if (!server?.server_data?.length || server.server_name === 'Server Custom') {
                         serverList.style.display = 'none';
                         return;
@@ -1312,20 +1325,25 @@
                     serverList.querySelector('h2').textContent = server.server_name;
                     const m3u8Links = apiSource === 'phimnguonc' ? [] : server.server_data.filter(ep => ep.link_m3u8);
                     const embedLinks = server.server_data.filter(ep => ep.link_embed);
+                    const videoLinks = server.server_data.filter(ep => ep.link_video);
                     const fragmentM3u8 = document.createDocumentFragment();
                     const fragmentEmbed = document.createDocumentFragment();
+                    const fragmentVideo = document.createDocumentFragment();
 
                     m3u8Links.forEach(ep => fragmentM3u8.appendChild(createEpisodeLink(ep, 'm3u8', ep.link_m3u8, ep.name === 'Tập 1' ? '1' : ep.name)));
                     embedLinks.forEach(ep => fragmentEmbed.appendChild(createEpisodeLink(ep, 'embed', ep.link_embed, `${ep.name}[e]`)));
+                    videoLinks.forEach(ep => fragmentVideo.appendChild(createEpisodeLink(ep, 'video', ep.link_video, `${ep.name}[v]`)));
 
                     m3u8List.innerHTML = m3u8Links.length > 0 ? '' : '<p class="error-message">Không có link M3U8.</p>';
                     embedList.innerHTML = embedLinks.length > 0 ? '' : '<p class="error-message">Không có link nhúng.</p>';
+                    videoList.innerHTML = videoLinks.length > 0 ? '' : '<p class="error-message">Không có link video.</p>';
                     m3u8List.appendChild(fragmentM3u8);
                     embedList.appendChild(fragmentEmbed);
+                    videoList.appendChild(fragmentVideo);
                 };
 
-                renderServer(movieData.servers[0], this.elements.server1List, this.elements.server1M3u8, this.elements.server1Embed, 0);
-                renderServer(movieData.servers[1], this.elements.server2List, this.elements.server2M3u8, this.elements.server2Embed, 1);
+                renderServer(movieData.servers[0], this.elements.server1List, this.elements.server1M3u8, this.elements.server1Embed, this.elements.server1Video, 0);
+                renderServer(movieData.servers[1], this.elements.server2List, this.elements.server2M3u8, this.elements.server2Embed, this.elements.server2Video, 1);
 
                 const customServer = movieData.servers.find(s => s.server_name === 'Server Custom') || { server_data: customEpisodes };
                 if (customServer.server_data.length > 0) {
