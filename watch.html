@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -539,7 +540,6 @@
             font-size: 1em;
         }
 
-        /* Desktop */
         @media (min-width: 1025px) {
             .header-content { gap: 20px; }
             .search-bar { max-width: 500px; }
@@ -557,7 +557,6 @@
             .video-player iframe { width: 820px; height: calc(820px * 9 / 16); }
         }
 
-        /* Tablet */
         @media (max-width: 1024px) {
             .header-content { gap: 15px; }
             .search-bar { max-width: 400px; }
@@ -569,7 +568,6 @@
             #subtitle-message { top: -40px; font-size: 0.85em; max-width: 250px; }
         }
 
-        /* Mobile */
         @media (max-width: 768px) {
             .header { padding: 10px 15px; }
             .header-content { flex-direction: column; align-items: stretch; gap: 10px; }
@@ -597,7 +595,6 @@
             .scroll-top { width: 40px; height: 40px; bottom: 10px; right: 10px; }
         }
 
-        /* Small mobile */
         @media (max-width: 480px) {
             .header { padding: 8px 10px; }
             .logo { max-height: 35px; }
@@ -1109,28 +1106,12 @@
                 const url = apiUrls[apiSource];
                 if (!url) return null;
 
-                const cached = JSON.parse(localStorage.getItem(this.CACHE_KEY) || '{}');
-                const now = Date.now();
-                if (cached[slug] && (now - cached[slug].timestamp) < this.CACHE_EXPIRY) {
-                    return cached[slug].data;
-                }
-
                 try {
                     const response = await fetch(url, { mode: 'cors', cache: 'no-cache' });
                     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                     const data = await response.json();
                     if ((data.status === true || data.status === 'success') && data.movie) {
-                        const normalizedData = this.normalizeMovieData(data, apiSource);
-                        cached[slug] = { data: normalizedData, timestamp: now };
-
-                        const keys = Object.keys(cached);
-                        if (keys.length > this.MAX_CACHE_SIZE) {
-                            const oldestKey = keys.sort((a, b) => cached[a].timestamp - cached[b].timestamp)[0];
-                            delete cached[oldestKey];
-                        }
-
-                        localStorage.setItem(this.CACHE_KEY, JSON.stringify(cached));
-                        return normalizedData;
+                        return this.normalizeMovieData(data, apiSource);
                     }
                     return null;
                 } catch (error) {
@@ -1331,7 +1312,11 @@
                     const fragmentVideo = document.createDocumentFragment();
 
                     m3u8Links.forEach(ep => fragmentM3u8.appendChild(createEpisodeLink(ep, 'm3u8', ep.link_m3u8, ep.name === 'Tập 1' ? '1' : ep.name)));
-                    embedLinks.forEach(ep => fragmentEmbed.appendChild(createEpisodeLink(ep, 'embed', ep.link_embed, `${ep.name}[e]`)));
+                    if (apiSource === 'phimnguonc') {
+                        embedLinks.forEach(ep => fragmentEmbed.appendChild(createEpisodeLink(ep, 'embed', ep.link_embed, `${ep.name}[e]`)));
+                    } else {
+                        embedLinks.forEach(ep => fragmentEmbed.appendChild(createEpisodeLink(ep, 'embed', ep.link_embed, ep.name)));
+                    }
                     videoLinks.forEach(ep => fragmentVideo.appendChild(createEpisodeLink(ep, 'video', ep.link_video, `${ep.name}[v]`)));
 
                     m3u8List.innerHTML = m3u8Links.length > 0 ? '' : '<p class="error-message">Không có link M3U8.</p>';
@@ -1474,3 +1459,4 @@
     </script>
 </body>
 </html>
+```
