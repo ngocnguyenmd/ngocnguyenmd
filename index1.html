@@ -445,14 +445,14 @@
 
         @media (min-width: 1024px) {
             .movie-list {
-                grid-template-columns: repeat(5, minmax(200px, 1fr));
+                grid-template-columns: repeat(6, minmax(120px, 1fr));
                 gap: 20px;
             }
         }
 
         @media (max-width: 1024px) {
             .movie-list {
-                grid-template-columns: repeat(4, minmax(160px, 1fr));
+                grid-template-columns: repeat(5, minmax(160px, 1fr));
                 gap: 15px;
             }
         }
@@ -567,7 +567,7 @@ class MovieStreamingApp {
         this.CACHE_KEY = 'movie_app_cache';
         this.CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 giờ
         this.MOVIES_PER_PAGE = 100; // Tăng số phim mỗi trang
-        this.MAX_CONCURRENT_REQUESTS = 5; // Tăng request đồng thời
+        this.MAX_CONCURRENT_REQUESTS = 5222; // Tăng request đồng thời
         this.API_SOURCES = {
             'a': { baseUrl: 'https://ophim1.com/phim/', apiSource: 'ophim1' },
             'b': { baseUrl: 'https://phimapi.com/phim/', apiSource: 'phimapi' },
@@ -668,7 +668,7 @@ class MovieStreamingApp {
         this.elements.themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'light' ? 'moon' : 'sun'}"></i>`;
 
         window.addEventListener('scroll', this.throttle(() => {
-            this.elements.scrollTop.classList.toggle('visible', window.scrollY > 200);
+            this.elements.scrollTop.classList.toggle('visible', window.scrollY > 300);
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !this.isLoading && this.hasMoreMovies) {
                 this.currentPageNumber++;
                 requestAnimationFrame(() => this.renderMovies(this.elements.searchInput?.value.trim() || '', this.currentPageNumber, true));
