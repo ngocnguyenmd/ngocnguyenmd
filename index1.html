@@ -445,14 +445,14 @@
 
         @media (min-width: 1024px) {
             .movie-list {
-                grid-template-columns: repeat(6, minmax(120px, 1fr));
+                grid-template-columns: repeat(6, minmax(100px, 1fr));
                 gap: 20px;
             }
         }
 
         @media (max-width: 1024px) {
             .movie-list {
-                grid-template-columns: repeat(5, minmax(160px, 1fr));
+                grid-template-columns: repeat(4, minmax(160px, 1fr));
                 gap: 15px;
             }
         }
@@ -544,7 +544,6 @@
             </button>
             <button class="footer-btn" onclick="window.location.reload()">
                 <i class="fas fa-sync"></i> Tải lại
-            
             </button>
         </div>
         <p class="footer-text">© 2025 Phim Nhà Bánh Mì.</p>
@@ -564,10 +563,12 @@ class MovieStreamingApp {
             themeToggle: document.getElementById('theme-toggle'),
             loadingSpinner: document.getElementById('loading-spinner')
         };
-        this.CACHE_KEY = 'movie_app_cache';
+        this.DB_NAME = 'MovieAppDB';
+        this.DB_VERSION = 1;
         this.CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 giờ
-        this.MOVIES_PER_PAGE = 100; // Tăng số phim mỗi trang
-        this.MAX_CONCURRENT_REQUESTS = 5222; // Tăng request đồng thời
+        this.MOVIES_PER_PAGE = 20; // Giảm số phim mỗi trang để tải nhanh hơn
+        this.MAX_CONCURRENT_REQUESTS = 10; // Tăng request đồng thời
+        this.REQUEST_TIMEOUT = 20000; // Timeout 2 giây mỗi request
         this.API_SOURCES = {
             'a': { baseUrl: 'https://ophim1.com/phim/', apiSource: 'ophim1' },
             'b': { baseUrl: 'https://phimapi.com/phim/', apiSource: 'phimapi' },
@@ -591,61 +592,96 @@ class MovieStreamingApp {
         this.currentPageNumber = 1;
         this.allMovies = [];
         this.sections = [];
+        this.searchIndex = new Map();
         this.sectionObserver = typeof IntersectionObserver !== 'undefined' ? 
             new IntersectionObserver(this.loadSection.bind(this), { rootMargin: '100px' }) : 
             { observe: (el) => this.loadSection([{ target: el, isIntersecting: true }]) };
-        this.storageAvailable = this.isStorageAvailable();
-        this.searchCache = new Map();
         this.requestedUrls = new Set();
+        this.db = null;
     }
 
-    isStorageAvailable() {
-        try {
-            localStorage.setItem('__test__', '__test__');
-            localStorage.removeItem('__test__');
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
-
-    safeStorageOperation(operation, fallback = null) {
-        if (!this.storageAvailable) return fallback;
-        try {
-            return operation();
-        } catch (e) {
-            if (e.name === 'QuotaExceededError') {
-                this.clearOldCache();
-            }
-            return fallback;
-        }
-    }
-
-    clearOldCache() {
-        this.safeStorageOperation(() => {
-            const cache = JSON.parse(localStorage.getItem(this.CACHE_KEY) || '{}');
-            const now = Date.now();
-            for (const key in cache.files) {
-                if (now - cache.files[key].timestamp > this.CACHE_EXPIRY) {
-                    delete cache.files[key];
-                }
-            }
-            for (const key in cache.sections) {
-                if (now - cache.sections[key].timestamp > this.CACHE_EXPIRY) {
-                    delete cache.sections[key];
-                }
-            }
-            localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
+    async initDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                db.createObjectStore('cache', { keyPath: 'key' });
+                db.createObjectStore('movies', { keyPath: 'id' });
+            };
+            request.onsuccess = (event) => {
+                this.db = event.target.result;
+                resolve();
+            };
+            request.onerror = (event) => reject(event.target.error);
         });
     }
 
+    async getFromDB(storeName, key) {
+        if (!this.db) return null;
+        return new Promise((resolve) => {
+            const transaction = this.db.transaction([storeName], 'readonly');
+            const store = transaction.objectStore(storeName);
+            const request = store.get(key);
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => resolve(null);
+        });
+    }
+
+    async setToDB(storeName, data) {
+        if (!this.db) return;
+        return new Promise((resolve) => {
+            const transaction = this.db.transaction([storeName], 'readwrite');
+            const store = transaction.objectStore(storeName);
+            store.put(data);
+            transaction.oncomplete = () => resolve();
+            transaction.onerror = () => resolve();
+        });
+    }
+
+    async clearOldCache() {
+        if (!this.db) return;
+        const now = Date.now();
+        const transaction = this.db.transaction(['cache', 'movies'], 'readwrite');
+        const cacheStore = transaction.objectStore('cache');
+        const movieStore = transaction.objectStore('movies');
+        const cacheRequest = cacheStore.openCursor();
+        cacheRequest.onsuccess = (event) => {
+            const cursor = event.target.result;
+            if (cursor) {
+                if (now - cursor.value.timestamp > this.CACHE_EXPIRY) {
+                    cacheStore.delete(cursor.value.key);
+                }
+                cursor.continue();
+            }
+        };
+        const movieRequest = movieStore.openCursor();
+        movieRequest.onsuccess = (event) => {
+            const cursor = event.target.result;
+            if (cursor) {
+                if (now - cursor.value.timestamp > this.CACHE_EXPIRY) {
+                    movieStore.delete(cursor.value.id);
+                }
+                cursor.continue();
+            }
+        };
+    }
+
     normalizeString(str) {
-        return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return str.toLowerCase().replace(/[\u0300-\u036f]/g, '');
+    }
+
+    generateHash(content) {
+        let hash = 0;
+        for (let i = 0; i < content.length; i += 2) { // Bỏ qua một số ký tự để tăng tốc
+            hash = ((hash << 5) - hash) + content.charCodeAt(i);
+        }
+        return hash.toString();
     }
 
     async init() {
+        await this.initDB();
         this.setupEventListeners();
-        if (!this.storageAvailable && window.location.protocol === 'file:') {
+        if (window.location.protocol === 'file:') {
             this.elements.mainContent.innerHTML = '<div class="error-message">Vui lòng chạy trên server để sử dụng đầy đủ tính năng.<button onclick="location.reload()">Thử lại</button></div>';
             return;
         }
@@ -660,15 +696,16 @@ class MovieStreamingApp {
             const theme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
             document.body.dataset.theme = theme;
             this.elements.themeToggle.innerHTML = `<i class="fas fa-${theme === 'light' ? 'moon' : 'sun'}"></i>`;
-            this.safeStorageOperation(() => localStorage.setItem('theme', theme));
+            this.setToDB('cache', { key: 'theme', value: theme, timestamp: Date.now() });
         });
 
-        const savedTheme = this.safeStorageOperation(() => localStorage.getItem('theme'), 'dark');
-        document.body.dataset.theme = savedTheme;
-        this.elements.themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'light' ? 'moon' : 'sun'}"></i>`;
+        this.getFromDB('cache', 'theme').then(theme => {
+            document.body.dataset.theme = theme?.value || 'dark';
+            this.elements.themeToggle.innerHTML = `<i class="fas fa-${theme?.value === 'light' ? 'moon' : 'sun'}"></i>`;
+        });
 
         window.addEventListener('scroll', this.throttle(() => {
-            this.elements.scrollTop.classList.toggle('visible', window.scrollY > 300);
+            this.elements.scrollTop.classList.toggle('visible', window.scrollY > 200);
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !this.isLoading && this.hasMoreMovies) {
                 this.currentPageNumber++;
                 requestAnimationFrame(() => this.renderMovies(this.elements.searchInput?.value.trim() || '', this.currentPageNumber, true));
@@ -683,7 +720,7 @@ class MovieStreamingApp {
             this.hasMoreMovies = true;
             this.currentPageNumber = 1;
             this.renderMovies(searchTerm);
-        }, 200));
+        }, 100)); // Giảm thời gian debounce để phản hồi nhanh hơn
 
         this.elements.searchInput?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -721,34 +758,28 @@ class MovieStreamingApp {
         });
     }
 
-    generateHash(content) {
-        let hash = 0;
-        for (let i = 0; i < content.length; i++) {
-            hash = ((hash << 5) - hash) + content.charCodeAt(i);
-            hash = hash & hash;
-        }
-        return hash.toString();
-    }
-
     async loadCachedFile(file) {
-        const cache = this.safeStorageOperation(() => JSON.parse(localStorage.getItem(this.CACHE_KEY) || '{}'), {});
+        const cacheKey = `file_${file}`;
         const now = Date.now();
+        const cached = await this.getFromDB('cache', cacheKey);
         try {
-            const response = await fetch(`${file}?_=${Date.now()}`, { cache: 'force-cache', signal: AbortSignal.timeout(15000) });
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), this.REQUEST_TIMEOUT);
+            const response = await fetch(`${file}?_=${now}`, { cache: 'force-cache', signal: controller.signal });
+            clearTimeout(timeout);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const text = await response.text();
             const contentHash = this.generateHash(text);
+            if (cached?.hash === contentHash && (now - cached.timestamp) < this.CACHE_EXPIRY) {
+                return { data: cached.data, usedCache: true };
+            }
             const data = await this.loadCustomMovies(file, text);
-            this.safeStorageOperation(() => {
-                cache.files = cache.files || {};
-                cache.files[file] = { data: data.slice(0, 200), hash: contentHash, timestamp: now };
-                localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
-            });
+            await this.setToDB('cache', { key: cacheKey, data: data.slice(0, 200), hash: contentHash, timestamp: now });
             return { data, usedCache: false };
         } catch (error) {
             console.warn(`Failed to fetch ${file}: ${error.message}`);
-            if (cache.files?.[file]?.data && (now - cache.files[file].timestamp) < this.CACHE_EXPIRY) {
-                return { data: cache.files[file].data, usedCache: true };
+            if (cached?.data && (now - cached.timestamp) < this.CACHE_EXPIRY) {
+                return { data: cached.data, usedCache: true };
             }
             return { data: [], usedCache: false };
         }
@@ -769,7 +800,7 @@ class MovieStreamingApp {
                     const episodes = [];
                     let apiSource = 'custom';
                     let apiUrl = null;
-                    let slug = movieName.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-') || 'custom-movie';
+                    let slug = this.normalizeString(movieName).replace(/\s+/g, '-') || 'custom-movie';
                     let episodeCount = 0;
                     const seenLinks = new Set();
                     for (let j = i + 1; j < lines.length && !lines[j].match(episodeRegex); j++) {
@@ -783,7 +814,6 @@ class MovieStreamingApp {
                             epName = name.replace('Tập ', '').trim();
                             if (link.endsWith('.m3u8') && apiSource !== 'phimnguonc') link_m3u8 = link;
                             else if (link.includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com')) link_embed = link;
-                            else if (link.match(/\.(mp4|webm|ogg|avi|mkv)$/i)) link_video = link;
                             else link_video = link;
                         } else if (lines[j].startsWith('https') && lines[j].endsWith('.m3u8')) {
                             link_m3u8 = lines[j];
@@ -811,7 +841,7 @@ class MovieStreamingApp {
                             episodeCount++;
                         }
                     }
-                    movies.push({
+                    const movie = {
                         pageTag,
                         name: movieName,
                         slug,
@@ -831,7 +861,15 @@ class MovieStreamingApp {
                         type: episodeCount > 1 ? 'series' : 'movie',
                         apiSource,
                         apiUrl,
-                        sourceFile: file
+                        sourceFile: file,
+                        id: `${apiSource}-${slug}`
+                    };
+                    movies.push(movie);
+                    this.searchIndex.set(movie.id, {
+                        name: this.normalizeString(movie.name),
+                        origin_name: this.normalizeString(movie.origin_name || ''),
+                        categories: this.normalizeString(movie.categories || ''),
+                        countries: this.normalizeString(movie.countries || '')
                     });
                 }
             }
@@ -843,13 +881,20 @@ class MovieStreamingApp {
     }
 
     async loadApiUrls() {
-        const cache = this.safeStorageOperation(() => JSON.parse(localStorage.getItem(this.CACHE_KEY) || '{}'), {});
+        const cacheKey = 'api_urls';
         const now = Date.now();
+        const cached = await this.getFromDB('cache', cacheKey);
         try {
-            const response = await fetch(`apiurl.json?_=${Date.now()}`, { cache: 'force-cache', signal: AbortSignal.timeout(15000) });
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), this.REQUEST_TIMEOUT);
+            const response = await fetch(`apiurl.json?_=${now}`, { cache: 'force-cache', signal: controller.signal });
+            clearTimeout(timeout);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const text = await response.text();
             const contentHash = this.generateHash(text);
+            if (cached?.hash === contentHash && (now - cached.timestamp) < this.CACHE_EXPIRY) {
+                return { data: cached.data, usedCache: true };
+            }
             const data = JSON.parse(text);
             const apiUrls = [];
             const sections = [];
@@ -889,15 +934,12 @@ class MovieStreamingApp {
                     sections.push({ id: `section-${sectionCounter++}`, pageTag, title: currentSectionTitle, urls: [...currentSectionUrls] });
                 }
             });
-            this.safeStorageOperation(() => {
-                cache.apiUrls = { data: { apiUrls, sections }, hash: contentHash, timestamp: now };
-                localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
-            });
+            await this.setToDB('cache', { key: cacheKey, data: { apiUrls, sections }, hash: contentHash, timestamp: now });
             return { data: { apiUrls, sections }, usedCache: false };
         } catch (error) {
             console.warn(`Failed to fetch apiurl.json: ${error.message}`);
-            if (cache.apiUrls?.data && (now - cache.apiUrls.timestamp) < this.CACHE_EXPIRY) {
-                return { data: cache.apiUrls.data, usedCache: true };
+            if (cached?.data && (now - cached.timestamp) < this.CACHE_EXPIRY) {
+                return { data: cached.data, usedCache: true };
             }
             return { data: { apiUrls: [], sections: [] }, usedCache: false };
         }
@@ -906,28 +948,28 @@ class MovieStreamingApp {
     async fetchWithRetry(url, options, retries = 2) {
         for (let i = 0; i < retries; i++) {
             try {
-                const response = await fetch(url, { ...options, signal: AbortSignal.timeout(15000) });
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), this.REQUEST_TIMEOUT);
+                const response = await fetch(url, { ...options, signal: controller.signal });
+                clearTimeout(timeout);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 this.requestedUrls.add(url);
                 return response;
             } catch (error) {
                 console.warn(`Fetch retry ${i + 1}/${retries} for ${url}: ${error.message}`);
                 if (i === retries - 1) return null;
-                await new Promise(resolve => setTimeout(resolve, 500 * Math.pow(2, i)));
+                await new Promise(resolve => setTimeout(resolve, 200 * Math.pow(2, i)));
             }
         }
     }
 
     async fetchMovieData(url, apiSource) {
-        const cache = this.safeStorageOperation(() => JSON.parse(localStorage.getItem(this.CACHE_KEY) || '{}'), {});
+        const cacheKey = `movie_${url}`;
         const now = Date.now();
-        const sectionId = url.split('/').slice(0, -1).join('/') + '/' + apiSource;
-
-        if (cache.sections?.[sectionId]?.data && (now - cache.sections[sectionId].timestamp) < this.CACHE_EXPIRY) {
-            const cachedMovie = cache.sections[sectionId].data.find(movie => movie.apiUrl === url);
-            if (cachedMovie) return cachedMovie;
+        const cached = await this.getFromDB('movies', cacheKey);
+        if (cached?.data && (now - cached.timestamp) < this.CACHE_EXPIRY) {
+            return cached.data;
         }
-
         if (this.requestedUrls.has(url)) return null;
         try {
             const response = await this.fetchWithRetry(url, { mode: 'cors', cache: 'force-cache' });
@@ -935,14 +977,14 @@ class MovieStreamingApp {
             const data = await response.json();
             if ((data.status === true || data.status === 'success') && data.movie) {
                 const movieData = this.normalizeMovieData(data, apiSource);
-                movieData.slug = data.movie?.slug || movieData.slug;
                 movieData.apiUrl = url;
-                this.safeStorageOperation(() => {
-                    cache.sections = cache.sections || {};
-                    cache.sections[sectionId] = cache.sections[sectionId] || { data: [], timestamp: now };
-                    const existingMovies = cache.sections[sectionId].data.filter(m => m.apiUrl !== url);
-                    cache.sections[sectionId] = { data: [...existingMovies, movieData], timestamp: now };
-                    localStorage.setItem(this.CACHE_KEY, JSON.stringify(cache));
+                movieData.id = cacheKey;
+                await this.setToDB('movies', { id: cacheKey, data: movieData, timestamp: now });
+                this.searchIndex.set(movieData.id, {
+                    name: this.normalizeString(movieData.name),
+                    origin_name: this.normalizeString(movieData.origin_name || ''),
+                    categories: this.normalizeString(movieData.categories || ''),
+                    countries: this.normalizeString(movieData.countries || '')
                 });
                 return movieData;
             }
@@ -1002,7 +1044,7 @@ class MovieStreamingApp {
         return {
             id: movie._id || movie.id || `custom-${Date.now()}`,
             name: movie.name || 'Không có tên',
-            slug: movie.slug || movie.name?.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-') || 'custom-movie',
+            slug: movie.slug || this.normalizeString(movie.name).replace(/\s+/g, '-') || 'custom-movie',
             origin_name: movie.origin_name || movie.original_name || 'Không có',
             poster_url: movie.poster_url || movie.thumb_url || 'https://via.placeholder.com/150x225',
             content: movie.content || movie.description || 'Không có nội dung',
@@ -1104,20 +1146,25 @@ class MovieStreamingApp {
                 return;
             }
             if (searchTerm) {
-                const cacheKey = `${searchTerm}-${page}`;
-                if (this.searchCache.has(cacheKey)) {
-                    const cachedResults = this.searchCache.get(cacheKey);
-                    this.renderSearchResults(cachedResults, append);
+                const cacheKey = `search_${searchTerm}_${page}`;
+                const cached = await this.getFromDB('cache', cacheKey);
+                if (cached?.data) {
+                    this.renderSearchResults(cached.data, append);
                     return;
                 }
                 const normalizedSearch = this.normalizeString(searchTerm);
-                let searchResults = this.allMovies.filter(movie => 
-                    this.normalizeString(movie.name).includes(normalizedSearch) ||
-                    this.normalizeString(movie.origin_name || '').includes(normalizedSearch) ||
-                    this.normalizeString(movie.categories || '').includes(normalizedSearch) ||
-                    this.normalizeString(movie.countries || '').includes(normalizedSearch)
-                );
-                const apiMovies = [];
+                let searchResults = [];
+                for (const [id, index] of this.searchIndex) {
+                    if (
+                        index.name.includes(normalizedSearch) ||
+                        index.origin_name.includes(normalizedSearch) ||
+                        index.categories.includes(normalizedSearch) ||
+                        index.countries.includes(normalizedSearch)
+                    ) {
+                        const movie = await this.getFromDB('movies', id);
+                        if (movie?.data) searchResults.push(movie.data);
+                    }
+                }
                 const fetchPromises = [];
                 for (const section of pageSections) {
                     const apiMoviesToFetch = section.urls.slice(start, end);
@@ -1128,7 +1175,7 @@ class MovieStreamingApp {
                     });
                 }
                 const fetchedMovies = await this.fetchLimited(fetchPromises);
-                apiMovies.push(...fetchedMovies.filter(movie => 
+                searchResults.push(...fetchedMovies.filter(movie => 
                     this.normalizeString(movie.name).includes(normalizedSearch) ||
                     this.normalizeString(movie.origin_name || '').includes(normalizedSearch) ||
                     this.normalizeString(movie.categories || '').includes(normalizedSearch) ||
@@ -1144,10 +1191,9 @@ class MovieStreamingApp {
                     }
                 }
                 searchResults.forEach(addMovie);
-                apiMovies.forEach(addMovie);
                 this.hasMoreMovies = combined.length > end;
                 searchResults = combined.slice(start, end);
-                this.searchCache.set(cacheKey, searchResults);
+                await this.setToDB('cache', { key: cacheKey, data: searchResults, timestamp: Date.now() });
                 this.elements.searchSuggestions.innerHTML = '';
                 if (searchTerm) {
                     const suggestions = combined.slice(0, 5);
@@ -1248,7 +1294,7 @@ class MovieStreamingApp {
             movie.apiSource = movie.apiSource || 'custom';
             movie.slug = movie.slug || this.normalizeString(movie.name).replace(/\s+/g, '-') || 'custom-movie';
             const movieId = `${movie.apiSource}-${movie.slug}-${sectionId}`;
-            this.safeStorageOperation(() => localStorage.setItem(`movie_${movieId}`, JSON.stringify(movie)));
+            this.setToDB('movies', { id: `movie_${movieId}`, data: movie, timestamp: Date.now() });
             const episodesQuery = movie.apiSource === 'custom' ? `&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}` : '';
             const detailUrl = `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}&episode_total=${movie.episode_total}&type=${movie.type}${episodesQuery}`;
             const langText = movie.lang.toLowerCase().includes('thuyết minh') ? 'TM' : movie.lang.toLowerCase().includes('lồng tiếng') ? 'LT' : movie.lang.toLowerCase().includes('nonsub') ? 'NS' : 'VS';
@@ -1256,27 +1302,16 @@ class MovieStreamingApp {
             const newBadge = movie.sourceFile === 'customapi.txt' ? '<span class="new-badge">New</span>' : '';
             const div = document.createElement('div');
             div.className = 'movie-item';
-            const posterDiv = document.createElement('div');
-            posterDiv.className = 'movie-poster';
-            const posterLink = document.createElement('a');
-            posterLink.href = detailUrl;
-            const img = document.createElement('img');
-            img.src = movie.poster_url;
-            img.alt = `Poster cho ${movie.name}`;
-            img.loading = 'lazy';
-            img.onerror = "this.src='https://via.placeholder.com/150x225';";
-            const badgeSpan = document.createElement('span');
-            badgeSpan.className = 'episode-badge';
-            badgeSpan.innerHTML = `${movie.episode_total} ${movie.sourceFile === 'le.txt' ? 'phim' : 'tập'} | ${langBadge}`;
-            const newBadgeSpan = document.createElement('span');
-            newBadgeSpan.innerHTML = newBadge;
-            posterLink.append(img, newBadgeSpan, badgeSpan);
-            posterDiv.appendChild(posterLink);
-            const titleLink = document.createElement('a');
-            titleLink.href = detailUrl;
-            titleLink.className = 'movie-title';
-            titleLink.textContent = `${movie.name} (${movie.quality})`;
-            div.append(posterDiv, titleLink);
+            div.innerHTML = `
+                <div class="movie-poster">
+                    <a href="${detailUrl}">
+                        <img src="${movie.poster_url}" alt="Poster cho ${movie.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/150x225';">
+                        ${newBadge}
+                        <span class="episode-badge">${movie.episode_total} ${movie.sourceFile === 'le.txt' ? 'phim' : 'tập'} | ${langBadge}</span>
+                    </a>
+                </div>
+                <a href="${detailUrl}" class="movie-title">${movie.name} (${movie.quality})</a>
+            `;
             fragment.appendChild(div);
         });
         container.appendChild(fragment);
@@ -1304,7 +1339,7 @@ class MovieStreamingApp {
                 this.loadCachedFile('le.txt')
             ]).then(results => results.map(r => r.status === 'fulfilled' ? r.value : { data: [], usedCache: false }));
             this.sections = apiResult.data.sections.filter(section => section.pageTag === this.currentPage || (this.currentPage === 'index' && section.pageTag !== 'index')) || [];
-            this.allMovies = [...customResult.data, ...seriesResult.data, ...singleResult.data].filter(m => m.pageTag === this.currentPage || (this.currentPage === 'index' && m.pageTag !== 'index')).slice(0, 500);
+            this.allMovies = [...customResult.data, ...seriesResult.data, ...singleResult.data].filter(m => m.pageTag === this.currentPage || (this.currentPage === 'index' && m.pageTag !== 'index')).slice(0, 200);
             const urlParams = new URLSearchParams(window.location.search);
             const searchTerm = urlParams.get('search') || '';
             this.elements.searchInput.value = searchTerm;
