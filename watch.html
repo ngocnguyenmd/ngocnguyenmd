@@ -8,11 +8,11 @@
     <meta name="author" content="Phim Hay">
     <title>Phim Hay - Xem phim</title>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" as="style">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" media="print" onload="this.media='all'">
-    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" media="print" onload="this.media='all'" fetchpriority="high">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'" fetchpriority="low">
+    <link rel="preload" href="https://cdn.plyr.io/3.7.8/plyr.css" as="style">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" media="print" onload="this.media='all'" fetchpriority="high">
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js" fetchpriority="high"></script>
     <style>
         :root {
             --primary-color: #e50914;
@@ -460,7 +460,7 @@
 <body>
     <header class="header">
         <div class="header-content">
-            <img src="https://via.placeholder.com/120x40?text=Logo" alt="Logo Phim Hay" class="logo" loading="eager" id="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+            <img src="https://via.placeholder.com/100x32?text=Logo" alt="Logo Phim Hay" class="logo" loading="eager" id="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
             <span class="logo-fallback" style="display:none;">Phim Nhà Bánh Mì</span>
             <nav class="nav-menu" aria-label="Điều hướng chính">
                 <a href="index.html" class="active">Trang chủ</a>
@@ -529,9 +529,13 @@
         <i class="fas fa-arrow-up"></i>
     </button>
     <script>
-        const sanitizeParam = (param) => {
-            if (!param) return '';
-            return param.replace(/[<>"]/g, '').trim();
+        // Hàm debounce để tối ưu hóa hiệu suất
+        const debounce = (func, wait) => {
+            let timeout;
+            return (...args) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
         };
 
         class MoviePlayer {
@@ -558,19 +562,25 @@
 
                 this.urlParams = new URLSearchParams(window.location.search);
                 this.state = {
-                    slug: sanitizeParam(decodeURIComponent(this.urlParams.get('slug') || '')),
-                    apiSource: sanitizeParam(decodeURIComponent(this.urlParams.get('apiSource') || '')),
-                    episodeName: sanitizeParam(decodeURIComponent(this.urlParams.get('episode') || '')),
-                    linkType: sanitizeParam(this.urlParams.get('type') || ''),
-                    linkUrl: sanitizeParam(decodeURIComponent(this.urlParams.get('url') || '')),
-                    movieName: sanitizeParam(decodeURIComponent(this.urlParams.get('name') || '')),
+                    slug: this.sanitizeParam(decodeURIComponent(this.urlParams.get('slug') || '')),
+                    apiSource: this.sanitizeParam(decodeURIComponent(this.urlParams.get('apiSource') || '')),
+                    episodeName: this.sanitizeParam(decodeURIComponent(this.urlParams.get('episode') || '')),
+                    linkType: this.sanitizeParam(this.urlParams.get('type') || ''),
+                    linkUrl: this.sanitizeParam(decodeURIComponent(this.urlParams.get('url') || '')),
+                    movieName: this.sanitizeParam(decodeURIComponent(this.urlParams.get('name') || '')),
                     customEpisodes: this.parseCustomEpisodes(this.urlParams.get('episodes')),
                     player: null,
                     videoElement: null,
                     allEpisodes: [],
                     blobUrls: [],
-                    subtitlesEnabled: true
+                    subtitlesEnabled: true,
+                    volume: parseFloat(localStorage.getItem('plyr-volume')) || 0.8
                 };
+            }
+
+            sanitizeParam(param) {
+                if (!param) return '';
+                return param.replace(/[<>"]/g, '').trim();
             }
 
             parseCustomEpisodes(param) {
@@ -591,9 +601,9 @@
 
             setupEventListeners() {
                 this.elements.themeToggle.addEventListener('click', () => this.toggleTheme());
-                window.addEventListener('scroll', () => {
+                window.addEventListener('scroll', debounce(() => {
                     this.elements.scrollTop.classList.toggle('visible', window.scrollY > 300);
-                });
+                }, 100));
                 this.elements.scrollTop.addEventListener('click', () => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
@@ -646,20 +656,64 @@
                 if (linkType === 'm3u8') {
                     this.elements.playerContainer.innerHTML = '<video id="video-player" class="video-player" controls crossorigin playsinline preload="metadata"></video>';
                     this.state.videoElement = document.getElementById('video-player');
-                    if (Hls.isSupported()) {
-                        const hls = new Hls();
-                        hls.loadSource(linkUrl);
-                        hls.attachMedia(this.state.videoElement);
-                        this.state.player = new Plyr(this.state.videoElement, { controls: ['play', 'progress', 'captions', 'fullscreen'] });
-                    }
+                    this.setupHlsPlayer();
                 } else if (linkType === 'video') {
                     this.elements.playerContainer.innerHTML = '<video id="video-player" class="video-player" controls playsinline preload="metadata"></video>';
                     this.state.videoElement = document.getElementById('video-player');
                     this.state.videoElement.src = linkUrl;
-                    this.state.player = new Plyr(this.state.videoElement, { controls: ['play', 'progress', 'captions', 'fullscreen'] });
+                    this.state.player = new Plyr(this.state.videoElement, {
+                        controls: ['play', 'progress', 'volume', 'captions', 'fullscreen'],
+                        volume: this.state.volume,
+                        captions: { active: this.state.subtitlesEnabled }
+                    });
+                    this.setupVolumePersistence();
                 } else if (linkType === 'embed') {
-                    this.elements.playerContainer.innerHTML = `<iframe id="video-player" class="video-player" src="${linkUrl}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
-                    this.state.player = new Plyr(document.getElementById('video-player'), { controls: ['play', 'progress', 'fullscreen'] });
+                    this.elements.playerContainer.innerHTML = `<iframe id="video-player" class="video-player" src="${linkUrl}" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>`;
+                    this.state.player = new Plyr(document.getElementById('video-player'), {
+                        controls: ['play', 'progress', 'fullscreen']
+                    });
+                }
+            }
+
+            setupHlsPlayer() {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
+                script.async = true;
+                script.onload = () => {
+                    if (window.Hls && Hls.isSupported()) {
+                        const hls = new Hls({
+                            enableWorker: true,
+                            lowLatencyMode: true,
+                            backBufferLength: 90
+                        });
+                        hls.loadSource(this.state.linkUrl);
+                        hls.attachMedia(this.state.videoElement);
+                        hls.on(Hls.Events.ERROR, (event, data) => {
+                            if (data.fatal) {
+                                this.elements.playerContainer.innerHTML = '<p class="error-message">Lỗi tải video HLS.</p>';
+                            }
+                        });
+                        this.state.player = new Plyr(this.state.videoElement, {
+                            controls: ['play', 'progress', 'volume', 'captions', 'fullscreen'],
+                            volume: this.state.volume,
+                            captions: { active: this.state.subtitlesEnabled }
+                        });
+                        this.setupVolumePersistence();
+                    } else {
+                        this.elements.playerContainer.innerHTML = '<p class="error-message">Trình duyệt không hỗ trợ HLS.</p>';
+                    }
+                };
+                script.onerror = () => {
+                    this.elements.playerContainer.innerHTML = '<p class="error-message">Lỗi tải thư viện HLS.</p>';
+                };
+                document.head.appendChild(script);
+            }
+
+            setupVolumePersistence() {
+                if (this.state.player) {
+                    this.state.player.on('volumechange', () => {
+                        localStorage.setItem('plyr-volume', this.state.player.volume);
+                    });
                 }
             }
 
@@ -740,7 +794,7 @@
 
                     this.elements.forwardBtn.addEventListener('click', () => {
                         if (this.state.linkType === 'm3u8' || this.state.linkType === 'video') {
-                            this.state.videoElement.currentTime = Math.min(this.state.videoElement.duration, this.state.videoElement.currentTime + 10);
+                            this.state.videoElement.currentTime = Math.min(this.state.videoElement.duration || Infinity, this.state.videoElement.currentTime + 10);
                         }
                     });
                 }
@@ -769,16 +823,23 @@
                                 track.label = 'Phụ đề';
                                 track.srclang = 'vi';
                                 const blob = new Blob([reader.result], { type: 'text/vtt' });
-                                track.src = URL.createObjectURL(blob);
-                                this.state.videoElement.appendChild(track);
-                                track.addEventListener('load', () => {
-                                    this.elements.subtitleMessage.textContent = 'Phụ đề đã tải thành công.';
-                                    this.elements.subtitleMessage.classList.remove('error');
-                                }, { once: true });
-                                track.addEventListener('error', () => {
-                                    this.elements.subtitleMessage.textContent = 'Lỗi khi tải phụ đề.';
+                                const blobUrl = URL.createObjectURL(blob);
+                                this.state.blobUrls.push(blobUrl);
+                                track.src = blobUrl;
+                                if (this.state.videoElement) {
+                                    this.state.videoElement.appendChild(track);
+                                    track.addEventListener('load', () => {
+                                        this.elements.subtitleMessage.textContent = 'Phụ đề đã tải thành công.';
+                                        this.elements.subtitleMessage.classList.remove('error');
+                                    }, { once: true });
+                                    track.addEventListener('error', () => {
+                                        this.elements.subtitleMessage.textContent = 'Lỗi khi tải phụ đề.';
+                                        this.elements.subtitleMessage.classList.add('error');
+                                    }, { once: true });
+                                } else {
+                                    this.elements.subtitleMessage.textContent = 'Không thể thêm phụ đề vì không có video.';
                                     this.elements.subtitleMessage.classList.add('error');
-                                }, { once: true });
+                                }
                             };
                             reader.readAsText(subFile);
                         } catch (error) {
@@ -811,6 +872,14 @@
                 });
             }
 
+            cleanup() {
+                this.state.blobUrls.forEach(url => URL.revokeObjectURL(url));
+                this.state.blobUrls = [];
+                if (this.state.player) {
+                    this.state.player.destroy();
+                }
+            }
+
             init() {
                 this.setupEventListeners();
                 this.loadTheme();
@@ -819,6 +888,7 @@
                 this.renderEpisodeList();
                 this.setupEpisodeNavigation();
                 this.setupSubtitleHandling();
+                window.addEventListener('beforeunload', () => this.cleanup());
             }
         }
 

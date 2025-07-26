@@ -545,6 +545,9 @@
             <button class="footer-btn" onclick="window.location.reload()">
                 <i class="fas fa-sync"></i> Tải lại
             </button>
+            <button class="footer-btn" id="clear-cache-btn">
+                <i class="fas fa-trash"></i> Xóa cache
+            </button>
         </div>
         <p class="footer-text">© 2025 Phim Nhà Bánh Mì.</p>
     </footer>
@@ -561,14 +564,15 @@ class MovieStreamingApp {
             searchSuggestions: document.getElementById('search-suggestions'),
             scrollTop: document.getElementById('scroll-top'),
             themeToggle: document.getElementById('theme-toggle'),
-            loadingSpinner: document.getElementById('loading-spinner')
+            loadingSpinner: document.getElementById('loading-spinner'),
+            clearCacheBtn: document.getElementById('clear-cache-btn')
         };
         this.DB_NAME = 'MovieAppDB';
         this.DB_VERSION = 1;
         this.CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 giờ
-        this.MOVIES_PER_PAGE = 20; // Giảm số phim mỗi trang để tải nhanh hơn
-        this.MAX_CONCURRENT_REQUESTS = 10; // Tăng request đồng thời
-        this.REQUEST_TIMEOUT = 20000; // Timeout 2 giây mỗi request
+        this.MOVIES_PER_PAGE = 10;
+        this.MAX_CONCURRENT_REQUESTS = 10;
+        this.REQUEST_TIMEOUT = 2000;
         this.API_SOURCES = {
             'a': { baseUrl: 'https://ophim1.com/phim/', apiSource: 'ophim1' },
             'b': { baseUrl: 'https://phimapi.com/phim/', apiSource: 'phimapi' },
@@ -638,6 +642,22 @@ class MovieStreamingApp {
         });
     }
 
+    async clearCache() {
+        if (!this.db) return;
+        return new Promise((resolve) => {
+            const transaction = this.db.transaction(['cache', 'movies'], 'readwrite');
+            transaction.objectStore('cache').clear();
+            transaction.objectStore('movies').clear();
+            transaction.oncomplete = () => {
+                this.requestedUrls.clear();
+                this.searchIndex.clear();
+                this.allMovies = [];
+                this.sections = [];
+                resolve();
+            };
+        });
+    }
+
     async clearOldCache() {
         if (!this.db) return;
         const now = Date.now();
@@ -672,7 +692,7 @@ class MovieStreamingApp {
 
     generateHash(content) {
         let hash = 0;
-        for (let i = 0; i < content.length; i += 2) { // Bỏ qua một số ký tự để tăng tốc
+        for (let i = 0; i < content.length; i += 2) {
             hash = ((hash << 5) - hash) + content.charCodeAt(i);
         }
         return hash.toString();
@@ -720,7 +740,7 @@ class MovieStreamingApp {
             this.hasMoreMovies = true;
             this.currentPageNumber = 1;
             this.renderMovies(searchTerm);
-        }, 100)); // Giảm thời gian debounce để phản hồi nhanh hơn
+        }, 100));
 
         this.elements.searchInput?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -741,6 +761,11 @@ class MovieStreamingApp {
             this.hasMoreMovies = true;
             this.currentPageNumber = 1;
             this.renderMovies();
+        });
+
+        this.elements.clearCacheBtn?.addEventListener('click', async () => {
+            await this.clearCache();
+            window.location.reload();
         });
 
         window.addEventListener('resize', this.debounce(() => this.adjustMainContentPadding(), 100));
@@ -898,6 +923,7 @@ class MovieStreamingApp {
             const data = JSON.parse(text);
             const apiUrls = [];
             const sections = [];
+            const slugToSource = new Map(); // Lưu trữ slug và nguồn mới nhất
             let sectionCounter = 0;
             data.forEach(item => {
                 const pageTag = Object.keys(item)[0];
@@ -912,21 +938,27 @@ class MovieStreamingApp {
                         }
                         currentSectionTitle = url.slice(1, -1);
                     } else {
-                        let apiSource, finalUrl;
+                        let apiSource, finalUrl, slug;
                         const sourceMatch = url.match(/^\|([abc])\|(.+)$/);
                         if (sourceMatch) {
-                            const [, sourceCode, slug] = sourceMatch;
+                            const [, sourceCode, sourceSlug] = sourceMatch;
                             if (this.API_SOURCES[sourceCode]) {
                                 apiSource = this.API_SOURCES[sourceCode].apiSource;
-                                finalUrl = `${this.API_SOURCES[sourceCode].baseUrl}${slug}`;
+                                finalUrl = `${this.API_SOURCES[sourceCode].baseUrl}${sourceSlug}`;
+                                slug = sourceSlug;
                             }
                         } else if (url.startsWith('http')) {
                             apiSource = url.includes('phimapi.com') ? 'phimapi' : url.includes('phim.nguonc.com') ? 'phimnguonc' : 'ophim1';
                             finalUrl = url;
+                            slug = url.split('/').pop().replace(/\.html$/, '');
                         }
-                        if (finalUrl && !this.requestedUrls.has(finalUrl)) {
-                            apiUrls.push({ url: finalUrl, pageTag, apiSource });
-                            currentSectionUrls.push({ url: finalUrl, apiSource });
+                        if (finalUrl) {
+                            // Cập nhật nguồn mới nhất cho slug
+                            slugToSource.set(slug, { url: finalUrl, apiSource });
+                            if (!this.requestedUrls.has(finalUrl)) {
+                                apiUrls.push({ url: finalUrl, pageTag, apiSource });
+                                currentSectionUrls.push({ url: finalUrl, apiSource });
+                            }
                         }
                     }
                 });
@@ -934,6 +966,11 @@ class MovieStreamingApp {
                     sections.push({ id: `section-${sectionCounter++}`, pageTag, title: currentSectionTitle, urls: [...currentSectionUrls] });
                 }
             });
+            // Cập nhật requestedUrls dựa trên nguồn mới nhất
+            this.requestedUrls.clear();
+            for (const { url } of slugToSource.values()) {
+                this.requestedUrls.add(url);
+            }
             await this.setToDB('cache', { key: cacheKey, data: { apiUrls, sections }, hash: contentHash, timestamp: now });
             return { data: { apiUrls, sections }, usedCache: false };
         } catch (error) {
@@ -970,7 +1007,16 @@ class MovieStreamingApp {
         if (cached?.data && (now - cached.timestamp) < this.CACHE_EXPIRY) {
             return cached.data;
         }
-        if (this.requestedUrls.has(url)) return null;
+        if (this.requestedUrls.has(url)) {
+            // Kiểm tra lại nguồn API
+            const slug = url.split('/').pop().replace(/\.html$/, '');
+            for (const source of Object.values(this.API_SOURCES)) {
+                if (url.startsWith(source.baseUrl) && source.apiSource !== apiSource) {
+                    apiSource = source.apiSource; // Cập nhật apiSource đúng
+                    break;
+                }
+            }
+        }
         try {
             const response = await this.fetchWithRetry(url, { mode: 'cors', cache: 'force-cache' });
             if (!response) throw new Error('No response');
