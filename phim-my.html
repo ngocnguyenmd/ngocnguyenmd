@@ -141,6 +141,7 @@
             z-index: 1000;
             display: none;
             margin-top: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .search-suggestions.visible {
@@ -234,6 +235,11 @@
             background: var(--bg-section);
             border-radius: var(--border-radius);
             overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .movie-item:hover {
+            transform: scale(1.05);
         }
 
         .movie-poster {
@@ -445,8 +451,8 @@
 
         @media (min-width: 1024px) {
             .movie-list {
-                grid-template-columns: repeat(6, minmax(100px, 1fr));
-                gap: 20px;
+                grid-template-columns: repeat(8, minmax(95px, 1fr));
+                gap: 30px;
             }
         }
 
@@ -509,7 +515,7 @@
 <body>
     <header class="header">
         <div class="header-content">
-            <img src="https://via.placeholder.com/120x40?text=Logo" alt="Logo Phim Hay" class="logo" loading="eager" id="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+            <img src="" alt="Logo Phim Hay" class="logo" loading="eager" id="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
             <span class="logo-fallback" style="display:none;">Phim Nhà Bánh Mì</span>
             <div class="search-bar">
                 <input type="text" id="search-input" placeholder="Tìm kiếm phim...">
@@ -569,10 +575,10 @@ class MovieStreamingApp {
         };
         this.DB_NAME = 'MovieAppDB';
         this.DB_VERSION = 1;
-        this.CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 giờ
-        this.MOVIES_PER_PAGE = 10;
-        this.MAX_CONCURRENT_REQUESTS = 10;
-        this.REQUEST_TIMEOUT = 2000;
+        this.CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+        this.MOVIES_PER_PAGE = 38;
+        this.MAX_CONCURRENT_REQUESTS = 5; // Reduced for better performance
+        this.REQUEST_TIMEOUT = 5000; // Increased timeout
         this.API_SOURCES = {
             'a': { baseUrl: 'https://ophim1.com/phim/', apiSource: 'ophim1' },
             'b': { baseUrl: 'https://phimapi.com/phim/', apiSource: 'phimapi' },
@@ -588,7 +594,7 @@ class MovieStreamingApp {
             'phim-my': 'Phim Mỹ',
             'truyen-hinh': 'Truyền hình',
             'hoat-hinh': 'Hoạt hình',
-            netflix: 'Netflix',
+            netflix: 'Cinema+',
             ykhoa: 'Y Khoa'
         };
         this.isLoading = false;
@@ -604,178 +610,220 @@ class MovieStreamingApp {
         this.db = null;
     }
 
+    // Initialize IndexedDB
     async initDB() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
-                db.createObjectStore('cache', { keyPath: 'key' });
-                db.createObjectStore('movies', { keyPath: 'id' });
-            };
-            request.onsuccess = (event) => {
-                this.db = event.target.result;
-                resolve();
-            };
-            request.onerror = (event) => reject(event.target.error);
-        });
+        try {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains('cache')) {
+                        db.createObjectStore('cache', { keyPath: 'key' });
+                    }
+                    if (!db.objectStoreNames.contains('movies')) {
+                        db.createObjectStore('movies', { keyPath: 'id' });
+                    }
+                };
+                request.onsuccess = (event) => {
+                    this.db = event.target.result;
+                    resolve();
+                };
+                request.onerror = (event) => reject(event.target.error);
+            });
+        } catch (error) {
+            console.error('IndexedDB initialization failed:', error);
+            return null;
+        }
     }
 
+    // Get data from IndexedDB
     async getFromDB(storeName, key) {
         if (!this.db) return null;
-        return new Promise((resolve) => {
-            const transaction = this.db.transaction([storeName], 'readonly');
-            const store = transaction.objectStore(storeName);
-            const request = store.get(key);
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => resolve(null);
-        });
+        try {
+            return new Promise((resolve) => {
+                const transaction = this.db.transaction([storeName], 'readonly');
+                const store = transaction.objectStore(storeName);
+                const request = store.get(key);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => resolve(null);
+            });
+        } catch (error) {
+            console.error(`Error getting from ${storeName}:`, error);
+            return null;
+        }
     }
 
+    // Save data to IndexedDB
     async setToDB(storeName, data) {
         if (!this.db) return;
-        return new Promise((resolve) => {
-            const transaction = this.db.transaction([storeName], 'readwrite');
-            const store = transaction.objectStore(storeName);
-            store.put(data);
-            transaction.oncomplete = () => resolve();
-            transaction.onerror = () => resolve();
-        });
+        try {
+            return new Promise((resolve) => {
+                const transaction = this.db.transaction([storeName], 'readwrite');
+                const store = transaction.objectStore(storeName);
+                store.put(data);
+                transaction.oncomplete = () => resolve();
+                transaction.onerror = () => resolve();
+            });
+        } catch (error) {
+            console.error(`Error saving to ${storeName}:`, error);
+        }
     }
 
-    async clearCache() {
-        if (!this.db) return;
-        return new Promise((resolve) => {
-            const transaction = this.db.transaction(['cache', 'movies'], 'readwrite');
-            transaction.objectStore('cache').clear();
-            transaction.objectStore('movies').clear();
-            transaction.oncomplete = () => {
-                this.requestedUrls.clear();
-                this.searchIndex.clear();
-                this.allMovies = [];
-                this.sections = [];
-                resolve();
-            };
-        });
-    }
-
+    // Clear old cache
     async clearOldCache() {
         if (!this.db) return;
-        const now = Date.now();
-        const transaction = this.db.transaction(['cache', 'movies'], 'readwrite');
-        const cacheStore = transaction.objectStore('cache');
-        const movieStore = transaction.objectStore('movies');
-        const cacheRequest = cacheStore.openCursor();
-        cacheRequest.onsuccess = (event) => {
-            const cursor = event.target.result;
-            if (cursor) {
-                if (now - cursor.value.timestamp > this.CACHE_EXPIRY) {
-                    cacheStore.delete(cursor.value.key);
-                }
-                cursor.continue();
-            }
-        };
-        const movieRequest = movieStore.openCursor();
-        movieRequest.onsuccess = (event) => {
-            const cursor = event.target.result;
-            if (cursor) {
-                if (now - cursor.value.timestamp > this.CACHE_EXPIRY) {
-                    movieStore.delete(cursor.value.id);
-                }
-                cursor.continue();
-            }
-        };
+        try {
+            const now = Date.now();
+            const transaction = this.db.transaction(['cache', 'movies'], 'readwrite');
+            const cacheStore = transaction.objectStore('cache');
+            const movieStore = transaction.objectStore('movies');
+            
+            const clearStore = (store) => {
+                return new Promise((resolve) => {
+                    const request = store.openCursor();
+                    request.onsuccess = (event) => {
+                        const cursor = event.target.result;
+                        if (cursor) {
+                            if (now - cursor.value.timestamp > this.CACHE_EXPIRY) {
+                                store.delete(cursor.value.key || cursor.value.id);
+                            }
+                            cursor.continue();
+                        } else {
+                            resolve();
+                        }
+                    };
+                    request.onerror = () => resolve();
+                });
+            };
+
+            await Promise.all([clearStore(cacheStore), clearStore(movieStore)]);
+        } catch (error) {
+            console.error('Error clearing cache:', error);
+        }
     }
 
+    // Normalize string for search
     normalizeString(str) {
-        return str.toLowerCase().replace(/[\u0300-\u036f]/g, '');
+        return str?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') || '';
     }
 
+    // Generate hash for content
     generateHash(content) {
         let hash = 0;
         for (let i = 0; i < content.length; i += 2) {
-            hash = ((hash << 5) - hash) + content.charCodeAt(i);
+            hash = ((hash << 5) - hash) + (content.charCodeAt(i) || 0);
         }
         return hash.toString();
     }
 
+    // Initialize the app
     async init() {
-        await this.initDB();
-        this.setupEventListeners();
-        if (window.location.protocol === 'file:') {
-            this.elements.mainContent.innerHTML = '<div class="error-message">Vui lòng chạy trên server để sử dụng đầy đủ tính năng.<button onclick="location.reload()">Thử lại</button></div>';
-            return;
+        try {
+            await this.initDB();
+            await this.clearOldCache();
+            this.setupEventListeners();
+            
+            if (window.location.protocol === 'file:') {
+                this.elements.mainContent.innerHTML = '<div class="error-message">Vui lòng chạy trên server để sử dụng đầy đủ tính năng.<button onclick="location.reload()">Thử lại</button></div>';
+                return;
+            }
+
+            await this.loadInitialData();
+            this.adjustMainContentPadding();
+            this.highlightActiveMenu();
+            document.title = `Phim Hay - ${this.pageTitles[this.currentPage] || 'Phim Đề Cử'}`;
+        } catch (error) {
+            console.error('Initialization error:', error);
+            this.showError('Khởi tạo ứng dụng thất bại. Vui lòng thử lại!');
         }
-        await this.loadInitialData();
-        this.adjustMainContentPadding();
-        this.highlightActiveMenu();
-        document.title = `Phim Hay - ${this.pageTitles[this.currentPage] || 'Phim Đề Cử'}`;
     }
 
+    // Setup event listeners
     setupEventListeners() {
-        this.elements.themeToggle?.addEventListener('click', () => {
-            const theme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
-            document.body.dataset.theme = theme;
-            this.elements.themeToggle.innerHTML = `<i class="fas fa-${theme === 'light' ? 'moon' : 'sun'}"></i>`;
-            this.setToDB('cache', { key: 'theme', value: theme, timestamp: Date.now() });
-        });
+        if (this.elements.themeToggle) {
+            this.elements.themeToggle.addEventListener('click', () => {
+                const theme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+                document.body.dataset.theme = theme;
+                this.elements.themeToggle.innerHTML = `<i class="fas fa-${theme === 'light' ? 'moon' : 'sun'}"></i>`;
+                this.setToDB('cache', { key: 'theme', value: theme, timestamp: Date.now() });
+            });
 
-        this.getFromDB('cache', 'theme').then(theme => {
-            document.body.dataset.theme = theme?.value || 'dark';
-            this.elements.themeToggle.innerHTML = `<i class="fas fa-${theme?.value === 'light' ? 'moon' : 'sun'}"></i>`;
-        });
+            this.getFromDB('cache', 'theme').then(theme => {
+                if (theme?.value) {
+                    document.body.dataset.theme = theme.value;
+                    this.elements.themeToggle.innerHTML = `<i class="fas fa-${theme.value === 'light' ? 'moon' : 'sun'}"></i>`;
+                }
+            });
+        }
 
         window.addEventListener('scroll', this.throttle(() => {
-            this.elements.scrollTop.classList.toggle('visible', window.scrollY > 200);
+            if (this.elements.scrollTop) {
+                this.elements.scrollTop.classList.toggle('visible', window.scrollY > 200);
+            }
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !this.isLoading && this.hasMoreMovies) {
                 this.currentPageNumber++;
-                requestAnimationFrame(() => this.renderMovies(this.elements.searchInput?.value.trim() || '', this.currentPageNumber, true));
+                requestAnimationFrame(() => this.renderMovies(this.elements.searchInput?.value?.trim() || '', this.currentPageNumber, true));
             }
         }, 50));
 
-        this.elements.scrollTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        if (this.elements.scrollTop) {
+            this.elements.scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        }
 
-        this.elements.searchInput?.addEventListener('input', this.debounce(() => {
-            const searchTerm = this.elements.searchInput.value.trim();
-            this.elements.clearSearch.classList.toggle('visible', searchTerm.length > 0);
-            this.hasMoreMovies = true;
-            this.currentPageNumber = 1;
-            this.renderMovies(searchTerm);
-        }, 100));
-
-        this.elements.searchInput?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+        if (this.elements.searchInput) {
+            this.elements.searchInput.addEventListener('input', this.debounce(() => {
                 const searchTerm = this.elements.searchInput.value.trim();
-                window.history.pushState({}, '', `?search=${encodeURIComponent(searchTerm)}`);
+                this.elements.clearSearch?.classList.toggle('visible', searchTerm.length > 0);
                 this.hasMoreMovies = true;
                 this.currentPageNumber = 1;
                 this.renderMovies(searchTerm);
-                this.elements.searchSuggestions.classList.remove('visible');
-            }
-        });
+            }, 300)); // Increased debounce time for better UX
 
-        this.elements.clearSearch?.addEventListener('click', () => {
-            this.elements.searchInput.value = '';
-            this.elements.clearSearch.classList.remove('visible');
-            this.elements.searchSuggestions.classList.remove('visible');
-            window.history.pushState({}, '', window.location.pathname);
-            this.hasMoreMovies = true;
-            this.currentPageNumber = 1;
-            this.renderMovies();
-        });
+            this.elements.searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const searchTerm = this.elements.searchInput.value.trim();
+                    window.history.pushState({}, '', `?search=${encodeURIComponent(searchTerm)}`);
+                    this.hasMoreMovies = true;
+                    this.currentPageNumber = 1;
+                    this.renderMovies(searchTerm);
+                    this.elements.searchSuggestions?.classList.remove('visible');
+                }
+            });
+        }
 
-        this.elements.clearCacheBtn?.addEventListener('click', async () => {
-            await this.clearCache();
-            window.location.reload();
-        });
+        if (this.elements.clearSearch) {
+            this.elements.clearSearch.addEventListener('click', () => {
+                if (this.elements.searchInput) {
+                    this.elements.searchInput.value = '';
+                }
+                this.elements.clearSearch.classList.remove('visible');
+                this.elements.searchSuggestions?.classList.remove('visible');
+                window.history.pushState({}, '', window.location.pathname);
+                this.hasMoreMovies = true;
+                this.currentPageNumber = 1;
+                this.renderMovies();
+            });
+        }
+
+        if (this.elements.clearCacheBtn) {
+            this.elements.clearCacheBtn.addEventListener('click', async () => {
+                await this.clearCache();
+                window.location.reload();
+            });
+        }
 
         window.addEventListener('resize', this.debounce(() => this.adjustMainContentPadding(), 100));
     }
 
+    // Adjust main content padding based on header height
     adjustMainContentPadding() {
         const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
-        this.elements.mainContent.style.paddingTop = `${headerHeight + 10}px`;
+        if (this.elements.mainContent) {
+            this.elements.mainContent.style.paddingTop = `${headerHeight + 10}px`;
+        }
     }
 
+    // Highlight active menu item
     highlightActiveMenu() {
         const currentPageFile = window.location.pathname.split('/').pop() || 'index1.html';
         document.querySelectorAll('.nav-menu a').forEach(link => {
@@ -783,6 +831,29 @@ class MovieStreamingApp {
         });
     }
 
+    // Clear cache
+    async clearCache() {
+        if (!this.db) return;
+        try {
+            const transaction = this.db.transaction(['cache', 'movies'], 'readwrite');
+            await Promise.all([
+                new Promise(resolve => {
+                    transaction.objectStore('cache').clear().onsuccess = resolve;
+                }),
+                new Promise(resolve => {
+                    transaction.objectStore('movies').clear().onsuccess = resolve;
+                })
+            ]);
+            this.requestedUrls.clear();
+            this.searchIndex.clear();
+            this.allMovies = [];
+            this.sections = [];
+        } catch (error) {
+            console.error('Error clearing cache:', error);
+        }
+    }
+
+    // Load cached file
     async loadCachedFile(file) {
         const cacheKey = `file_${file}`;
         const now = Date.now();
@@ -810,6 +881,7 @@ class MovieStreamingApp {
         }
     }
 
+    // Parse custom movie files
     async loadCustomMovies(file, text) {
         try {
             const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
@@ -900,11 +972,12 @@ class MovieStreamingApp {
             }
             return movies;
         } catch (error) {
-            console.error(`Error parsing ${file}: ${error.message}`);
+            console.error(`Error parsing ${file}:`, error);
             return [];
         }
     }
 
+    // Load API URLs
     async loadApiUrls() {
         const cacheKey = 'api_urls';
         const now = Date.now();
@@ -923,7 +996,7 @@ class MovieStreamingApp {
             const data = JSON.parse(text);
             const apiUrls = [];
             const sections = [];
-            const slugToSource = new Map(); // Lưu trữ slug và nguồn mới nhất
+            const slugToSource = new Map();
             let sectionCounter = 0;
             data.forEach(item => {
                 const pageTag = Object.keys(item)[0];
@@ -952,13 +1025,10 @@ class MovieStreamingApp {
                             finalUrl = url;
                             slug = url.split('/').pop().replace(/\.html$/, '');
                         }
-                        if (finalUrl) {
-                            // Cập nhật nguồn mới nhất cho slug
+                        if (finalUrl && !this.requestedUrls.has(finalUrl)) {
                             slugToSource.set(slug, { url: finalUrl, apiSource });
-                            if (!this.requestedUrls.has(finalUrl)) {
-                                apiUrls.push({ url: finalUrl, pageTag, apiSource });
-                                currentSectionUrls.push({ url: finalUrl, apiSource });
-                            }
+                            apiUrls.push({ url: finalUrl, pageTag, apiSource });
+                            currentSectionUrls.push({ url: finalUrl, apiSource });
                         }
                     }
                 });
@@ -966,7 +1036,6 @@ class MovieStreamingApp {
                     sections.push({ id: `section-${sectionCounter++}`, pageTag, title: currentSectionTitle, urls: [...currentSectionUrls] });
                 }
             });
-            // Cập nhật requestedUrls dựa trên nguồn mới nhất
             this.requestedUrls.clear();
             for (const { url } of slugToSource.values()) {
                 this.requestedUrls.add(url);
@@ -974,7 +1043,7 @@ class MovieStreamingApp {
             await this.setToDB('cache', { key: cacheKey, data: { apiUrls, sections }, hash: contentHash, timestamp: now });
             return { data: { apiUrls, sections }, usedCache: false };
         } catch (error) {
-            console.warn(`Failed to fetch apiurl.json: ${error.message}`);
+            console.warn(`Failed to fetch apiurl.json:`, error);
             if (cached?.data && (now - cached.timestamp) < this.CACHE_EXPIRY) {
                 return { data: cached.data, usedCache: true };
             }
@@ -982,6 +1051,7 @@ class MovieStreamingApp {
         }
     }
 
+    // Fetch with retry mechanism
     async fetchWithRetry(url, options, retries = 2) {
         for (let i = 0; i < retries; i++) {
             try {
@@ -993,29 +1063,20 @@ class MovieStreamingApp {
                 this.requestedUrls.add(url);
                 return response;
             } catch (error) {
-                console.warn(`Fetch retry ${i + 1}/${retries} for ${url}: ${error.message}`);
+                console.warn(`Fetch retry ${i + 1}/${retries} for ${url}:`, error);
                 if (i === retries - 1) return null;
                 await new Promise(resolve => setTimeout(resolve, 200 * Math.pow(2, i)));
             }
         }
     }
 
+    // Fetch movie data
     async fetchMovieData(url, apiSource) {
         const cacheKey = `movie_${url}`;
         const now = Date.now();
         const cached = await this.getFromDB('movies', cacheKey);
         if (cached?.data && (now - cached.timestamp) < this.CACHE_EXPIRY) {
             return cached.data;
-        }
-        if (this.requestedUrls.has(url)) {
-            // Kiểm tra lại nguồn API
-            const slug = url.split('/').pop().replace(/\.html$/, '');
-            for (const source of Object.values(this.API_SOURCES)) {
-                if (url.startsWith(source.baseUrl) && source.apiSource !== apiSource) {
-                    apiSource = source.apiSource; // Cập nhật apiSource đúng
-                    break;
-                }
-            }
         }
         try {
             const response = await this.fetchWithRetry(url, { mode: 'cors', cache: 'force-cache' });
@@ -1036,11 +1097,12 @@ class MovieStreamingApp {
             }
             return null;
         } catch (error) {
-            console.warn(`Failed to fetch ${url}: ${error.message}`);
+            console.warn(`Failed to fetch ${url}:`, error);
             return null;
         }
     }
 
+    // Normalize movie data
     normalizeMovieData(data, apiSource) {
         const movie = data.movie || data;
         let categories = [], countries = [], year = movie.year || 'Không rõ', servers = [];
@@ -1113,6 +1175,7 @@ class MovieStreamingApp {
         };
     }
 
+    // Fetch limited promises
     async fetchLimited(promises) {
         const results = [];
         for (let i = 0; i < promises.length; i += this.MAX_CONCURRENT_REQUESTS) {
@@ -1125,6 +1188,7 @@ class MovieStreamingApp {
         return results;
     }
 
+    // Throttle function
     throttle(func, limit) {
         let inThrottle;
         return (...args) => {
@@ -1136,6 +1200,7 @@ class MovieStreamingApp {
         };
     }
 
+    // Debounce function
     debounce(func, wait) {
         let timeout;
         return (...args) => {
@@ -1144,6 +1209,14 @@ class MovieStreamingApp {
         };
     }
 
+    // Show error message
+    showError(message) {
+        if (this.elements.mainContent) {
+            this.elements.mainContent.innerHTML = `<div class="error-message">${message}<button onclick="location.reload()">Thử lại</button></div>`;
+        }
+    }
+
+    // Load section
     async loadSection(entries) {
         for (const entry of entries) {
             if (entry.isIntersecting) {
@@ -1153,18 +1226,21 @@ class MovieStreamingApp {
                 if (section && !sectionElement.dataset.loaded && section.pageTag === this.currentPage) {
                     sectionElement.dataset.loaded = 'true';
                     const movieList = sectionElement.querySelector('.movie-list');
-                    movieList.innerHTML = '';
-                    const apiMovies = await this.fetchSectionMovies(section, 0, this.MOVIES_PER_PAGE);
-                    if (apiMovies.length) {
-                        this.renderMovieItems(apiMovies, movieList, sectionId);
-                    } else {
-                        movieList.innerHTML = `<p>Không có phim trong "${section.title}".</p>`;
+                    if (movieList) {
+                        movieList.innerHTML = '';
+                        const apiMovies = await this.fetchSectionMovies(section, 0, this.MOVIES_PER_PAGE);
+                        if (apiMovies.length) {
+                            this.renderMovieItems(apiMovies, movieList, sectionId);
+                        } else {
+                            movieList.innerHTML = `<p>Không có phim trong "${section.title}".</p>`;
+                        }
                     }
                 }
             }
         }
     }
 
+    // Render skeleton loader
     renderSkeletonLoader(sectionElement) {
         const movieList = sectionElement.querySelector('.movie-list');
         if (!movieList) return;
@@ -1178,17 +1254,18 @@ class MovieStreamingApp {
         movieList.appendChild(fragment);
     }
 
+    // Render movies
     async renderMovies(searchTerm = '', page = 1, append = false) {
         if (this.isLoading) return;
         this.isLoading = true;
-        this.elements.loadingSpinner.classList.add('visible');
+        this.elements.loadingSpinner?.classList.add('visible');
         try {
             const start = (page - 1) * this.MOVIES_PER_PAGE;
             const end = start + this.MOVIES_PER_PAGE;
             if (!append) this.elements.mainContent.innerHTML = '';
             const pageSections = this.sections.filter(section => section.pageTag === this.currentPage || (this.currentPage === 'index' && section.pageTag !== 'index'));
             if (!pageSections.length && !searchTerm && !this.allMovies.some(m => m.pageTag === this.currentPage)) {
-                this.elements.mainContent.innerHTML = '<div class="error-message">Không tìm thấy phim nào.<button onclick="location.reload()">Thử lại</button></div>';
+                this.showError('Không tìm thấy phim nào.');
                 return;
             }
             if (searchTerm) {
@@ -1240,25 +1317,29 @@ class MovieStreamingApp {
                 this.hasMoreMovies = combined.length > end;
                 searchResults = combined.slice(start, end);
                 await this.setToDB('cache', { key: cacheKey, data: searchResults, timestamp: Date.now() });
-                this.elements.searchSuggestions.innerHTML = '';
-                if (searchTerm) {
-                    const suggestions = combined.slice(0, 5);
-                    const fragment = document.createDocumentFragment();
-                    suggestions.forEach(movie => {
-                        const div = document.createElement('div');
-                        div.textContent = movie.name;
-                        fragment.appendChild(div);
-                    });
-                    this.elements.searchSuggestions.appendChild(fragment);
-                    this.elements.searchSuggestions.querySelectorAll('div').forEach((item, i) => {
-                        item.addEventListener('click', () => {
-                            this.elements.searchInput.value = suggestions[i].name;
-                            this.elements.searchSuggestions.classList.remove('visible');
-                            window.history.pushState({}, '', `?search=${encodeURIComponent(suggestions[i].name)}`);
-                            this.renderMovies(suggestions[i].name, 1);
+                if (this.elements.searchSuggestions) {
+                    this.elements.searchSuggestions.innerHTML = '';
+                    if (searchTerm) {
+                        const suggestions = combined.slice(0, 5);
+                        const fragment = document.createDocumentFragment();
+                        suggestions.forEach(movie => {
+                            const div = document.createElement('div');
+                            div.textContent = movie.name;
+                            fragment.appendChild(div);
                         });
-                    });
-                    this.elements.searchSuggestions.classList.add('visible');
+                        this.elements.searchSuggestions.appendChild(fragment);
+                        this.elements.searchSuggestions.querySelectorAll('div').forEach((item, i) => {
+                            item.addEventListener('click', () => {
+                                if (this.elements.searchInput) {
+                                    this.elements.searchInput.value = suggestions[i].name;
+                                }
+                                this.elements.searchSuggestions.classList.remove('visible');
+                                window.history.pushState({}, '', `?search=${encodeURIComponent(suggestions[i].name)}`);
+                                this.renderMovies(suggestions[i].name, 1);
+                            });
+                        });
+                        this.elements.searchSuggestions.classList.add('visible');
+                    }
                 }
                 this.renderSearchResults(searchResults, append);
             } else {
@@ -1276,14 +1357,15 @@ class MovieStreamingApp {
                     this.allMovies.filter(m => m.pageTag === this.currentPage).length > end;
             }
         } catch (error) {
-            console.error(`Error rendering movies: ${error.message}`);
-            this.elements.mainContent.innerHTML = '<div class="error-message">Lỗi tải dữ liệu. Vui lòng thử lại!<button onclick="location.reload()">Thử lại</button></div>';
+            console.error(`Error rendering movies:`, error);
+            this.showError('Lỗi tải dữ liệu. Vui lòng thử lại!');
         } finally {
             this.isLoading = false;
-            this.elements.loadingSpinner.classList.remove('visible');
+            this.elements.loadingSpinner?.classList.remove('visible');
         }
     }
 
+    // Render search results
     renderSearchResults(slicedResults, append) {
         const section = document.createElement('section');
         section.classList.add('movie-section');
@@ -1292,17 +1374,21 @@ class MovieStreamingApp {
         const movieList = section.querySelector('.movie-list');
         if (slicedResults.length === 0) {
             this.hasMoreMovies = false;
-            movieList.innerHTML = `<p>Không tìm thấy phim nào cho "${this.elements.searchInput.value}".</p>`;
+            movieList.innerHTML = `<p>Không tìm thấy phim nào cho "${this.elements.searchInput?.value || ''}".</p>`;
         } else {
             this.renderMovieItems(slicedResults, movieList, 'search');
         }
         if (!append || !this.elements.mainContent.querySelector('.movie-section')) {
             this.elements.mainContent.appendChild(section);
         } else {
-            this.elements.mainContent.querySelector('.movie-section .movie-list').innerHTML = movieList.innerHTML;
+            const existingList = this.elements.mainContent.querySelector('.movie-section .movie-list');
+            if (existingList) {
+                existingList.innerHTML = movieList.innerHTML;
+            }
         }
     }
 
+    // Render text sections
     async renderTxtSections(start, end, append) {
         const txtSections = [
             { title: 'Phim bánh mì', movies: this.allMovies.filter(m => m.apiSource === 'custom' && m.sourceFile === 'customapi.txt' && m.pageTag === this.currentPage), id: 'banhmi-list' },
@@ -1333,6 +1419,7 @@ class MovieStreamingApp {
         }
     }
 
+    // Render movie items
     renderMovieItems(movies, container, sectionId) {
         if (!(container instanceof HTMLElement)) return;
         const fragment = document.createDocumentFragment();
@@ -1363,6 +1450,7 @@ class MovieStreamingApp {
         container.appendChild(fragment);
     }
 
+    // Fetch section movies
     async fetchSectionMovies(section, start, end) {
         const apiMoviesToFetch = section.urls.slice(start, end);
         const fetchPromises = apiMoviesToFetch.map(({ url, apiSource }) => {
@@ -1375,8 +1463,9 @@ class MovieStreamingApp {
         return fetchedMovies.filter(Boolean);
     }
 
+    // Load initial data
     async loadInitialData() {
-        this.elements.loadingSpinner.classList.add('visible');
+        this.elements.loadingSpinner?.classList.add('visible');
         try {
             const [apiResult, customResult, seriesResult, singleResult] = await Promise.allSettled([
                 this.loadApiUrls(),
@@ -1388,15 +1477,16 @@ class MovieStreamingApp {
             this.allMovies = [...customResult.data, ...seriesResult.data, ...singleResult.data].filter(m => m.pageTag === this.currentPage || (this.currentPage === 'index' && m.pageTag !== 'index')).slice(0, 200);
             const urlParams = new URLSearchParams(window.location.search);
             const searchTerm = urlParams.get('search') || '';
-            this.elements.searchInput.value = searchTerm;
-            this.elements.clearSearch.classList.toggle('visible', searchTerm.length > 0);
+            if (this.elements.searchInput) {
+                this.elements.searchInput.value = searchTerm;
+            }
+            this.elements.clearSearch?.classList.toggle('visible', searchTerm.length > 0);
             await this.renderMovies(searchTerm, 1, false);
         } catch (error) {
-            console.error(`Initial load error: ${error.message}`);
-            this.elements.mainContent.innerHTML = '<div class="error-message">Lỗi tải dữ liệu. Vui lòng thử lại!<button onclick="location.reload()">Thử lại</button></div>';
+            console.error(`Initial load error:`, error);
+            this.showError('Lỗi tải dữ liệu ban đầu. Vui lòng thử lại!');
         } finally {
-            this.isLoading = false;
-            this.elements.loadingSpinner.classList.remove('visible');
+            this.elements.loadingSpinner?.classList.remove('visible');
         }
     }
 }
