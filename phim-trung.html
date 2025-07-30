@@ -11,25 +11,25 @@
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.rel='stylesheet'">
     <style>
         :root {
-            --primary-color: #e50914;
-            --primary-hover: #b20710;
-            --bg-dark: #141414;
-            --bg-section: #1f1f1f;
-            --text-white: #ffffff;
-            --text-gray: #b3b3b3;
-            --accent-color: #00aaff;
+            --primary-color: #8B4513; /* SaddleBrown */
+            --primary-hover: #6B3A0F; /* Darker brown */
+            --bg-dark: #2C1E14; /* Dark brown background */
+            --bg-section: #3F2A1D; /* Lighter brown section */
+            --text-white: #FFF8E1; /* Light cream text */
+            --text-gray: #D2B48C; /* Tan gray */
+            --accent-color: #FFD700; /* Gold */
             --border-radius: 8px;
             --transition: all 0.2s ease-out;
             --green-check: #2ecc71;
-            --gradient-bg: #141414;
+            --gradient-bg: #2C1E14;
         }
 
         [data-theme="light"] {
-            --bg-dark: #f8f9fa;
-            --bg-section: #ffffff;
-            --text-white: #1a1a1a;
-            --text-gray: #6c757d;
-            --gradient-bg: #f8f9fa;
+            --bg-dark: #FFF8E1; /* Light cream background */
+            --bg-section: #F5DEB3; /* Wheat section */
+            --text-white: #2C1E14; /* Dark brown text */
+            --text-gray: #6B3A0F; /* Darker brown */
+            --gradient-bg: #FFF8E1;
         }
 
         * {
@@ -59,6 +59,7 @@
             background: var(--bg-dark);
             padding: 10px 15px;
             z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .header-content {
@@ -212,6 +213,7 @@
             opacity: 0;
             transform: translateY(10px);
             animation: fadeIn 0.3s ease-out forwards;
+            will-change: opacity, transform;
         }
 
         .movie-section h2 {
@@ -285,8 +287,8 @@
             position: absolute;
             top: 8px;
             left: 8px;
-            background: #f1c40f;
-            color: #1a1a1a;
+            background: var(--accent-color);
+            color: #2C1E14;
             padding: 5px 10px;
             border-radius: 5px;
             font-size: 0.8em;
@@ -451,7 +453,7 @@
 
         @media (min-width: 1024px) {
             .movie-list {
-                grid-template-columns: repeat(8, minmax(95px, 1fr));
+                grid-template-columns: repeat(7, minmax(125px, 1fr));
                 gap: 30px;
             }
         }
@@ -575,10 +577,10 @@ class MovieStreamingApp {
         };
         this.DB_NAME = 'MovieAppDB';
         this.DB_VERSION = 1;
-        this.CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
-        this.MOVIES_PER_PAGE = 38;
-        this.MAX_CONCURRENT_REQUESTS = 5; // Reduced for better performance
-        this.REQUEST_TIMEOUT = 5000; // Increased timeout
+        this.CACHE_EXPIRY = 48 * 60 * 60 * 1000; // 48 hours
+        this.MOVIES_PER_PAGE = 20; // Reduced for faster initial load
+        this.MAX_CONCURRENT_REQUESTS = 3; // Reduced for better performance
+        this.REQUEST_TIMEOUT = 5000;
         this.API_SOURCES = {
             'a': { baseUrl: 'https://ophim1.com/phim/', apiSource: 'ophim1' },
             'b': { baseUrl: 'https://phimapi.com/phim/', apiSource: 'phimapi' },
@@ -604,13 +606,12 @@ class MovieStreamingApp {
         this.sections = [];
         this.searchIndex = new Map();
         this.sectionObserver = typeof IntersectionObserver !== 'undefined' ? 
-            new IntersectionObserver(this.loadSection.bind(this), { rootMargin: '100px' }) : 
+            new IntersectionObserver(this.loadSection.bind(this), { rootMargin: '200px' }) : 
             { observe: (el) => this.loadSection([{ target: el, isIntersecting: true }]) };
         this.requestedUrls = new Set();
         this.db = null;
     }
 
-    // Initialize IndexedDB
     async initDB() {
         try {
             return new Promise((resolve, reject) => {
@@ -636,7 +637,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Get data from IndexedDB
     async getFromDB(storeName, key) {
         if (!this.db) return null;
         try {
@@ -653,7 +653,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Save data to IndexedDB
     async setToDB(storeName, data) {
         if (!this.db) return;
         try {
@@ -669,7 +668,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Clear old cache
     async clearOldCache() {
         if (!this.db) return;
         try {
@@ -702,12 +700,10 @@ class MovieStreamingApp {
         }
     }
 
-    // Normalize string for search
     normalizeString(str) {
         return str?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') || '';
     }
 
-    // Generate hash for content
     generateHash(content) {
         let hash = 0;
         for (let i = 0; i < content.length; i += 2) {
@@ -716,7 +712,6 @@ class MovieStreamingApp {
         return hash.toString();
     }
 
-    // Initialize the app
     async init() {
         try {
             await this.initDB();
@@ -738,7 +733,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Setup event listeners
     setupEventListeners() {
         if (this.elements.themeToggle) {
             this.elements.themeToggle.addEventListener('click', () => {
@@ -760,11 +754,11 @@ class MovieStreamingApp {
             if (this.elements.scrollTop) {
                 this.elements.scrollTop.classList.toggle('visible', window.scrollY > 200);
             }
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !this.isLoading && this.hasMoreMovies) {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 && !this.isLoading && this.hasMoreMovies) {
                 this.currentPageNumber++;
                 requestAnimationFrame(() => this.renderMovies(this.elements.searchInput?.value?.trim() || '', this.currentPageNumber, true));
             }
-        }, 50));
+        }, 100));
 
         if (this.elements.scrollTop) {
             this.elements.scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
@@ -777,7 +771,7 @@ class MovieStreamingApp {
                 this.hasMoreMovies = true;
                 this.currentPageNumber = 1;
                 this.renderMovies(searchTerm);
-            }, 300)); // Increased debounce time for better UX
+            }, 200)); // Reduced debounce time for better UX
 
             this.elements.searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
@@ -815,7 +809,6 @@ class MovieStreamingApp {
         window.addEventListener('resize', this.debounce(() => this.adjustMainContentPadding(), 100));
     }
 
-    // Adjust main content padding based on header height
     adjustMainContentPadding() {
         const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
         if (this.elements.mainContent) {
@@ -823,7 +816,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Highlight active menu item
     highlightActiveMenu() {
         const currentPageFile = window.location.pathname.split('/').pop() || 'index1.html';
         document.querySelectorAll('.nav-menu a').forEach(link => {
@@ -831,7 +823,6 @@ class MovieStreamingApp {
         });
     }
 
-    // Clear cache
     async clearCache() {
         if (!this.db) return;
         try {
@@ -853,7 +844,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Load cached file
     async loadCachedFile(file) {
         const cacheKey = `file_${file}`;
         const now = Date.now();
@@ -870,7 +860,7 @@ class MovieStreamingApp {
                 return { data: cached.data, usedCache: true };
             }
             const data = await this.loadCustomMovies(file, text);
-            await this.setToDB('cache', { key: cacheKey, data: data.slice(0, 200), hash: contentHash, timestamp: now });
+            await this.setToDB('cache', { key: cacheKey, data: data.slice(0, 100), hash: contentHash, timestamp: now });
             return { data, usedCache: false };
         } catch (error) {
             console.warn(`Failed to fetch ${file}: ${error.message}`);
@@ -881,7 +871,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Parse custom movie files
     async loadCustomMovies(file, text) {
         try {
             const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
@@ -977,7 +966,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Load API URLs
     async loadApiUrls() {
         const cacheKey = 'api_urls';
         const now = Date.now();
@@ -1051,7 +1039,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Fetch with retry mechanism
     async fetchWithRetry(url, options, retries = 2) {
         for (let i = 0; i < retries; i++) {
             try {
@@ -1070,7 +1057,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Fetch movie data
     async fetchMovieData(url, apiSource) {
         const cacheKey = `movie_${url}`;
         const now = Date.now();
@@ -1102,7 +1088,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Normalize movie data
     normalizeMovieData(data, apiSource) {
         const movie = data.movie || data;
         let categories = [], countries = [], year = movie.year || 'Không rõ', servers = [];
@@ -1175,7 +1160,6 @@ class MovieStreamingApp {
         };
     }
 
-    // Fetch limited promises
     async fetchLimited(promises) {
         const results = [];
         for (let i = 0; i < promises.length; i += this.MAX_CONCURRENT_REQUESTS) {
@@ -1188,7 +1172,6 @@ class MovieStreamingApp {
         return results;
     }
 
-    // Throttle function
     throttle(func, limit) {
         let inThrottle;
         return (...args) => {
@@ -1200,7 +1183,6 @@ class MovieStreamingApp {
         };
     }
 
-    // Debounce function
     debounce(func, wait) {
         let timeout;
         return (...args) => {
@@ -1209,14 +1191,12 @@ class MovieStreamingApp {
         };
     }
 
-    // Show error message
     showError(message) {
         if (this.elements.mainContent) {
             this.elements.mainContent.innerHTML = `<div class="error-message">${message}<button onclick="location.reload()">Thử lại</button></div>`;
         }
     }
 
-    // Load section
     async loadSection(entries) {
         for (const entry of entries) {
             if (entry.isIntersecting) {
@@ -1240,7 +1220,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Render skeleton loader
     renderSkeletonLoader(sectionElement) {
         const movieList = sectionElement.querySelector('.movie-list');
         if (!movieList) return;
@@ -1254,7 +1233,6 @@ class MovieStreamingApp {
         movieList.appendChild(fragment);
     }
 
-    // Render movies
     async renderMovies(searchTerm = '', page = 1, append = false) {
         if (this.isLoading) return;
         this.isLoading = true;
@@ -1365,7 +1343,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Render search results
     renderSearchResults(slicedResults, append) {
         const section = document.createElement('section');
         section.classList.add('movie-section');
@@ -1388,7 +1365,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Render text sections
     async renderTxtSections(start, end, append) {
         const txtSections = [
             { title: 'Phim bánh mì', movies: this.allMovies.filter(m => m.apiSource === 'custom' && m.sourceFile === 'customapi.txt' && m.pageTag === this.currentPage), id: 'banhmi-list' },
@@ -1419,7 +1395,6 @@ class MovieStreamingApp {
         }
     }
 
-    // Render movie items
     renderMovieItems(movies, container, sectionId) {
         if (!(container instanceof HTMLElement)) return;
         const fragment = document.createDocumentFragment();
@@ -1450,7 +1425,6 @@ class MovieStreamingApp {
         container.appendChild(fragment);
     }
 
-    // Fetch section movies
     async fetchSectionMovies(section, start, end) {
         const apiMoviesToFetch = section.urls.slice(start, end);
         const fetchPromises = apiMoviesToFetch.map(({ url, apiSource }) => {
@@ -1463,7 +1437,6 @@ class MovieStreamingApp {
         return fetchedMovies.filter(Boolean);
     }
 
-    // Load initial data
     async loadInitialData() {
         this.elements.loadingSpinner?.classList.add('visible');
         try {
@@ -1474,7 +1447,7 @@ class MovieStreamingApp {
                 this.loadCachedFile('le.txt')
             ]).then(results => results.map(r => r.status === 'fulfilled' ? r.value : { data: [], usedCache: false }));
             this.sections = apiResult.data.sections.filter(section => section.pageTag === this.currentPage || (this.currentPage === 'index' && section.pageTag !== 'index')) || [];
-            this.allMovies = [...customResult.data, ...seriesResult.data, ...singleResult.data].filter(m => m.pageTag === this.currentPage || (this.currentPage === 'index' && m.pageTag !== 'index')).slice(0, 200);
+            this.allMovies = [...customResult.data, ...seriesResult.data, ...singleResult.data].filter(m => m.pageTag === this.currentPage || (this.currentPage === 'index' && m.pageTag !== 'index')).slice(0, 100);
             const urlParams = new URLSearchParams(window.location.search);
             const searchTerm = urlParams.get('search') || '';
             if (this.elements.searchInput) {

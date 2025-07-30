@@ -3,25 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Tìm kiếm phim nhanh chóng từ thư mục hoặc các nguồn trực tuyến như phimnguonc, phimapi, ophim1">
-    <meta name="keywords" content="tìm phim, phim online, phimnguonc, phimapi, ophim1">
+    <meta name="description" content="Tìm kiếm phim nhanh chóng từ thư mục hoặc các nguồn trực tuyến như phimnguonc, phimapi, ophim1 | Search movies quickly from local files or online sources like phimnguonc, phimapi, ophim1">
+    <meta name="keywords" content="tìm phim, phim online, phimnguonc, phimapi, ophim1, movie search, online movies">
     <meta name="author" content="Phim Tìm Kiếm">
+    <meta name="robots" content="index, follow">
+    <meta name="og:title" content="Bánh Mì - Tìm Phim">
+    <meta name="og:description" content="Tìm kiếm phim nhanh chóng và dễ dàng | Search movies quickly and easily">
+    <meta name="og:type" content="website">
     <title>Bánh Mì - Tìm Phim</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" as="style" onload="this.rel='stylesheet'">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.rel='stylesheet'">
     <style>
         :root {
-            --primary-color: #e50914;
-            --primary-hover: #b20710;
-            --bg-dark: #181818;
-            --bg-section: #222;
-            --text-white: #fff;
-            --text-gray: #b3b3b3;
-            --shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            --primary-color: #8B4513; /* SaddleBrown */
+            --primary-hover: #6B3A0F; /* Darker brown */
+            --accent-color: #FFD700; /* Gold */
+            --bg-dark: #2C1E14; /* Dark brown */
+            --bg-section: #3F2A1D; /* Lighter brown */
+            --text-white: #FFF8E1; /* Light cream */
+            --text-gray: #D2B48C; /* Tan gray */
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             --border-radius: 8px;
-            --transition: all 0.3s ease;
-            --success-color: #28a745;
-            --error-color: #dc3545;
+            --transition: all 0.2s ease-out;
+             --success-color: #28a745;
+            --error-color: #e74c3c;
+        }
+
+        [data-theme="light"] {
+            --bg-dark: #FFF8E1; /* Light cream */
+            --bg-section: #F5DEB3; /* Wheat */
+            --text-white: #2C1E14; /* Dark brown */
+            --text-gray: #6B3A0F; /* Darker brown */
         }
 
         * {
@@ -40,6 +52,7 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
+            font-size: 16px;
         }
 
         .search-container {
@@ -54,7 +67,7 @@
             font-size: 2.5em;
             color: var(--primary-color);
             margin-bottom: 20px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
         }
 
         .button-group {
@@ -62,9 +75,10 @@
             display: flex;
             gap: 15px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
-        .mode-button {
+        .mode-button, .language-toggle {
             background: var(--primary-color);
             border: none;
             padding: 12px 20px;
@@ -75,7 +89,7 @@
             transition: var(--transition);
         }
 
-        .mode-button:hover {
+        .mode-button:hover, .language-toggle:hover {
             background: var(--primary-hover);
             transform: translateY(-2px);
         }
@@ -107,7 +121,7 @@
         }
 
         .search-bar input:focus {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             outline: none;
             box-shadow: 0 0 5px var(--primary-color);
         }
@@ -122,7 +136,7 @@
         }
 
         .search-bar i:hover {
-            color: var(--text-white);
+            color: var(--accent-color);
         }
 
         .search-bar .clear-search {
@@ -146,6 +160,7 @@
             overflow-y: auto;
             z-index: 1000;
             display: none;
+            margin-top: 4px;
         }
 
         .search-suggestions.visible {
@@ -168,6 +183,7 @@
             display: flex;
             gap: 15px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .search-button,
@@ -205,8 +221,8 @@
 
         .movie-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
         }
 
         .movie-item {
@@ -220,7 +236,7 @@
 
         .movie-item:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
 
         .movie-poster {
@@ -234,7 +250,8 @@
             height: 100%;
             object-fit: cover;
             display: block;
-            transition: transform 0.5s ease;
+            transition: transform 0.3s ease;
+            will-change: transform;
         }
 
         .movie-poster img:hover {
@@ -280,20 +297,20 @@
         .movie-info a {
             color: var(--text-white);
             text-decoration: none;
-            font-size: 1em;
+            font-size: 0.95em;
             font-weight: 500;
             transition: var(--transition);
         }
 
         .movie-info a:hover {
-            color: var(--primary-color);
+            color: var(--accent-color);
         }
 
         .source-posters {
             margin-top: 30px;
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 15px;
             justify-content: center;
         }
 
@@ -302,19 +319,19 @@
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--shadow);
-            width: 200px;
+            width: 180px;
             transition: var(--transition);
             position: relative;
         }
 
         .source-poster:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
 
         .source-poster img {
             width: 100%;
-            height: 300px;
+            height: 270px;
             object-fit: cover;
             display: block;
         }
@@ -333,7 +350,7 @@
         }
 
         .source-info a:hover {
-            color: var(--primary-color);
+            color: var(--accent-color);
         }
 
         .loading-spinner {
@@ -341,7 +358,7 @@
             text-align: center;
             padding: 20px;
             color: var(--text-gray);
-            font-size: 1.2em;
+            font-size: 1.1em;
         }
 
         .loading-spinner.visible {
@@ -356,14 +373,14 @@
             border: 3px solid var(--primary-color);
             border-top: 3px solid transparent;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
             margin-left: 10px;
         }
 
         .error-message {
             color: var(--error-color);
             text-align: center;
-            font-size: 1.2em;
+            font-size: 1.1em;
             margin: 20px 0;
             display: none;
             flex-direction: column;
@@ -450,8 +467,8 @@
             }
 
             .movie-list, .source-posters {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 15px;
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 12px;
             }
 
             .movie-info a, .source-info a {
@@ -459,11 +476,11 @@
             }
 
             .source-poster {
-                width: 150px;
+                width: 160px;
             }
 
             .source-poster img {
-                height: 225px;
+                height: 240px;
             }
 
             .language-badge, .episode-badge {
@@ -524,10 +541,11 @@
 </head>
 <body>
     <div class="search-container">
-        <h1>Bánh Mì Ơi?</h1>
+        <h1 data-i18n="title">Bánh Mì Ơi?</h1>
         <div class="button-group">
-            <button class="mode-button" id="local-mode">Kho Bánh Mì</button>
-            <button class="mode-button active" id="online-mode">Tìm Trực Tuyến</button>
+            <button class="mode-button" id="local-mode" data-i18n="localMode">Kho Bánh Mì</button>
+            <button class="mode-button active" id="online-mode" data-i18n="onlineMode">Tìm Trực Tuyến</button>
+            <button class="language-toggle" id="language-toggle" data-i18n="language">English</button>
         </div>
         <div class="search-bar">
             <input
@@ -536,35 +554,51 @@
                 placeholder="Nhập tên phim để tìm kiếm..."
                 aria-label="Tìm kiếm phim"
                 autocomplete="off"
+                data-i18n-placeholder="searchPlaceholder"
             >
             <i class="fas fa-times clear-search" id="clear-search" aria-label="Xóa tìm kiếm"></i>
             <i class="fas fa-search" id="search-button" aria-label="Tìm kiếm"></i>
-            <div class="search-suggestions" id="search-suggestions"></div>
+            <div class="search-suggestions" id="search-suggestions" role="listbox"></div>
         </div>
         <div class="search-actions">
-            <button class="search-button" id="search-submit">Tìm Kiếm</button>
-            <button class="stay-button" id="stay-online">Tìm Tại Đây</button>
+            <button class="search-button" id="search-submit" data-i18n="searchButton">Tìm Kiếm</button>
+            <button class="stay-button" id="stay-online" data-i18n="stayButton">Tìm Tại Đây</button>
         </div>
     </div>
 
     <div class="movie-section">
-        <h2>Kết Quả Tìm Kiếm</h2>
+        <h2 data-i18n="resultsTitle">Kết Quả Tìm Kiếm</h2>
         <div class="movie-list" id="movie-list"></div>
         <div class="source-posters" id="source-posters"></div>
-        <div class="loading-spinner" id="loading-spinner">Đang tải...</div>
+        <div class="loading-spinner" id="loading-spinner" data-i18n="loading">Đang tải...</div>
         <div class="error-message" id="error-message"></div>
     </div>
 
     <div class="modal" id="api-modal" role="dialog" aria-labelledby="modal-title">
         <div class="modal-content">
-            <h3 id="modal-title">Chọn Kênh Tìm Kiếm</h3>
+            <h3 id="modal-title" data-i18n="modalTitle">Chọn Kênh Tìm Kiếm</h3>
             <div class="modal-options">
-                <button class="modal-option" data-api="01">01 (Phim 01)</button>
-                <button class="modal-option" data-api="02">02 (Phim 02)</button>
-                <button class="modal-option" data-api="03">03 (Phim 03)</button>
+                <button class="modal-option" data-api="01" data-i18n="source01">01 (Phim 01)</button>
+                <button class="modal-option" data-api="02" data-i18n="source02">02 (Phim 02)</button>
+                <button class="modal-option" data-api="03" data-i18n="source03">03 (Phim 03)</button>
             </div>
         </div>
     </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Bánh Mì - Tìm Phim",
+        "url": "https://yourwebsite.com",
+        "description": "Tìm kiếm phim nhanh chóng từ thư mục hoặc các nguồn trực tuyến | Search movies quickly from local files or online sources",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://yourwebsite.com/?search={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
 
     <script>
         // Configuration
@@ -575,18 +609,59 @@
                 ophim1: 'https://ophim1.com/phim/'
             },
             LOCAL_FILES: ['customapi.txt', 'bo.txt', 'le.txt'],
-            API_TIMEOUT: 15000, // 5 seconds per API
-            SEARCH_TIMEOUT: 7000, // 7 seconds total
+            API_TIMEOUT: 10000, // Reduced for faster UX
+            SEARCH_TIMEOUT: 5000, // Reduced for faster UX
             SUGGESTION_LIMIT: 5,
-            DEBOUNCE_DELAY: 300,
-            CACHE_EXPIRY: 1800000, // 30 minutes
-            FALLBACK_IMAGE: 'https://via.placeholder.com/200x300?text=No+Image'
+            DEBOUNCE_DELAY: 200, // Reduced for faster input response
+            CACHE_EXPIRY: 24 * 60 * 60 * 1000, // 24 hours
+            FALLBACK_IMAGE: 'https://via.placeholder.com/180x270?text=No+Image'
+        };
+
+        // Internationalization
+        const i18n = {
+            vi: {
+                title: 'Bánh Mì Ơi?',
+                localMode: 'Kho Bánh Mì',
+                onlineMode: 'Tìm Trực Tuyến',
+                language: 'English',
+                searchPlaceholder: 'Nhập tên phim để tìm kiếm...',
+                searchButton: 'Tìm Kiếm',
+                stayButton: 'Tìm Tại Đây',
+                resultsTitle: 'Kết Quả Tìm Kiếm',
+                loading: 'Đang tải...',
+                modalTitle: 'Chọn Kênh Tìm Kiếm',
+                source01: '01 (Phim 01)',
+                source02: '02 (Phim 02)',
+                source03: '03 (Phim 03)',
+                noResults: 'Không tìm thấy phim nào.',
+                error: 'Không tìm thấy phim "{query}". Vui lòng thử lại hoặc chọn kênh tìm kiếm.',
+                selectSource: 'Chọn kênh tìm kiếm'
+            },
+            en: {
+                title: 'Bánh Mì - Movie Search',
+                localMode: 'Local Library',
+                onlineMode: 'Search Online',
+                language: 'Tiếng Việt',
+                searchPlaceholder: 'Enter movie name to search...',
+                searchButton: 'Search',
+                stayButton: 'Search Here',
+                resultsTitle: 'Search Results',
+                loading: 'Loading...',
+                modalTitle: 'Select Search Source',
+                source01: '01 (Source 01)',
+                source02: '02 (Source 02)',
+                source03: '03 (Source 03)',
+                noResults: 'No movies found.',
+                error: 'No movies found for "{query}". Please try again or select a search source.',
+                selectSource: 'Select search source'
+            }
         };
 
         // DOM Elements
         const ELEMENTS = {
             localMode: document.getElementById('local-mode'),
             onlineMode: document.getElementById('online-mode'),
+            languageToggle: document.getElementById('language-toggle'),
             searchInput: document.getElementById('search-input'),
             clearSearch: document.getElementById('clear-search'),
             searchButton: document.getElementById('search-button'),
@@ -603,9 +678,10 @@
         // State
         const state = {
             currentMode: 'online',
+            currentLanguage: 'vi',
             localMovies: [],
             currentQuery: '',
-            suggestionCache: new Map(), // In-memory cache
+            suggestionCache: new Map(),
             sourceResults: {}
         };
 
@@ -628,7 +704,6 @@
                     'ýỳỷỹỵ': 'y',
                     'ÝỲỶỸỴ': 'Y'
                 };
-
                 let normalized = text.toLowerCase();
                 for (const [chars, replacement] of Object.entries(vietnameseMap)) {
                     for (const char of chars) {
@@ -666,9 +741,10 @@
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), timeout);
                 try {
-                    const response = await fetch(url, { 
+                    const response = await fetch(url, {
                         signal: controller.signal,
-                        headers: { 'Accept': 'application/json' }
+                        headers: { 'Accept': 'application/json' },
+                        cache: 'force-cache'
                     });
                     clearTimeout(timeoutId);
                     return response;
@@ -676,6 +752,24 @@
                     clearTimeout(timeoutId);
                     throw error;
                 }
+            },
+
+            updateLanguage(lang) {
+                state.currentLanguage = lang;
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.dataset.i18n;
+                    if (i18n[lang][key]) {
+                        el.textContent = i18n[lang][key];
+                    }
+                });
+                document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                    const key = el.dataset.i18nPlaceholder;
+                    if (i18n[lang][key]) {
+                        el.placeholder = i18n[lang][key];
+                    }
+                });
+                ELEMENTS.languageToggle.textContent = i18n[lang].language;
+                document.documentElement.lang = lang;
             }
         };
 
@@ -684,11 +778,10 @@
             normalizeMovieData(data, apiSource) {
                 const movie = data.movie || data.data || data;
                 let episodes = [];
-
                 if (apiSource === 'ophim1' || apiSource === 'phimapi') {
                     episodes = (data.episodes || [])
                         .flatMap((server, index) => (server.server_data || []).map(ep => ({
-                            name: ep.name?.replace('Tap ', '').trim() || `Tập ${index + 1}`,
+                            name: ep.name?.replace('Tập ', '').trim() || `Tập ${index + 1}`,
                             link_m3u8: ep.link_m3u8 || '',
                             link_embed: ep.link_embed || '',
                             link_video: ep.link_video || ''
@@ -696,25 +789,32 @@
                 } else if (apiSource === 'phimnguonc') {
                     episodes = (movie.episodes || [])
                         .flatMap((server, index) => (server.items || []).map(ep => ({
-                            name: ep.name?.replace('Tap ', '').trim() || `Tập ${index + 1}`,
+                            name: ep.name?.replace('Tập ', '').trim() || `Tập ${index + 1}`,
                             link_m3u8: '',
                             link_embed: ep.embed || '',
                             link_video: ep.link_video || ep.m3u8 || ''
                         })));
+                } else {
+                    episodes = (movie.episodes || []).map((ep, index) => ({
+                        name: ep.name?.replace('Tập ', '').trim() || `Tập ${index + 1}`,
+                        link_m3u8: ep.link_m3u8 || '',
+                        link_embed: ep.link_embed || '',
+                        link_video: ep.link_video || ''
+                    }));
                 }
 
                 return {
-                    id: movie._id || movie.id || movie.slug || '',
-                    name: movie.name || 'Không rõ',
+                    id: movie._id || movie.id || movie.slug || `${apiSource}-${Date.now()}`,
+                    name: movie.name || i18n[state.currentLanguage].noResults.split(' ')[0],
                     slug: movie.slug || Utils.normalizeText(movie.name),
-                    origin_name: movie.origin_name || movie.original_name || 'Không rõ',
+                    origin_name: movie.origin_name || movie.original_name || i18n[state.currentLanguage].noResults.split(' ')[0],
                     poster_url: movie.poster_url || movie.thumb_url || CONFIG.FALLBACK_IMAGE,
-                    content: movie.content || movie.description || 'Không có mô tả',
+                    content: movie.content || movie.description || i18n[state.currentLanguage].noResults.split(' ')[0],
                     type: movie.type || (episodes.length > 1 ? 'series' : 'movie'),
-                    episode_total: parseInt((movie.episode_total || episodes.length || '1').toString().replace('Tap', '').trim()) || 1,
+                    episode_total: parseInt((movie.episode_total || episodes.length || '1').toString().replace('Tập', '').trim()) || 1,
                     quality: movie.quality || 'HD',
                     lang: movie.lang || movie.language || 'Vietsub',
-                    year: movie.year || 'Không rõ',
+                    year: movie.year || i18n[state.currentLanguage].noResults.split(' ')[0],
                     apiSource: apiSource || 'custom',
                     episodes
                 };
@@ -724,7 +824,7 @@
                 try {
                     const movies = [];
                     for (const file of CONFIG.LOCAL_FILES) {
-                        const response = await fetch(file);
+                        const response = await Utils.fetchWithTimeout(file);
                         if (!response.ok) {
                             console.warn(`Không thể tải file ${file}: ${response.status}`);
                             continue;
@@ -746,10 +846,10 @@
                                     if (linkMatch) {
                                         const [, name, link] = linkMatch;
                                         episodes.push({
-                                            name: name.replace('Tap ', '').trim() || `Tập ${episodeCount + 1}`,
+                                            name: name.replace('Tập ', '').trim() || `Tập ${episodeCount + 1}`,
                                             link_m3u8: link.endsWith('.m3u8') ? link : '',
                                             link_embed: link.includes('youtube.com') || link.includes('vimeo.com') || link.includes('drive.google.com') ? link : '',
-                                            link_video: link.match(/\.(mp4|webm|ogg|avi|mkv)$/i) ? link : link
+                                            link_video: link.match(/\.(mp4|webm|ogg|avi|mkv)$/i) ? link : ''
                                         });
                                         episodeCount++;
                                     }
@@ -759,11 +859,11 @@
                                     name: movieName,
                                     slug: Utils.normalizeText(movieName),
                                     poster_url: posterUrl && posterUrl.startsWith('http') ? posterUrl : CONFIG.FALLBACK_IMAGE,
-                                    content: 'Nội dung từ thư mục',
+                                    content: i18n[state.currentLanguage].noResults.split(' ')[0],
                                     episode_total: episodeCount || 1,
                                     quality: quality || 'HD',
                                     lang: 'Vietsub',
-                                    year: 'Không rõ',
+                                    year: i18n[state.currentLanguage].noResults.split(' ')[0],
                                     type: episodeCount > 1 ? 'series' : 'movie',
                                     apiSource: 'custom',
                                     episodes
@@ -771,10 +871,9 @@
                             }
                         }
                     }
-                    console.log('Phim từ thư mục:', movies);
                     return movies;
                 } catch (error) {
-                    console.error('Lỗi tải phim từ thư mục:', error);
+                    console.error('Error loading local movies:', error);
                     return [];
                 }
             }
@@ -785,37 +884,26 @@
             async fetchPhimNguonC(slug) {
                 try {
                     const response = await Utils.fetchWithTimeout(`${CONFIG.API_ENDPOINTS.phimnguonc}${slug}`);
-                    if (!response.ok) {
-                        console.warn(`phimnguonc thất bại: ${response.status}`);
-                        return null;
-                    }
+                    if (!response.ok) return null;
                     const data = await response.json();
-                    console.log('phimnguonc response:', data);
                     return data.status === 'success' && data.movie ? Data.normalizeMovieData(data, 'phimnguonc') : null;
                 } catch (error) {
-                    console.error('Lỗi fetch phimnguonc:', error.message);
+                    console.error('Error fetching phimnguonc:', error.message);
                     return null;
                 }
             },
 
             async fetchPhimAPI(slug) {
                 try {
-                    console.log('Đang fetch phimapi:', `${CONFIG.API_ENDPOINTS.phimapi}${slug}`);
                     const response = await Utils.fetchWithTimeout(`${CONFIG.API_ENDPOINTS.phimapi}${slug}`);
-                    if (!response.ok) {
-                        console.warn(`phimapi thất bại: ${response.status}`);
-                        return null;
-                    }
+                    if (!response.ok) return null;
                     const data = await response.json();
-                    console.log('phimapi raw response:', data);
-                    if (data && (data.movie || data.data || data.name || data.slug || Object.keys(data).length > 0)) {
-                        console.log('phimapi dữ liệu hợp lệ:', data);
+                    if (data && (data.movie || data.data || data.name || data.slug)) {
                         return Data.normalizeMovieData(data, 'phimapi');
                     }
-                    console.warn('phimapi dữ liệu không hợp lệ: thiếu trường cần thiết');
                     return null;
                 } catch (error) {
-                    console.error('Lỗi fetch phimapi:', error.message);
+                    console.error('Error fetching phimapi:', error.message);
                     return null;
                 }
             },
@@ -823,15 +911,11 @@
             async fetchOphim1(slug) {
                 try {
                     const response = await Utils.fetchWithTimeout(`${CONFIG.API_ENDPOINTS.ophim1}${slug}`);
-                    if (!response.ok) {
-                        console.warn(`ophim1 thất bại: ${response.status}`);
-                        return null;
-                    }
+                    if (!response.ok) return null;
                     const data = await response.json();
-                    console.log('ophim1 response:', data);
                     return data.status === true && data.movie ? Data.normalizeMovieData(data, 'ophim1') : null;
                 } catch (error) {
-                    console.error('Lỗi fetch ophim1:', error.message);
+                    console.error('Error fetching ophim1:', error.message);
                     return null;
                 }
             }
@@ -846,14 +930,11 @@
                 Utils.hideError();
 
                 const normalizedQuery = Utils.normalizeText(query);
-                console.log('Tìm kiếm query:', normalizedQuery);
                 state.sourceResults = {};
                 const results = [];
 
-                // Kiểm tra cache
                 const cached = state.suggestionCache.get(normalizedQuery);
                 if (cached && Date.now() - cached.timestamp < CONFIG.CACHE_EXPIRY) {
-                    console.log('Sử dụng cache cho query:', normalizedQuery);
                     cached.results.forEach(movie => {
                         state.sourceResults[movie.apiSource] = movie;
                         results.push(movie);
@@ -872,8 +953,6 @@
                 const searchPromises = apiSources.map(async ({ fetchFn, apiSource }) => {
                     let data = await fetchFn(normalizedQuery);
                     if (!data && apiSource === 'phimapi') {
-                        // Thử lại với query gốc nếu phimapi thất bại
-                        console.log('Thử lại phimapi với query gốc:', query.toLowerCase().replace(/\s+/g, '-'));
                         data = await fetchFn(query.toLowerCase().replace(/\s+/g, '-'));
                     }
                     if (data) {
@@ -882,11 +961,8 @@
                         const originNameLower = Utils.normalizeText(data.origin_name || '').toLowerCase();
                         const slugLower = Utils.normalizeText(data.slug || '').toLowerCase();
                         if (nameLower.includes(queryLower) || originNameLower.includes(queryLower) || slugLower === queryLower) {
-                            console.log(`Tìm thấy khớp cho ${apiSource}:`, { name: data.name, origin_name: data.origin_name, slug: data.slug });
                             state.sourceResults[apiSource] = data;
                             return data;
-                        } else {
-                            console.warn(`Không khớp cho ${apiSource}:`, { queryLower, nameLower, originNameLower, slugLower });
                         }
                     }
                     return null;
@@ -900,19 +976,18 @@
                 ELEMENTS.loadingSpinner.classList.remove('visible');
 
                 if (validResults.length === 0) {
-                    console.error('Không tìm thấy kết quả cho query:', query);
                     state.currentQuery = query;
-                    Utils.showError(`
-                        Không tìm thấy phim "${Utils.sanitizeInput(query)}". Vui lòng thử lại hoặc chọn kênh tìm kiếm.<br>
-                        <button class="redirect-button" onclick="UI.showModal()">Chọn kênh tìm kiếm</button>
-                    `, true);
-                    return null;
+                    Utils.showError(
+                        i18n[state.currentLanguage].error.replace('{query}', Utils.sanitizeInput(query)) +
+                        `<br><button class="redirect-button" onclick="UI.showModal()">${i18n[state.currentLanguage].selectSource}</button>`,
+                        true
+                    );
+                    return [];
                 }
 
                 results.push(...validResults);
                 state.suggestionCache.set(normalizedQuery, { results, timestamp: Date.now() });
                 UI.renderSourcePosters();
-                console.log('Kết quả cuối cùng:', results);
                 return results;
             },
 
@@ -930,7 +1005,9 @@
                 if (cached && Date.now() - cached.timestamp < CONFIG.CACHE_EXPIRY) {
                     return cached.results.slice(0, CONFIG.SUGGESTION_LIMIT);
                 }
-                return [];
+
+                const results = await Search.searchOnlineMovies(query);
+                return results.slice(0, CONFIG.SUGGESTION_LIMIT);
             }
         };
 
@@ -938,12 +1015,10 @@
         const UI = {
             renderMovies(movies) {
                 if (!movies || movies.length === 0) {
-                    console.warn('Không có phim để hiển thị');
-                    ELEMENTS.movieList.innerHTML = '<p>Không tìm thấy phim nào.</p>';
+                    ELEMENTS.movieList.innerHTML = `<p>${i18n[state.currentLanguage].noResults}</p>`;
                     return;
                 }
 
-                console.log('Hiển thị phim:', movies);
                 const fragment = document.createDocumentFragment();
                 movies.forEach(movie => {
                     const detailUrl = `detail.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}`;
@@ -951,7 +1026,9 @@
                         ? '<span class="language-badge"><i class="fas fa-check"></i> TM</span>'
                         : movie.lang.toLowerCase().includes('lồng tiếng') || movie.lang.toLowerCase() === 'lt'
                             ? '<span class="language-badge"><i class="fas fa-check"></i> LT</span>'
-                            : '';
+                            : movie.lang.toLowerCase().includes('nonsub') || movie.lang.toLowerCase() === 'ns'
+                                ? '<span class="language-badge">NS</span>'
+                                : '<span class="language-badge">VS</span>';
 
                     const movieItem = document.createElement('div');
                     movieItem.classList.add('movie-item');
@@ -959,7 +1036,7 @@
                         <div class="movie-poster">
                             <img src="${movie.poster_url}" alt="${Utils.sanitizeInput(movie.name)}" loading="lazy" onerror="this.src='${CONFIG.FALLBACK_IMAGE}'">
                             ${languageBadge}
-                            <span class="episode-badge">${movie.episode_total} tập</span>
+                            <span class="episode-badge">${movie.episode_total} ${movie.type === 'series' ? i18n[state.currentLanguage].resultsTitle.split(' ')[1].toLowerCase() : 'phim'}</span>
                         </div>
                         <div class="movie-info">
                             <a href="${detailUrl}" target="_blank">${Utils.sanitizeInput(movie.name)} (${movie.year})</a>
@@ -971,12 +1048,11 @@
             },
 
             renderSourcePosters() {
-                console.log('Hiển thị poster nguồn:', state.sourceResults);
                 const fragment = document.createDocumentFragment();
                 const sources = [
-                    { apiSource: 'phimnguonc', name: 'Phim 01' },
-                    { apiSource: 'phimapi', name: 'Phim 02' },
-                    { apiSource: 'ophim1', name: 'Phim 03' }
+                    { apiSource: 'phimnguonc', name: i18n[state.currentLanguage].source01 },
+                    { apiSource: 'phimapi', name: i18n[state.currentLanguage].source02 },
+                    { apiSource: 'ophim1', name: i18n[state.currentLanguage].source03 }
                 ];
 
                 sources.forEach(({ apiSource, name }) => {
@@ -987,14 +1063,16 @@
                             ? '<span class="language-badge"><i class="fas fa-check"></i> TM</span>'
                             : movie.lang.toLowerCase().includes('lồng tiếng') || movie.lang.toLowerCase() === 'lt'
                                 ? '<span class="language-badge"><i class="fas fa-check"></i> LT</span>'
-                                : '';
+                                : movie.lang.toLowerCase().includes('nonsub') || movie.lang.toLowerCase() === 'ns'
+                                    ? '<span class="language-badge">NS</span>'
+                                    : '<span class="language-badge">VS</span>';
 
                         const posterItem = document.createElement('div');
                         posterItem.classList.add('source-poster');
                         posterItem.innerHTML = `
                             <img src="${movie.poster_url}" alt="${Utils.sanitizeInput(movie.name)}" loading="lazy" onerror="this.src='${CONFIG.FALLBACK_IMAGE}'">
                             ${languageBadge}
-                            <span class="episode-badge">${movie.episode_total} tập</span>
+                            <span class="episode-badge">${movie.episode_total} ${movie.type === 'series' ? i18n[state.currentLanguage].resultsTitle.split(' ')[1].toLowerCase() : 'phim'}</span>
                             <div class="source-info">
                                 <a href="${detailUrl}" target="_blank">${name}</a>
                             </div>
@@ -1016,8 +1094,11 @@
 
                 if (suggestions.length > 0) {
                     const fragment = document.createDocumentFragment();
-                    suggestions.forEach(movie => {
+                    suggestions.forEach((movie, index) => {
                         const suggestionItem = document.createElement('div');
+                        suggestionItem.setAttribute('role', 'option');
+                        suggestionItem.setAttribute('aria-selected', 'false');
+                        suggestionItem.id = `suggestion-${index}`;
                         suggestionItem.textContent = movie.name;
                         suggestionItem.addEventListener('click', () => {
                             ELEMENTS.searchInput.value = movie.name;
@@ -1060,6 +1141,7 @@
                 ELEMENTS.sourcePosters.innerHTML = '';
                 ELEMENTS.searchInput.value = '';
                 ELEMENTS.clearSearch.classList.remove('visible');
+                ELEMENTS.searchSuggestions.classList.remove('visible');
                 Utils.hideError();
             }
         };
@@ -1078,11 +1160,9 @@
                     UI.resetSearch();
                 });
 
-                ELEMENTS.stayOnline.addEventListener('click', () => {
-                    state.currentMode = 'online';
-                    ELEMENTS.onlineMode.classList.add('active');
-                    ELEMENTS.localMode.classList.remove('active');
-                    UI.resetSearch();
+                ELEMENTS.languageToggle.addEventListener('click', () => {
+                    const newLang = state.currentLanguage === 'vi' ? 'en' : 'vi';
+                    Utils.updateLanguage(newLang);
                 });
 
                 ELEMENTS.searchButton.addEventListener('click', Events.handleSearch);
@@ -1099,12 +1179,14 @@
                 }, CONFIG.DEBOUNCE_DELAY));
 
                 ELEMENTS.clearSearch.addEventListener('click', () => {
-                    ELEMENTS.searchInput.value = '';
-                    ELEMENTS.clearSearch.classList.remove('visible');
-                    ELEMENTS.searchSuggestions.classList.remove('visible');
-                    ELEMENTS.movieList.innerHTML = '';
-                    ELEMENTS.sourcePosters.innerHTML = '';
-                    Utils.hideError();
+                    UI.resetSearch();
+                });
+
+                ELEMENTS.stayOnline.addEventListener('click', () => {
+                    state.currentMode = 'online';
+                    ELEMENTS.onlineMode.classList.add('active');
+                    ELEMENTS.localMode.classList.remove('active');
+                    UI.resetSearch();
                 });
 
                 ELEMENTS.apiModal.addEventListener('click', e => {
@@ -1119,6 +1201,29 @@
 
                 ELEMENTS.apiModal.addEventListener('keydown', e => {
                     if (e.key === 'Escape') ELEMENTS.apiModal.classList.remove('visible');
+                });
+
+                // Keyboard navigation for suggestions
+                ELEMENTS.searchInput.addEventListener('keydown', e => {
+                    const suggestions = ELEMENTS.searchSuggestions.querySelectorAll('div');
+                    if (suggestions.length === 0) return;
+                    const currentIndex = Array.from(suggestions).findIndex(s => s.getAttribute('aria-selected') === 'true');
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        const nextIndex = currentIndex < suggestions.length - 1 ? currentIndex + 1 : 0;
+                        suggestions.forEach(s => s.setAttribute('aria-selected', 'false'));
+                        suggestions[nextIndex].setAttribute('aria-selected', 'true');
+                        suggestions[nextIndex].scrollIntoView({ block: 'nearest' });
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        const prevIndex = currentIndex > 0 ? currentIndex - 1 : suggestions.length - 1;
+                        suggestions.forEach(s => s.setAttribute('aria-selected', 'false'));
+                        suggestions[prevIndex].setAttribute('aria-selected', 'true');
+                        suggestions[prevIndex].scrollIntoView({ block: 'nearest' });
+                    } else if (e.key === 'Enter' && currentIndex >= 0) {
+                        e.preventDefault();
+                        suggestions[currentIndex].click();
+                    }
                 });
             },
 
@@ -1138,8 +1243,24 @@
             try {
                 state.localMovies = await Data.loadLocalMovies();
                 Events.setupEventListeners();
+                Utils.updateLanguage('vi');
+
+                // Lazy-load images
+                if ('IntersectionObserver' in window) {
+                    const imageObserver = new IntersectionObserver((entries, observer) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const img = entry.target;
+                                img.src = img.dataset.src || CONFIG.FALLBACK_IMAGE;
+                                observer.unobserve(img);
+                            }
+                        });
+                    }, { rootMargin: '200px' });
+
+                    document.querySelectorAll('img[loading="lazy"]').forEach(img => imageObserver.observe(img));
+                }
             } catch (error) {
-                console.error('Lỗi khởi tạo:', error);
+                console.error('Initialization error:', error);
                 Utils.showError('Có lỗi khi khởi tạo ứng dụng. Vui lòng thử lại.');
             }
         }
