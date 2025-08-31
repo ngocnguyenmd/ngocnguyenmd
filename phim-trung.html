@@ -11,13 +11,13 @@
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.rel='stylesheet'">
     <style>
         :root {
-            --primary-color: #8B4513; /* SaddleBrown */
-            --primary-hover: #6B3A0F; /* Darker brown */
-            --bg-dark: #2C1E14; /* Dark brown background */
-            --bg-section: #3F2A1D; /* Lighter brown section */
-            --text-white: #FFF8E1; /* Light cream text */
-            --text-gray: #D2B48C; /* Tan gray */
-            --accent-color: #FFD700; /* Gold */
+            --primary-color: #8B4513;
+            --primary-hover: #6B3A0F;
+            --bg-dark: #2C1E14;
+            --bg-section: #3F2A1D;
+            --text-white: #FFF8E1;
+            --text-gray: #D2B48C;
+            --accent-color: #FFD700;
             --border-radius: 8px;
             --transition: all 0.2s ease-out;
             --green-check: #2ecc71;
@@ -25,10 +25,10 @@
         }
 
         [data-theme="light"] {
-            --bg-dark: #FFF8E1; /* Light cream background */
-            --bg-section: #F5DEB3; /* Wheat section */
-            --text-white: #2C1E14; /* Dark brown text */
-            --text-gray: #6B3A0F; /* Darker brown */
+            --bg-dark: #FFF8E1;
+            --bg-section: #F5DEB3;
+            --text-white: #2C1E14;
+            --text-gray: #6B3A0F;
             --gradient-bg: #FFF8E1;
         }
 
@@ -578,9 +578,9 @@ class MovieStreamingApp {
         this.DB_NAME = 'MovieAppDB';
         this.DB_VERSION = 1;
         this.CACHE_EXPIRY = 48 * 60 * 60 * 1000; // 48 hours
-        this.MOVIES_PER_PAGE = 20; // Reduced for faster initial load
-        this.MAX_CONCURRENT_REQUESTS = 3; // Reduced for better performance
-        this.REQUEST_TIMEOUT = 5000;
+        this.MOVIES_PER_PAGE = 50; // Tăng lên 50 để hiển thị nhiều hơn
+        this.MAX_CONCURRENT_REQUESTS = 5; // Tăng để xử lý nhiều phim
+        this.REQUEST_TIMEOUT = 10000;
         this.API_SOURCES = {
             'a': { baseUrl: 'https://ophim1.com/phim/', apiSource: 'ophim1' },
             'b': { baseUrl: 'https://phimapi.com/phim/', apiSource: 'phimapi' },
@@ -610,6 +610,7 @@ class MovieStreamingApp {
             { observe: (el) => this.loadSection([{ target: el, isIntersecting: true }]) };
         this.requestedUrls = new Set();
         this.db = null;
+        this.maxRenderedMovies = 200; // Giới hạn số phim render cùng lúc
     }
 
     async initDB() {
@@ -756,7 +757,7 @@ class MovieStreamingApp {
             }
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 && !this.isLoading && this.hasMoreMovies) {
                 this.currentPageNumber++;
-                requestAnimationFrame(() => this.renderMovies(this.elements.searchInput?.value?.trim() || '', this.currentPageNumber, true));
+                requestAnimationFrame(() => this.loadMoreMovies());
             }
         }, 100));
 
@@ -771,7 +772,7 @@ class MovieStreamingApp {
                 this.hasMoreMovies = true;
                 this.currentPageNumber = 1;
                 this.renderMovies(searchTerm);
-            }, 200)); // Reduced debounce time for better UX
+            }, 200));
 
             this.elements.searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
@@ -857,14 +858,17 @@ class MovieStreamingApp {
             const text = await response.text();
             const contentHash = this.generateHash(text);
             if (cached?.hash === contentHash && (now - cached.timestamp) < this.CACHE_EXPIRY) {
+                console.log(`Using cached data for ${file}`);
                 return { data: cached.data, usedCache: true };
             }
             const data = await this.loadCustomMovies(file, text);
-            await this.setToDB('cache', { key: cacheKey, data: data.slice(0, 100), hash: contentHash, timestamp: now });
+            console.log(`Loaded ${data.length} movies from ${file}`);
+            await this.setToDB('cache', { key: cacheKey, data, hash: contentHash, timestamp: now });
             return { data, usedCache: false };
         } catch (error) {
             console.warn(`Failed to fetch ${file}: ${error.message}`);
             if (cached?.data && (now - cached.timestamp) < this.CACHE_EXPIRY) {
+                console.log(`Falling back to cached data for ${file}`);
                 return { data: cached.data, usedCache: true };
             }
             return { data: [], usedCache: false };
@@ -874,21 +878,24 @@ class MovieStreamingApp {
     async loadCustomMovies(file, text) {
         try {
             const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
-            if (!lines.length) return [];
+            if (!lines.length) {
+                console.warn(`File ${file} is empty`);
+                return [];
+            }
             const movies = [];
-            const episodeRegex = /^(.+?)\|(.+?)\|(.+?)\|(.+?)$/;
+            const episodeRegex = /^(.+?)\|(.+?)\|(.+?)?\|(.+?)?$/;
             const linkRegex = /^(.+?)\|(.+?)$/;
             for (let i = 0; i < lines.length; i++) {
                 const match = lines[i].match(episodeRegex);
-                if (match && !lines[i].includes('|sv2|')) {
-                    let [, pageTag, movieName, posterUrl, quality] = match;
+                if (match) {
+                    let [, pageTag, movieName, posterUrl = 'https://via.placeholder.com/150x225', quality = 'HD'] = match;
+                    console.log(`Parsing movie: ${movieName} from ${file}`);
                     pageTag = pageTag.toLowerCase().replace(/\s+/g, '-') || 'index';
                     const episodes = [];
                     let apiSource = 'custom';
                     let apiUrl = null;
                     let slug = this.normalizeString(movieName).replace(/\s+/g, '-') || 'custom-movie';
                     let episodeCount = 0;
-                    const seenLinks = new Set();
                     for (let j = i + 1; j < lines.length && !lines[j].match(episodeRegex); j++) {
                         let epName = `Tập ${episodeCount + 1}`;
                         let link_m3u8 = '';
@@ -903,33 +910,20 @@ class MovieStreamingApp {
                             else link_video = link;
                         } else if (lines[j].startsWith('https') && lines[j].endsWith('.m3u8')) {
                             link_m3u8 = lines[j];
-                        } else if (lines[j].startsWith('|') && lines[j].endsWith('|')) {
-                            const sourceMatch = lines[j].match(/^\|([abc])\|(.+)$/);
-                            if (sourceMatch) {
-                                const [, sourceCode, sourceSlug] = sourceMatch;
-                                if (this.API_SOURCES[sourceCode]) {
-                                    apiSource = this.API_SOURCES[sourceCode].apiSource;
-                                    apiUrl = `${this.API_SOURCES[sourceCode].baseUrl}${sourceSlug}`;
-                                    slug = sourceSlug;
-                                }
-                                continue;
-                            }
                         } else if (lines[j].includes('ophim1.com') || lines[j].includes('phimapi.com') || lines[j].includes('phim.nguonc.com')) {
                             apiSource = lines[j].includes('ophim1.com') ? 'ophim1' : lines[j].includes('phimapi.com') ? 'phimapi' : 'phimnguonc';
                             apiUrl = lines[j];
                             slug = lines[j].split('/').pop().replace(/\.html$/, '');
                             continue;
                         }
-                        const linkKey = link_m3u8 || link_embed || link_video;
-                        if (linkKey && !seenLinks.has(linkKey)) {
-                            seenLinks.add(linkKey);
+                        if (link_m3u8 || link_embed || link_video) {
                             episodes.push({ name: epName, link_m3u8, link_embed, link_video });
                             episodeCount++;
                         }
                     }
                     const movie = {
                         pageTag,
-                        name: movieName,
+                        name: movieName || 'Phim không tên',
                         slug,
                         poster_url: posterUrl.match(/^https?:\/\//) ? posterUrl : 'https://via.placeholder.com/150x225',
                         quality: quality || 'HD',
@@ -957,6 +951,8 @@ class MovieStreamingApp {
                         categories: this.normalizeString(movie.categories || ''),
                         countries: this.normalizeString(movie.countries || '')
                     });
+                } else {
+                    console.warn(`Invalid line in ${file}: ${lines[i]}`);
                 }
             }
             return movies;
@@ -979,6 +975,7 @@ class MovieStreamingApp {
             const text = await response.text();
             const contentHash = this.generateHash(text);
             if (cached?.hash === contentHash && (now - cached.timestamp) < this.CACHE_EXPIRY) {
+                console.log('Using cached API URLs');
                 return { data: cached.data, usedCache: true };
             }
             const data = JSON.parse(text);
@@ -986,56 +983,64 @@ class MovieStreamingApp {
             const sections = [];
             const slugToSource = new Map();
             let sectionCounter = 0;
-            data.forEach(item => {
-                const pageTag = Object.keys(item)[0];
-                const urls = item[pageTag];
-                let currentSectionTitle = this.pageTitles[pageTag] || 'Danh sách phim';
-                let currentSectionUrls = [];
-                urls.forEach(url => {
-                    if (url.startsWith('|') && url.endsWith('|') && !url.match(/^\|[abc]\|/)) {
-                        if (currentSectionUrls.length) {
-                            sections.push({ id: `section-${sectionCounter++}`, pageTag, title: currentSectionTitle, urls: [...currentSectionUrls] });
-                            currentSectionUrls = [];
-                        }
-                        currentSectionTitle = url.slice(1, -1);
-                    } else {
-                        let apiSource, finalUrl, slug;
-                        const sourceMatch = url.match(/^\|([abc])\|(.+)$/);
-                        if (sourceMatch) {
-                            const [, sourceCode, sourceSlug] = sourceMatch;
-                            if (this.API_SOURCES[sourceCode]) {
-                                apiSource = this.API_SOURCES[sourceCode].apiSource;
-                                finalUrl = `${this.API_SOURCES[sourceCode].baseUrl}${sourceSlug}`;
-                                slug = sourceSlug;
+            if (!data.length) {
+                console.warn('apiurl.json is empty, using default section');
+                sections.push({ id: `section-${sectionCounter++}`, pageTag: this.currentPage, title: 'Danh sách phim', urls: [] });
+            } else {
+                data.forEach(item => {
+                    const pageTag = Object.keys(item)[0];
+                    const urls = item[pageTag];
+                    let currentSectionTitle = this.pageTitles[pageTag] || 'Danh sách phim';
+                    let currentSectionUrls = [];
+                    urls.forEach(url => {
+                        if (url.startsWith('|') && url.endsWith('|') && !url.match(/^\|[abc]\|/)) {
+                            if (currentSectionUrls.length) {
+                                sections.push({ id: `section-${sectionCounter++}`, pageTag, title: currentSectionTitle, urls: [...currentSectionUrls] });
+                                currentSectionUrls = [];
                             }
-                        } else if (url.startsWith('http')) {
-                            apiSource = url.includes('phimapi.com') ? 'phimapi' : url.includes('phim.nguonc.com') ? 'phimnguonc' : 'ophim1';
-                            finalUrl = url;
-                            slug = url.split('/').pop().replace(/\.html$/, '');
+                            currentSectionTitle = url.slice(1, -1);
+                        } else {
+                            let apiSource, finalUrl, slug;
+                            const sourceMatch = url.match(/^\|([abc])\|(.+)$/);
+                            if (sourceMatch) {
+                                const [, sourceCode, sourceSlug] = sourceMatch;
+                                if (this.API_SOURCES[sourceCode]) {
+                                    apiSource = this.API_SOURCES[sourceCode].apiSource;
+                                    finalUrl = `${this.API_SOURCES[sourceCode].baseUrl}${sourceSlug}`;
+                                    slug = sourceSlug;
+                                }
+                            } else if (url.startsWith('http')) {
+                                apiSource = url.includes('phimapi.com') ? 'phimapi' : url.includes('phim.nguonc.com') ? 'phimnguonc' : 'ophim1';
+                                finalUrl = url;
+                                slug = url.split('/').pop().replace(/\.html$/, '');
+                            }
+                            if (finalUrl && !this.requestedUrls.has(finalUrl)) {
+                                slugToSource.set(slug, { url: finalUrl, apiSource });
+                                apiUrls.push({ url: finalUrl, pageTag, apiSource });
+                                currentSectionUrls.push({ url: finalUrl, apiSource });
+                            }
                         }
-                        if (finalUrl && !this.requestedUrls.has(finalUrl)) {
-                            slugToSource.set(slug, { url: finalUrl, apiSource });
-                            apiUrls.push({ url: finalUrl, pageTag, apiSource });
-                            currentSectionUrls.push({ url: finalUrl, apiSource });
-                        }
+                    });
+                    if (currentSectionUrls.length) {
+                        sections.push({ id: `section-${sectionCounter++}`, pageTag, title: currentSectionTitle, urls: [...currentSectionUrls] });
                     }
                 });
-                if (currentSectionUrls.length) {
-                    sections.push({ id: `section-${sectionCounter++}`, pageTag, title: currentSectionTitle, urls: [...currentSectionUrls] });
-                }
-            });
+            }
             this.requestedUrls.clear();
             for (const { url } of slugToSource.values()) {
                 this.requestedUrls.add(url);
             }
             await this.setToDB('cache', { key: cacheKey, data: { apiUrls, sections }, hash: contentHash, timestamp: now });
+            console.log(`Loaded ${apiUrls.length} API URLs and ${sections.length} sections`);
             return { data: { apiUrls, sections }, usedCache: false };
         } catch (error) {
             console.warn(`Failed to fetch apiurl.json:`, error);
             if (cached?.data && (now - cached.timestamp) < this.CACHE_EXPIRY) {
+                console.log('Falling back to cached API URLs');
                 return { data: cached.data, usedCache: true };
             }
-            return { data: { apiUrls: [], sections: [] }, usedCache: false };
+            console.warn('No valid API URLs, using default section');
+            return { data: { apiUrls: [], sections: [{ id: 'section-0', pageTag: this.currentPage, title: 'Danh sách phim', urls: [] }] }, usedCache: false };
         }
     }
 
@@ -1051,7 +1056,14 @@ class MovieStreamingApp {
                 return response;
             } catch (error) {
                 console.warn(`Fetch retry ${i + 1}/${retries} for ${url}:`, error);
-                if (i === retries - 1) return null;
+                if (i === retries - 1) {
+                    const cached = await this.getFromDB('movies', `movie_${url}`);
+                    if (cached?.data) {
+                        console.log(`Using cached movie data for ${url}`);
+                        return { ok: true, json: async () => cached.data };
+                    }
+                    return null;
+                }
                 await new Promise(resolve => setTimeout(resolve, 200 * Math.pow(2, i)));
             }
         }
@@ -1062,6 +1074,7 @@ class MovieStreamingApp {
         const now = Date.now();
         const cached = await this.getFromDB('movies', cacheKey);
         if (cached?.data && (now - cached.timestamp) < this.CACHE_EXPIRY) {
+            console.log(`Using cached movie data for ${url}`);
             return cached.data;
         }
         try {
@@ -1079,11 +1092,17 @@ class MovieStreamingApp {
                     categories: this.normalizeString(movieData.categories || ''),
                     countries: this.normalizeString(movieData.countries || '')
                 });
+                console.log(`Fetched movie data for ${url}`);
                 return movieData;
             }
+            console.warn(`Invalid movie data from ${url}`);
             return null;
         } catch (error) {
             console.warn(`Failed to fetch ${url}:`, error);
+            if (cached?.data) {
+                console.log(`Falling back to cached movie data for ${url}`);
+                return cached.data;
+            }
             return null;
         }
     }
@@ -1238,8 +1257,8 @@ class MovieStreamingApp {
         this.isLoading = true;
         this.elements.loadingSpinner?.classList.add('visible');
         try {
-            const start = (page - 1) * this.MOVIES_PER_PAGE;
-            const end = start + this.MOVIES_PER_PAGE;
+            const start = 0; // Tải toàn bộ từ đầu
+            const end = this.maxRenderedMovies; // Giới hạn render
             if (!append) this.elements.mainContent.innerHTML = '';
             const pageSections = this.sections.filter(section => section.pageTag === this.currentPage || (this.currentPage === 'index' && section.pageTag !== 'index'));
             if (!pageSections.length && !searchTerm && !this.allMovies.some(m => m.pageTag === this.currentPage)) {
@@ -1331,12 +1350,30 @@ class MovieStreamingApp {
                     this.sectionObserver.observe(sectionElement);
                 }
                 await this.renderTxtSections(start, end, append);
-                this.hasMoreMovies = pageSections.some(section => section.urls.length > end) || 
-                    this.allMovies.filter(m => m.pageTag === this.currentPage).length > end;
+                this.hasMoreMovies = this.allMovies.filter(m => m.pageTag === this.currentPage).length > end ||
+                    pageSections.some(section => section.urls.length > end);
             }
         } catch (error) {
             console.error(`Error rendering movies:`, error);
             this.showError('Lỗi tải dữ liệu. Vui lòng thử lại!');
+        } finally {
+            this.isLoading = false;
+            this.elements.loadingSpinner?.classList.remove('visible');
+        }
+    }
+
+    async loadMoreMovies() {
+        if (this.isLoading) return;
+        this.isLoading = true;
+        this.elements.loadingSpinner?.classList.add('visible');
+        try {
+            const start = this.allMovies.filter(m => m.pageTag === this.currentPage).length;
+            const end = start + this.MOVIES_PER_PAGE;
+            await this.renderTxtSections(start, end, true);
+            this.hasMoreMovies = this.allMovies.filter(m => m.pageTag === this.currentPage).length > end;
+        } catch (error) {
+            console.error(`Error loading more movies:`, error);
+            this.showError('Lỗi tải thêm phim. Vui lòng thử lại!');
         } finally {
             this.isLoading = false;
             this.elements.loadingSpinner?.classList.remove('visible');
@@ -1385,6 +1422,8 @@ class MovieStreamingApp {
                 movieList.innerHTML = '';
                 if (filteredMovies.length) {
                     this.renderMovieItems(filteredMovies, movieList, id);
+                } else if (append) {
+                    sectionElement.style.display = 'none';
                 } else {
                     movieList.innerHTML = `<p>Không có phim trong "${title}".</p>`;
                 }
@@ -1447,7 +1486,8 @@ class MovieStreamingApp {
                 this.loadCachedFile('le.txt')
             ]).then(results => results.map(r => r.status === 'fulfilled' ? r.value : { data: [], usedCache: false }));
             this.sections = apiResult.data.sections.filter(section => section.pageTag === this.currentPage || (this.currentPage === 'index' && section.pageTag !== 'index')) || [];
-            this.allMovies = [...customResult.data, ...seriesResult.data, ...singleResult.data].filter(m => m.pageTag === this.currentPage || (this.currentPage === 'index' && m.pageTag !== 'index')).slice(0, 100);
+            this.allMovies = [...customResult.data, ...seriesResult.data, ...singleResult.data].filter(m => m.pageTag === this.currentPage || (this.currentPage === 'index' && m.pageTag !== 'index'));
+            console.log(`Total movies loaded: ${this.allMovies.length}`);
             const urlParams = new URLSearchParams(window.location.search);
             const searchTerm = urlParams.get('search') || '';
             if (this.elements.searchInput) {
