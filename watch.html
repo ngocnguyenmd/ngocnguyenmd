@@ -12,15 +12,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'" fetchpriority="low">
     <link rel="preload" href="https://cdn.plyr.io/3.7.8/plyr.css" as="style">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" media="print" onload="this.media='all'" fetchpriority="high">
-    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js" fetchpriority="high"></script>
     <style>
         :root {
-            --primary-color: #8B4513; /* SaddleBrown */
-            --primary-hover: #6B3A0F; /* Darker brown */
-            --bg-dark: #2C1E14; /* Dark brown */
+            --primary-color: #8B4513;
+            --primary-hover: #6B3A0F;
+            --bg-dark: #2C1E14;
             --bg-section: #3F2A1D;
-            --text-white: #FFF8E1; /* Light cream */
-            --text-gray: #D2B48C; /* Tan gray */
+            --text-white: #FFF8E1;
+            --text-gray: #D2B48C;
             --success-color: #28a745;
             --error-color: black;
             --shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -153,13 +152,17 @@
         }
 
         .video-container {
-            width: 100%;
-            margin: 0 auto 25px;
-            background: #000;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-        }
+    width: 100%;
+    margin: 0 auto 25px;
+    background: linear-gradient(135deg, #2C1E14, #3F2A1D);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+}
+.video-container:hover {
+    transform: scale(1.02);
+}
 
         .video-player {
             width: 100%;
@@ -277,51 +280,72 @@
             opacity: 1;
         }
 
-        .episode-list {
-            margin: 30px 0;
-        }
+.episode-list {
+    margin: 40px 0;
+    text-align: center;
+}
 
-        .episode-list h2 {
-            font-size: 1.8em;
-            margin-bottom: 15px;
-            color: var(--primary-color);
-            text-align: center;
-        }
+.episode-list h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    font-weight: 700;
+}
 
-        .episode-list h3 {
-            font-size: 1.3em;
-            margin: 12px 0 8px;
-            color: var(--text-white);
-        }
+.episode-list h3 {
+    font-size: 1.2em;
+    margin: 15px 0 12px;
+    color: var(--text-white);
+    font-weight: 600;
+}
 
-        .episode-list ul {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: flex-start;
-        }
+.episode-list ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    gap: 14px;
+    justify-content: center;
+    padding: 0;
+    list-style: none;
+}
 
-        .episode-list li {
-            list-style: none;
-        }
+.episode-list a {
+    background: linear-gradient(145deg, var(--primary-color), var(--primary-hover));
+    color: #fff;
+    font-size: 0.95em;
+    font-weight: 500;
+    text-align: center;
+    padding: 12px 0;
+    border-radius: 12px;
+    transition: var(--transition);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+    display: block;
+    position: relative;
+}
 
-        .episode-list a {
-            display: inline-block;
-            padding: 8px 14px;
-            background: var(--primary-color);
-            color: var(--text-white);
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 0.95em;
-            min-width: 50px;
-            text-align: center;
-        }
+.episode-list a:hover {
+    background: linear-gradient(145deg, var(--primary-hover), var(--primary-color));
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+}
 
-        .episode-list a.active {
-            background: var(--active-bg);
-            color: var(--active-text);
-            font-weight: 500;
-        }
+.episode-list a.active {
+    background: var(--active-bg);      /* nền đen (dark) hoặc xám (light) */
+    color: var(--active-text);         /* chữ trắng (dark) hoặc đen (light) */
+    font-weight: 700;
+    border: 2px solid var(--sub2-color);
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(255, 215, 0, 0.4);
+}
+
+.episode-list a.active::after {
+    content: "✔";
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    font-size: 0.75em;
+    color: var(--sub2-color);
+    font-weight: bold;
+}
 
         video::-webkit-media-text-track-display {
             font-size: 1em;
@@ -362,11 +386,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-
-        .footer-text {
-            font-size: 0.9em;
-            color: var(--text-gray);
         }
 
         .scroll-top {
@@ -463,14 +482,15 @@
             <img src="https://via.placeholder.com/100x32?text=Logo" alt="Logo Phim Hay" class="logo" loading="eager" id="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
             <span class="logo-fallback" style="display:none;">Phim Nhà Bánh Mì</span>
             <nav class="nav-menu" aria-label="Điều hướng chính">
-                <a href="index.html" class="active">Trang chủ</a>
+                  <a href="index.html">Trang chủ</a>
+                <a href="index1.html">Phim Đề Cử</a>
                 <a href="phim-han.html">Phim Hàn</a>
                 <a href="phim-trung.html">Phim Trung</a>
                 <a href="phim-viet.html">Phim Việt</a>
                 <a href="phim-my.html">Phim Mỹ</a>
                 <a href="truyen-hinh.html">Truyền hình</a>
                 <a href="hoat-hinh.html">Hoạt hình</a>
-                <a href="netflix.html">Thuyết Minh</a>
+                <a href="netflix.html">Thuyết Minh LT</a>
                 <a href="ykhoa.html">Y Khoa</a>
                 <button class="theme-toggle" id="theme-toggle" aria-label="Chuyển đổi giao diện">
                     <i class="fas fa-moon"></i>
@@ -502,16 +522,9 @@
             <button id="toggle-sub-btn"><i class="fas fa-eye"></i> Tắt phụ đề</button>
             <div id="subtitle-message" role="alert"></div>
         </div>
-        <section class="episode-list" id="custom-list" aria-label="Danh sách tập tùy chỉnh">
-            <h2>Tùy chỉnh</h2>
-            <div>
-                <h3>Website</h3>
-                <ul id="custom-m3u8"></ul>
-                <h3>Bên ngoài Website</h3>
-                <ul id="custom-embed"></ul>
-                <h3>Random bánh mì</h3>
-                <ul id="custom-video"></ul>
-            </div>
+        <section class="episode-list" id="episode-list" aria-label="Danh sách tập">
+            <h2>Danh sách tập</h2>
+            <div id="language-sections"></div>
         </section>
     </main>
     <footer role="contentinfo">
@@ -519,8 +532,8 @@
             <button class="footer-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Lên đầu trang">
                 <i class="fas fa-arrow-up"></i> Lên đầu
             </button>
-            <button class="footer-btn" aria-label="Liên hệ">
-                <i class="fas fa-info-circle"></i> Liên hệ
+            <button class="footer-btn" id="clear-cache-btn" aria-label="Xóa cache">
+                <i class="fas fa-trash"></i> Xóa cache
             </button>
         </div>
         <p class="footer-text">© 2025 Phim Nhà Bánh Mì.</p>
@@ -528,8 +541,8 @@
     <button class="scroll-top" id="scroll-top" aria-label="Lên đầu trang">
         <i class="fas fa-arrow-up"></i>
     </button>
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js" fetchpriority="high"></script>
     <script>
-        // Hàm debounce để tối ưu hóa hiệu suất
         const debounce = (func, wait) => {
             let timeout;
             return (...args) => {
@@ -553,22 +566,24 @@
                     subtitleInput: document.getElementById('subtitle-input'),
                     toggleSubBtn: document.getElementById('toggle-sub-btn'),
                     subtitleMessage: document.getElementById('subtitle-message'),
-                    customM3u8: document.getElementById('custom-m3u8'),
-                    customEmbed: document.getElementById('custom-embed'),
-                    customVideo: document.getElementById('custom-video'),
+                    languageSections: document.getElementById('language-sections'),
                     scrollTop: document.getElementById('scroll-top'),
-                    themeToggle: document.getElementById('theme-toggle')
+                    themeToggle: document.getElementById('theme-toggle'),
+                    clearCacheBtn: document.getElementById('clear-cache-btn')
                 };
 
+                this.DB_NAME = 'MovieAppDB';
+                this.DB_VERSION = 1;
                 this.urlParams = new URLSearchParams(window.location.search);
                 this.state = {
                     slug: this.sanitizeParam(decodeURIComponent(this.urlParams.get('slug') || '')),
                     apiSource: this.sanitizeParam(decodeURIComponent(this.urlParams.get('apiSource') || '')),
                     episodeName: this.sanitizeParam(decodeURIComponent(this.urlParams.get('episode') || '')),
-                    linkType: this.sanitizeParam(this.urlParams.get('type') || ''),
-                    linkUrl: this.sanitizeParam(decodeURIComponent(this.urlParams.get('url') || '')),
-                    movieName: this.sanitizeParam(decodeURIComponent(this.urlParams.get('name') || '')),
-                    customEpisodes: this.parseCustomEpisodes(this.urlParams.get('episodes')),
+                    link_m3u8: this.sanitizeParam(decodeURIComponent(this.urlParams.get('link_m3u8') || '')),
+                    link_embed: this.sanitizeParam(decodeURIComponent(this.urlParams.get('link_embed') || '')),
+                    link_video: this.sanitizeParam(decodeURIComponent(this.urlParams.get('link_video') || '')),
+                    movieName: this.sanitizeParam(decodeURIComponent(this.urlParams.get('movieName') || '')),
+                    lang: this.sanitizeParam(decodeURIComponent(this.urlParams.get('lang') || 'Vietsub')),
                     player: null,
                     videoElement: null,
                     allEpisodes: [],
@@ -576,6 +591,72 @@
                     subtitlesEnabled: true,
                     volume: parseFloat(localStorage.getItem('plyr-volume')) || 0.8
                 };
+                this.db = null;
+            }
+
+            async initDB() {
+                try {
+                    return new Promise((resolve, reject) => {
+                        const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+                        request.onupgradeneeded = (event) => {
+                            const db = event.target.result;
+                            if (!db.objectStoreNames.contains('cache')) {
+                                db.createObjectStore('cache', { keyPath: 'key' });
+                            }
+                        };
+                        request.onsuccess = (event) => {
+                            this.db = event.target.result;
+                            resolve();
+                        };
+                        request.onerror = (event) => reject(event.target.error);
+                    });
+                } catch (error) {
+                    console.error('IndexedDB initialization failed:', error);
+                    return null;
+                }
+            }
+
+            async getFromDB(storeName, key) {
+                if (!this.db) return null;
+                try {
+                    return new Promise((resolve) => {
+                        const transaction = this.db.transaction([storeName], 'readonly');
+                        const store = transaction.objectStore(storeName);
+                        const request = store.get(key);
+                        request.onsuccess = () => resolve(request.result);
+                        request.onerror = () => resolve(null);
+                    });
+                } catch (error) {
+                    console.error(`Error getting from ${storeName}:`, error);
+                    return null;
+                }
+            }
+
+            async setToDB(storeName, data) {
+                if (!this.db) return;
+                try {
+                    return new Promise((resolve) => {
+                        const transaction = this.db.transaction([storeName], 'readwrite');
+                        const store = transaction.objectStore(storeName);
+                        store.put(data);
+                        transaction.oncomplete = () => resolve();
+                        transaction.onerror = () => resolve();
+                    });
+                } catch (error) {
+                    console.error(`Error saving to ${storeName}:`, error);
+                }
+            }
+
+            async clearCache() {
+                if (!this.db) return;
+                try {
+                    const transaction = this.db.transaction(['cache'], 'readwrite');
+                    await new Promise(resolve => {
+                        transaction.objectStore('cache').clear().onsuccess = resolve;
+                    });
+                } catch (error) {
+                    console.error('Error clearing cache:', error);
+                }
             }
 
             sanitizeParam(param) {
@@ -583,75 +664,80 @@
                 return param.replace(/[<>"]/g, '').trim();
             }
 
-            parseCustomEpisodes(param) {
-                if (!param) return [];
-                try {
-                    const episodes = JSON.parse(decodeURIComponent(param));
-                    return episodes.map(ep => ({
-                        name: ep.name.replace('Tập ', '').trim() || 'Tập 1',
-                        link_m3u8: ep.link_m3u8 || '',
-                        link_embed: ep.link_embed || '',
-                        link_video: ep.link_video || ''
-                    }));
-                } catch (error) {
-                    console.error('Lỗi parse episodes:', error, param);
-                    return [];
-                }
+            showError(message) {
+                this.elements.playerContainer.innerHTML = `<p class="error-message">${message}</p>`;
             }
 
             setupEventListeners() {
-                this.elements.themeToggle.addEventListener('click', () => this.toggleTheme());
+                this.elements.themeToggle.addEventListener('click', () => {
+                    const theme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+                    document.body.dataset.theme = theme;
+                    this.elements.themeToggle.innerHTML = `<i class="fas fa-${theme === 'light' ? 'moon' : 'sun'}"></i>`;
+                    this.setToDB('cache', { key: 'theme', value: theme, timestamp: Date.now() });
+                });
+
+                this.getFromDB('cache', 'theme').then(theme => {
+                    if (theme?.value) {
+                        document.body.dataset.theme = theme.value;
+                        this.elements.themeToggle.innerHTML = `<i class="fas fa-${theme.value === 'light' ? 'moon' : 'sun'}"></i>`;
+                    }
+                });
+
                 window.addEventListener('scroll', debounce(() => {
                     this.elements.scrollTop.classList.toggle('visible', window.scrollY > 300);
                 }, 100));
+
                 this.elements.scrollTop.addEventListener('click', () => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
-            }
 
-            loadTheme() {
-                const savedTheme = localStorage.getItem('theme') || 'dark';
-                document.body.dataset.theme = savedTheme;
-                this.elements.themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'light' ? 'moon' : 'sun'}"></i>`;
-            }
-
-            toggleTheme() {
-                const currentTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
-                document.body.dataset.theme = currentTheme;
-                this.elements.themeToggle.innerHTML = `<i class="fas fa-${currentTheme === 'light' ? 'moon' : 'sun'}"></i>`;
-                localStorage.setItem('theme', currentTheme);
+                this.elements.clearCacheBtn.addEventListener('click', async () => {
+                    await this.clearCache();
+                    window.location.reload();
+                });
             }
 
             adjustMainContentPadding() {
                 const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
-                document.querySelector('.main-content').style.paddingTop = `${headerHeight + 20}px`;
+                this.elements.mainContent = document.querySelector('.main-content');
+                if (this.elements.mainContent) {
+                    this.elements.mainContent.style.paddingTop = `${headerHeight + 20}px`;
+                }
             }
 
             setupPlayer() {
-                let { episodeName, linkType, linkUrl } = this.state;
+                const { link_m3u8, link_embed, link_video, episodeName, movieName, lang, apiSource } = this.state;
 
-                if (!episodeName || !linkUrl) {
-                    const firstEpisode = this.state.customEpisodes[0];
-                    if (firstEpisode) {
-                        episodeName = firstEpisode.name;
-                        linkType = firstEpisode.link_m3u8 ? 'm3u8' : firstEpisode.link_video ? 'video' : 'embed';
-                        linkUrl = linkType === 'm3u8' ? firstEpisode.link_m3u8 : linkType === 'video' ? firstEpisode.link_video : firstEpisode.link_embed;
+                this.elements.movieTitle.textContent = movieName || 'Không xác định';
+                this.elements.episodeTitle.textContent = `Tập: ${episodeName || 'Tập 1'} (${lang})`;
+
+                let linkUrl = '';
+                let linkType = '';
+                if (apiSource === 'custom' && link_m3u8) {
+                    // Chỉ dùng link_m3u8 khi apiSource là 'custom' (tức là từ TXT)
+                    linkUrl = link_m3u8;
+                    linkType = 'm3u8';
+                } else {
+                    // Với API, giữ nguyên logic chọn link
+                    if (link_m3u8) {
+                        linkUrl = link_m3u8;
+                        linkType = 'm3u8';
+                    } else if (link_embed) {
+                        linkUrl = link_embed;
+                        linkType = 'embed';
+                    } else if (link_video) {
+                        linkUrl = link_video;
+                        linkType = 'video';
                     }
                 }
 
                 if (!linkUrl) {
-                    this.elements.playerContainer.innerHTML = '<p class="error-message">Không có link video khả dụng.</p>';
-                    this.elements.movieTitle.textContent = this.state.movieName || 'Không xác định';
-                    this.elements.episodeTitle.textContent = `Tập: ${episodeName || 'Tập 1'}`;
+                    this.showError('Không có link video khả dụng.');
                     return;
                 }
 
-                this.state.episodeName = episodeName;
                 this.state.linkType = linkType;
                 this.state.linkUrl = linkUrl;
-
-                this.elements.movieTitle.textContent = this.state.movieName || 'Không xác định';
-                this.elements.episodeTitle.textContent = `Tập: ${episodeName || 'Tập 1'}`;
 
                 if (linkType === 'm3u8') {
                     this.elements.playerContainer.innerHTML = '<video id="video-player" class="video-player" controls crossorigin playsinline preload="metadata"></video>';
@@ -690,7 +776,7 @@
                         hls.attachMedia(this.state.videoElement);
                         hls.on(Hls.Events.ERROR, (event, data) => {
                             if (data.fatal) {
-                                this.elements.playerContainer.innerHTML = '<p class="error-message">Lỗi tải video HLS.</p>';
+                                this.showError('Lỗi tải video HLS.');
                             }
                         });
                         this.state.player = new Plyr(this.state.videoElement, {
@@ -700,11 +786,11 @@
                         });
                         this.setupVolumePersistence();
                     } else {
-                        this.elements.playerContainer.innerHTML = '<p class="error-message">Trình duyệt không hỗ trợ HLS.</p>';
+                        this.showError('Trình duyệt không hỗ trợ HLS.');
                     }
                 };
                 script.onerror = () => {
-                    this.elements.playerContainer.innerHTML = '<p class="error-message">Lỗi tải thư viện HLS.</p>';
+                    this.showError('Lỗi tải thư viện HLS.');
                 };
                 document.head.appendChild(script);
             }
@@ -718,70 +804,89 @@
             }
 
             renderEpisodeList() {
-                const { customEpisodes, slug, apiSource, episodeName, linkType, linkUrl, movieName } = this.state;
-                if (customEpisodes.length === 0) {
-                    this.elements.customM3u8.innerHTML = '<p class="error-message">Không có tập phim M3U8.</p>';
-                    this.elements.customEmbed.innerHTML = '<p class="error-message">Không có tập phim nhúng.</p>';
-                    this.elements.customVideo.innerHTML = '<p class="error-message">Không có tập phim video.</p>';
-                    return;
-                }
+    const episodes = JSON.parse(sessionStorage.getItem('movieEpisodes') || '[]');
+    if (!episodes.length) {
+        this.elements.languageSections.innerHTML = '<p class="error-message">Không có tập phim nào.</p>';
+        return;
+    }
 
-                const episodesQuery = `&episodes=${encodeURIComponent(JSON.stringify(customEpisodes))}`;
-                const m3u8Links = customEpisodes.filter(ep => ep.link_m3u8);
-                const embedLinks = customEpisodes.filter(ep => ep.link_embed);
-                const videoLinks = customEpisodes.filter(ep => ep.link_video);
+    const { slug, apiSource, episodeName, link_m3u8, link_embed, link_video, movieName, lang } = this.state;
 
-                this.elements.customM3u8.innerHTML = m3u8Links.length > 0 ? m3u8Links.map(ep => {
-                    const isActive = ep.name === episodeName && ep.link_m3u8 === linkUrl;
-                    return `<li><a href="watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(ep.name)}&type=m3u8&url=${encodeURIComponent(ep.link_m3u8)}&name=${encodeURIComponent(movieName)}${episodesQuery}" class="${isActive ? 'active' : ''}">${ep.name}</a></li>`;
-                }).join('') : '<p class="error-message">Không có link M3U8.</p>';
+    const groupedByLang = episodes.reduce((acc, ep) => {
+        const epLang = ep.lang || 'Vietsub';
+        if (!acc[epLang]) acc[epLang] = [];
+        acc[epLang].push(ep);
+        return acc;
+    }, {});
 
-                this.elements.customEmbed.innerHTML = embedLinks.length > 0 ? embedLinks.map(ep => {
-                    const isActive = ep.name === episodeName && ep.link_embed === linkUrl;
-                    return `<li><a href="watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(ep.name)}&type=embed&url=${encodeURIComponent(ep.link_embed)}&name=${encodeURIComponent(movieName)}${episodesQuery}" class="${isActive ? 'active' : ''}">${ep.name}[e]</a></li>`;
-                }).join('') : '<p class="error-message">Không có link nhúng.</p>';
-
-                this.elements.customVideo.innerHTML = videoLinks.length > 0 ? videoLinks.map(ep => {
-                    const isActive = ep.name === episodeName && ep.link_video === linkUrl;
-                    return `<li><a href="watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(ep.name)}&type=video&url=${encodeURIComponent(ep.link_video)}&name=${encodeURIComponent(movieName)}${episodesQuery}" class="${isActive ? 'active' : ''}">${ep.name}[v]</a></li>`;
-                }).join('') : '<p class="error-message">Không có link video.</p>';
+    this.elements.languageSections.innerHTML = '';
+    Object.entries(groupedByLang).forEach(([language, eps]) => {
+        const section = document.createElement('div');
+        section.innerHTML = `<h3>${language}</h3><ul></ul>`;
+        const ul = section.querySelector('ul');
+        eps.forEach(ep => {
+            const links = [];
+            if (apiSource === 'custom' && ep.link_m3u8) {
+                links.push({ type: 'Vip', url: ep.link_m3u8 });
+            } else {
+                if (ep.link_m3u8) links.push({ type: 'Vip', url: ep.link_m3u8 });
+                if (ep.link_embed) links.push({ type: 'Pro', url: ep.link_embed });
+                if (ep.link_video) links.push({ type: 'On', url: ep.link_video });
             }
 
+            links.forEach(link => {
+                // Kiểm tra chính xác tập active dựa trên episodeName và link hiện tại
+                const isActive = ep.name === episodeName && link.url === (this.state.linkType === 'm3u8' ? link_m3u8 : this.state.linkType === 'embed' ? link_embed : link_video) && ep.lang === lang;
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(ep.name)}&link_m3u8=${encodeURIComponent(ep.link_m3u8 || '')}&link_embed=${encodeURIComponent(ep.link_embed || '')}&link_video=${encodeURIComponent(ep.link_video || '')}&movieName=${encodeURIComponent(movieName)}&lang=${encodeURIComponent(ep.lang || 'Vietsub')}" class="${isActive ? 'active' : ''}">${ep.name} (${link.type})</a>`;
+                ul.appendChild(li);
+            });
+        });
+        this.elements.languageSections.appendChild(section);
+    });
+}
             setupEpisodeNavigation() {
-                const { customEpisodes, episodeName, linkUrl, slug, apiSource, movieName } = this.state;
-                this.state.allEpisodes = customEpisodes.map(ep => ({
+                const episodes = JSON.parse(sessionStorage.getItem('movieEpisodes') || '[]');
+                this.state.allEpisodes = episodes.map(ep => ({
                     name: ep.name,
                     link_m3u8: ep.link_m3u8,
                     link_embed: ep.link_embed,
-                    link_video: ep.link_video
+                    link_video: ep.link_video,
+                    lang: ep.lang || 'Vietsub'
                 }));
 
                 const updateEpisodeButtons = () => {
-                    const currentIndex = this.state.allEpisodes.findIndex(ep => ep.name === episodeName && (ep.link_m3u8 === linkUrl || ep.link_embed === linkUrl || ep.link_video === linkUrl));
+                    const currentIndex = this.state.allEpisodes.findIndex(ep => 
+                        ep.name === this.state.episodeName && 
+                        ep.lang === this.state.lang && 
+                        (ep.link_m3u8 === this.state.link_m3u8 || ep.link_embed === this.state.link_embed || ep.link_video === this.state.link_video)
+                    );
                     this.elements.prevEpisodeBtn.disabled = currentIndex <= 0 || this.state.allEpisodes.length <= 1;
                     this.elements.nextEpisodeBtn.disabled = currentIndex >= this.state.allEpisodes.length - 1 || this.state.allEpisodes.length <= 1;
                 };
                 updateEpisodeButtons();
 
                 this.elements.prevEpisodeBtn.addEventListener('click', () => {
-                    const currentIndex = this.state.allEpisodes.findIndex(ep => ep.name === episodeName && (ep.link_m3u8 === linkUrl || ep.link_embed === linkUrl || ep.link_video === linkUrl));
+                    const currentIndex = this.state.allEpisodes.findIndex(ep => 
+                        ep.name === this.state.episodeName && 
+                        ep.lang === this.state.lang && 
+                        (ep.link_m3u8 === this.state.link_m3u8 || ep.link_embed === this.state.link_embed || ep.link_video === this.state.link_video)
+                    );
                     if (currentIndex > 0) {
                         const prevEpisode = this.state.allEpisodes[currentIndex - 1];
-                        const newLinkType = prevEpisode.link_m3u8 ? 'm3u8' : prevEpisode.link_video ? 'video' : 'embed';
-                        const newLinkUrl = newLinkType === 'm3u8' ? prevEpisode.link_m3u8 : newLinkType === 'video' ? prevEpisode.link_video : prevEpisode.link_embed;
-                        const episodesQuery = `&episodes=${encodeURIComponent(JSON.stringify(customEpisodes))}`;
-                        window.location.href = `watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(prevEpisode.name)}&type=${newLinkType}&url=${encodeURIComponent(newLinkUrl || '')}&name=${encodeURIComponent(movieName)}${episodesQuery}`;
+                        window.location.href = `watch.html?slug=${encodeURIComponent(this.state.slug)}&apiSource=${encodeURIComponent(this.state.apiSource)}&episode=${encodeURIComponent(prevEpisode.name)}&link_m3u8=${encodeURIComponent(prevEpisode.link_m3u8 || '')}&link_embed=${encodeURIComponent(prevEpisode.link_embed || '')}&link_video=${encodeURIComponent(prevEpisode.link_video || '')}&movieName=${encodeURIComponent(this.state.movieName)}&lang=${encodeURIComponent(prevEpisode.lang)}`;
                     }
                 });
 
                 this.elements.nextEpisodeBtn.addEventListener('click', () => {
-                    const currentIndex = this.state.allEpisodes.findIndex(ep => ep.name === episodeName && (ep.link_m3u8 === linkUrl || ep.link_embed === linkUrl || ep.link_video === linkUrl));
+                    const currentIndex = this.state.allEpisodes.findIndex(ep => 
+                        ep.name === this.state.episodeName && 
+                        ep.lang === this.state.lang && 
+                        (ep.link_m3u8 === this.state.link_m3u8 || ep.link_embed === this.state.link_embed || ep.link_video === this.state.link_video)
+                    );
                     if (currentIndex < this.state.allEpisodes.length - 1) {
                         const nextEpisode = this.state.allEpisodes[currentIndex + 1];
-                        const newLinkType = nextEpisode.link_m3u8 ? 'm3u8' : nextEpisode.link_video ? 'video' : 'embed';
-                        const newLinkUrl = newLinkType === 'm3u8' ? nextEpisode.link_m3u8 : newLinkType === 'video' ? nextEpisode.link_video : nextEpisode.link_embed;
-                        const episodesQuery = `&episodes=${encodeURIComponent(JSON.stringify(customEpisodes))}`;
-                        window.location.href = `watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(nextEpisode.name)}&type=${newLinkType}&url=${encodeURIComponent(newLinkUrl || '')}&name=${encodeURIComponent(movieName)}${episodesQuery}`;
+                        window.location.href = `watch.html?slug=${encodeURIComponent(this.state.slug)}&apiSource=${encodeURIComponent(this.state.apiSource)}&episode=${encodeURIComponent(nextEpisode.name)}&link_m3u8=${encodeURIComponent(nextEpisode.link_m3u8 || '')}&link_embed=${encodeURIComponent(nextEpisode.link_embed || '')}&link_video=${encodeURIComponent(nextEpisode.link_video || '')}&movieName=${encodeURIComponent(this.state.movieName)}&lang=${encodeURIComponent(nextEpisode.lang)}`;
                     }
                 });
 
@@ -800,8 +905,7 @@
                 }
 
                 this.elements.backToDetailBtn.addEventListener('click', () => {
-                    const episodesQuery = `&episodes=${encodeURIComponent(JSON.stringify(customEpisodes))}`;
-                    window.location.href = `detail.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}${episodesQuery}&name=${encodeURIComponent(movieName)}`;
+                    window.location.href = `detail.html?slug=${encodeURIComponent(this.state.slug)}&apiSource=${encodeURIComponent(this.state.apiSource)}&movieName=${encodeURIComponent(this.state.movieName)}`;
                 });
 
                 this.elements.backToHomeBtn.addEventListener('click', () => {
@@ -880,15 +984,20 @@
                 }
             }
 
-            init() {
-                this.setupEventListeners();
-                this.loadTheme();
-                this.adjustMainContentPadding();
-                this.setupPlayer();
-                this.renderEpisodeList();
-                this.setupEpisodeNavigation();
-                this.setupSubtitleHandling();
-                window.addEventListener('beforeunload', () => this.cleanup());
+            async init() {
+                try {
+                    await this.initDB();
+                    this.setupEventListeners();
+                    this.adjustMainContentPadding();
+                    this.setupPlayer();
+                    this.renderEpisodeList();
+                    this.setupEpisodeNavigation();
+                    this.setupSubtitleHandling();
+                    window.addEventListener('beforeunload', () => this.cleanup());
+                } catch (error) {
+                    console.error('Initialization error:', error);
+                    this.showError('Khởi tạo ứng dụng thất bại. Vui lòng thử lại!');
+                }
             }
         }
 
