@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -10,7 +11,6 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" as="style" onload="this.rel='stylesheet'">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.rel='stylesheet'">
     <style>
-        /* Giữ nguyên toàn bộ CSS từ mã gốc */
         :root {
             --primary-color: #8B4513;
             --primary-hover: #6B3A0F;
@@ -23,14 +23,20 @@
             --transition: all 0.2s ease-out;
             --green-check: #2ecc71;
             --gradient-bg: #2C1E14;
+            --btn-vip-bg: #FFD700;
+            --btn-pro-bg: #1E90FF;
+            --btn-banhmi-bg: #FF4500;
         }
 
         [data-theme="light"] {
-            --bg-dark: #FFF8E1;
-            --bg-section: #F5DEB3;
-            --text-white: #2C1E14;
-            --text-gray: #6B3A0F;
-            --gradient-bg: #FFF8E1;
+            --bg-dark: #F5F5F5;
+            --bg-section: #EDEDED;
+            --text-white: #333333;
+            --text-gray: #555555;
+            --gradient-bg: #F5F5F5;
+            --btn-vip-bg: #FFC107;
+            --btn-pro-bg: #1E90FF;
+            --btn-banhmi-bg: #FF4500;
         }
 
         * {
@@ -81,54 +87,6 @@
             font-size: 1.5em;
             font-weight: 600;
             color: var(--primary-color);
-        }
-
-        .search-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-            max-width: 400px;
-            min-width: 180px;
-            position: relative;
-        }
-
-        .search-bar input {
-            padding: 10px 40px 10px 12px;
-            border: none;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-white);
-            font-size: 0.9em;
-            width: 100%;
-            transition: var(--transition);
-        }
-
-        .search-bar input:focus {
-            background: rgba(255, 255, 255, 0.2);
-            outline: none;
-        }
-
-        .search-bar i {
-            position: absolute;
-            right: 12px;
-            color: var(--text-gray);
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .search-bar i:hover {
-            color: var(--primary-color);
-        }
-
-        .search-bar .clear-search {
-            right: 35px;
-            display: none;
-        }
-
-        .search-bar .clear-search.visible {
-            display: block;
         }
 
         .nav-menu {
@@ -220,6 +178,12 @@
             background: var(--primary-hover);
         }
 
+        .watch-now-btn.disabled {
+            background: var(--text-gray);
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         .movie-info {
             flex: 1;
             min-width: 300px;
@@ -228,7 +192,8 @@
         .movie-info h1 {
             font-size: 1.8em;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+            margin-top: 50px;
         }
 
         .movie-info p {
@@ -302,19 +267,44 @@
             font-weight: 600;
         }
 
-        .language-table td a {
+        .link-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .link-btn {
+            background: var(--primary-color);
             color: var(--text-white);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 500;
             text-decoration: none;
             transition: var(--transition);
+            min-width: 80px;
+            text-align: center;
         }
 
-        .language-table td a:hover {
-            color: var(--accent-color);
+        .link-btn.vip {
+            background: var(--btn-vip-bg);
+            color: #2C1E14;
         }
 
-        .language-table .available {
-            color: var(--green-check);
-            font-weight: 500;
+        .link-btn.pro {
+            background: var(--btn-pro-bg);
+            color: #FFFFFF;
+        }
+
+        .link-btn.banhmi {
+            background: var(--btn-banhmi-bg);
+            color: #FFFFFF;
+        }
+
+        .link-btn:hover {
+            filter: brightness(1.2);
         }
 
         .language-table .unavailable {
@@ -439,6 +429,7 @@
 
             .movie-poster img {
                 max-width: 200px;
+                margin-bottom: 200px;
             }
 
             .movie-info h1 {
@@ -453,6 +444,12 @@
             .language-table td {
                 padding: 8px;
                 font-size: 0.85em;
+            }
+
+            .link-btn {
+                min-width: 70px;
+                padding: 6px 10px;
+                font-size: 0.8em;
             }
         }
 
@@ -475,6 +472,12 @@
                 font-size: 0.8em;
             }
 
+            .link-btn {
+                min-width: 60px;
+                padding: 5px 8px;
+                font-size: 0.75em;
+            }
+
             .footer-btn {
                 padding: 8px 15px;
                 font-size: 0.85em;
@@ -487,11 +490,6 @@
         <div class="header-content">
             <img src="https://via.placeholder.com/100x32?text=Logo" alt="Logo Phim Hay" class="logo" loading="eager" id="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
             <span class="logo-fallback" style="display:none;">Phim Nhà Bánh Mì</span>
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Tìm kiếm phim...">
-                <i class="fas fa-times clear-search" id="clear-search"></i>
-                <i class="fas fa-search"></i>
-            </div>
             <div class="nav-menu" role="navigation" aria-label="Menu điều hướng chính">
                 <a href="index.html">Trang chủ</a>
                 <a href="index1.html">Phim Đề Cử</a>
@@ -543,8 +541,6 @@ class MovieDetailApp {
             episodesSection: document.getElementById('episodes-section'),
             languageTables: document.getElementById('language-tables'),
             toggleEpisodesBtn: document.getElementById('toggle-episodes-btn'),
-            searchInput: document.getElementById('search-input'),
-            clearSearch: document.getElementById('clear-search'),
             scrollTop: document.getElementById('scroll-top'),
             themeToggle: document.getElementById('theme-toggle'),
             loadingSpinner: document.getElementById('loading-spinner'),
@@ -876,29 +872,6 @@ class MovieDetailApp {
             this.elements.scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         }
 
-        if (this.elements.searchInput) {
-            this.elements.searchInput.addEventListener('input', () => {
-                const searchTerm = this.elements.searchInput.value.trim();
-                this.elements.clearSearch?.classList.toggle('visible', searchTerm.length > 0);
-            });
-
-            this.elements.searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    const searchTerm = this.elements.searchInput.value.trim();
-                    window.location.href = `index.html?search=${encodeURIComponent(searchTerm)}`;
-                }
-            });
-        }
-
-        if (this.elements.clearSearch) {
-            this.elements.clearSearch.addEventListener('click', () => {
-                if (this.elements.searchInput) {
-                    this.elements.searchInput.value = '';
-                }
-                this.elements.clearSearch.classList.remove('visible');
-            });
-        }
-
         if (this.elements.clearCacheBtn) {
             this.elements.clearCacheBtn.addEventListener('click', async () => {
                 await this.clearCache();
@@ -946,7 +919,6 @@ class MovieDetailApp {
             let movieData;
             if (apiSource === 'custom') {
                 if (episodesParam) {
-                    // Handle case where episodes are passed as JSON parameter
                     const episodes = JSON.parse(decodeURIComponent(episodesParam));
                     movieData = {
                         name: name || 'Không có tên',
@@ -976,7 +948,6 @@ class MovieDetailApp {
                         apiSource: 'custom'
                     };
                 } else {
-                    // Fetch directly from TXT file
                     movieData = await this.fetchTxtData(slug);
                     if (!movieData) {
                         this.showError('Không thể tải dữ liệu từ file TXT. Vui lòng kiểm tra URL hoặc định dạng file.');
@@ -1010,26 +981,32 @@ class MovieDetailApp {
     renderMovieDetails() {
         if (!this.movieData || !this.elements.movieDetails) return;
         const { name, poster_url, content, year, actors, directors, categories, countries, quality, lang, type, episode_total, slug, apiSource, servers } = this.movieData;
-        const firstEpisode = servers?.[0]?.server_data?.[0];
-        const watchUrl = firstEpisode ? `watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(firstEpisode.name)}&link_m3u8=${encodeURIComponent(firstEpisode.link_m3u8 || '')}&link_embed=${encodeURIComponent(firstEpisode.link_embed || '')}&link_video=${encodeURIComponent(firstEpisode.link_video || '')}&movieName=${encodeURIComponent(name)}&lang=${encodeURIComponent(firstEpisode.lang || lang)}` : '#';
+        const firstEpisode = servers?.[0]?.server_data?.[0] || null;
+        let watchUrl = '#';
+        let watchBtnClass = 'watch-now-btn';
+        if (firstEpisode && (firstEpisode.link_m3u8 || firstEpisode.link_embed || firstEpisode.link_video)) {
+            watchUrl = `watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(firstEpisode.name)}&link_m3u8=${encodeURIComponent(firstEpisode.link_m3u8 || '')}&link_embed=${encodeURIComponent(firstEpisode.link_embed || '')}&link_video=${encodeURIComponent(firstEpisode.link_video || '')}&movieName=${encodeURIComponent(name)}&lang=${encodeURIComponent(firstEpisode.lang || lang)}`;
+        } else {
+            watchBtnClass += ' disabled';
+        }
         this.elements.movieDetails.innerHTML = `
             <div class="movie-poster">
                 <img src="${poster_url}" alt="Poster cho ${name}" loading="lazy" onerror="this.src='https://via.placeholder.com/150x225';">
-                <a href="${watchUrl}" class="watch-now-btn">
+                <a href="${watchUrl}" class="${watchBtnClass}">
                     <i class="fas fa-play"></i> Xem ngay
                 </a>
             </div>
             <div class="movie-info">
-                <h1>${name} (${quality})</h1>
-                <p><strong>Năm:</strong> ${year}</p>
-                <p><strong>Ngôn ngữ:</strong> ${lang}</p>
+                <h1>${name || 'Không có tên'} (${quality || 'HD'})</h1>
+                <p><strong>Năm:</strong> ${year || 'Không rõ'}</p>
+                <p><strong>Ngôn ngữ:</strong> ${lang || 'Vietsub'}</p>
                 <p><strong>Loại:</strong> ${type === 'series' ? 'Phim bộ' : 'Phim lẻ'}</p>
-                <p><strong>Số tập:</strong> ${episode_total}</p>
-                <p><strong>Diễn viên:</strong> ${actors}</p>
-                <p><strong>Đạo diễn:</strong> ${directors}</p>
-                <p><strong>Thể loại:</strong> ${categories}</p>
-                <p><strong>Quốc gia:</strong> ${countries}</p>
-                <p><strong>Nội dung:</strong> ${content}</p>
+                <p><strong>Số tập:</strong> ${episode_total || 1}</p>
+                <p><strong>Diễn viên:</strong> ${actors || 'Không có thông tin'}</p>
+                <p><strong>Đạo diễn:</strong> ${directors || 'Không có thông tin'}</p>
+                <p><strong>Thể loại:</strong> ${categories || 'Không rõ'}</p>
+                <p><strong>Quốc gia:</strong> ${countries || 'Không rõ'}</p>
+                <p><strong>Nội dung:</strong> ${content || 'Không có nội dung'}</p>
             </div>
         `;
     }
@@ -1056,19 +1033,18 @@ class MovieDetailApp {
         table.appendChild(thead);
 
         const tbody = document.createElement('tbody');
-        const allEpisodes = servers.flatMap(s => s.server_data);
         servers.forEach(server => {
             server.server_data.forEach(episode => {
                 const { name: episodeName, link_m3u8, link_embed, link_video, lang } = episode;
                 const episodeNumber = parseInt(episodeName) || episodeName;
                 const links = [];
-                if (link_m3u8) links.push({ type: 'm3u8', url: link_m3u8, label: 'Vip' });
-                if (link_embed) links.push({ type: 'embed', url: link_embed, label: 'Pro' });
-                if (link_video) links.push({ type: 'video', url: link_video, label: 'Bánh Mì' });
+                if (link_m3u8) links.push({ type: 'm3u8', url: link_m3u8, label: 'Vip', class: 'vip' });
+                if (link_embed) links.push({ type: 'embed', url: link_embed, label: 'Pro', class: 'pro' });
+                if (link_video) links.push({ type: 'video', url: link_video, label: 'Bánh Mì', class: 'banhmi' });
 
-                const watchUrl = (linkType, url) => `watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(episodeNumber)}&link_${linkType}=${encodeURIComponent(url)}&movieName=${encodeURIComponent(name)}&lang=${encodeURIComponent(lang || this.movieData.lang || 'Vietsub')}`;
+                const watchUrl = (linkType, url) => `watch.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(episodeNumber)}&link_${linkType}=${encodeURIComponent(url)}&movieName=${encodeURIComponent(name)}&lang=${encodeURIComponent(lang || this.movieData.lang || 'Vietsub')}&link_type=${encodeURIComponent(linkType)}`;
                 
-                const linkText = links.length ? links.map(link => `<a href="${watchUrl(link.type, link.url)}" data-link-type="${link.type}">${link.label}</a>`).join(' | ') : '<span class="unavailable">Không có</span>';
+                const linkText = links.length ? `<div class="link-buttons">${links.map(link => `<a href="${watchUrl(link.type, link.url)}" class="link-btn ${link.class}" data-link-type="${link.type}">${link.label}</a>`).join('')}</div>` : '<span class="unavailable">Không có</span>';
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${type === 'series' ? `Tập ${episodeNumber}` : 'Phim'}</td>
@@ -1081,8 +1057,7 @@ class MovieDetailApp {
         table.appendChild(tbody);
         this.elements.languageTables.appendChild(table);
 
-        // Store episodes in sessionStorage before navigation
-        sessionStorage.setItem('movieEpisodes', JSON.stringify(allEpisodes));
+        sessionStorage.setItem('movieEpisodes', JSON.stringify(servers.flatMap(s => s.server_data)));
     }
 
     async init() {
@@ -1105,5 +1080,43 @@ class MovieDetailApp {
 const app = new MovieDetailApp();
 app.init();
     </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body>
 </html>
