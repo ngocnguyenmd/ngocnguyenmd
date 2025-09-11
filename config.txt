@@ -1,0 +1,4 @@
+index|the-loai|hanh-dong|https://ophim1.com/v1/api/the-loai/hanh-dong?page=1
+index|the-loai|hanh-dong|https://ophim1.com/v1/api/the-loai/hanh-dong?page=2
+index|quoc-gia|au-my|https://ophim1.com/v1/api/quoc-gia/au-my?page=1
+index|quoc-gia|au-my|https://ophim1.com/v1/api/quoc-gia/au-my?page=2
