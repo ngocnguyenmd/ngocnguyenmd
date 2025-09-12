@@ -3,308 +3,391 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phim Hay</title>
+  <title>Phim Nhà Bánh Mì</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #181818;
-      color: #f1f1f1;
-    }
-    .search-box {
-      padding: 12px;
-      background: #222;
-      display: flex;
-      justify-content: flex-end;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    .search-box input {
-      width: 220px;
-      padding: 8px 12px;
-      border-radius: 20px;
-      border: none;
-      outline: none;
-      font-size: 0.9rem;
-      background: #333;
-      color: #fff;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .movies-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 20px;
-    }
-    @media (max-width: 1024px) {
-      .movies-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-    @media (max-width: 768px) {
-      .movies-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-    .movie-card {
-      background: #2a2a2a;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-      transition: transform 0.2s ease;
-      cursor: pointer;
-    }
-    .movie-card:hover {
-      transform: scale(1.05);
-    }
-    .movie-card img {
-      width: 100%;
-      height: 240px;
-      object-fit: cover;
-      display: block;
-    }
-    .movie-info {
-      padding: 10px;
-    }
-    .movie-info h3 {
-      margin: 0;
-      font-size: 1rem;
-      color: #ffcc00;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .movie-info p {
-      margin: 5px 0;
-      font-size: 0.85rem;
-      color: #bbb;
-    }
-    .section {
-      margin-top: 40px;
-      padding: 20px;
-      background: #202020;
-      border-radius: 12px;
-    }
-    .section h2 {
-      margin: 0 0 15px;
-      color: #ffcc00;
-    }
+    body { font-family: Arial, sans-serif; background:#f9f7f8 ; color: rgb(95, 85, 85); margin: 0; }
+    header { background: #f5cf8e; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    header h1 { margin: 0; font-size: 20px; }
+    nav { display: flex; gap: 12px; flex-wrap: wrap; }
+    nav select, nav button, nav input { background: #222; color: #e0921d; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+    nav input { flex: 1; min-width: 200px; }
+    .container { padding: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+    .card { background: #dfd9dd; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform .2s; position: relative; }
+    .card:hover { transform: scale(1.05); }
+    .card img { width: 100%; height: 240px; object-fit: cover; display: block; }
+    .year-tag { position: absolute; top: 8px; left: 8px; background: #a3491f; color: #fff; padding: 2px 6px; font-size: 12px; border-radius: 4px; }
+    .card h3 { margin: 8px; font-size: 14px; }
+    .card p { margin: 0 8px 10px; font-size: 12px; color: #f5cf8e; }
+    .pagination { margin: 20px 0; text-align: center; }
+    .pagination button { margin: 0 5px; padding: 6px 12px; border: none; border-radius: 4px; background: #444; color: #fff; cursor: pointer; }
+    .pagination button.active { background: #a3491f; }
+    #suggestions { background: #222; position: absolute; z-index: 10; max-height: 200px; overflow: auto; width: 250px; border-radius: 4px; }
+    #suggestions div { padding: 6px 10px; cursor: pointer; }
+    #suggestions div:hover { background: #333; }
   </style>
 </head>
 <body>
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm phim...">
-  </div>
+  <header>
+    <h1>🥖Bánh mì Nóng Đâyyy...</h1>
+    <nav>
+      <select id="sourceSelect">
+        <option value="source1">🥖 Nóng Giòn</option>
+        <option value="source2">🥖 Đặc Ruột</option>
+        <option value="source3">🥖 Bánh mì...</option>
+      </select>
+      <nav>
+  <select id="genreSelect"></select>
+  <select id="countrySelect"></select>
+  <select id="yearSelect"></select>
+  <select id="languageSelect"></select>
+  <button id="filterBtn">⛏ Lọc</button>
+  <input id="searchInput" type="text" placeholder="Tìm phim..." style="padding:6px;border-radius:4px;border:none;background:#222;color:#fff;">
+  <button id="searchBtn">🔍︎</button>
+</nav>
+  </header>
 
-  <main class="container">
-    <!-- Section 1: Trang chủ -->
-    <div class="section">
-      <h2>🔥 Phim Mới (Nguồn 1 + 2 + 3)</h2>
-      <div class="movies-grid" id="mainGrid"></div>
-    </div>
+<div class="container">
+  <h2 id="pageTitle">🥖Bánh Ra Lò...</h2>
+  <div id="movies" class="grid"></div>
+  <div id="pagination" class="pagination"></div>
+</div>
 
-    <!-- Section 2: Bánh mì -->
-    <div class="section">
-      <h2>🍞 Phim Bánh Mì (Nguồn 2 + 3, tự xoay trang)</h2>
-      <div class="movies-grid" id="banhmiGrid"></div>
-    </div>
+<!-- Container phụ cho Hàn Quốc -->
+<div class="container">
+  <h2>Bánh Hàn Quốc</h2>
+  <div id="koreanMovies" class="grid"></div>
+</div>
+<h2 id="pageTitleChina">Bánh Trung Quốc</h2>
+  <div id="moviesChina" class="grid"></div>
+</div>
 
-    <!-- Section 3: Phim Lẻ -->
-    <div class="section">
-      <h2>🎥 Phim Lẻ</h2>
-      <div class="movies-grid" id="phimLeGrid"></div>
-    </div>
-  </main>
+<script>
+const API_BASES = {
+  source1: "https://ophim1.com/v1/api",
+  source2: "https://phimapi.com",
+  source3: "https://phim.nguonc.com/api"
+};
+const IMG_BASES = {
+  source1: "",
+  source2: "https://img.phimapi.com",
+  source3: "https://phim.nguonc.com"
+};
 
-  <script>
-    let allMovies = [];
-    let pageNguon2 = 1;
-    let pageNguon3 = 1;
-    const maxPage = 30;
+const moviesEl = document.getElementById("movies");
+const paginationEl = document.getElementById("pagination");
+const sourceSelect = document.getElementById("sourceSelect");
+const genreSelect = document.getElementById("genreSelect");
+const countrySelect = document.getElementById("countrySelect");
+const yearSelect = document.getElementById("yearSelect");
+const languageSelect = document.getElementById("languageSelect");
+const filterBtn = document.getElementById("filterBtn");
+const searchInput = document.getElementById("searchInput");
+const koreanMoviesEl = document.getElementById("koreanMovies");
+const chinaMoviesEl = document.getElementById("moviesChina");
 
-    // ==================== TRANG CHỦ ====================
-    const HOME_URLS = [
-      "https://ophim1.com/v1/api/home",
-      "https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=1",
-      "https://phim.nguonc.com/api/films/phim-moi-cap-nhat?page=1"
-    ];
+const genres = [
+  "hanh-dong",
+  "hai-huoc",
+  "tinh-cam",
+  "tam-ly",
+  "co-trang",
+  "vo-thuat",
+  "chien-tranh",
+  "kinh-di",
+  "than-thoai",
+  "phieu-luu",
+  "hoat-hinh",
+  "phim-18",
+  "vien-tuong",
+  "tai-lieu",
+  "bi-an",
+  "the-thao",
+  "am-nhac",
+  "gia-dinh",
+  "hoc-duong",
+  "hinh-su",
+  "khoa-hoc",
+  "chinh-kich"
+]
+const countries = [
+  "trung-quoc",
+  "han-quoc",
+  "nhat-ban",
+  "thai-lan",
+  "au-my",
+  "dai-loan",
+  "hong-kong",
+  "an-do",
+  "anh",
+  "phap",
+  "canada",
+  "quoc-gia-khac",
+  "duc",
+  "tay-ban-nha",
+  "tho-nhi-ky",
+  "ha-lan",
+  "indonesia",
+  "nga",
+  "mexico",
+  "ba-lan",
+  "uc",
+  "thuy-dien",
+  "malaysia",
+  "brazil",
+  "philippines",
+  "bo-dao-nha",
+  "y",
+  "dan-mach",
+  "uae",
+  "na-uy",
+  "thuy-si",
+  "chau-phi",
+  "nam-phi",
+  "ukraina",
+  "a-rap-xe-ut",
+  "bi",
+  "ireland",
+  "colombia",
+  "phan-lan",
+  "viet-nam",
+  "chile",
+  "hy-lap",
+  "nigeria",
+  "argentina",
+  "singapore",
+  "new-zealand"
+]
+const years = Array.from({ length: 30 }, (_, i) => 2029 - i);
+const languages = ["phim-moi","phim-bo","phim-le","tv-shows","hoat-hinh","phim-vietsub","phim-thuyet-minh","phim-long-tieng","long-tieng","thuyet-minh","subteam","phim-bo-dang-chieu","phim-bo-hoan-thanh","phim-sap-chieu","phim-chieu-rap"];
 
-    async function fetchHomeMovies() {
-      try {
-        const [res1, res2, res3] = await Promise.all([
-          fetch(HOME_URLS[0]).then(r => r.json()).catch(() => null),
-          fetch(HOME_URLS[1]).then(r => r.json()).catch(() => null),
-          fetch(HOME_URLS[2]).then(r => r.json()).catch(() => null)
-        ]);
+function populateSelect(select, items, label) {
+  select.innerHTML = `<option value="">${label}</option>`;
+  items.forEach(item => {
+    select.innerHTML += `<option value="${item}">${item}</option>`;
+  });
+}
+populateSelect(genreSelect, genres, "😎 Thể loại");
+populateSelect(countrySelect, countries, "⭐️ Quốc gia");
+populateSelect(yearSelect, years, "📅 Năm");
+populateSelect(languageSelect, languages, "🤏 Ngôn ngữ/Danh sách");
 
-        const movies1 = res1?.data?.items || [];
-        const movies2 = res2?.items || [];
-        const movies3 = res3?.items || [];
+// Chuẩn hóa dữ liệu
+function normalizeMovieData(movie, source, cdnImage) {
+  if (source === "source1") {
+    let thumb = movie.thumb_url || movie.poster_url || "";
+    if (thumb && !thumb.startsWith("http")) {
+      thumb = `${cdnImage}/uploads/movies/${thumb.replace(/^\/+/, "")}`;
+    }
+    return {
+      name: movie.name,
+      thumb_url: thumb,
+      year: movie.year || "N/A",
+      slug: movie.slug,
+      episode_current: movie.episode_current || movie.episode_total || "",
+      quality: movie.quality || "",
+      lang: movie.lang || ""
+    };
+  } else if (source === "source2") {
+    let thumb = movie.poster_url || movie.thumb_url || "";
+    if (thumb && !thumb.startsWith("http")) {
+      thumb = `${IMG_BASES.source2}/${thumb.replace(/^\/+/, "")}`;
+    }
+    return {
+      name: movie.name || movie.title,
+      thumb_url: thumb,
+      year: movie.year || "N/A",
+      slug: movie.slug,
+      episode_current: movie.episode_current || movie.status || "",
+      quality: movie.quality || "",
+      lang: movie.lang || movie.language || ""
+    };
+  } else if (source === "source3") {
+    let thumb = movie.thumb_url || movie.poster_url || "";
+    if (thumb && !thumb.startsWith("http")) {
+      thumb = `${IMG_BASES.source3}/${thumb.replace(/^\/+/, "")}`;
+    }
+    return {
+      name: movie.name,
+      thumb_url: thumb,
+      year: movie.year || "N/A",
+      slug: movie.slug,
+      episode_current: movie.current_episode || "",
+      quality: movie.quality || "",
+      lang: movie.language || ""
+    };
+  }
+}
 
-        allMovies = mergeMovies(movies1, movies2, movies3);
-        renderMovies(allMovies, "mainGrid");
-      } catch (err) {
-        console.error("Lỗi tải dữ liệu:", err);
-      }
+// Render phim ra grid
+function renderMovieCard(container, normalized, source) {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `
+    <span class="year-tag">${normalized.year}</span>
+    <img src="${normalized.thumb_url}" alt="${normalized.name}" loading="lazy">
+    <h3>${normalized.name}</h3>
+    <p>${normalized.episode_current} ${normalized.quality} ${normalized.lang}</p>
+  `;
+  // bấm poster -> sang detail.html
+  card.addEventListener("click", () => {
+    window.location.href = `detail.html?slug=${normalized.slug}&source=${source}`;
+  });
+  container.appendChild(card);
+}
+
+// Load danh sách phim chính
+async function fetchMovies({ page = 1, mode = "genre", search = "" } = {}) {
+  const source = sourceSelect.value;
+  const genre = genreSelect.value;
+  const country = countrySelect.value;
+  const year = yearSelect.value;
+  const language = languageSelect.value;
+  const limit = 45;
+  let url = "";
+  let cdnImage = "";
+
+  if (source === "source1") {
+    if (search) {
+      url = `${API_BASES.source1}/tim-kiem?keyword=${encodeURIComponent(search)}&page=${page}&limit=${limit}`;
+    } else if (mode === "genre") {
+      const genreSlug = genre || "hanh-dong";
+      url = `${API_BASES.source1}/the-loai/${genreSlug}?page=${page}&limit=${limit}`;
+    } else if (mode === "language") {
+      const langSlug = language || "phim-moi";
+      url = `${API_BASES.source1}/danh-sach/${langSlug}?page=${page}&limit=${limit}`;
+    }
+    if (!search && country) url += `&country=${country}`;
+    if (!search && year) url += `&year=${year}`;
+  } else if (source === "source2") {
+    if (search) {
+      url = `${API_BASES.source2}/v1/api/tim-kiem?keyword=${encodeURIComponent(search)}&page=${page}&limit=${limit}`;
+    } else if (mode === "genre") {
+      const genreSlug = genre || "hanh-dong";
+      url = `${API_BASES.source2}/v1/api/the-loai/${genreSlug}?page=${page}&limit=${limit}`;
+    } else if (mode === "language") {
+      const langSlug = language || "phim-moi-cap-nhat";
+      url = `${API_BASES.source2}/danh-sach/${langSlug}?page=${page}&limit=${limit}`;
+    }
+    if (!search && country) url += `&country=${country}`;
+    if (!search && year) url += `&year=${year}`;
+  } else if (source === "source3") {
+    if (search) {
+      url = `${API_BASES.source3}/films/search?keyword=${encodeURIComponent(search)}&page=${page}&limit=${limit}`;
+    } else if (mode === "genre") {
+      const genreSlug = genre || "hanh-dong";
+      url = `${API_BASES.source3}/films/the-loai/${genreSlug}?page=${page}&limit=${limit}`;
+    } else if (mode === "language") {
+      const langSlug = language || "phim-moi-cap-nhat";
+      url = `${API_BASES.source3}/films/${langSlug}?page=${page}&limit=${limit}`;
+    }
+    if (!search && country) url = `${API_BASES.source3}/films/quoc-gia/${country}?page=${page}&limit=${limit}`;
+    if (!search && year) url = `${API_BASES.source3}/films/nam-phat-hanh/${year}?page=${page}&limit=${limit}`;
+  }
+
+  try {
+    moviesEl.innerHTML = "⏳ Đang tải phim...";
+    const res = await fetch(url);
+    const json = await res.json();
+    let data = [];
+    let totalPages = 1;
+
+    if (source === "source1") {
+      data = json.data?.items || [];
+      totalPages = json.data?.params?.pagination?.totalPages || 40;
+      cdnImage = json.data?.APP_DOMAIN_CDN_IMAGE || "";
+    } else if (source === "source2") {
+      data = json.data?.items || json.data?.movies || [];
+      totalPages = json.data?.params?.pagination?.totalPages || 40;
+    } else if (source === "source3") {
+      data = json.data || json.items || [];
+      totalPages = json.totalPages ||40;
     }
 
-    // ==================== BÁNH MÌ ====================
-    async function loadBanhMi() {
-      try {
-        const [res2, res3] = await Promise.all([
-          fetch(`https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=${pageNguon2}`)
-            .then(r => r.json()).catch(() => null),
-          fetch(`https://phim.nguonc.com/api/films/phim-moi-cap-nhat?page=${pageNguon3}`)
-            .then(r => r.json()).catch(() => null)
-        ]);
-
-        const movies2 = res2?.items || [];
-        const movies3 = res3?.items || [];
-
-        const banhmiMovies = mergeMovies([], movies2, movies3);
-        renderMovies(banhmiMovies, "banhmiGrid");
-
-        // tăng page, giới hạn 30
-        if (pageNguon2 < maxPage) pageNguon2++;
-        else pageNguon2 = 1;
-
-        if (pageNguon3 < maxPage) pageNguon3++;
-        else pageNguon3 = 1;
-
-      } catch (err) {
-        console.error("Lỗi tải bánh mì:", err);
-      }
+    if (!data.length) {
+      moviesEl.innerHTML = "<p>Không tìm thấy phim.</p>";
+      return;
     }
 
-    // ==================== PHIM LẺ ====================
-    async function loadPhimLe() {
-      try {
-        const res = await fetch("https://phimapi.com/v1/api/danh-sach/phim-le?page=1")
-          .then(r => r.json()).catch(() => null);
-
-        const movies = res?.items || [];
-        renderMovies(movies, "phimLeGrid", "🔸Nguồn 2");
-      } catch (err) {
-        console.error("Lỗi tải phim lẻ:", err);
-      }
-    }
-
-    // ==================== MERGE + RENDER ====================
-    function mergeMovies(movies1, movies2, movies3) {
-      const movieMap = new Map();
-
-      function addMovie(list, sourceLabel) {
-        list.forEach(item => {
-          const slug = item.slug || item._id || item.name;
-          if (!slug) return;
-
-          if (!movieMap.has(slug)) {
-            let thumb = item.thumb_url || item.poster_url || "https://via.placeholder.com/160x240?text=No+Image";
-
-            if (sourceLabel === "🔹Nguồn 1") {
-              if (item.poster_url) {
-                thumb = `https://img.ophim.live/uploads/movies/${item.poster_url}`;
-              } else if (item.thumb_url) {
-                thumb = `https://img.ophim.live/uploads/movies/${item.thumb_url}`;
-              }
-            }
-
-            movieMap.set(slug, {
-              slug,
-              name: item.name,
-              year: item.year,
-              episode_current: item.episode_current || "N/A",
-              thumb_url: thumb,
-              sources: []
-            });
-          }
-
-          movieMap.get(slug).sources.push({
-            type: sourceLabel,
-            raw: item
-          });
-        });
-      }
-
-      addMovie(movies1, "🔹Nguồn 1");
-      addMovie(movies2, "🔸Nguồn 2");
-      addMovie(movies3, "🔺Nguồn 3");
-
-      return Array.from(movieMap.values());
-    }
-
-    function renderMovies(movies, gridId, sourceLabel = null) {
-      const grid = document.getElementById(gridId);
-      grid.innerHTML = "";
-
-      if (!movies.length) {
-        grid.innerHTML = "<p>Không tìm thấy phim nào...</p>";
-        return;
-      }
-
-      for (const m of movies) {
-        const card = document.createElement("div");
-        card.className = "movie-card";
-        card.innerHTML = `
-          <img src="${m.thumb_url}" alt="${m.name}">
-          <div class="movie-info">
-            <h3>${m.name}</h3>
-            <p>${m.episode_current} • ${m.year || ""}</p>
-            <p>${sourceLabel || m.sources.map(s => s.type).join(" • ")}</p>
-          </div>
-        `;
-
-        card.addEventListener("click", () => {
-          localStorage.setItem("selectedMovie", JSON.stringify(m));
-          window.location.href = "detail.html";
-        });
-
-        grid.appendChild(card);
-      }
-    }
-
-    // ==================== SEARCH ====================
-    async function searchMovies(keyword) {
-      if (!keyword) {
-        renderMovies(allMovies, "mainGrid");
-        return;
-      }
-
-      try {
-        const [res1, res3] = await Promise.all([
-          fetch(`https://ophim1.com/v1/api/tim-kiem?keyword=${encodeURIComponent(keyword)}`)
-            .then(r => r.json()).catch(() => null),
-          fetch(`https://phim.nguonc.com/api/films/search?keyword=${encodeURIComponent(keyword)}`)
-            .then(r => r.json()).catch(() => null)
-        ]);
-
-        const movies1 = res1?.data?.items || [];
-        const movies3 = res3?.items || [];
-
-        const results = mergeMovies(movies1, [], movies3);
-        renderMovies(results, "mainGrid");
-      } catch (err) {
-        console.error("Lỗi tìm kiếm:", err);
-      }
-    }
-
-    let timeout = null;
-    document.getElementById("searchInput").addEventListener("input", e => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        searchMovies(e.target.value.trim());
-      }, 500);
+    moviesEl.innerHTML = "";
+    data.forEach(movie => {
+      const normalized = normalizeMovieData(movie, source, cdnImage);
+      renderMovieCard(moviesEl, normalized, source);
     });
 
-    // ==================== INIT ====================
-    fetchHomeMovies();
-    loadBanhMi();
-    setInterval(loadBanhMi, 20000);
-    loadPhimLe();
-  </script>
+    paginationEl.innerHTML = "";
+    for (let i = 1; i <= Math.min(totalPages, 1000); i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i;
+      if (i === page) btn.classList.add("active");
+      btn.addEventListener("click", () => fetchMovies({ page: i, mode, search }));
+      paginationEl.appendChild(btn);
+    }
+  } catch (err) {
+    console.error("Lỗi tải phim:", err);
+    moviesEl.innerHTML = "<p>Lỗi tải dữ liệu phim.</p>";
+  }
+}
+
+// Load riêng phim theo quốc gia
+async function fetchCountryMovies(container, countrySlug) {
+  const source = sourceSelect.value;
+  let url = "";
+  const limit = 220;
+
+  if (source === "source1") {
+    url = `${API_BASES.source1}/quoc-gia/${countrySlug}?page=1&limit=${limit}`;
+  } else if (source === "source2") {
+    url = `${API_BASES.source2}/v1/api/quoc-gia/${countrySlug}?page=1&limit=${limit}`;
+  } else if (source === "source3") {
+    url = `${API_BASES.source3}/films/quoc-gia/${countrySlug}?page=1&limit=${limit}`;
+  }
+
+  try {
+    container.innerHTML = "⏳ Đang tải...";
+    const res = await fetch(url);
+    const json = await res.json();
+    let data = [];
+
+    if (source === "source1") data = json.data?.items || [];
+    else if (source === "source2") data = json.data?.items || json.data?.movies || [];
+    else if (source === "source3") data = json.data || json.items || [];
+
+    container.innerHTML = "";
+    data.forEach(movie => {
+      const normalized = normalizeMovieData(movie, source, json.data?.APP_DOMAIN_CDN_IMAGE || "");
+      renderMovieCard(container, normalized, source);
+    });
+  } catch (err) {
+    console.error("Lỗi tải phim:", err);
+    container.innerHTML = "<p>Lỗi tải dữ liệu.</p>";
+  }
+}
+
+// Event
+filterBtn.addEventListener("click", () => {
+  if (languageSelect.value) fetchMovies({ mode: "language" });
+  else fetchMovies({ mode: "genre" });
+});
+searchInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    fetchMovies({ search: searchInput.value.trim() });
+  }
+});
+sourceSelect.addEventListener("change", () => {
+  fetchMovies({ mode: "genre" });
+  fetchCountryMovies(koreanMoviesEl, "han-quoc");
+  fetchCountryMovies(chinaMoviesEl, "trung-quoc");
+});
+
+// Load mặc định
+fetchMovies({ mode: "genre" });
+fetchCountryMovies(koreanMoviesEl, "han-quoc");
+fetchCountryMovies(chinaMoviesEl, "trung-quoc");
+
+</script>
+
+
 </body>
 </html>
