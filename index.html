@@ -5,62 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Phim Nhà Bánh Mì</title>
   <style>
-    body { font-family: Arial, sans-serif; background:#f9f7f8 ; color: rgb(95, 85, 85); margin: 0; }
-    header { background: #f5cf8e; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    body { font-family: Arial, sans-serif; background: rgb(34, 33, 33); color: #fff; margin: 0; }
+    header { background: #75462f; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
     header h1 { margin: 0; font-size: 20px; }
     nav { display: flex; gap: 12px; flex-wrap: wrap; }
     nav select, nav button, nav input { background: #222; color: #e0921d; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
     nav input { flex: 1; min-width: 200px; }
     .container { padding: 20px; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-    .card { background: #dfd9dd; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform .2s; position: relative; }
+    .card { background: #75462f; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform .2s; position: relative; }
     .card:hover { transform: scale(1.05); }
     .card img { width: 100%; height: 240px; object-fit: cover; display: block; }
     .year-tag { position: absolute; top: 8px; left: 8px; background: #a3491f; color: #fff; padding: 2px 6px; font-size: 12px; border-radius: 4px; }
     .card h3 { margin: 8px; font-size: 14px; }
-    .card p { margin: 0 8px 10px; font-size: 12px; color: #f5cf8e; }
+    .card p { margin: 0 8px 10px; font-size: 12px; color: black; }
     .pagination { margin: 20px 0; text-align: center; }
-    .pagination button { margin: 0 5px; padding: 6px 12px; border: none; border-radius: 4px; background: #444; color: #fff; cursor: pointer; }
-    .pagination button.active { background: #a3491f; }
-    #suggestions { background: #222; position: absolute; z-index: 10; max-height: 200px; overflow: auto; width: 250px; border-radius: 4px; }
-    #suggestions div { padding: 6px 10px; cursor: pointer; }
-    #suggestions div:hover { background: #333; }
+    .pagination button { margin: 4px 5px; padding: 2px 8px; border: none; border-radius: 5px; background: #444; color: #fff; cursor: pointer; }
+    .pagination button.active { background: #75462f; }
+    .toggle-btn { margin-bottom: 1px; padding: 2px 12px; background: #693810; border-radius: 4px; cursor: pointer; border: none; color: #fff; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
   <header>
-    <h1>🥖Bánh mì Nóng Đâyyy...</h1>
+    <h1>🥖 Bánh mì Nóng Đâyyy...</h1>
     <nav>
       <select id="sourceSelect">
         <option value="source1">🥖 Nóng Giòn</option>
         <option value="source2">🥖 Đặc Ruột</option>
         <option value="source3">🥖 Bánh mì...</option>
       </select>
-      <nav>
-  <select id="genreSelect"></select>
-  <select id="countrySelect"></select>
-  <select id="yearSelect"></select>
-  <select id="languageSelect"></select>
-  <button id="filterBtn">⛏ Lọc</button>
-  <input id="searchInput" type="text" placeholder="Tìm phim..." style="padding:6px;border-radius:4px;border:none;background:#222;color:#fff;">
-  <button id="searchBtn">🔍︎</button>
-</nav>
+      <select id="genreSelect"></select>
+      <select id="countrySelect"></select>
+      <select id="yearSelect"></select>
+      <select id="languageSelect"></select>
+      <button id="filterBtn">⛏ Lọc</button>
+      <input id="searchInput" type="text" placeholder="Tìm phim...">
+      <button id="searchBtn">🔍︎</button>
+    </nav>
   </header>
 
-<div class="container">
-  <h2 id="pageTitle">🥖Bánh Ra Lò...</h2>
-  <div id="movies" class="grid"></div>
-  <div id="pagination" class="pagination"></div>
-</div>
+  <div class="container">
+    <h2 id="pageTitle">🥖 Bánh Ra Lò...</h2>
+    <div id="movies" class="grid"></div>
+    <div id="pagination" class="pagination"></div>
+  </div>
 
-<!-- Container phụ cho Hàn Quốc -->
-<div class="container">
-  <h2>Bánh Hàn Quốc</h2>
-  <div id="koreanMovies" class="grid"></div>
-</div>
-<h2 id="pageTitleChina">Bánh Trung Quốc</h2>
-  <div id="moviesChina" class="grid"></div>
-</div>
+  <!-- Container phụ cho Hàn Quốc -->
+  <div class="container" id="koreanContainer">
+    <button class="toggle-btn" onclick="toggleSection('koreanMovies')">Ẩn/Hiện Bánh Hàn Quốc</button>
+    <h2>Bánh Hàn Quốc</h2>
+    <div id="koreanMovies" class="grid"></div>
+  </div>
+
+  <!-- Container phụ cho Trung Quốc -->
+  <div class="container" id="chinaContainer">
+    <button class="toggle-btn" onclick="toggleSection('moviesChina')">Ẩn/Hiện Bánh Trung Quốc</button>
+    <h2>Bánh Trung Quốc</h2>
+    <div id="moviesChina" class="grid"></div>
+  </div>
 
 <script>
 const API_BASES = {
@@ -85,79 +88,18 @@ const filterBtn = document.getElementById("filterBtn");
 const searchInput = document.getElementById("searchInput");
 const koreanMoviesEl = document.getElementById("koreanMovies");
 const chinaMoviesEl = document.getElementById("moviesChina");
+const koreanContainer = document.getElementById("koreanContainer");
+const chinaContainer = document.getElementById("chinaContainer");
 
-const genres = [
-  "hanh-dong",
-  "hai-huoc",
-  "tinh-cam",
-  "tam-ly",
-  "co-trang",
-  "vo-thuat",
-  "chien-tranh",
-  "kinh-di",
-  "than-thoai",
-  "phieu-luu",
-  "hoat-hinh",
-  "phim-18",
-  "vien-tuong",
-  "tai-lieu",
-  "bi-an",
-  "the-thao",
-  "am-nhac",
-  "gia-dinh",
-  "hoc-duong",
-  "hinh-su",
-  "khoa-hoc",
-  "chinh-kich"
-]
-const countries = [
-  "trung-quoc",
-  "han-quoc",
-  "nhat-ban",
-  "thai-lan",
-  "au-my",
-  "dai-loan",
-  "hong-kong",
-  "an-do",
-  "anh",
-  "phap",
-  "canada",
-  "quoc-gia-khac",
-  "duc",
-  "tay-ban-nha",
-  "tho-nhi-ky",
-  "ha-lan",
-  "indonesia",
-  "nga",
-  "mexico",
-  "ba-lan",
-  "uc",
-  "thuy-dien",
-  "malaysia",
-  "brazil",
-  "philippines",
-  "bo-dao-nha",
-  "y",
-  "dan-mach",
-  "uae",
-  "na-uy",
-  "thuy-si",
-  "chau-phi",
-  "nam-phi",
-  "ukraina",
-  "a-rap-xe-ut",
-  "bi",
-  "ireland",
-  "colombia",
-  "phan-lan",
-  "viet-nam",
-  "chile",
-  "hy-lap",
-  "nigeria",
-  "argentina",
-  "singapore",
-  "new-zealand"
-]
+// toggle mở/thu
+function toggleSection(id) {
+  const section = document.getElementById(id);
+  section.classList.toggle("hidden");
+}
+
+// danh sách thể loại, quốc gia, năm, ngôn ngữ
+const genres = ["hanh-dong","hai-huoc","tinh-cam","tam-ly","co-trang","vo-thuat","chien-tranh","kinh-di","than-thoai","phieu-luu","hoat-hinh","phim-18","vien-tuong","tai-lieu","bi-an","the-thao","am-nhac","gia-dinh","hoc-duong","hinh-su","khoa-hoc","chinh-kich"];
+const countries = ["trung-quoc","han-quoc","nhat-ban","thai-lan","au-my","dai-loan","hong-kong","an-do","anh","phap","canada","quoc-gia-khac","duc","tay-ban-nha","tho-nhi-ky","ha-lan","indonesia","nga","mexico","ba-lan","uc","thuy-dien","malaysia","brazil","philippines","bo-dao-nha","y","dan-mach","uae","na-uy","thuy-si","chau-phi","nam-phi","ukraina","a-rap-xe-ut","bi","ireland","colombia","phan-lan","viet-nam","chile","hy-lap","nigeria","argentina","singapore","new-zealand"];
 const years = Array.from({ length: 30 }, (_, i) => 2029 - i);
 const languages = ["phim-moi","phim-bo","phim-le","tv-shows","hoat-hinh","phim-vietsub","phim-thuyet-minh","phim-long-tieng","long-tieng","thuyet-minh","subteam","phim-bo-dang-chieu","phim-bo-hoan-thanh","phim-sap-chieu","phim-chieu-rap"];
 
@@ -172,54 +114,30 @@ populateSelect(countrySelect, countries, "⭐️ Quốc gia");
 populateSelect(yearSelect, years, "📅 Năm");
 populateSelect(languageSelect, languages, "🤏 Ngôn ngữ/Danh sách");
 
-// Chuẩn hóa dữ liệu
+// chuẩn hóa dữ liệu phim
 function normalizeMovieData(movie, source, cdnImage) {
-  if (source === "source1") {
-    let thumb = movie.thumb_url || movie.poster_url || "";
-    if (thumb && !thumb.startsWith("http")) {
-      thumb = `${cdnImage}/uploads/movies/${thumb.replace(/^\/+/, "")}`;
-    }
-    return {
-      name: movie.name,
-      thumb_url: thumb,
-      year: movie.year || "N/A",
-      slug: movie.slug,
-      episode_current: movie.episode_current || movie.episode_total || "",
-      quality: movie.quality || "",
-      lang: movie.lang || ""
-    };
-  } else if (source === "source2") {
-    let thumb = movie.poster_url || movie.thumb_url || "";
-    if (thumb && !thumb.startsWith("http")) {
-      thumb = `${IMG_BASES.source2}/${thumb.replace(/^\/+/, "")}`;
-    }
-    return {
-      name: movie.name || movie.title,
-      thumb_url: thumb,
-      year: movie.year || "N/A",
-      slug: movie.slug,
-      episode_current: movie.episode_current || movie.status || "",
-      quality: movie.quality || "",
-      lang: movie.lang || movie.language || ""
-    };
-  } else if (source === "source3") {
-    let thumb = movie.thumb_url || movie.poster_url || "";
-    if (thumb && !thumb.startsWith("http")) {
-      thumb = `${IMG_BASES.source3}/${thumb.replace(/^\/+/, "")}`;
-    }
-    return {
-      name: movie.name,
-      thumb_url: thumb,
-      year: movie.year || "N/A",
-      slug: movie.slug,
-      episode_current: movie.current_episode || "",
-      quality: movie.quality || "",
-      lang: movie.language || ""
-    };
+  let thumb = movie.thumb_url || movie.poster_url || "";
+  if (source === "source1" && thumb && !thumb.startsWith("http")) {
+    thumb = `${cdnImage}/uploads/movies/${thumb.replace(/^\/+/, "")}`;
   }
+  if (source === "source2" && thumb && !thumb.startsWith("http")) {
+    thumb = `${IMG_BASES.source2}/${thumb.replace(/^\/+/, "")}`;
+  }
+  if (source === "source3" && thumb && !thumb.startsWith("http")) {
+    thumb = `${IMG_BASES.source3}/${thumb.replace(/^\/+/, "")}`;
+  }
+  return {
+    name: movie.name || movie.title,
+    thumb_url: thumb,
+    year: movie.year || "N/A",
+    slug: movie.slug,
+    episode_current: movie.episode_current || movie.episode_total || movie.status || movie.current_episode || "",
+    quality: movie.quality || "",
+    lang: movie.lang || movie.language || ""
+  };
 }
 
-// Render phim ra grid
+// render phim ra grid
 function renderMovieCard(container, normalized, source) {
   const card = document.createElement("div");
   card.className = "card";
@@ -229,58 +147,38 @@ function renderMovieCard(container, normalized, source) {
     <h3>${normalized.name}</h3>
     <p>${normalized.episode_current} ${normalized.quality} ${normalized.lang}</p>
   `;
-  // bấm poster -> sang detail.html
   card.addEventListener("click", () => {
     window.location.href = `detail.html?slug=${normalized.slug}&source=${source}`;
   });
   container.appendChild(card);
 }
 
-// Load danh sách phim chính
+// fetchMovies chính
 async function fetchMovies({ page = 1, mode = "genre", search = "" } = {}) {
   const source = sourceSelect.value;
   const genre = genreSelect.value;
   const country = countrySelect.value;
   const year = yearSelect.value;
   const language = languageSelect.value;
-  const limit = 45;
+  const limit = 10;
   let url = "";
-  let cdnImage = "";
 
   if (source === "source1") {
-    if (search) {
-      url = `${API_BASES.source1}/tim-kiem?keyword=${encodeURIComponent(search)}&page=${page}&limit=${limit}`;
-    } else if (mode === "genre") {
-      const genreSlug = genre || "hanh-dong";
-      url = `${API_BASES.source1}/the-loai/${genreSlug}?page=${page}&limit=${limit}`;
-    } else if (mode === "language") {
-      const langSlug = language || "phim-moi";
-      url = `${API_BASES.source1}/danh-sach/${langSlug}?page=${page}&limit=${limit}`;
-    }
+    if (search) url = `${API_BASES.source1}/tim-kiem?keyword=${encodeURIComponent(search)}&page=${page}&limit=${limit}`;
+    else if (mode === "genre") url = `${API_BASES.source1}/the-loai/${genre||"hanh-dong"}?page=${page}&limit=${limit}`;
+    else if (mode === "language") url = `${API_BASES.source1}/danh-sach/${language||"phim-moi"}?page=${page}&limit=${limit}`;
     if (!search && country) url += `&country=${country}`;
     if (!search && year) url += `&year=${year}`;
   } else if (source === "source2") {
-    if (search) {
-      url = `${API_BASES.source2}/v1/api/tim-kiem?keyword=${encodeURIComponent(search)}&page=${page}&limit=${limit}`;
-    } else if (mode === "genre") {
-      const genreSlug = genre || "hanh-dong";
-      url = `${API_BASES.source2}/v1/api/the-loai/${genreSlug}?page=${page}&limit=${limit}`;
-    } else if (mode === "language") {
-      const langSlug = language || "phim-moi-cap-nhat";
-      url = `${API_BASES.source2}/danh-sach/${langSlug}?page=${page}&limit=${limit}`;
-    }
+    if (search) url = `${API_BASES.source2}/v1/api/tim-kiem?keyword=${encodeURIComponent(search)}&page=${page}&limit=${limit}`;
+    else if (mode === "genre") url = `${API_BASES.source2}/v1/api/the-loai/${genre||"hanh-dong"}?page=${page}&limit=${limit}`;
+    else if (mode === "language") url = `${API_BASES.source2}/danh-sach/${language||"phim-moi-cap-nhat"}?page=${page}&limit=${limit}`;
     if (!search && country) url += `&country=${country}`;
     if (!search && year) url += `&year=${year}`;
   } else if (source === "source3") {
-    if (search) {
-      url = `${API_BASES.source3}/films/search?keyword=${encodeURIComponent(search)}&page=${page}&limit=${limit}`;
-    } else if (mode === "genre") {
-      const genreSlug = genre || "hanh-dong";
-      url = `${API_BASES.source3}/films/the-loai/${genreSlug}?page=${page}&limit=${limit}`;
-    } else if (mode === "language") {
-      const langSlug = language || "phim-moi-cap-nhat";
-      url = `${API_BASES.source3}/films/${langSlug}?page=${page}&limit=${limit}`;
-    }
+    if (search) url = `${API_BASES.source3}/films/search?keyword=${encodeURIComponent(search)}&page=${page}&limit=${limit}`;
+    else if (mode === "genre") url = `${API_BASES.source3}/films/the-loai/${genre||"hanh-dong"}?page=${page}&limit=${limit}`;
+    else if (mode === "language") url = `${API_BASES.source3}/films/${language||"phim-moi-cap-nhat"}?page=${page}&limit=${limit}`;
     if (!search && country) url = `${API_BASES.source3}/films/quoc-gia/${country}?page=${page}&limit=${limit}`;
     if (!search && year) url = `${API_BASES.source3}/films/nam-phat-hanh/${year}?page=${page}&limit=${limit}`;
   }
@@ -291,17 +189,18 @@ async function fetchMovies({ page = 1, mode = "genre", search = "" } = {}) {
     const json = await res.json();
     let data = [];
     let totalPages = 1;
+    let cdnImage = "";
 
     if (source === "source1") {
       data = json.data?.items || [];
-      totalPages = json.data?.params?.pagination?.totalPages || 40;
+      totalPages = json.data?.params?.pagination?.totalPages || 60;
       cdnImage = json.data?.APP_DOMAIN_CDN_IMAGE || "";
     } else if (source === "source2") {
       data = json.data?.items || json.data?.movies || [];
-      totalPages = json.data?.params?.pagination?.totalPages || 40;
+      totalPages = json.data?.params?.pagination?.totalPages || 60;
     } else if (source === "source3") {
       data = json.data || json.items || [];
-      totalPages = json.totalPages ||40;
+      totalPages = json.totalPages || 60;
     }
 
     if (!data.length) {
@@ -316,7 +215,7 @@ async function fetchMovies({ page = 1, mode = "genre", search = "" } = {}) {
     });
 
     paginationEl.innerHTML = "";
-    for (let i = 1; i <= Math.min(totalPages, 1000); i++) {
+    for (let i = 1; i <= Math.min(totalPages, 2); i++) {
       const btn = document.createElement("button");
       btn.textContent = i;
       if (i === page) btn.classList.add("active");
@@ -329,19 +228,15 @@ async function fetchMovies({ page = 1, mode = "genre", search = "" } = {}) {
   }
 }
 
-// Load riêng phim theo quốc gia
+// load phim theo quốc gia
 async function fetchCountryMovies(container, countrySlug) {
   const source = sourceSelect.value;
   let url = "";
-  const limit = 220;
+  const limit = 40;
 
-  if (source === "source1") {
-    url = `${API_BASES.source1}/quoc-gia/${countrySlug}?page=1&limit=${limit}`;
-  } else if (source === "source2") {
-    url = `${API_BASES.source2}/v1/api/quoc-gia/${countrySlug}?page=1&limit=${limit}`;
-  } else if (source === "source3") {
-    url = `${API_BASES.source3}/films/quoc-gia/${countrySlug}?page=1&limit=${limit}`;
-  }
+  if (source === "source1") url = `${API_BASES.source1}/quoc-gia/${countrySlug}?page=1&limit=${limit}`;
+  else if (source === "source2") url = `${API_BASES.source2}/v1/api/quoc-gia/${countrySlug}?page=1&limit=${limit}`;
+  else if (source === "source3") url = `${API_BASES.source3}/films/quoc-gia/${countrySlug}?page=1&limit=${limit}`;
 
   try {
     container.innerHTML = "⏳ Đang tải...";
@@ -364,30 +259,32 @@ async function fetchCountryMovies(container, countrySlug) {
   }
 }
 
-// Event
+// event
 filterBtn.addEventListener("click", () => {
-  if (languageSelect.value) fetchMovies({ mode: "language" });
-  else fetchMovies({ mode: "genre" });
+  fetchMovies({ mode: languageSelect.value ? "language" : "genre" });
+  koreanContainer.classList.add("hidden");
+  chinaContainer.classList.add("hidden");
 });
 searchInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
     fetchMovies({ search: searchInput.value.trim() });
+    koreanContainer.classList.add("hidden");
+    chinaContainer.classList.add("hidden");
   }
 });
 sourceSelect.addEventListener("change", () => {
   fetchMovies({ mode: "genre" });
   fetchCountryMovies(koreanMoviesEl, "han-quoc");
   fetchCountryMovies(chinaMoviesEl, "trung-quoc");
+  koreanContainer.classList.remove("hidden");
+  chinaContainer.classList.remove("hidden");
 });
 
-// Load mặc định
+// load mặc định
 fetchMovies({ mode: "genre" });
 fetchCountryMovies(koreanMoviesEl, "han-quoc");
 fetchCountryMovies(chinaMoviesEl, "trung-quoc");
-
 </script>
-
-
 </body>
 </html>

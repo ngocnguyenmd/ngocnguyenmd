@@ -5,32 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đang lựa Bánh...</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f9f7f8; color: #fff; margin: 0; }
-    header { background: #f5cf8e; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    body { font-family: Arial, sans-serif; background: #0d0d18; color: #f5ede9; margin: 0; }
+    header { background: #75462f; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
     header h1 { margin: 0; font-size: 20px; }
     nav { display: flex; gap: 12px; flex-wrap: wrap; }
-    nav button { background: #f9f7f8;; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
-    nav button:hover { background: black; }
+    nav button { background: black;; color: #d4a38a; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+    nav button:hover { background: rgb(255, 255, 255); }
     .container { padding: 20px; }
     .movie-detail { display: flex; gap: 20px; flex-wrap: wrap; }
     .movie-poster img { width: 100%; max-width: 300px; aspect-ratio: 2/3; object-fit: cover; border-radius: 8px; }
     .movie-info { flex: 1; min-width: 250px; }
     .movie-info h2 { margin: 0 0 10px; font-size: 20px; }
-    .movie-info p { margin: 5px 0; font-size: 14px; color: #fce1d4; }
+    .movie-info p { margin: 5px 0; font-size: 14px; color: #614a1f; }
     .movie-info .buttons { margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap; }
-    .movie-info .buttons button { background: #f5cf8e; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; }
-    .movie-info .buttons button:hover { background: black; }
+    .movie-info .buttons button { background: black; color: #f0eeed; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    .movie-info .buttons button:hover { background: #75462f; }
     .episode-list { margin-top: 40px; }
     .episode-list h2 { font-size: 18px; margin-bottom: 10px; }
     .episode-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-    .episode-card { background: #f5cf8e; border-radius: 8px; text-align: center; padding: 10px; cursor: pointer; transition: background .2s; }
+    .episode-card { background: #75462f; border-radius: 8px; text-align: center; padding: 10px; cursor: pointer; transition: background .2s; }
     .episode-card:hover { background: black; }
     .episode-card p { margin: 0; font-size: 14px; }
     .embed-links { margin-top: 20px; display: none; }
     .embed-links.active { display: block; }
     .embed-links h3 { font-size: 16px; margin-bottom: 10px; }
     .embed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-    .embed-btn { background: #cac9ca; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; text-align: center; font-size: 14px; transition: background .2s; }
+    .embed-btn { background: #75462f; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; text-align: center; font-size: 14px; transition: background .2s; }
     .embed-btn:hover { background: black; }
   </style>
 </head>
