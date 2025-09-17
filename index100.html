@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Phim Nhà Bánh Mì</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-user-select: none; /* Ngăn chọn văn bản */
+      user-select: none; /* Ngăn chọn văn bản */
+      -webkit-touch-callout: none; /* Ngăn menu ngữ cảnh trên iOS */
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      background: #1c1c2e;
+      color: #fff;
+      line-height: 1.5;
+      touch-action: manipulation; /* Ngăn phóng to trên di động */
+    }
+
+    header {
+      background: #492e88;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    header h1:hover {
+      color: #b19cd9;
+    }
+
+    nav {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    nav div {
+      position: relative;
+      cursor: pointer;
+      color: #b19cd9;
+      font-weight: 600;
+      font-size: 16px;
+      transition: color 0.2s ease;
+    }
+
+    nav div:hover {
+      color: #fff;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #492e88;
+      border: 1px solid #3a236b;
+      border-radius: 8px;
+      padding: 12px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      z-index: 200;
+      min-width: 600px;
+      max-height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .dropdown div {
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .dropdown div:hover {
+      background: #3a236b;
+      border-radius: 4px;
+    }
+
+    nav div:hover .dropdown {
+      display: grid;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+    }
+
+    .search-box input {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #3a236b;
+      width: 240px;
+      background: #3a236b;
+      color: #fff;
+      font-size: 14px;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: #b19cd9;
+    }
+
+    .search-box button {
+      padding: 8px 16px;
+      margin-left: 8px;
+      cursor: pointer;
+      border-radius: 6px;
+      border: none;
+      background: #492e88;
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background 0.2s ease;
+    }
+
+    .search-box button:hover {
+      background: #3a236b;
+    }
+
+    .container {
+      padding: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #b19cd9;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    .poster {
+      background: #2e2e3f;
+      border-radius: 8px;
+      border: 2px solid #492e88;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .poster:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .poster img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .poster b {
+      display: block;
+      padding: 8px;
+      font-size: 15px;
+      text-align: center;
+      color: #fff;
+      font-weight: 600;
+      flex-grow: 1;
+    }
+
+    .btn-watch {
+      background: #492e88;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      text-align: center;
+      margin: 8px;
+      transition: background 0.2s ease;
+    }
+
+    .btn-watch:hover {
+      background: #3a236b;
+    }
+
+    .source {
+      font-size: 12px;
+      text-align: center;
+      padding-bottom: 8px;
+      color: #b19cd9;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #492e88;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .badge {
+      position: absolute;
+      padding: 3px 8px;
+      font-size: 12px;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .badge.year {
+      top: 8px;
+      right: 8px; /* Đưa năm sang bên phải */
+      background: #492e88;
+    }
+
+    .badge.ep {
+      top: 36px;
+      right: 8px;
+      background: #3a236b;
+    }
+
+    .pagination {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .pagination button {
+      margin: 0 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid #492e88;
+      background: #2e2e3f;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s ease;
+    }
+
+    .pagination button:hover {
+      background: #492e88;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #searchResults {
+      display: none;
+      padding: 24px;
+    }
+
+    #hoverPreview {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2000;
+      background: transparent;
+      padding: 8px;
+      border-radius: 8px;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    #hoverPreview img {
+      max-width: 400px;
+      max-height: 480px;
+      border-radius: 8px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+      display: block;
+    }
+
+    .sliderCover {
+      position: relative;
+      background: #1c1c2e;
+      padding: 40px 0;
+      overflow: hidden;
+    }
+
+    .slide-track {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      padding: 12px 32px;
+    }
+
+    .slide {
+      flex: 0 0 180px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      transform-origin: center center;
+      cursor: pointer;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 260px;
+      border-radius: 12px;
+      object-fit: cover;
+      display: block;
+      border: 1px solid #3a236b;
+    }
+
+    .slide.active {
+      transform: scale(1.1);
+      z-index: 3;
+      opacity: 1;
+    }
+
+    .slide.left, .slide.right {
+      transform: scale(0.9);
+      opacity: 0.7;
+      z-index: 1;
+      filter: brightness(0.85);
+    }
+
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(73, 46, 136, 0.5);
+      color: #fff;
+      border: none;
+      font-size: 24px;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 5;
+      transition: background 0.2s ease;
+    }
+
+    .slider-btn:hover {
+      background: rgba(73, 46, 136, 0.8);
+    }
+
+    .slider-btn.left {
+      left: 12px;
+    }
+
+    .slider-btn.right {
+      right: 12px;
+    }
+
+    /* Mobile optimization (Samsung Galaxy A04 and similar) */
+    @media (max-width: 720px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .poster {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .poster img {
+        height: 220px;
+      }
+
+      .slide {
+        flex: 0 0 150px;
+      }
+
+      .slide img {
+        height: 200px;
+      }
+
+      .dropdown {
+        min-width: 100%;
+        grid-template-columns: repeat(2, 1fr);
+        padding: 10px;
+      }
+
+      .search-box input {
+        width: 160px;
+        font-size: 13px;
+      }
+
+      .search-box button {
+        padding: 6px 12px;
+        font-size: 13px;
+      }
+
+      header {
+        padding: 10px 16px;
+      }
+
+      header h1 {
+        font-size: 20px;
+      }
+
+      nav {
+        gap: 16px;
+      }
+
+      nav div {
+        font-size: 14px;
+      }
+
+      #hoverPreview {
+        display: none !important; /* Tắt hover preview trên di động */
+      }
+    }
+
+    /* Desktop optimization */
+    @media (min-width: 721px) {
+      .grid {
+        grid-template-columns: repeat(8, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 onclick="resetSearch()">Phim Nhà Bánh Mì</h1>
+    <nav>
+      <div>Thể loại<div class="dropdown" id="genreDropdown"></div></div>
+      <div>Quốc gia<div class="dropdown" id="countryDropdown"></div></div>
+      <div>Năm<div class="dropdown" id="yearDropdown"></div></div>
+      <div style="color:#b19cd9; margin-left:12px; font-weight:700;">Bánh mì</div>
+    </nav>
+    <div class="search-box">
+      <input id="searchInput" placeholder="Nhập tên phim...">
+      <button onclick="searchMovie()">Tìm</button>
+    </div>
+  </header>
+
+  <div class="sliderCover">
+    <button class="slider-btn left" onclick="moveSlide(-1)">❮</button>
+    <div class="slide-track" id="slideTrack"></div>
+    <button class="slider-btn right" onclick="moveSlide(1)">❯</button>
+  </div>
+
+  <div class="container" id="searchResults">
+    <h2>Kết quả tìm kiếm</h2>
+    <div class="grid" id="searchList"></div>
+  </div>
+
+  <div class="container" id="nowPlaying">
+    <h2 id="nowPlayingTitle">Phim Đang Chiếu</h2>
+    <div class="grid" id="movieList"></div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <div class="container" id="latest">
+    <h2 id="latestTitle">Phim Mới Cập Nhật</h2>
+    <div class="grid" id="latestList"></div>
+    <div class="pagination" id="latestPagination"></div>
+  </div>
+
+  <div id="hoverPreview"><img src="" alt="preview"></div>
+<script>
+  const API = "https://phimapi.com";
+  const PROXY = "https://api.allorigins.win/get?url="; // Proxy để fix CORS. Truy cập https://cors-anywhere.herokuapp.com/cors-anywhere.html để kích hoạt nếu cần.
+  let slideIndex = 0;
+  let slideCount = 0;
+
+  // Hover preview (chỉ hoạt động trên desktop)
+  const hoverBox = document.getElementById("hoverPreview");
+  function showHover(imgUrl) {
+    if (!imgUrl || window.innerWidth <= 720) return;
+    hoverBox.querySelector("img").src = imgUrl;
+    hoverBox.style.display = "block";
+  }
+  function hideHover() {
+    hoverBox.style.display = "none";
+  }
+
+  function attachPosterHover(containerSelector) {
+    const cont = typeof containerSelector === "string" ? document.querySelector(containerSelector) : containerSelector;
+    if (!cont) return;
+    cont.querySelectorAll(".poster").forEach(p => {
+      if (p.dataset._hover) return;
+      p.dataset._hover = "1";
+      p.addEventListener("mouseenter", () => showHover(p.dataset.poster || p.querySelector("img")?.src));
+      p.addEventListener("mouseleave", () => hideHover());
+    });
+  }
+
+  // Slider coverflow
+  function updateCoverflow() {
+    const slides = document.querySelectorAll(".slide");
+    slideCount = slides.length;
+    slides.forEach((s, i) => {
+      s.classList.remove("active", "left", "right");
+      if (i === slideIndex) s.classList.add("active");
+      else if (i === slideIndex - 1) s.classList.add("left");
+      else if (i === slideIndex + 1) s.classList.add("right");
+    });
+    if (slideIndex === 0 && slides[slides.length - 1]) slides[slides.length - 1].classList.add("left");
+    if (slideIndex === slides.length - 1 && slides[0]) slides[0].classList.add("right");
+  }
+
+  function moveSlide(dir) {
+    const slides = document.querySelectorAll(".slide");
+    if (slides.length === 0) return;
+    slideIndex = (slideIndex + dir + slides.length) % slides.length;
+    updateCoverflow();
+  }
+
+  async function loadSlider() {
+    try {
+      const res = await fetch(`${PROXY}${API}/danh-sach/phim-moi-cap-nhat-v3?page=1`);
+      const data = await res.json();
+      if (!data.status || !data.items || data.items.length === 0) {
+        console.warn("No data for slider");
+        return;
+      }
+      const items = data.items || [];
+      const track = document.getElementById("slideTrack");
+      track.innerHTML = items.slice(0, 8).map(m => `
+        <div class="slide" data-slug="${m.slug}" onclick="window.location.href='detail.html?slug=${m.slug}'">
+          <img src="${m.thumb_url}" alt="${m.name}">
+        </div>
+      `).join("");
+      slideIndex = 0;
+      updateCoverflow();
+    } catch (err) {
+      console.warn("Slider load error", err);
+    }
+  }
+
+  // Render lists
+  function renderList(data, page, fn, containerId, pagerId, titleId, titleText) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = "<p>Đang tải...</p>"; // Loading indicator
+    const items = data.items || [];
+    if (items.length === 0) {
+      container.innerHTML = "<p>Không có dữ liệu để hiển thị.</p>";
+      return;
+    }
+    container.innerHTML = items.map(m => {
+      let eps = (m.episode_current && m.episode_total) 
+        ? `${m.episode_current.replace("Tập", "").trim()}/${m.episode_total}` 
+        : (m.episode_current || "N/A");
+
+      let year = m.year || (m.modified?.time ? m.modified.time.slice(0,4) : (m.created?.time ? m.created.time.slice(0,4) : "N/A"));
+      if (Array.isArray(m.category)) {
+        const yObj = m.category.find(c => /^\d{4}$/.test(String(c.name)));
+        if (yObj) year = yObj.name;
+      }
+
+      return `
+        <div class="poster" data-slug="${m.slug}" data-poster="${m.poster_url || m.thumb_url}">
+          <img src="${m.thumb_url}" alt="${m.name}">
+          <span class="badge year">${year}</span>
+          <span class="badge ep">${eps}</span>
+          <b>${m.name}</b>
+          <div class="source"><span class="dot"></span>Nguồn Bánh mì 01</div>
+          <a class="btn-watch" href="detail.html?slug=${m.slug}">Xem phim</a>
+        </div>
+      `;
+    }).join("");
+    attachPosterHover(`#${containerId}`);
+    if (pagerId) {
+      const pager = document.getElementById(pagerId);
+      const totalPages = data.paginate?.total_page || data.params?.pagination?.totalPages || 100; // Giả định 100 nếu không có paginate
+      pager.innerHTML = `
+        <button onclick="${fn}${page - 1})" ${page === 1 ? "disabled" : ""}>◀ Trước</button>
+        Trang ${page} / ${totalPages}
+        <button onclick="${fn}${page + 1})" ${page >= totalPages ? "disabled" : ""}>Sau ▶</button>
+      `;
+    }
+    if (titleId && titleText) document.getElementById(titleId).innerText = titleText;
+  }
+
+  // Fetch up to 16 items with proxy and error handling
+  async function fetch16(url, page) {
+    let items = [];
+    let totalPages = 100; // Default lớn nếu không có paginate
+    try {
+      const sep = url.includes("?") ? "&" : "?";
+      const fullUrl = `${url}${sep}page=${page}`;
+      console.log("Fetching:", fullUrl); // Debug
+      const r1 = await fetch(`${PROXY}${fullUrl}`);
+      const d1 = await r1.json();
+      console.log("API response:", d1); // Debug dữ liệu
+      if (!d1.status && d1.status !== "success") throw new Error("API error: " + d1.msg);
+      items = d1.items || d1.data?.items || [];
+      totalPages = d1.paginate?.total_page || d1.data?.params?.pagination?.totalPages || totalPages;
+    } catch (err) {
+      console.warn("fetch16 error", err);
+      alert("Lỗi khi tải dữ liệu: " + err.message + ". Kiểm tra console hoặc thử lại.");
+    }
+    return { items: items.slice(0, 16), paginate: { total_page: totalPages } };
+  }
+
+  // Loaders
+  async function loadMovies(page = 1) {
+    resetSearch();
+    const data = await fetch16(`${API}/danh-sach/phim-moi-cap-nhat-v3`, page); // Đổi sang v3 để full fields
+    renderList(data, page, `loadMovies(`, "movieList", "pagination", "nowPlayingTitle", "Phim Đang Chiếu");
+  }
+
+  async function loadLatest(page = 1) {
+    resetSearch();
+    const data = await fetch16(`${API}/danh-sach/phim-moi-cap-nhat-v3`, page); // Đổi sang v3
+    renderList(data, page, `loadLatest(`, "latestList", "latestPagination", "latestTitle", "Phim Mới Cập Nhật");
+  }
+
+  async function loadCategory(slug, name, page = 1) {
+    resetFilters();
+    const data = await fetch16(`${API}/v1/api/the-loai/${slug}`, page);
+    renderList(data, page, `loadCategory('${slug}','${name}',`, "movieList", "pagination", "nowPlayingTitle", `Thể loại: ${name}`);
+  }
+
+  async function loadCountry(slug, name, page = 1) {
+    resetFilters();
+    const data = await fetch16(`${API}/v1/api/quoc-gia/${slug}`, page);
+    renderList(data, page, `loadCountry('${slug}','${name}',`, "movieList", "pagination", "nowPlayingTitle", `Quốc gia: ${name}`);
+  }
+
+  async function loadYear(year, page = 1) {
+    resetFilters();
+    const data = await fetch16(`${API}/v1/api/nam/${year}&sort_field=_id&sort_type=asc`, page);
+    renderList(data, page, `loadYear(${year},`, "movieList", "pagination", "nowPlayingTitle", `Năm: ${year}`);
+  }
+
+  // Search
+  async function searchMovie() {
+    const kw = document.getElementById("searchInput").value.trim();
+    if (!kw) return resetSearch();
+
+    try {
+      const res = await fetch(`${PROXY}${API}/v1/api/tim-kiem?keyword=${encodeURIComponent(kw)}`);
+      const d = await res.json();
+      const list = d.items || d.data?.items || [];
+      if (list.length === 0) {
+        alert("Không tìm thấy phim!");
+        return;
+      }
+
+      document.getElementById("searchResults").style.display = "block";
+      document.getElementById("nowPlaying").style.display = "none";
+      document.getElementById("latest").style.display = "none";
+
+      const html = list.map(m => `
+        <div class="poster" data-slug="${m.slug}" data-poster="${m.poster_url || m.thumb_url}">
+          <img src="${m.thumb_url}" alt="${m.name}">
+          <span class="badge year">${m.year || "N/A"}</span>
+          <b>${m.name}</b>
+          <div class="source"><span class="dot"></span>Nguồn phimAPI</div>
+          <a class="btn-watch" href="detail.html?slug=${m.slug}">Xem phim</a>
+        </div>
+      `).join("");
+
+      document.getElementById("searchList").innerHTML = html;
+      attachPosterHover("#searchList");
+    } catch (err) {
+      console.warn(err);
+      alert("Có lỗi khi tìm kiếm: " + err.message);
+    }
+  }
+
+  document.getElementById("searchInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") searchMovie();
+  });
+
+  document.getElementById("searchInput").addEventListener("input", e => {
+    if (e.target.value.trim() === "") resetSearch();
+  });
+
+  function resetSearch() { // dùng cho search
+    document.getElementById("searchResults").style.display = "none";
+    document.getElementById("nowPlaying").style.display = "block";
+    document.getElementById("latest").style.display = "block";
+  }
+
+  function resetFilters() { // dùng cho thể loại, quốc gia, năm
+    document.getElementById("searchResults").style.display = "none";
+    document.getElementById("nowPlaying").style.display = "block";
+    document.getElementById("latest").style.display = "none"; // ẩn latest nếu muốn
+  }
+
+  function slugify(t) {
+    try {
+      return t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase().replace(/\s+/g, "-");
+    } catch (e) {
+      return t.toLowerCase().replace(/\s+/g, "-");
+    }
+  }
+
+  // Dropdowns
+  const genreMap = {
+    "Hành Động": "hanh-dong", "Phiêu Lưu": "phieu-luu", "Hoạt Hình": "hoat-hinh", "Hài": "hai", "Hình Sự": "hinh-su",
+    "Tài Liệu": "tai-lieu", "Chính Kịch": "chinh-kich", "Gia Đình": "gia-dinh", "Giả Tưởng": "gia-tuong", "Lịch Sử": "lich-su",
+    "Kinh Dị": "kinh-di", "Nhạc": "nhac", "Bí Ẩn": "bi-an", "Lãng Mạn": "lang-man", "Khoa Học Viễn Tưởng": "khoa-hoc-vien-tuong",
+    "Gây Cấn": "gay-can", "Chiến Tranh": "chien-tranh", "Tâm Lý": "tam-ly", "Tình Cảm": "tinh-cam", "Cổ Trang": "co-trang",
+    "Miền Tây": "mien-tay", "Phim 18+": "phim-18+"
+  };
+  document.getElementById("genreDropdown").innerHTML = Object.keys(genreMap).map(g => `
+    <div onclick="loadCategory('${genreMap[g]}','${g}')">${g}</div>
+  `).join("");
+
+  const countryMap = {
+    "Âu Mỹ": "au-my", "Anh": "anh", "Trung Quốc": "trung-quoc", "Indonesia": "indonesia", "Việt Nam": "viet-nam",
+    "Pháp": "phap", "Hồng Kông": "hong-kong", "Hàn Quốc": "han-quoc", "Nhật Bản": "nhat-ban", "Thái Lan": "thai-lan",
+    "Đài Loan": "dai-loan", "Nga": "nga", "Hà Lan": "ha-lan", "Philippines": "philippines", "Ấn Độ": "an-do",
+    "Quốc gia khác": "quoc-gia-khac"
+  };
+  document.getElementById("countryDropdown").innerHTML = Object.keys(countryMap).map(c => `
+    <div onclick="loadCountry('${countryMap[c]}','${c}')">${c}</div>
+  `).join("");
+
+  let yearsArr = [];
+  for (let y = 2029; y >= 1999; y--) yearsArr.push(y);
+  document.getElementById("yearDropdown").innerHTML = yearsArr.map(y => `
+    <div onclick="loadYear(${y})">${y}</div>
+  `).join("");
+
+  // Init
+  loadSlider();
+  loadMovies();
+  loadLatest();
+</script>
+</body>
+</html>
