@@ -1,257 +1,198 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đang lựa Bánh...</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #0d0d18; color: #f5ede9; margin: 0; }
-    header { background: #75462f; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
-    header h1 { margin: 0; font-size: 20px; }
-    nav { display: flex; gap: 12px; flex-wrap: wrap; }
-    nav button { background: black;; color: #d4a38a; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
-    nav button:hover { background: rgb(255, 255, 255); }
-    .container { padding: 20px; }
-    .movie-detail { display: flex; gap: 20px; flex-wrap: wrap; }
-    .movie-poster img { width: 100%; max-width: 300px; aspect-ratio: 2/3; object-fit: cover; border-radius: 8px; }
-    .movie-info { flex: 1; min-width: 250px; }
-    .movie-info h2 { margin: 0 0 10px; font-size: 20px; }
-    .movie-info p { margin: 5px 0; font-size: 14px; color: #614a1f; }
-    .movie-info .buttons { margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap; }
-    .movie-info .buttons button { background: black; color: #f0eeed; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; }
-    .movie-info .buttons button:hover { background: #75462f; }
-    .episode-list { margin-top: 40px; }
-    .episode-list h2 { font-size: 18px; margin-bottom: 10px; }
-    .episode-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-    .episode-card { background: #75462f; border-radius: 8px; text-align: center; padding: 10px; cursor: pointer; transition: background .2s; }
-    .episode-card:hover { background: black; }
-    .episode-card p { margin: 0; font-size: 14px; }
-    .embed-links { margin-top: 20px; display: none; }
-    .embed-links.active { display: block; }
-    .embed-links h3 { font-size: 16px; margin-bottom: 10px; }
-    .embed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-    .embed-btn { background: #75462f; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; text-align: center; font-size: 14px; transition: background .2s; }
-    .embed-btn:hover { background: black; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chi tiết phim</title>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Netflix Sans', Arial, sans-serif; }
+    body { background:#141414; color:#fff; }
+    
+    /* Header */
+    .header {
+        background: rgba(0,0,0,0.95);
+        padding:15px 40px;
+        position:fixed;
+        top:0; width:100%;
+        z-index:1000;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        box-shadow:0 4px 10px rgba(0,0,0,0.7);
+    }
+    .header .logo { font-size:28px; font-weight:bold; color:#e50914; cursor:pointer; }
+    .back-btn {
+        background: #e50914;
+        color: #fff;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .back-btn:hover { background: #b20710; transform: scale(1.05); }
+
+    /* Container */
+    .container { max-width: 1200px; margin:120px auto 50px auto; padding:0 20px; }
+
+    /* Banner */
+    .banner { position:relative; width:100%; height:500px; overflow:hidden; border-radius:12px; }
+    .banner img { width:100%; height:100%; object-fit:cover; filter: brightness(0.6); }
+    .banner-info {
+        position:absolute;
+        bottom:30px;
+        left:30px;
+        max-width:700px;
+        background: linear-gradient(to top, rgba(20,20,20,0.8), rgba(20,20,20,0));
+        padding:20px;
+        border-radius:12px;
+    }
+    .banner-info h1 { font-size:48px; font-weight:bold; margin-bottom:15px; text-shadow:2px 2px 6px rgba(0,0,0,0.8); }
+    .banner-info p { font-size:16px; margin-bottom:10px; }
+    .play-btn { background:#e50914; padding:12px 30px; border:none; border-radius:30px; color:#fff; font-weight:bold; cursor:pointer; transition:0.3s; }
+    .play-btn:hover { background:#b20710; transform:scale(1.05); }
+
+    /* Episodes */
+    .section { margin-top:50px; }
+    .section-title { font-size:28px; font-weight:bold; margin-bottom:20px; }
+    .episodes-grid {
+        display:grid;
+        grid-template-columns: repeat(auto-fill,minmax(140px,1fr));
+        gap:15px;
+        max-height:500px;
+        overflow-y:auto;
+        padding-right:5px;
+    }
+    .episode-item {
+        background:#222;
+        padding:15px;
+        border-radius:8px;
+        cursor:pointer;
+        transition:0.3s;
+        text-align:center;
+    }
+    .episode-item:hover { background:#e50914; color:#fff; transform:scale(1.05); }
+    .episode-item span { display:block; font-size:14px; margin-bottom:5px; }
+    .episode-server { font-size:12px; color:#aaa; }
+
+    @media(max-width:720px) {
+        .banner { height:300px; }
+        .banner-info h1 { font-size:28px; }
+        .banner-info p { font-size:14px; }
+    }
+</style>
 </head>
 <body>
-  <header>
-    <h1>Bánh Đang Được Giao...🚀</h1>
-    <nav>
-      <button onclick="window.location.href='index.html'">Tiệm Bánh</button>
-    </nav>
-  </header>
 
-  <div class="container">
-    <div id="movieDetail" class="movie-detail"></div>
-    <div id="episodeList" class="episode-list">
-      <h2>Bảng Khách Order Bánh mì🥖</h2>
-      <div id="episodes"></div>
+<div class="header">
+    <div class="logo" onclick="window.location.href='index.html'">Bánh Mì 02</div>
+    <button class="back-btn" onclick="window.location.href='index.html'">Trang chủ</button>
+</div>
+
+<div class="container">
+    <div class="banner">
+        <img id="bannerImage" src="https://via.placeholder.com/1200x500?text=Banner" alt="Banner">
+        <div class="banner-info">
+            <h1 id="movieTitle">Đang tải...</h1>
+            <p id="movieInfo"></p>
+            <p id="movieContent" style="font-size:14px; max-height:100px; overflow:hidden;"></p>
+            <button class="play-btn" id="watchBtn">Xem ngay</button>
+        </div>
     </div>
-    <div id="embedLinks" class="embed-links">
-      <h3>Bánh Mì Khác🥖</h3>
-      <div id="embedList" class="embed-grid"></div>
+
+    <div class="section">
+        <h2 class="section-title">Danh sách tập phim</h2>
+        <div class="episodes-grid" id="episodesGrid"></div>
     </div>
-  </div>
+</div>
 
 <script>
-  const API_BASES = {
-    source1: "https://ophim1.com/v1/api",
-    source2: "https://phimapi.com",
-    source3: "https://phim.nguonc.com/api"
-  };
-  const movieDetail = document.getElementById("movieDetail");
-  const episodes = document.getElementById("episodes");
-  const embedLinks = document.getElementById("embedLinks");
-  const embedList = document.getElementById("embedList");
+const baseUrl = 'https://phimapi.com'; // sửa thành API thật của bạn
+const urlParams = new URLSearchParams(window.location.search);
+const slug = urlParams.get('slug');
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const slug = urlParams.get("slug");
-  const source = urlParams.get("source") || "source1";
-
-  // Chuẩn hóa dữ liệu phim
-  function normalizeMovieDetails(movie, source, extraEpisodes = []) {
-    if (source === "source1") {
-      return {
-        name: movie.name,
-        thumb_url: movie.thumb_url,
-        year: movie.year || "N/A",
-        category: movie.category?.map(cat => cat.name).join(", ") || "",
-        country: movie.country?.map(c => c.name).join(", ") || "",
-        director: movie.director?.join(", ") || "",
-        actor: movie.actor?.join(", ") || "",
-        time: movie.time || "N/A",
-        episode_current: movie.episode_current || "N/A",
-        quality: movie.quality || "N/A",
-        lang: movie.lang || "N/A",
-        content: movie.content || "Không có mô tả.",
-        servers: movie.episodes || []
-      };
-    } else if (source === "source2") {
-      return {
-        name: movie.name || movie.title,
-        thumb_url: movie.poster_url || movie.thumb_url || "",
-        year: movie.year || "N/A",
-        category: movie.category?.map(cat => cat.name).join(", ") || "",
-        country: movie.country?.map(c => c.name).join(", ") || "",
-        director: movie.director?.join(", ") || "",
-        actor: movie.actor?.join(", ") || "",
-        time: movie.time || "N/A",
-        episode_current: movie.episode_current || movie.status || "N/A",
-        quality: movie.quality || "N/A",
-        lang: movie.lang || movie.language || "N/A",
-        content: movie.content || "Không có mô tả.",
-        servers: extraEpisodes || []
-      };
-    } else if (source === "source3") {
-      return {
-        name: movie.name,
-        thumb_url: movie.poster_url || "",
-        year: movie.category?.[3]?.list?.[0]?.name || "N/A",
-        category: movie.category?.[2]?.list?.map(cat => cat.name).join(", ") || "",
-        country: movie.category?.[4]?.list?.[0]?.name || "",
-        director: movie.director || "",
-        actor: movie.casts || "",
-        time: movie.time || "N/A",
-        episode_current: movie.current_episode || "N/A",
-        quality: movie.quality || "N/A",
-        lang: movie.language || "N/A",
-        content: movie.description || "Không có mô tả.",
-        servers: movie.episodes || []
-      };
-    }
-  }
-
-  async function fetchMovieDetails() {
-    if (!slug) {
-      movieDetail.innerHTML = "<p>❌ Không tìm thấy slug phim.</p>";
-      return;
-    }
-
+async function fetchMovieDetail(slug) {
     try {
-      let url = source === "source1"
-        ? `${API_BASES.source1}/phim/${slug}`
-        : source === "source2"
-          ? `${API_BASES.source2}/phim/${slug}`
-          : `${API_BASES.source3}/film/${slug}`;
+        const res = await fetch(`${baseUrl}/phim/${slug}`, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+        const data = await res.json();
+        const movie = data.movie;
 
-      const res = await fetch(url);
-      const json = await res.json();
-
-      let movie, extraEpisodes = [];
-      if (source === "source1") {
-        movie = json.data?.item;
-      } else if (source === "source2") {
-        movie = json.movie;
-        extraEpisodes = json.episodes || [];
-      } else {
-        movie = json.movie;
-      }
-
-      if (!movie) {
-        movieDetail.innerHTML = "<p>❌ Không tìm thấy phim.</p>";
-        return;
-      }
-
-      const normalized = normalizeMovieDetails(movie, source, extraEpisodes);
-
-      // Lấy tập đầu tiên cho nút Xem ngay
-      let firstEp;
-      if (normalized.servers?.length) {
-        const server = normalized.servers[0];
-        firstEp = (server.server_data || server.items || [])[0];
-      }
-      const firstM3u8 = firstEp?.m3u8 || firstEp?.link_m3u8 || "";
-      const firstEmbed = firstEp?.embed || firstEp?.link_embed || "";
-
-      const cdnImage = source === "source1" ? json.data?.APP_DOMAIN_CDN_IMAGE || "https://ophim1.com" : "";
-
-      // Thông tin phim + nút
-      movieDetail.innerHTML = `
-        <div class="movie-poster">
-          <img src="${source === "source1" ? `${cdnImage}/uploads/movies/${normalized.thumb_url}` : normalized.thumb_url || 'https://via.placeholder.com/300x450'}" alt="${normalized.name}">
-        </div>
-        <div class="movie-info">
-          <h2>${normalized.name}</h2>
-          <p><strong>Năm:</strong> ${normalized.year}</p>
-          <p><strong>Thể loại:</strong> ${normalized.category}</p>
-          <p><strong>Quốc gia:</strong> ${normalized.country}</p>
-          <p><strong>Đạo diễn:</strong> ${normalized.director}</p>
-          <p><strong>Diễn viên:</strong> ${normalized.actor}</p>
-          <p><strong>Thời lượng:</strong> ${normalized.time}</p>
-          <p><strong>Trạng thái:</strong> ${normalized.episode_current}</p>
-          <p><strong>Chất lượng:</strong> ${normalized.quality}</p>
-          <p><strong>Ngôn ngữ:</strong> ${normalized.lang}</p>
-          <p><strong>Nội dung:</strong> ${normalized.content}</p>
-          <div class="buttons">
-            ${firstM3u8 
-              ? `<button onclick="window.location.href='watch.html?slug=${slug}&source=${source}&m3u8=${encodeURIComponent(firstM3u8)}&ep=${encodeURIComponent(firstEp?.name || "Tập 1")}&embed=${encodeURIComponent(firstEmbed || "")}'">Ăn Bánh Mì + 5k Ship :)) 𝐖𝐄𝐋𝐂𝐎𝐌𝐄</button>` 
-              : firstEmbed 
-                ? `<button onclick="window.location.href='watch.html?slug=${slug}&source=${source}&embed=${encodeURIComponent(firstEmbed)}&ep=${encodeURIComponent(firstEp?.name || "Tập 1")}'">Ăn Bánh Mì + Giao</button>` 
-                : ""
-            }
-            <button id="toggleEmbed">Chọn Bánh Khác Và Ra Khỏi Tiệm🛰️</button>
-          </div>
-        </div>
-      `;
-
-      // Danh sách tập theo server
-      episodes.innerHTML = "";
-      normalized.servers.forEach((server, sIndex) => {
-        const serverBlock = document.createElement("div");
-        serverBlock.innerHTML = `<h3>${server.server_name || "Server " + (sIndex+1)}</h3>`;
-        
-        const grid = document.createElement("div");
-        grid.className = "episode-grid";
-        
-        (server.server_data || server.items || []).forEach((ep, i) => {
-          const epCard = document.createElement("div");
-          epCard.className = "episode-card";
-          epCard.innerHTML = `<p>${ep.name || "Tập " + (i+1)}</p>`;
-          epCard.onclick = () => {
-            const linkM3u8 = ep.m3u8 || ep.link_m3u8;
-            const linkEmbed = ep.embed || ep.link_embed;
-            if (linkM3u8) {
-              window.location.href = `watch.html?slug=${slug}&source=${source}&m3u8=${encodeURIComponent(linkM3u8)}&ep=${encodeURIComponent(ep.name || i+1)}&embed=${encodeURIComponent(linkEmbed || "")}`;
-            } else if (linkEmbed) {
-              window.location.href = `watch.html?slug=${slug}&source=${source}&embed=${encodeURIComponent(linkEmbed)}&ep=${encodeURIComponent(ep.name || i+1)}`;
-            }
-          };
-          grid.appendChild(epCard);
-        });
-        
-        serverBlock.appendChild(grid);
-        episodes.appendChild(serverBlock);
-      });
-
-      // Embed ngoài
-      document.getElementById("toggleEmbed").onclick = () => {
-        embedLinks.classList.toggle("active");
-        if (embedLinks.classList.contains("active")) {
-          embedList.innerHTML = "";
-          normalized.servers.forEach((server, sIndex) => {
-            (server.server_data || server.items || []).forEach((ep, i) => {
-              const link = ep.embed || ep.link_embed;
-              if (link) {
-                const btn = document.createElement("button");
-                btn.className = "embed-btn";
-                btn.textContent = `${server.server_name || "Server"} - ${ep.name || "Tập " + (i+1)}`;
-                btn.onclick = () => window.open(link, "_blank");
-                embedList.appendChild(btn);
-              }
-            });
-          });
-          if (!embedList.innerHTML) embedList.innerHTML = "<p>Không có nguồn ngoài.</p>";
+        if (!movie) {
+            document.body.innerHTML = '<p>Không tìm thấy phim!</p>';
+            return;
         }
-      };
 
-    } catch (e) {
-      console.error("❌ Lỗi:", e);
-      movieDetail.innerHTML = "<p>Không tải được dữ liệu phim.</p>";
+        // Banner & info
+        document.getElementById('bannerImage').src = movie.thumb_url;
+        document.getElementById('movieTitle').textContent = movie.name;
+        document.getElementById('movieContent').textContent = movie.content;
+        document.getElementById('movieInfo').textContent = 
+            `Năm: ${movie.year} | Ngôn ngữ: ${movie.lang} | Thể loại: ${movie.category.map(c=>c.name).join(', ')} | Số tập: ${movie.episode_total} | Thời lượng: ${movie.time}`;
+
+        const episodesGrid = document.getElementById('episodesGrid');
+        episodesGrid.innerHTML = '';
+
+        // Khai báo allEpisodes bên ngoài if
+        let allEpisodes = [];
+
+        if(data.episodes && data.episodes.length){
+            data.episodes.forEach(server => {
+                server.server_data.forEach(ep => {
+                    allEpisodes.push({
+                        server_name: server.server_name,
+                        name: ep.name,
+                        slug: ep.slug,
+                        embed: ep.link_embed,
+                        m3u8: ep.link_m3u8
+                    });
+                });
+            });
+
+            allEpisodes.forEach(ep=>{
+                const div = document.createElement('div');
+                div.className = 'episode-item';
+                div.innerHTML = `
+                    <span>${ep.name}</span>
+                    <span class="episode-server">${ep.server_name}</span>
+                `;
+                div.onclick = ()=>{
+                    const params = new URLSearchParams();
+                    params.set('slug', slug);
+                    params.set('episode', ep.slug);
+                    params.set('embed', ep.embed);
+                    params.set('m3u8', ep.m3u8);
+                    window.location.href = `watch.html?${params.toString()}`;
+                };
+                episodesGrid.appendChild(div);
+            });
+        }
+
+        // Xem ngay mở tập đầu tiên
+        const watchBtn = document.getElementById('watchBtn');
+        if(allEpisodes.length > 0){
+            watchBtn.onclick = ()=>{
+                const ep = allEpisodes[0];
+                const params = new URLSearchParams();
+                params.set('slug', slug);
+                params.set('episode', ep.slug);
+                params.set('embed', ep.embed);
+                params.set('m3u8', ep.m3u8);
+                window.location.href = `watch.html?${params.toString()}`;
+            };
+        }
+
+    } catch(err) {
+        console.error(err);
+        document.body.innerHTML = `<p>Lỗi tải thông tin phim: ${err.message}</p>`;
     }
-  }
+}
 
-  fetchMovieDetails();
+
+if(slug) fetchMovieDetail(slug);
+else document.body.innerHTML = '<p>Slug phim không hợp lệ!</p>';
 </script>
+
 </body>
 </html>

@@ -1,183 +1,229 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Xem phim</title>
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-  <style>
-    body { font-family: Arial, sans-serif; background: #201a1a; color: #d37b0a; margin: 0; padding: 20px; }
-    h1 { font-size: 25px; margin-bottom: 38px; text-align: center; }
-    #playerWrapper { max-width: 900px; margin: auto; }
-    iframe, video { width: 100%; height: 400px; border-radius: 8px; background: black; }
-    .tabs, .controls, .back-links { margin: 15px auto; text-align: center; }
-    button { cursor: pointer; border: none; border-radius: 6px; padding: 8px 14px; font-size: 14px; }
-    .tabs button { background: #333; color: #fff; margin: 0 5px; }
-    .tabs button.active { background: #64411c; }
-    .controls button { background: #3e1b1aad; color: white; margin: 4px; }
-    .controls button:hover { background: #503517; }
-    .back-links button { background: #444; color: #fff; margin: 5px; }
-    .back-links button:hover { background: #503517; }
-    .server-block { max-width: 900px; margin: 20px auto; background: #1b1b1b; border-radius: 6px; padding: 10px; }
-    .server-block h3 { margin: 5px 0 10px; font-size: 16px; color: #4da6ff; }
-    .episode-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
-    .episode-card { background: #2a2a2a; padding: 6px; text-align: center; border-radius: 4px; }
-    .episode-card:hover { background: #444; }
-    .episode-card.active { background: #503517; font-weight: bold; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xem Phim</title>
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Netflix Sans', Arial, sans-serif; }
+  body { background:#141414; color:#fff; }
+
+  /* Header */
+  .header {
+    background: rgba(0,0,0,0.95);
+    padding:15px 30px;
+    position:fixed;
+    top:0; width:100%;
+    z-index:1000;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 4px 10px rgba(0,0,0,0.7);
+  }
+  .logo { font-size:28px; font-weight:bold; color:#e50914; cursor:pointer; }
+  .back-btn { background:#e50914; color:#fff; border:none; padding:8px 18px; border-radius:20px; cursor:pointer; font-weight:bold; transition:0.3s; }
+  .back-btn:hover { background:#b20710; transform:scale(1.05); }
+
+  /* Container */
+  .container { max-width:1200px; margin:80px auto 50px; padding:0 20px; }
+
+  /* Player */
+  #playerWrapper { max-width:900px; margin:auto; border-radius:10px; overflow:hidden; }
+  video, iframe { width:100%; height:500px; border-radius:8px; background:#000; border:2px solid #e50914; }
+
+  /* Tabs & controls */
+  .tabs, .controls { text-align:center; margin:15px auto; max-width:900px; }
+  .tabs button, .controls button { background:#2e2e3f; color:#fff; border:none; border-radius:6px; padding:8px 14px; margin:4px; cursor:pointer; transition:0.2s; }
+  .tabs button.active { background:#e50914; }
+  .tabs button:hover, .controls button:hover { background:#b20710; }
+
+  /* Servers */
+  .server-block { max-width:900px; margin:20px auto; background:#222; border-radius:6px; padding:10px; }
+  .server-block h3 { font-size:16px; margin-bottom:10px; color:#e50914; }
+  .episode-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:8px; }
+  .episode-card { background:#2e2e3f; padding:6px; text-align:center; border-radius:4px; cursor:pointer; font-size:14px; color:#fff; text-decoration:none; transition:0.2s; }
+  .episode-card:hover { background:#e50914; }
+  .episode-card.active { background:#e50914; font-weight:bold; color:#fff; }
+
+  /* Episode info */
+  #episodeInfo { text-align:center; font-size:16px; margin-bottom:10px; color:#e50914; font-weight:bold; }
+
+  /* Sub upload */
+  #subUpload { display:block; margin:10px auto; color:#fff; }
+
+  @media(max-width:720px){
+    video, iframe{height:200px;}
+    .episode-grid{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
 </head>
 <body>
-  <h1 id="movieTitle">Đang xem phim...</h1>
+
+<div class="header">
+  <div class="logo" onclick="window.location.href='index.html'">Bánh Mì 02</div>
+  <button class="back-btn" onclick="window.location.href='detail.html?slug=' + encodeURIComponent(slug)">Chi tiết phim</button>
+</div>
+
+<div class="container">
+  <h1 id="movieTitle">Đang tải phim...</h1>
+  <p id="episodeInfo">Tập ? / ?</p>
 
   <div id="playerWrapper">
     <video id="player" playsinline controls></video>
   </div>
 
+  <input type="file" id="subUpload" accept=".vtt" />
+
   <div class="tabs">
-    <button id="mainTab">Nguồn Website Giao Bánh</button>
-    <button id="embedTab">Nguồn Bên Ngoài Giao Bánh</button>
+    <button id="mainTab" style="display:none;">Nguồn chính</button>
+    <button id="embedTab" style="display:none;">Nguồn ngoài</button>
   </div>
 
   <div class="controls">
-    <button id="prevEp">⏮ </button>
-    <button id="rewind">◀ Lùi </button>
-    <button id="forward">▶ Tiến </button>
-    <button id="nextEp">⏭ </button>
+    <button id="prevEp">Tập trước</button>
+    <button id="rewind">Lùi 10s</button>
+    <button id="forward">Tiến 10s</button>
+    <button id="nextEp">Tập sau</button>
   </div>
 
   <div id="servers"></div>
-
-  <div class="back-links">
-    <button onclick="window.location.href='detail.html?slug=' + slug + '&source=' + source">Quay lại Nơi Giao Bánh</button>
-    <button onclick="window.location.href='index.html'">Quay lại Tiệm Bánh Mì</button>
-  </div>
+</div>
 
 <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const slug = urlParams.get("slug");
-  const source = urlParams.get("source") || "source1";
-  let currentEp = decodeURIComponent(urlParams.get("ep") || "");
-  let m3u8 = decodeURIComponent(urlParams.get("m3u8") || "");
-  let embed = decodeURIComponent(urlParams.get("embed") || "");
+const urlParams = new URLSearchParams(window.location.search);
+const slug = urlParams.get("slug");
+let currentEpSlug = decodeURIComponent(urlParams.get("episode") || "");
+let currentM3U8 = decodeURIComponent(urlParams.get("m3u8") || "");
+let currentEmbed = decodeURIComponent(urlParams.get("embed") || "");
+const API = "https://phim.nguonc.com/api";
+let player;
+let allEpisodes = [];
 
-  const API_BASES = {
-    source1: "https://ophim1.com/v1/api",
-    source2: "https://phimapi.com",
-    source3: "https://phim.nguonc.com/api"
-  };
+function initPlayer(src, sub1, sub2){
+  const wrapper = document.getElementById("playerWrapper");
+  wrapper.innerHTML = `<video id="player" playsinline controls></video>`;
+  const video = document.getElementById("player");
+  if(Hls.isSupported() && src.includes(".m3u8")){
+    const hls = new Hls();
+    hls.loadSource(src);
+    hls.attachMedia(video);
+  } else { video.src = src; }
 
-  let player;
+  // Default subtitles
+  if(sub1){
+    const t1 = document.createElement("track");
+    t1.kind="subtitles";
+    t1.label="Sub 1";
+    t1.srclang="vi";
+    t1.src=sub1;
+    t1.default=true;
+    video.appendChild(t1);
+  }
+  if(sub2){
+    const t2 = document.createElement("track");
+    t2.kind="subtitles";
+    t2.label="Sub 2";
+    t2.srclang="en";
+    t2.src=sub2;
+    video.appendChild(t2);
+  }
 
-  function initPlayer(src) {
-    document.getElementById("playerWrapper").innerHTML = `<video id="player" playsinline controls></video>`;
-    const video = document.getElementById("player");
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(src);
-      hls.attachMedia(video);
-    } else {
-      video.src = src;
+  // Plyr instance
+  player = new Plyr(video, { captions: { active: true, update: true } });
+
+  // Sub upload
+  const uploadInput = document.getElementById("subUpload");
+  uploadInput.onchange = e=>{
+    const file = e.target.files[0];
+    if(file && file.name.endsWith(".vtt")){
+      const url = URL.createObjectURL(file);
+      const track = document.createElement("track");
+      track.kind="subtitles";
+      track.label=file.name;
+      track.srclang="vi";
+      track.src=url;
+      video.appendChild(track);
+      player.captions.reload(); // reload subtitles
+      player.captions.toggle(true); // bật sub mới
     }
-    player = new Plyr(video);
-  }
+  };
+}
 
-  function loadEmbed(link) {
-    document.getElementById("playerWrapper").innerHTML = `<iframe src="${link}" allowfullscreen></iframe>`;
-  }
+function loadEmbed(link){
+  document.getElementById("playerWrapper").innerHTML = `<iframe src="${link}" allowfullscreen></iframe>`;
+  player=null;
+}
 
-  function updateTabs(mode) {
-    document.getElementById("mainTab").classList.toggle("active", mode === "m3u8");
-    document.getElementById("embedTab").classList.toggle("active", mode === "embed");
-  }
+function updateTabs(mode){
+  document.getElementById("mainTab").classList.toggle("active", mode==="m3u8");
+  document.getElementById("embedTab").classList.toggle("active", mode==="embed");
+  document.getElementById("mainTab").style.display = currentM3U8?"inline-block":"none";
+  document.getElementById("embedTab").style.display = currentEmbed?"inline-block":"none";
+}
 
-  function highlightEpisode(epId) {
-    document.querySelectorAll(".episode-card").forEach(card => {
-      card.classList.toggle("active", card.dataset.ep === epId);
-    });
-  }
+function highlightEpisode(epSlug){
+  document.querySelectorAll(".episode-card").forEach(c=>c.classList.toggle("active",c.dataset.slug===epSlug));
+}
 
-  async function fetchEpisodes() {
-    try {
-      let url = source === "source1" 
-        ? `${API_BASES.source1}/phim/${slug}` 
-        : source === "source2" 
-          ? `${API_BASES.source2}/phim/${slug}` 
-          : `${API_BASES.source3}/film/${slug}`;
+async function fetchEpisodes(){
+  try{
+    const res = await fetch(`${API}/film/${slug}`);
+    if(!res.ok){ document.getElementById("movieTitle").textContent="Lỗi tải phim"; return; }
+    const json = await res.json();
+    const movie = json.movie || {};
+    document.getElementById("movieTitle").textContent = movie.name || "Phim";
 
-      const res = await fetch(url);
-      const json = await res.json();
+    const servers = json.movie.episodes || [];
+    const serversContainer = document.getElementById("servers");
+    serversContainer.innerHTML = "";
+    allEpisodes=[];
 
-      let movie, servers = [];
-      if (source === "source1") {
-        movie = json.data?.item || {};
-        servers = movie.episodes || [];
-      } else if (source === "source2") {
-        movie = json.movie || {};
-        servers = json.episodes || [];
-      } else {
-        movie = json.movie || {};
-        servers = movie.episodes || [];
-      }
+    servers.forEach(server=>{
+      const block = document.createElement("div");
+      block.className="server-block";
+      block.innerHTML=`<h3>${server.server_name}</h3>`;
+      const grid = document.createElement("div"); grid.className="episode-grid";
 
-      document.getElementById("movieTitle").textContent = `${movie.name || "Phim"} - ${currentEp || "Tập ?"}`;
-
-      // render servers
-      const serversContainer = document.getElementById("servers");
-      serversContainer.innerHTML = "";
-      servers.forEach(server => {
-        const block = document.createElement("div");
-        block.className = "server-block";
-        block.innerHTML = `<h3>#${server.server_name || "Server"}</h3>`;
-        const grid = document.createElement("div");
-        grid.className = "episode-grid";
-        (server.server_data || server.items || []).forEach((ep, idx) => {
-          const card = document.createElement("div");
-          card.className = "episode-card";
-          card.dataset.ep = ep.name || `Tập ${idx+1}`;
-          card.textContent = ep.name || `Tập ${idx+1}`;
-          card.onclick = () => {
-            const linkM3u8 = ep.m3u8 || ep.link_m3u8;
-            const linkEmbed = ep.embed || ep.link_embed;
-            if (linkM3u8) {
-              window.location.href = `watch.html?slug=${slug}&source=${source}&m3u8=${encodeURIComponent(linkM3u8)}&ep=${encodeURIComponent(card.dataset.ep)}&embed=${encodeURIComponent(linkEmbed || "")}`;
-            } else if (linkEmbed) {
-              window.location.href = `watch.html?slug=${slug}&source=${source}&embed=${encodeURIComponent(linkEmbed)}&ep=${encodeURIComponent(card.dataset.ep)}`;
-            }
-          };
-          grid.appendChild(card);
-        });
-        block.appendChild(grid);
-        serversContainer.appendChild(block);
+      server.items.forEach(ep=>{
+        allEpisodes.push({slug:ep.slug,name:ep.name,m3u8:ep.m3u8,embed:ep.embed,sub1:ep.sub1,sub2:ep.sub2});
+        const card=document.createElement("a");
+        card.className="episode-card";
+        card.dataset.slug=ep.slug;
+        card.textContent=ep.name;
+        card.href=`watch.html?slug=${slug}&episode=${encodeURIComponent(ep.slug)}&m3u8=${encodeURIComponent(ep.m3u8||"")}&embed=${encodeURIComponent(ep.embed||"")}`;
+        grid.appendChild(card);
       });
 
-      highlightEpisode(currentEp);
+      block.appendChild(grid);
+      serversContainer.appendChild(block);
+    });
 
-      // init default player
-      if (m3u8) { initPlayer(m3u8); updateTabs("m3u8"); }
-      else if (embed) { loadEmbed(embed); updateTabs("embed"); }
+    if(!currentEpSlug && allEpisodes.length) currentEpSlug = allEpisodes[0].slug;
+    const currentEp = allEpisodes.find(e=>e.slug===currentEpSlug) || allEpisodes[0];
 
-      // tab switching
-      document.getElementById("mainTab").onclick = () => { if (m3u8) { initPlayer(m3u8); updateTabs("m3u8"); } };
-      document.getElementById("embedTab").onclick = () => { if (embed) { loadEmbed(embed); updateTabs("embed"); } };
+    highlightEpisode(currentEpSlug);
+    document.getElementById("episodeInfo").textContent = `${currentEp.name} / ${allEpisodes.length}`;
 
-      // Prev/Next episode
-      const epNodes = [...document.querySelectorAll(".episode-card")];
-      const currentIndex = epNodes.findIndex(c => c.dataset.ep === currentEp);
-      document.getElementById("prevEp").onclick = () => { if (currentIndex > 0) epNodes[currentIndex - 1].click(); };
-      document.getElementById("nextEp").onclick = () => { if (currentIndex < epNodes.length - 1) epNodes[currentIndex + 1].click(); };
+    if(currentM3U8) initPlayer(currentM3U8, currentEp.sub1, currentEp.sub2), updateTabs("m3u8");
+    else if(currentEmbed) loadEmbed(currentEmbed), updateTabs("embed");
 
-      // Rewind / Forward
-      document.getElementById("rewind").onclick = () => player?.rewind(10);
-      document.getElementById("forward").onclick = () => player?.forward(10);
+    document.getElementById("mainTab").onclick=()=>{ if(currentM3U8) initPlayer(currentM3U8,currentEp.sub1,currentEp.sub2),updateTabs("m3u8"); };
+    document.getElementById("embedTab").onclick=()=>{ if(currentEmbed) loadEmbed(currentEmbed),updateTabs("embed"); };
 
-    } catch (e) {
-      console.error("Lỗi tải tập:", e);
-    }
-  }
+    const epNodes=[...document.querySelectorAll(".episode-card")];
+    const currentIndex=epNodes.findIndex(c=>c.dataset.slug===currentEpSlug);
+    document.getElementById("prevEp").onclick=()=>{if(currentIndex>0) epNodes[currentIndex-1].click();};
+    document.getElementById("nextEp").onclick=()=>{if(currentIndex<epNodes.length-1) epNodes[currentIndex+1].click();};
+    document.getElementById("rewind").onclick=()=>{if(player) player.rewind(10);};
+    document.getElementById("forward").onclick=()=>{if(player) player.forward(10);};
 
-  fetchEpisodes();
+  } catch(e){ console.error("Lỗi:", e); document.getElementById("movieTitle").textContent="Lỗi tải phim"; }
+}
+
+fetchEpisodes();
 </script>
 </body>
 </html>
