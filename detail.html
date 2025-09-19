@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Chi tiết phim</title>
   <style>
-    /* Theme tối từ mã gốc */
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
@@ -228,7 +227,7 @@
       color: #fff;
       border: none;
       padding: 10px;
-      border-radius: 6px;
+      border-radius: 12px;
       cursor: pointer;
       font-size: 14px;
       transition: background .2s;
@@ -243,7 +242,6 @@
       margin-top: 6px;
       text-align: center;
     }
-    /* Responsive adjustments */
     @media (max-width: 1023px) {
       .banner .poster img {
         height: 200px;
@@ -311,7 +309,7 @@
     <div class="story" id="story"></div>
     <div class="episodes" id="episodes">
       <h3>Danh sách tập</h3>
-      <div class="episode-grid" id="episodeList"></div>
+      <div id="episodeList"></div>
     </div>
   </main>
 <script>
@@ -389,7 +387,7 @@
     if (img.startsWith("http")) return img;
     if (src.type === "ophim") return `https://img.ophim.live/uploads/movies${img.startsWith("/") ? img : "/" + img}`;
     if (src.type === "phimapi") return `https://phimimg.com${img.startsWith("/") ? img : "/" + img}`;
-    if (src.type === "nguonc") return img; // nguonc sử dụng URL đầy đủ
+    if (src.type === "nguonc") return img;
     return img.startsWith("/") ? img : "/" + img;
   }
 
@@ -402,7 +400,7 @@
           continue;
         }
         const json = await res.json();
-        console.log(`API response from ${u}:`, json); // Log để debug
+        console.log(`API response from ${u}:`, json);
         if (json.data?.item || json.movie || json.data) {
           return { url: u, data: json };
         }
@@ -416,13 +414,13 @@
 
   async function fetchEpisodes(slug, srcConf) {
     let epUrl;
-    if (srcConf.type === "nguonc") epUrl = `${srcConf.base}/film/${slug}/episodes`;
+    if (srcConf.type === "nguonc") epUrl = `${srcConf.base}/film/${slug}/episodes?sort=name`;
     else epUrl = `${srcConf.base}/phim/${slug}/episodes`;
     try {
       const res = await fetch(epUrl);
       if (!res.ok) return [];
       const data = await res.json();
-      return data.episodes || data.data?.episodes || [];
+      return data.episodes || data.data?.episodes || data.items || [];
     } catch (e) {
       console.error("Episodes fetch error:", e);
       return [];
@@ -493,6 +491,7 @@
       }
 
       const actors = Array.isArray(item.actor) ? item.actor.filter(a => a).join(", ") : item.actors || item.casts || "?";
+      const director = Array.isArray(item.director) ? item.director.filter(d => d).join(", ") : item.director || "?";
 
       // Xử lý episodes với cấu trúc đa dạng
       let episodes = [];
@@ -512,22 +511,28 @@
         episodes = await fetchEpisodes(slug, srcConf);
       }
 
-      // Lấy firstLink từ episodes
+      // Lấy firstLink từ episodes, lọc theo nguồn
       let firstEpisode = null;
+      let firstLink = '';
+      let isEmbed = false;
       for (const server of episodes) {
         const serverData = Array.isArray(server.items) ? server.items :
                           Array.isArray(server.server_data) ? server.server_data :
                           Array.isArray(server.episodes) ? server.episodes : [];
         if (serverData.length > 0) {
           firstEpisode = serverData[0];
-          break;
+          const m3u8 = firstEpisode.link_m3u8 || firstEpisode.link || firstEpisode.m3u8 || "";
+          const embed = firstEpisode.embed || firstEpisode.link_embed || "";
+          if (srcConf.type === 'nguonc') {
+            firstLink = embed;
+            isEmbed = true;
+          } else {
+            firstLink = m3u8;
+            isEmbed = false;
+          }
+          if (firstLink) break;
         }
       }
-
-      const firstM3u8 = firstEpisode?.link_m3u8 || firstEpisode?.link || firstEpisode?.m3u8 || "";
-      const firstEmbed = firstEpisode?.embed || firstEpisode?.link_embed || "";
-      const firstLink = firstM3u8 || firstEmbed;
-      const isEmbed = !firstM3u8 && firstEmbed;
 
       // Banner
       const poster = fixImagePath(item.poster_url || item.thumb_url || item.image, srcConf);
@@ -539,7 +544,7 @@
         <div class="banner-content">
           <h1>${item.name || item.title || ''}</h1>
           <p><b>Năm:</b> ${yearVal}</p>
-          <p><b>Đạo diễn:</b> ${item.director?.join(", ") || "?"}</p>
+          <p><b>Đạo diễn:</b> ${director}</p>
           <p><b>Diễn viên:</b> ${actors}</p>
           <p><b>Thể loại:</b> ${categories}</p>
           <p><b>Quốc gia:</b> ${countries}</p>
@@ -576,18 +581,35 @@
         return;
       }
 
+      // Tạo các grid riêng cho từng loại ngôn ngữ
+      const vsDiv = document.createElement("div");
+      vsDiv.innerHTML = '<h3>Vietsub</h3><div class="episode-grid"></div>';
+      const vsGrid = vsDiv.querySelector(".episode-grid");
+
+      const tmDiv = document.createElement("div");
+      tmDiv.innerHTML = '<h3>Thuyết Minh</h3><div class="episode-grid"></div>';
+      const tmGrid = tmDiv.querySelector(".episode-grid");
+
+      const ltDiv = document.createElement("div");
+      ltDiv.innerHTML = '<h3>Lồng Tiếng</h3><div class="episode-grid"></div>';
+      const ltGrid = ltDiv.querySelector(".episode-grid");
+
       episodes.forEach((server, serverIdx) => {
         let serverName = server.server_name || server.name || `Server ${serverIdx + 1}`;
+        let languageType = 'vs';
         if (serverName.toLowerCase().includes('thuyết minh') || serverName.toLowerCase().includes('tm') || item.language?.toLowerCase().includes('thuyết minh')) {
-          serverName += ' (TM)';
+          languageType = 'tm';
         } else if (serverName.toLowerCase().includes('lồng tiếng') || serverName.toLowerCase().includes('lt') || item.language?.toLowerCase().includes('lồng tiếng')) {
-          serverName += ' (LT)';
+          languageType = 'lt';
         } else if (serverName.toLowerCase().includes('vietsub') || item.language?.toLowerCase().includes('vietsub')) {
-          serverName += ' (VS)';
+          languageType = 'vs';
         }
+
         const serverData = Array.isArray(server.items) ? server.items :
                           Array.isArray(server.server_data) ? server.server_data :
                           Array.isArray(server.episodes) ? server.episodes : [];
+        const grid = languageType === 'tm' ? tmGrid : languageType === 'lt' ? ltGrid : vsGrid;
+
         serverData.forEach((ep, idx) => {
           const m3u8 = ep.link_m3u8 || ep.link || ep.m3u8 || "";
           const embed = ep.embed || ep.link_embed || "";
@@ -603,25 +625,37 @@
             search: search
           });
 
-          if (m3u8) {
+          if (srcConf.type !== "nguonc" && m3u8) {
             queryParams.set('ep', m3u8);
             queryParams.set('isEmbed', false);
             const btn = document.createElement("button");
-            btn.textContent = `${serverName}: ${epName} (Bánh mì 01)`;
+            btn.textContent = `Tập ${epName} (A)`;
             btn.onclick = () => location.href = `watch.html?${queryParams.toString()}`;
-            episodeList.appendChild(btn);
-          }
-
-          if (embed) {
+            grid.appendChild(btn);
+          } else if (srcConf.type === "nguonc" && embed) {
             queryParams.set('ep', embed);
             queryParams.set('isEmbed', true);
             const btn = document.createElement("button");
-            btn.textContent = `${serverName}: ${epName} (Vip)`;
+            btn.textContent = `Tập ${epName} (B)`;
             btn.onclick = () => location.href = `watch.html?${queryParams.toString()}`;
-            episodeList.appendChild(btn);
+            grid.appendChild(btn);
           }
         });
       });
+
+      // Thêm các div vào episodeList nếu có nội dung
+      if (vsGrid.children.length > 0) {
+        episodeList.appendChild(vsDiv);
+      }
+      if (tmGrid.children.length > 0) {
+        episodeList.appendChild(tmDiv);
+      }
+      if (ltGrid.children.length > 0) {
+        episodeList.appendChild(ltDiv);
+      }
+      if (episodeList.children.length === 0) {
+        episodeList.innerHTML = "<p class='small-note'>Phim hiện chưa có tập nào. Vui lòng thử lại sau.</p>";
+      }
 
     } catch (err) {
       console.error("Detail fetch error:", err);
