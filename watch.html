@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Xem phim</title>
   <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/5.1.1/mediaelementplayer.min.css" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <style>
     body {
       margin: 0;
@@ -172,7 +174,7 @@
     /* PLAYER */
     .player-container {
       width: 900px;
-      height: 500px;
+      height: 600px;
       margin: 0 auto 20px;
       background: #000;
       border-radius: 10px;
@@ -302,10 +304,6 @@
     /* RESPONSIVE */
     @media (max-width: 1023px) {
       .Search.active input { width: 120px; }
-      .player-container {
-        width: 100%;
-        height: calc(100vw * 500 / 900);
-      }
     }
 
     @media (max-width: 480px) {
@@ -313,6 +311,7 @@
       .movie-info h1 { font-size: 20px; }
       .movie-info p { font-size: 14px; }
       .episode-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+      .player-container { width: 100%; height: calc(100vw * 600 / 900); }
     }
 
     @media (max-width: 360px) {
@@ -349,10 +348,9 @@
       <div id="episodeList"></div>
     </div>
   </main>
-  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/5.1.1/mediaelement-and-player.min.js"></script>
   <script>
-    // Config sources và labels (lược bỏ labels cho ngắn gọn, giữ nguyên cấu trúc)
+    // Config sources và labels
     const sources = [
       { name: "🍞 Bánh Mì 01", base: "https://ophim1.com/v1/api", type: "ophim" },
       { name: "🍞 Bánh Mì 02", base: "https://phimapi.com/v1/api", type: "phimapi" },
@@ -439,6 +437,10 @@
             continue;
           }
           const json = await res.json();
+          if (json.status === false) {
+            console.warn(`API error at ${u}: ${json.msg}`);
+            continue;
+          }
           if (json.data?.item || json.movie || json.data) return { url: u, data: json };
         } catch (e) {
           console.warn(`Error fetching ${u}:`, e);
@@ -456,8 +458,13 @@
           console.warn(`Failed to fetch episodes from ${epUrl}: ${res.status}`);
           return [];
         }
-        const data = await res.json();
-        return data.episodes || data.data?.episodes || [];
+        const json = await res.json();
+        if (json.status === false) {
+          console.warn(`Episodes API error at ${epUrl}: ${json.msg}`);
+          return [];
+        }
+        console.log("Episodes data:", json);
+        return json.episodes || json.data?.episodes || [];
       } catch (e) {
         console.warn(`Error fetching episodes from ${epUrl}:`, e);
         return [];
@@ -467,27 +474,20 @@
     // Convert SRT to VTT
     function convertSrtToVtt(srtContent) {
       try {
-        return 'WEBVTT\n\n' + srtContent
+        srtContent = srtContent.replace(/^\uFEFF/, ''); // Remove BOM
+        let vtt = 'WEBVTT\n\n' + srtContent
           .replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, '$1.$2')
-          .replace(/^\d+$/gm, (match) => `${match}\n`);
+          .replace(/^\d+$/gm, (match) => `${match}\n`)
+          .replace(/\r\n|\r|\n/g, '\n');
+        console.log("Converted VTT content:", vtt.substring(0, 200));
+        return vtt;
       } catch (e) {
         console.warn("Error converting SRT to VTT:", e);
         return null;
       }
     }
 
-    // Validate M3U8 URL
-    async function validateUrl(url) {
-      try {
-        const res = await fetch(url, { method: 'HEAD' });
-        return res.ok;
-      } catch (e) {
-        console.warn(`Error validating URL ${url}:`, e);
-        return false;
-      }
-    }
-
-    // Load player
+    // Load player (MediaElement.js)
     let player;
     async function loadPlayer() {
       if (!ep || !srcConf) {
@@ -496,43 +496,55 @@
         return;
       }
 
-      // Validate M3U8 URL
-      if (!isEmbed) {
-        const isValid = await validateUrl(ep);
-        if (!isValid) {
-          playerContainer.innerHTML = "<p>Link video không khả dụng (404). Vui lòng chọn tập khác.</p>";
-          subtitleUpload.style.display = "none";
-          return;
-        }
-      }
-
       if (isEmbed) {
         playerContainer.innerHTML = `<iframe src="${ep}" allowfullscreen allow="autoplay"></iframe>`;
         subtitleUpload.style.display = "none";
       } else {
-        playerContainer.innerHTML = `<video id="videoPlayer" playsinline controls><source src="${ep}" type="application/x-mpegURL" /></video>`;
+        playerContainer.innerHTML = `<video id="videoPlayer" class="mejs__player" playsinline controls preload="auto" width="900" height="600">
+          <source src="${ep}" type="application/x-mpegURL" />
+        </video>`;
         subtitleUpload.style.display = "flex";
-        player = new Plyr("#videoPlayer", {
-          controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'fullscreen'],
-          settings: ['captions', 'quality', 'speed'],
-          captions: { active: true, update: true }
+        player = new MediaElementPlayer('videoPlayer', {
+          stretching: 'auto',
+          playbackRates: [0.5, 1, 1.25, 1.5, 2],
+          hls: {
+            autoStartLoad: true,
+            startFragPrefetch: true,
+            maxBufferLength: 60, // Buffer 60s
+            maxMaxBufferLength: 120, // Max buffer 120s
+            maxBufferHole: 0.5,
+            lowLatencyMode: false
+          },
+          success: (mediaElement, originalNode, instance) => {
+            console.log("MediaElement.js loaded, attempting to play");
+            mediaElement.play().catch(e => console.warn("Play error:", e));
+          },
+          error: async (mediaElement, originalNode, instance) => {
+            console.warn("MediaElement.js error:", mediaElement.error);
+            playerContainer.innerHTML = "<p>Lỗi khi tải video M3U8, đang thử phục hồi...</p>";
+            // Retry after 3s
+            setTimeout(() => {
+              mediaElement.src = ep;
+              mediaElement.play().catch(e => console.warn("Retry play error:", e));
+            }, 3000);
+            // Fallback to embed after 6s
+            setTimeout(async () => {
+              if (mediaElement.error) {
+                console.log("Retry failed, falling back to embed");
+                const episodes = await fetchEpisodes(slug, srcConf);
+                const embedLink = episodes.flatMap(s => (s.items || s.server_data || s.episodes || []).map(e => e.embed || e.link_embed)).find(e => e);
+                if (embedLink) {
+                  console.log("Falling back to embed:", embedLink);
+                  playerContainer.innerHTML = `<iframe src="${embedLink}" allowfullscreen allow="autoplay"></iframe>`;
+                  subtitleUpload.style.display = "none";
+                  isEmbed = true;
+                } else {
+                  playerContainer.innerHTML = "<p>Không thể tải video. Vui lòng chọn tập khác.</p>";
+                }
+              }
+            }, 6000);
+          }
         });
-
-        if (Hls.isSupported()) {
-          const hls = new Hls({ lowLatencyMode: true });
-          hls.loadSource(ep);
-          hls.attachMedia(document.getElementById("videoPlayer"));
-          hls.on(Hls.Events.MANIFEST_PARSED, () => player.play().catch(e => console.warn("Play error:", e)));
-          hls.on(Hls.Events.ERROR, (event, data) => {
-            console.warn(`HLS error for ${ep}:`, data);
-            if (data.fatal) playerContainer.innerHTML = "<p>Lỗi khi tải video M3U8. Vui lòng chọn tập khác.</p>";
-          });
-        } else if (document.getElementById("videoPlayer").canPlayType('application/vnd.apple.mpegurl')) {
-          document.getElementById("videoPlayer").src = ep;
-          document.getElementById("videoPlayer").play().catch(e => console.warn("Native play error:", e));
-        } else {
-          playerContainer.innerHTML = "<p>Trình duyệt không hỗ trợ phát video M3U8.</p>";
-        }
       }
     }
 
@@ -559,26 +571,26 @@
 
         const subtitleBlob = new Blob([content], { type: 'text/vtt' });
         const subtitleUrl = URL.createObjectURL(subtitleBlob);
+        console.log("Subtitle URL:", subtitleUrl);
 
         if (player && !isEmbed) {
-          // Remove existing tracks
           const video = document.getElementById("videoPlayer");
-          while (video.textTracks.length > 0) {
-            video.textTracks[0].mode = 'disabled';
-            video.removeChild(video.querySelector('track'));
+          // Remove existing tracks
+          const tracks = video.getElementsByTagName('track');
+          while (tracks.length > 0) {
+            video.removeChild(tracks[0]);
           }
-
           // Add new track
-          const track = document.createElement("track");
-          track.kind = "captions";
-          track.label = "Phụ đề tải lên";
-          track.srclang = "vi";
+          const track = document.createElement('track');
+          track.kind = 'subtitles';
+          track.label = 'Phụ đề tải lên';
+          track.srclang = 'vi';
           track.src = subtitleUrl;
           track.default = true;
           video.appendChild(track);
-
-          // Ensure captions are enabled
-          player.toggleCaptions(true);
+          // Force enable subtitles
+          player.setTrack('vi');
+          console.log("Subtitle loaded, should display automatically");
         } else {
           alert("Không thể tải phụ đề vì video chưa sẵn sàng hoặc đang ở chế độ embed.");
         }
@@ -614,19 +626,26 @@
 
       const url = srcConf.type === "nguonc" ? `${srcConf.base}/film/${slug}` : `${srcConf.base}/phim/${slug}`;
       const res = await tryUrls([url]);
+      let episodes = [];
+
       if (!res) {
-        episodeList.innerHTML = "<p>Không tìm thấy phim. Vui lòng kiểm tra lại nguồn.</p>";
-        return;
+        console.warn(`Main API failed for ${url}, trying episodes endpoint`);
+        episodes = await fetchEpisodes(slug, srcConf);
+      } else {
+        const data = res.data;
+        console.log("API response:", data);
+        const item = data.data?.item || data.movie || data.data || {};
+        episodes = item.episodes || item.episode || item.data?.episodes || item.server_data || Object.values(item.episodes || {}).filter(Array.isArray) || [];
+        console.log("Episodes from main API:", episodes);
+        if (episodes.length === 0) {
+          console.warn("No episodes in main API, trying episodes endpoint");
+          episodes = await fetchEpisodes(slug, srcConf);
+        }
       }
 
-      const data = res.data;
-      console.log("API response:", data); // Debug API response
-      const item = data.data?.item || data.movie || data.data || {};
-      let episodes = item.episodes || item.episode || item.data?.episodes || item.server_data || Object.values(item.episodes || {}).filter(Array.isArray) || [];
-      if (episodes.length === 0) episodes = await fetchEpisodes(slug, srcConf);
-
+      console.log("Final episodes:", episodes);
       if (episodes.length === 0) {
-        episodeList.innerHTML = "<p>Phim hiện chưa có tập nào. Vui lòng thử lại sau.</p>";
+        episodeList.innerHTML = "<p>Phim hiện chưa có tập nào hoặc API không hợp lệ. Vui lòng thử lại sau.</p>";
         return;
       }
 
@@ -643,7 +662,6 @@
       const ltToggle = document.createElement("button"); ltToggle.className = "toggle-btn"; ltToggle.innerHTML = 'Lồng Tiếng <span class="icon">V</span>'; ltDiv.appendChild(ltToggle);
       const ltGrid = document.createElement("div"); ltGrid.className = "episode-grid"; ltDiv.appendChild(ltGrid);
 
-      // Toggle functionality
       [vsToggle, tmToggle, ltToggle].forEach(toggle => {
         toggle.addEventListener('click', () => {
           const section = toggle.parentElement;
@@ -656,8 +674,8 @@
       episodes.forEach((server, serverIdx) => {
         const serverName = server.server_name || server.name || `Server ${serverIdx + 1}`;
         let languageType = 'vs';
-        if (/thuyết minh|tm/i.test(serverName) || (item.language && /thuyết minh/i.test(item.language))) languageType = 'tm';
-        else if (/lồng tiếng|lt/i.test(serverName) || (item.language && /lồng tiếng/i.test(item.language))) languageType = 'lt';
+        if (/thuyết minh|tm/i.test(serverName) || (server.language && /thuyết minh/i.test(server.language))) languageType = 'tm';
+        else if (/lồng tiếng|lt/i.test(serverName) || (server.language && /lồng tiếng/i.test(server.language))) languageType = 'lt';
 
         const serverData = server.items || server.server_data || server.episodes || [];
         const grid = languageType === 'tm' ? tmGrid : languageType === 'lt' ? ltGrid : vsGrid;
@@ -666,7 +684,7 @@
           const m3u8 = epItem.link_m3u8 || epItem.link || epItem.m3u8 || "";
           const embed = epItem.embed || epItem.link_embed || "";
           const currEpName = epItem.name || epItem.title || `Tập ${idx + 1}`;
-          const queryParams = new URLSearchParams({ slug, src: source, name: item.name || item.title || '', category, region, year, type, search, epName: currEpName });
+          const queryParams = new URLSearchParams({ slug, src: source, name: name || '', category, region, year, type, search, epName: currEpName });
 
           if (m3u8 && srcConf.type !== "nguonc") {
             queryParams.set('ep', m3u8);
@@ -693,7 +711,7 @@
       if (vsGrid.children.length > 0) episodeList.appendChild(vsDiv);
       if (tmGrid.children.length > 0) episodeList.appendChild(tmDiv);
       if (ltGrid.children.length > 0) episodeList.appendChild(ltDiv);
-      if (episodeList.children.length === 0) episodeList.innerHTML = "<p>Phim hiện chưa có tập nào. Vui lòng thử lại sau.</p>";
+      if (episodeList.children.length === 0) episodeList.innerHTML = "<p>Phim hiện chưa có tập nào hoặc API không hợp lệ. Vui lòng thử lại sau.</p>";
     }
 
     // Search và menu handlers
