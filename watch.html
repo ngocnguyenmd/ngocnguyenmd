@@ -4,320 +4,346 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Xem phim</title>
-  <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/5.1.1/mediaelementplayer.min.css" rel="stylesheet" />
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #1a191f;
-      color: #fff;
-      overflow-x: hidden;
-      -webkit-tap-highlight-color: transparent;
-    }
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<style>
+  body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #1a191f;
+  color: #fff;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
 
-    /* HEADER */
-    header {
-      background: #212026;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    }
+/* HEADER */
+header {
+  background: #212026;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
 
-    .Top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      max-width: 1200px;
-    }
+.Top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1000px;
+}
 
-    .Logo {
-      font-size: 20px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-bottom: 6px;
-      transition: color 0.2s;
-    }
+.Logo {
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 6px;
+  transition: color 0.2s;
+}
+.Logo:hover { color: #de1212; }
 
-    .Logo:hover { color: #de1212; }
+.MenuBtn {
+  font-size: 22px;
+  cursor: pointer;
+  padding: 8px;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.2s;
+}
+.MenuBtn:hover { background: rgba(255, 255, 255, 0.2); }
 
-    .MenuBtn {
-      font-size: 22px;
-      cursor: pointer;
-      padding: 8px;
-      min-width: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      transition: background 0.2s;
-    }
+.MenuDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 220px;
+  background: #2b2b32;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.MenuBtn.active .MenuDropdown { display: block; opacity: 1; }
 
-    .MenuBtn:hover { background: rgba(255, 255, 255, 0.2); }
+.MenuDropdown h3 {
+  margin: 10px 0 5px 10px;
+  font-size: 14px;
+  border-bottom: 1px solid #444;
+  padding-bottom: 5px;
+  color: #bdbdbd;
+}
 
-    .MenuDropdown {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      width: 220px;
-      background: #2b2b32;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      display: none;
-      opacity: 0;
-      transition: opacity 0.2s;
-      max-height: 300px;
-      overflow-y: auto;
-    }
+.MenuDropdown button {
+  display: block;
+  width: 100%;
+  margin: 5px 0;
+  padding: 8px;
+  border: none;
+  background: #444;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+}
+.MenuDropdown button:hover { background: #555; }
 
-    .MenuBtn.active .MenuDropdown { display: block; opacity: 1; }
+/* SEARCH */
+.Search {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.Search input {
+  width: 0;
+  opacity: 0;
+  transition: all 0.3s ease;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  outline: none;
+  background: #2a292f;
+  color: #fff;
+  font-size: 14px;
+}
+.Search.active input {
+  width: 180px;
+  opacity: 1;
+}
+.Search button {
+  margin-left: 8px;
+  background: #de1212;
+  border: none;
+  padding: 8px 12px;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+.Search button:hover { background: #b00d0d; }
 
-    .MenuDropdown h3 {
-      margin: 10px 0 5px 10px;
-      font-size: 14px;
-      border-bottom: 1px solid #444;
-      padding-bottom: 5px;
-      color: #bdbdbd;
-    }
+/* MAIN */
+main {
+  width: 100%;
+  max-width: 1000px;  /* Giới hạn laptop */
+  margin: 20px auto;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
 
-    .MenuDropdown button {
-      display: block;
-      width: 100%;
-      margin: 5px 0;
-      padding: 8px;
-      border: none;
-      background: #444;
-      color: #fff;
-      border-radius: 6px;
-      cursor: pointer;
-      text-align: left;
-      transition: background 0.2s;
-    }
+.breadcrumbs {
+  font-size: 14px;
+  margin-bottom: 15px;
+  color: #bdbdbd;
+}
+.breadcrumbs a {
+  color: #de1212;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.breadcrumbs a:hover { color: #b00d0d; text-decoration: underline; }
 
-    .MenuDropdown button:hover { background: #555; }
+.movie-info { margin-bottom: 20px; }
+.movie-info h1 { font-size: 24px; margin: 0 0 10px; }
+.movie-info p { font-size: 16px; color: #bdbdbd; }
 
-    /* SEARCH */
-    .Search {
-      display: flex;
-      align-items: center;
-      position: relative;
-    }
+/* PLAYER */
+.player-container {
+  width: 100%;
+  max-width: 800px;     /* Không vượt quá main */
+  aspect-ratio: 16/9;    /* Tỉ lệ chuẩn */
+  margin: 0 auto 20px;
+  background: #1f171700;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+}
 
-    .Search input {
-      width: 0;
-      opacity: 0;
-      transition: all 0.3s ease;
-      padding: 8px;
-      border: none;
-      border-radius: 6px;
-      outline: none;
-      background: #2a292f;
-      color: #fff;
-      font-size: 14px;
-    }
+.player-container video,
+.player-container iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  border-radius: 10px;
+}
 
-    .Search.active input {
-      width: 180px;
-      opacity: 1;
-    }
+/* PLAYER CONTROLS */
+.player-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+.player-controls button {
+  background: linear-gradient(145deg, #555, #333);
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.player-controls button:hover {
+  background: linear-gradient(145deg, #ff4d4d, #de1212);
+  transform: scale(1.05);
+}
 
-    .Search button {
-      margin-left: 8px;
-      background: #de1212;
-      border: none;
-      padding: 8px 12px;
-      color: #fff;
-      cursor: pointer;
-      border-radius: 6px;
-      font-size: 14px;
-      transition: background 0.2s;
-    }
+/* SUBTITLE UPLOAD */
+.subtitle-upload {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+.subtitle-upload input[type="file"] { display: none; }
+.subtitle-upload .upload-btn {
+  background: linear-gradient(145deg, #de1212, #ff4d4d);
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.subtitle-upload .upload-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.4);
+}
 
-    .Search button:hover { background: #b00d0d; }
+/* STORY */
+.story {
+  margin: 20px 0;
+  padding: 15px;
+  background: #2b2b32;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.story h3 {
+  font-size: 18px;
+  margin: 0 0 10px;
+  color: #fff;
+}
+.story p {
+  font-size: 14px;
+  color: #bdbdbd;
+  line-height: 1.5;
+}
 
-    /* MAIN */
-    main {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 20px;
-    }
+/* CURRENT TIME */
+.current-time {
+  font-size: 14px;
+  color: #bdbdbd;
+  text-align: center;
+  margin: 10px 0;
+}
 
-    .breadcrumbs {
-      font-size: 14px;
-      margin-bottom: 15px;
-      color: #bdbdbd;
-    }
+/* EPISODES */
+.episodes h3 { font-size: 18px; margin: 20px 0 10px; color: #fff; }
 
-    .breadcrumbs a {
-      color: #de1212;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
+.episode-section { margin-bottom: 20px; }
+.episode-section .toggle-btn {
+  background: linear-gradient(145deg, #555, #333);
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.episode-section .toggle-btn:hover {
+  background: linear-gradient(145deg, #ff4d4d, #de1212);
+}
+.episode-section .toggle-btn .icon {
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+.episode-section.open .toggle-btn .icon {
+  transform: rotate(180deg);
+}
+.episode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.episode-section.open .episode-grid {
+  max-height: 500px;
+  padding-top: 10px;
+}
+.episode-grid button {
+  background: linear-gradient(145deg, #555, #333);
+  color: #fff;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.episode-grid button:hover {
+  background: linear-gradient(145deg, #ff4d4d, #de1212);
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.4);
+}
+.episode-grid button.active {
+  background: linear-gradient(145deg, #de1212, #ff4d4d);
+  border: 2px solid #555;
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.5);
+}
 
-    .breadcrumbs a:hover { color: #b00d0d; text-decoration: underline; }
-
-    .movie-info { margin-bottom: 20px; }
-
-    .movie-info h1 { font-size: 24px; margin: 0 0 10px; }
-
-    .movie-info p { font-size: 16px; color: #bdbdbd; }
-
-    /* PLAYER */
-    .player-container {
-      width: 900px;
-      height: 600px;
-      margin: 0 auto 20px;
-      background: #000;
-      border-radius: 10px;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .player-container video,
-    .player-container iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      border-radius: 10px;
-    }
-
-    /* SUBTITLE UPLOAD */
-    .subtitle-upload {
-      margin: 10px 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .subtitle-upload label { display: none; }
-
-    .subtitle-upload input[type="file"] { display: none; }
-
-    .subtitle-upload .upload-btn {
-      background: linear-gradient(145deg, #de1212, #ff4d4d);
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      text-align: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    }
-
-    .subtitle-upload .upload-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 10px rgba(0,0,0,0.4);
-    }
-
-    /* EPISODES */
-    .episodes h3 { font-size: 18px; margin: 20px 0 10px; color: #fff; }
-
-    .episode-section {
-      margin-bottom: 20px;
-    }
-
-    .episode-section .toggle-btn {
-      background: linear-gradient(145deg, #555, #333);
-      color: #fff;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      width: 100%;
-      text-align: left;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    }
-
-    .episode-section .toggle-btn:hover {
-      background: linear-gradient(145deg, #ff4d4d, #de1212);
-    }
-
-    .episode-section .toggle-btn .icon {
-      font-size: 18px;
-      transition: transform 0.3s ease;
-    }
-
-    .episode-section.open .toggle-btn .icon {
-      transform: rotate(180deg);
-    }
-
-    .episode-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 10px;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-    }
-
-    .episode-section.open .episode-grid {
-      max-height: 500px;
-      padding-top: 10px;
-    }
-
-    .episode-grid button {
-      background: linear-gradient(145deg, #555, #333);
-      color: #fff;
-      border: none;
-      padding: 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      text-align: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    }
-
-    .episode-grid button:hover {
-      background: linear-gradient(145deg, #ff4d4d, #de1212);
-      transform: scale(1.05);
-      box-shadow: 0 6px 10px rgba(0,0,0,0.4);
-    }
-
-    .episode-grid button.active {
-      background: linear-gradient(145deg, #de1212, #ff4d4d);
-      border: 2px solid #fff;
-      transform: scale(1.05);
-      box-shadow: 0 6px 10px rgba(0,0,0,0.5);
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 1023px) {
-      .Search.active input { width: 120px; }
-    }
-
-    @media (max-width: 480px) {
-      .Search.active input { width: 100px; }
-      .movie-info h1 { font-size: 20px; }
-      .movie-info p { font-size: 14px; }
-      .episode-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-      .player-container { width: 100%; height: calc(100vw * 600 / 900); }
-    }
-
-    @media (max-width: 360px) {
-      .episode-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-    }
-  </style>
+/* RESPONSIVE */
+@media (max-width: 1023px) {
+  .Search.active input { width: 120px; }
+  main { max-width: 95%; }
+}
+@media (max-width: 480px) {
+  .Search.active input { width: 100px; }
+  .movie-info h1 { font-size: 20px; }
+  .movie-info p { font-size: 14px; }
+  .episode-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+  .player-controls button, .subtitle-upload .upload-btn {
+    padding: 8px 12px; font-size: 12px;
+  }
+}
+@media (max-width: 360px) {
+  .episode-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); }
+  .player-controls button, .subtitle-upload .upload-btn {
+    padding: 6px 10px; font-size: 12px;
+  }
+}
+</style>
 </head>
 <body>
   <header>
@@ -338,401 +364,571 @@
     <div class="breadcrumbs" id="breadcrumbs"></div>
     <div class="movie-info" id="movieInfo"></div>
     <div class="player-container" id="playerContainer"></div>
+    <div class="player-controls" id="playerControls">
+      <button id="prevEpisode">Tập trước</button>
+      <button id="rewind10s">Tua lại 10s</button>
+      <button id="forward10s">Tua tới 10s</button>
+      <button id="nextEpisode">Tập sau</button>
+    </div>
     <div class="subtitle-upload" id="subtitleUpload">
       <label for="subtitleInput">Tải lên phụ đề (.srt, .vtt):</label>
       <input type="file" id="subtitleInput" accept=".srt,.vtt" />
       <button class="upload-btn" onclick="document.getElementById('subtitleInput').click()">Tải lên phụ đề</button>
     </div>
+    <div class="current-time" id="currentTime"></div>
     <div class="episodes" id="episodes">
       <h3>Danh sách tập</h3>
       <div id="episodeList"></div>
     </div>
+    <div class="story" id="story"></div>
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/5.1.1/mediaelement-and-player.min.js"></script>
-  <script>
-    // Config sources và labels
-    const sources = [
-      { name: "🍞 Bánh Mì 01", base: "https://ophim1.com/v1/api", type: "ophim" },
-      { name: "🍞 Bánh Mì 02", base: "https://phimapi.com/v1/api", type: "phimapi" },
-      { name: "🍞 Bánh Mì 03", base: "https://phim.nguonc.com/api", type: "nguonc" }
-    ];
+<script>
+/* ==== FULL JS (Thay thế toàn bộ script cũ) ====
+   - Giữ nguyên cấu trúc params, labels, UI logic
+   - Player: Hls.js (fallback native HLS / fallback embed)
+   - loadEpisodes: phân Vietsub / Thuyết minh / Lồng tiếng, (A)/(B)
+   - Subtitle upload: hỗ trợ .srt /.vtt
+   - Prev/Next, breadcrumbs, story, current time, search, menu
+*/
 
-    const labels = {
-      "hanh-dong": "Hành Động", "phieu-luu": "Phiêu Lưu", "hoat-hinh": "Hoạt Hình", "hai": "Hài",
-      "hinh-su": "Hình Sự", "tai-lieu": "Tài Liệu", "chinh-kich": "Chính Kịch", "gia-dinh": "Gia Đình",
-      "gia-tuong": "Giả Tưởng", "lich-su": "Lịch Sử", "kinh-di": "Kinh Dị", "nhac": "Nhạc",
-      "bi-an": "Bí Ẩn", "lang-man": "Lãng Mạn", "khoa-hoc-vien-tuong": "Khoa Học Viễn Tưởng",
-      "gay-can": "Gây Cấn", "chien-tranh": "Chiến Tranh", "tam-ly": "Tâm Lý", "tinh-cam": "Tình Cảm",
-      "co-trang": "Cổ Trang", "mien-tay": "Miền Tây", "phim-18": "Phim 18+",
-      "au-my": "Âu Mỹ", "anh": "Anh", "trung-quoc": "Trung Quốc", "indonesia": "Indonesia",
-      "viet-nam": "Việt Nam", "phap": "Pháp", "hong-kong": "Hồng Kông", "han-quoc": "Hàn Quốc",
-      "nhat-ban": "Nhật Bản", "thai-lan": "Thái Lan", "dai-loan": "Đài Loan", "nga": "Nga",
-      "ha-lan": "Hà Lan", "philippines": "Philippines", "an-do": "Ấn Độ", "quoc-gia-khac": "Quốc gia khác",
-      "duc": "Đức", "tay-ban-nha": "Tây Ban Nha", "tho-nhi-ky": "Thổ Nhĩ Kỳ", "mexico": "Mexico",
-      "ba-lan": "Ba Lan", "uc": "Úc", "thuỵ-den": "Thụy Điển", "malaysia": "Malaysia",
-      "brazil": "Brazil", "bo-dao-nha": "Bồ Đào Nha", "y": "Ý", "dan-mach": "Đan Mạch",
-      "uae": "UAE", "na-uy": "Na Uy", "thuỵ-si": "Thụy Sĩ", "chau-phi": "Châu Phi",
-      "nam-phi": "Nam Phi", "ukraina": "Ukraina", "a-rap-xe-ut": "Ả Rập Xê Út", "bi": "Bỉ",
-      "ireland": "Ireland", "colombia": "Colombia", "phan-lan": "Phần Lan", "chile": "Chile",
-      "hy-lap": "Hy Lạp", "nigeria": "Nigeria", "argentina": "Argentina", "singapore": "Singapore",
-      "phim-moi": "Phim mới", "phim-bo": "Phim bộ", "phim-le": "Phim lẻ", "shows": "TV Shows",
-      "hoat-hinh": "Hoạt hình", "phim-vietsub": "Phim vietsub", "phim-thuyet-minh": "Phim thuyết minh",
-      "phim-long-tieng": "Phim lồng tiếng", "phim-bo-dang-chieu": "Phim bộ đang chiếu",
-      "phim-bo-da-hoan-thanh": "Phim bộ đã hoàn thành", "phim-sap-chieu": "Phim sắp chiếu",
-      "subteam": "Subteam", "phim-chieu-rap": "Phim chiếu rạp"
-    };
-    const reverseLabels = Object.fromEntries(Object.entries(labels).map(([k, v]) => [v, k]));
+  // Config sources và labels (giữ nguyên)
+  const sources = [
+    { name: "🍞 Bánh Mì 01", base: "https://ophim1.com/v1/api", type: "ophim" },
+    { name: "🍞 Bánh Mì 02", base: "https://phimapi.com/v1/api", type: "phimapi" },
+    { name: "🍞 Bánh Mì 03", base: "https://phim.nguonc.com/api", type: "nguonc" }
+  ];
 
-    // Query params
-    const params = new URLSearchParams(location.search);
-    const slug = params.get("slug");
-    const source = params.get("src") ? decodeURIComponent(params.get("src")) : null;
-    const srcConf = sources.find(s => s.name === source);
-    const ep = params.get("ep") ? decodeURIComponent(params.get("ep")) : null;
-    let isEmbed = params.get("isEmbed") === "true";
-    const epName = params.get("epName") || "Tập đang xem";
-    const name = params.get("name") ? decodeURIComponent(params.get("name")) : "";
-    const category = params.get("category") || "";
-    const region = params.get("region") || "";
-    const year = params.get("year") || "";
-    const type = params.get("type") || "";
-    const search = params.get("search") || "";
+  const labels = {
+    "hanh-dong": "Hành Động", "phieu-luu": "Phiêu Lưu", "hoat-hinh": "Hoạt Hình", "hai": "Hài",
+    "hinh-su": "Hình Sự", "tai-lieu": "Tài Liệu", "chinh-kich": "Chính Kịch", "gia-dinh": "Gia Đình",
+    "gia-tuong": "Giả Tưởng", "lich-su": "Lịch Sử", "kinh-di": "Kinh Dị", "nhac": "Nhạc",
+    "bi-an": "Bí Ẩn", "lang-man": "Lãng Mạn", "khoa-hoc-vien-tuong": "Khoa Học Viễn Tưởng",
+    "gay-can": "Gây Cấn", "chien-tranh": "Chiến Tranh", "tam-ly": "Tâm Lý", "tinh-cam": "Tình Cảm",
+    "co-trang": "Cổ Trang", "mien-tay": "Miền Tây", "phim-18": "Phim 18+",
+    "au-my": "Âu Mỹ", "anh": "Anh", "trung-quoc": "Trung Quốc", "indonesia": "Indonesia",
+    "viet-nam": "Việt Nam", "phap": "Pháp", "hong-kong": "Hồng Kông", "han-quoc": "Hàn Quốc",
+    "nhat-ban": "Nhật Bản", "thai-lan": "Thái Lan", "dai-loan": "Đài Loan", "nga": "Nga",
+    "ha-lan": "Hà Lan", "philippines": "Philippines", "an-do": "Ấn Độ", "quoc-gia-khac": "Quốc gia khác",
+    "duc": "Đức", "tay-ban-nha": "Tây Ban Nha", "tho-nhi-ky": "Thổ Nhĩ Kỳ", "mexico": "Mexico",
+    "ba-lan": "Ba Lan", "uc": "Úc", "thuỵ-den": "Thụy Điển", "malaysia": "Malaysia",
+    "brazil": "Brazil", "bo-dao-nha": "Bồ Đào Nha", "y": "Ý", "dan-mach": "Đan Mạch",
+    "uae": "UAE", "na-uy": "Na Uy", "thuỵ-si": "Thụy Sĩ", "chau-phi": "Châu Phi",
+    "nam-phi": "Nam Phi", "ukraina": "Ukraina", "a-rap-xe-ut": "Ả Rập Xê Út", "bi": "Bỉ",
+    "ireland": "Ireland", "colombia": "Colombia", "phan-lan": "Phần Lan", "chile": "Chile",
+    "hy-lap": "Hy Lạp", "nigeria": "Nigeria", "argentina": "Argentina", "singapore": "Singapore",
+    "phim-moi": "Phim mới", "phim-bo": "Phim bộ", "phim-le": "Phim lẻ", "shows": "TV Shows",
+    "hoat-hinh": "Hoạt hình", "phim-vietsub": "Phim vietsub", "phim-thuyet-minh": "Phim thuyết minh",
+    "phim-long-tieng": "Phim lồng tiếng", "phim-bo-dang-chieu": "Phim bộ đang chiếu",
+    "phim-bo-da-hoan-thanh": "Phim bộ đã hoàn thành", "phim-sap-chieu": "Phim sắp chiếu",
+    "subteam": "Subteam", "phim-chieu-rap": "Phim chiếu rạp"
+  };
+  const reverseLabels = Object.fromEntries(Object.entries(labels).map(([k, v]) => [v, k]));
 
-    // Force isEmbed based on source
-    if (srcConf?.type === 'nguonc') isEmbed = true;
+  // Query params
+  const params = new URLSearchParams(location.search);
+  const slug = params.get("slug");
+  const source = params.get("src") ? decodeURIComponent(params.get("src")) : null;
+  const srcConf = sources.find(s => s.name === source);
+  const ep = params.get("ep") ? decodeURIComponent(params.get("ep")) : null;
+  let isEmbed = params.get("isEmbed") === "true";
+  const epName = params.get("epName") || "Tập đang xem";
+  const name = params.get("name") ? decodeURIComponent(params.get("name")) : "";
+  const category = params.get("category") || "";
+  const region = params.get("region") || "";
+  const year = params.get("year") || "";
+  const type = params.get("type") || "";
+  const search = params.get("search") || "";
 
-    // DOM refs
-    const playerContainer = document.getElementById("playerContainer");
-    const movieInfo = document.getElementById("movieInfo");
-    const breadcrumbs = document.getElementById("breadcrumbs");
-    const episodeList = document.getElementById("episodeList");
-    const subtitleUpload = document.getElementById("subtitleUpload");
-    const subtitleInput = document.getElementById("subtitleInput");
-    const searchBox = document.getElementById("searchBox");
-    const searchInput = document.getElementById("searchInput");
-    const searchBtn = document.getElementById("searchBtn");
-    const menuBtn = document.getElementById("menuBtn");
+  if (srcConf?.type === 'nguonc') isEmbed = true;
 
-    // Helpers
-    function slugify(text) {
-      if (!text) return "";
-      return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
-    }
+  // DOM refs
+  const playerContainer = document.getElementById("playerContainer");
+  const movieInfo = document.getElementById("movieInfo");
+  const breadcrumbs = document.getElementById("breadcrumbs");
+  const episodeList = document.getElementById("episodeList");
+  const subtitleUpload = document.getElementById("subtitleUpload");
+  const subtitleInput = document.getElementById("subtitleInput");
+  const playerControls = document.getElementById("playerControls");
+  const prevEpisodeBtn = document.getElementById("prevEpisode");
+  const nextEpisodeBtn = document.getElementById("nextEpisode");
+  const rewind10sBtn = document.getElementById("rewind10s");
+  const forward10sBtn = document.getElementById("forward10s");
+  const story = document.getElementById("story");
+  const currentTime = document.getElementById("currentTime");
+  const searchBox = document.getElementById("searchBox");
+  const searchInput = document.getElementById("searchInput");
+  const searchBtn = document.getElementById("searchBtn");
+  const menuBtn = document.getElementById("menuBtn");
 
-    function fixImagePath(img, src) {
-      if (!img) return "";
-      if (img.startsWith("http")) return img;
-      if (src.type === "ophim") return `https://img.ophim.live/uploads/movies${img.startsWith("/") ? img : "/" + img}`;
-      if (src.type === "phimapi") return `https://phimimg.com${img.startsWith("/") ? img : "/" + img}`;
-      if (src.type === "nguonc") return img;
-      return img.startsWith("/") ? img : "/" + img;
-    }
+  // Episode navigation state
+  let currentEpisodeIndex = -1;
+  let allEpisodes = [];
 
-    async function tryUrls(urls) {
-      for (const u of urls) {
-        try {
-          const res = await fetch(u);
-          if (!res.ok) {
-            console.warn(`Failed to fetch ${u}: ${res.status}`);
-            continue;
-          }
-          const json = await res.json();
-          if (json.status === false) {
-            console.warn(`API error at ${u}: ${json.msg}`);
-            continue;
-          }
-          if (json.data?.item || json.movie || json.data) return { url: u, data: json };
-        } catch (e) {
-          console.warn(`Error fetching ${u}:`, e);
-        }
-      }
-      console.warn("No valid response from any URL");
-      return null;
-    }
+  // Helpers
+  function slugify(text) {
+    if (!text) return "";
+    return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
+  }
 
-    async function fetchEpisodes(slug, srcConf) {
-      const epUrl = srcConf.type === "nguonc" ? `${srcConf.base}/film/${slug}/episodes` : `${srcConf.base}/phim/${slug}/episodes`;
+  function fixImagePath(img, src) {
+    if (!img) return "";
+    if (img.startsWith("http")) return img;
+    if (src.type === "ophim") return `https://img.ophim.live/uploads/movies${img.startsWith("/") ? img : "/" + img}`;
+    if (src.type === "phimapi") return `https://phimimg.com${img.startsWith("/") ? img : "/" + img}`;
+    if (src.type === "nguonc") return img;
+    return img.startsWith("/") ? img : "/" + img;
+  }
+
+  async function tryUrls(urls) {
+    for (const u of urls) {
       try {
-        const res = await fetch(epUrl);
+        const res = await fetch(u);
         if (!res.ok) {
-          console.warn(`Failed to fetch episodes from ${epUrl}: ${res.status}`);
-          return [];
+          console.warn(`Failed to fetch ${u}: ${res.status}`);
+          continue;
         }
         const json = await res.json();
         if (json.status === false) {
-          console.warn(`Episodes API error at ${epUrl}: ${json.msg}`);
-          return [];
+          console.warn(`API error at ${u}: ${json.msg}`);
+          continue;
         }
-        console.log("Episodes data:", json);
-        return json.episodes || json.data?.episodes || [];
+        if (json.data?.item || json.movie || json.data) return { url: u, data: json };
       } catch (e) {
-        console.warn(`Error fetching episodes from ${epUrl}:`, e);
+        console.warn(`Error fetching ${u}:`, e);
+      }
+    }
+    console.warn("No valid response from any URL");
+    return null;
+  }
+
+  async function fetchEpisodes(slug, srcConf) {
+    const epUrl = srcConf.type === "nguonc" ? `${srcConf.base}/film/${slug}/episodes` : `${srcConf.base}/phim/${slug}/episodes`;
+    try {
+      const res = await fetch(epUrl);
+      if (!res.ok) {
+        console.warn(`Failed to fetch episodes from ${epUrl}: ${res.status}`);
         return [];
       }
+      const json = await res.json();
+      if (json.status === false) {
+        console.warn(`Episodes API error at ${epUrl}: ${json.msg}`);
+        return [];
+      }
+      return json.episodes || json.data?.episodes || [];
+    } catch (e) {
+      console.warn(`Error fetching episodes from ${epUrl}:`, e);
+      return [];
+    }
+  }
+
+  // Convert SRT to VTT
+  function convertSrtToVtt(srtContent) {
+    try {
+      srtContent = srtContent.replace(/^\uFEFF/, '');
+      let vtt = 'WEBVTT\n\n' + srtContent
+        .replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, '$1.$2')
+        .replace(/^\d+$/gm, (match) => `${match}\n`)
+        .replace(/\r\n|\r|\n/g, '\n');
+      return vtt;
+    } catch (e) {
+      console.warn("Error converting SRT to VTT:", e);
+      return null;
+    }
+  }
+
+  /* ---------- PLAYER (Hls.js) ---------- */
+  let hls, video;
+  async function loadPlayer() {
+    // Guard
+    if (!ep || !srcConf) {
+      playerContainer.innerHTML = "<p>Không tìm thấy link video hoặc nguồn không hợp lệ.</p>";
+      subtitleUpload.style.display = "none";
+      playerControls.style.display = "none";
+      return;
     }
 
-    // Convert SRT to VTT
-    function convertSrtToVtt(srtContent) {
-      try {
-        srtContent = srtContent.replace(/^\uFEFF/, ''); // Remove BOM
-        let vtt = 'WEBVTT\n\n' + srtContent
-          .replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, '$1.$2')
-          .replace(/^\d+$/gm, (match) => `${match}\n`)
-          .replace(/\r\n|\r|\n/g, '\n');
-        console.log("Converted VTT content:", vtt.substring(0, 200));
-        return vtt;
-      } catch (e) {
-        console.warn("Error converting SRT to VTT:", e);
-        return null;
-      }
+    // If embed mode -> iframe
+    if (isEmbed) {
+      playerContainer.innerHTML = `<iframe src="${ep}" allowfullscreen allow="autoplay"></iframe>`;
+      subtitleUpload.style.display = "none";
+      playerControls.style.display = "none";
+      return;
     }
 
-    // Load player (MediaElement.js)
-    let player;
-    async function loadPlayer() {
-      if (!ep || !srcConf) {
-        playerContainer.innerHTML = "<p>Không tìm thấy link video hoặc nguồn không hợp lệ.</p>";
-        subtitleUpload.style.display = "none";
-        return;
-      }
+    // Create <video>
+    playerContainer.innerHTML = `<video id="videoPlayer" playsinline controls preload="auto" style="width:100%;max-height:70vh;background:#000"></video>`;
+    video = document.getElementById("videoPlayer");
 
-      if (isEmbed) {
-        playerContainer.innerHTML = `<iframe src="${ep}" allowfullscreen allow="autoplay"></iframe>`;
-        subtitleUpload.style.display = "none";
-      } else {
-        playerContainer.innerHTML = `<video id="videoPlayer" class="mejs__player" playsinline controls preload="auto" width="900" height="600">
-          <source src="${ep}" type="application/x-mpegURL" />
-        </video>`;
-        subtitleUpload.style.display = "flex";
-        player = new MediaElementPlayer('videoPlayer', {
-          stretching: 'auto',
-          playbackRates: [0.5, 1, 1.25, 1.5, 2],
-          hls: {
-            autoStartLoad: true,
-            startFragPrefetch: true,
-            maxBufferLength: 60, // Buffer 60s
-            maxMaxBufferLength: 120, // Max buffer 120s
-            maxBufferHole: 0.5,
-            lowLatencyMode: false
-          },
-          success: (mediaElement, originalNode, instance) => {
-            console.log("MediaElement.js loaded, attempting to play");
-            mediaElement.play().catch(e => console.warn("Play error:", e));
-          },
-          error: async (mediaElement, originalNode, instance) => {
-            console.warn("MediaElement.js error:", mediaElement.error);
-            playerContainer.innerHTML = "<p>Lỗi khi tải video M3U8, đang thử phục hồi...</p>";
-            // Retry after 3s
-            setTimeout(() => {
-              mediaElement.src = ep;
-              mediaElement.play().catch(e => console.warn("Retry play error:", e));
-            }, 3000);
-            // Fallback to embed after 6s
-            setTimeout(async () => {
-              if (mediaElement.error) {
-                console.log("Retry failed, falling back to embed");
-                const episodes = await fetchEpisodes(slug, srcConf);
-                const embedLink = episodes.flatMap(s => (s.items || s.server_data || s.episodes || []).map(e => e.embed || e.link_embed)).find(e => e);
-                if (embedLink) {
-                  console.log("Falling back to embed:", embedLink);
-                  playerContainer.innerHTML = `<iframe src="${embedLink}" allowfullscreen allow="autoplay"></iframe>`;
-                  subtitleUpload.style.display = "none";
-                  isEmbed = true;
-                } else {
-                  playerContainer.innerHTML = "<p>Không thể tải video. Vui lòng chọn tập khác.</p>";
-                }
-              }
-            }, 6000);
-          }
-        });
-      }
+    // Native HLS (Safari)
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = ep;
+      video.addEventListener('loadedmetadata', () => {
+        video.play().catch(e => console.warn("Play error (native):", e));
+      });
     }
+    // Use Hls.js if available
+    else if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+      hls = new Hls({
+        autoStartLoad: true,
+        startFragPrefetch: true,
+        maxBufferLength: 60,
+        maxMaxBufferLength: 120,
+        liveSyncDuration: 3
+      });
+      hls.loadSource(ep);
+      hls.attachMedia(video);
 
-    // Handle subtitle upload
-    subtitleInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file || !/\.(srt|vtt)$/i.test(file.name)) {
-        alert("Vui lòng chọn file phụ đề định dạng .srt hoặc .vtt");
-        return;
-      }
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        // Auto-play when manifest parsed
+        video.play().catch(e => console.warn("Play error (hls):", e));
+      });
 
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        let content = event.target.result;
-        const fileType = file.name.endsWith('.srt') ? 'srt' : 'vtt';
-
-        if (fileType === 'srt') {
-          content = convertSrtToVtt(content);
-          if (!content) {
-            alert("Lỗi khi xử lý file SRT. Vui lòng kiểm tra định dạng.");
-            return;
+      hls.on(Hls.Events.ERROR, (event, data) => {
+        console.warn("Hls.js error:", data);
+        if (data && data.fatal) {
+          switch (data.type) {
+            case Hls.ErrorTypes.NETWORK_ERROR:
+              console.log("Hls network error, trying to startLoad()");
+              try { hls.startLoad(); } catch (e) { console.warn(e); }
+              break;
+            case Hls.ErrorTypes.MEDIA_ERROR:
+              console.log("Hls media error, trying recoverMediaError()");
+              try { hls.recoverMediaError(); } catch (e) { console.warn(e); }
+              break;
+            default:
+              console.log("Hls fatal error -> fallback to embed");
+              try { hls.destroy(); } catch (e) {}
+              fallbackToEmbed();
+              break;
           }
         }
+      });
+    } else {
+      // No Hls support
+      playerContainer.innerHTML = "<p>Trình duyệt không hỗ trợ HLS</p>";
+      subtitleUpload.style.display = "none";
+      playerControls.style.display = "none";
+      return;
+    }
 
-        const subtitleBlob = new Blob([content], { type: 'text/vtt' });
-        const subtitleUrl = URL.createObjectURL(subtitleBlob);
-        console.log("Subtitle URL:", subtitleUrl);
+    // Show controls and subtitle box
+    subtitleUpload.style.display = "flex";
+    playerControls.style.display = "flex";
 
-        if (player && !isEmbed) {
-          const video = document.getElementById("videoPlayer");
-          // Remove existing tracks
-          const tracks = video.getElementsByTagName('track');
-          while (tracks.length > 0) {
-            video.removeChild(tracks[0]);
-          }
-          // Add new track
-          const track = document.createElement('track');
-          track.kind = 'subtitles';
-          track.label = 'Phụ đề tải lên';
-          track.srclang = 'vi';
-          track.src = subtitleUrl;
-          track.default = true;
-          video.appendChild(track);
-          // Force enable subtitles
-          player.setTrack('vi');
-          console.log("Subtitle loaded, should display automatically");
+    // Rewind / forward
+    rewind10sBtn.onclick = () => {
+      if (!video) return;
+      try { video.currentTime = Math.max(0, video.currentTime - 10); } catch (e) { console.warn(e); }
+    };
+    forward10sBtn.onclick = () => {
+      if (!video) return;
+      try { video.currentTime = Math.min(video.duration || Infinity, video.currentTime + 10); } catch (e) { console.warn(e); }
+    };
+
+    // When page unload / navigate, clean hls to avoid console errors
+    window.addEventListener('beforeunload', () => { try { if (hls) hls.destroy(); } catch(e){} });
+  }
+
+  // Fallback: try to find embed links and switch to iframe
+  async function fallbackToEmbed() {
+    playerContainer.innerHTML = "<p>Lỗi khi tải video M3U8, đang thử chuyển sang embed...</p>";
+    const episodes = await fetchEpisodes(slug, srcConf);
+    const embedLink = episodes.flatMap(s => (s.items || s.server_data || s.episodes || []).map(e => e.embed || e.link_embed)).find(Boolean);
+    if (embedLink) {
+      playerContainer.innerHTML = `<iframe src="${embedLink}" allowfullscreen allow="autoplay"></iframe>`;
+      subtitleUpload.style.display = "none";
+      playerControls.style.display = "none";
+      isEmbed = true;
+    } else {
+      playerContainer.innerHTML = "<p>Không thể tải video. Vui lòng chọn tập khác.</p>";
+    }
+  }
+
+  /* ---------- Subtitle Upload ---------- */
+  subtitleInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file || !/\.(srt|vtt)$/i.test(file.name)) {
+      alert("Vui lòng chọn file phụ đề định dạng .srt hoặc .vtt");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      let content = event.target.result;
+      if (file.name.endsWith('.srt')) {
+        content = convertSrtToVtt(content);
+        if (!content) { alert("Lỗi khi chuyển SRT -> VTT"); return; }
+      }
+      const subtitleBlob = new Blob([content], { type: 'text/vtt' });
+      const subtitleUrl = URL.createObjectURL(subtitleBlob);
+
+      if (video && !isEmbed) {
+        // Remove existing tracks
+        const tracks = video.getElementsByTagName('track');
+        while (tracks.length > 0) video.removeChild(tracks[0]);
+
+        const track = document.createElement('track');
+        track.kind = 'subtitles';
+        track.label = 'Phụ đề tải lên';
+        track.srclang = 'vi';
+        track.src = subtitleUrl;
+        track.default = true;
+        video.appendChild(track);
+
+        // Try to enable it
+        setTimeout(() => {
+          try {
+            for (let i = 0; i < video.textTracks.length; i++) {
+              const tt = video.textTracks[i];
+              if (tt.language === 'vi' || tt.label === 'Phụ đề tải lên') tt.mode = 'showing';
+            }
+          } catch (e) { console.warn("Không bật được phụ đề tự động:", e); }
+        }, 200);
+      } else {
+        alert("Không thể tải phụ đề vì video chưa sẵn sàng hoặc đang ở chế độ embed.");
+      }
+    };
+    reader.onerror = () => alert("Lỗi khi đọc file phụ đề. Vui lòng thử lại.");
+    reader.readAsText(file, 'UTF-8');
+  });
+
+  /* ---------- Movie info / story / breadcrumbs / time ---------- */
+  function loadMovieInfo(isVietsub) {
+    const suffix = isVietsub ? " Vietsub" : "";
+    movieInfo.innerHTML = `<h1>${name || "Phim"}</h1><p>Tập đang xem: ${epName}${suffix}</p>`;
+  }
+
+  async function loadStory() {
+    if (!slug || !srcConf) {
+      story.innerHTML = `<h3>Cốt truyện</h3><p>Không có thông tin cốt truyện.</p>`;
+      return;
+    }
+    const url = srcConf.type === "nguonc" ? `${srcConf.base}/film/${slug}` : `${srcConf.base}/phim/${slug}`;
+    const res = await tryUrls([url]);
+    if (!res) {
+      story.innerHTML = `<h3>Cốt truyện</h3><p>Không thể tải thông tin cốt truyện. Vui lòng thử lại sau.</p>`;
+      return;
+    }
+    const data = res.data;
+    const item = data.data?.item || data.movie || data.data || {};
+    const description = item.description || item.content || item.overview || "Không có thông tin cốt truyện.";
+    story.innerHTML = `<h3>Cốt truyện</h3><p>${description}</p>`;
+  }
+
+  function updateCurrentTime() {
+    const now = new Date();
+    const formatted = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+    currentTime.textContent = `Thời gian hiện tại: ${formatted}`;
+    setTimeout(updateCurrentTime, 1000);
+  }
+
+  function loadBreadcrumbs() {
+    const catSlug = category || "";
+    const countrySlug = region || "";
+    breadcrumbs.innerHTML = `
+      <a href="index.html"> Trang chủ</a> > 
+      ${catSlug ? `<a href="index.html?category=${catSlug}">${labels[catSlug] || catSlug}</a> > ` : ""}
+      ${countrySlug ? `<a href="index.html?region=${countrySlug}">${labels[countrySlug] || countrySlug}</a> > ` : ""}
+      ${year ? `<a href="index.html?year=${year}">${year}</a> > ` : ""}
+      <a href="detail.html?slug=${encodeURIComponent(slug)}&src=${encodeURIComponent(source)}${category ? '&category=' + encodeURIComponent(category) : ''}${region ? '&region=' + encodeURIComponent(region) : ''}${year ? '&year=' + encodeURIComponent(year) : ''}${type ? '&type=' + encodeURIComponent(type) : ''}${search ? '&search=' + encodeURIComponent(search) : ''}">${name || "Phim"}</a> > Xem
+    `;
+  }
+
+  /* ---------- Episodes (chi tiết: Vietsub / TM / LT; (A)/(B)) ---------- */
+  function normalizeServersFromItem(item) {
+    // Return array of server objects: { server_name, items: [...] }
+    if (!item) return [];
+    // Candidates to inspect
+    const candidates = [ item.episodes, item.episode, item.data?.episodes, item.server_data, item.servers ];
+    for (const c of candidates) {
+      if (!c) continue;
+      if (Array.isArray(c)) {
+        // If array seems to be array of servers (having server_name or items)
+        if (c.length && (c[0].server_name || c[0].items || c[0].server_data)) {
+          return c.map(s => ({ server_name: s.server_name || s.name || 'Server', items: s.items || s.server_data || s.episodes || [] }));
+        }
+        // Otherwise array of episodes -> wrap into single server
+        return [{ server_name: 'Server', items: c }];
+      } else if (typeof c === 'object') {
+        // object of server arrays
+        const arr = Object.entries(c).map(([k, v]) => ({ server_name: k, items: Array.isArray(v) ? v : (v.items || v.server_data || []) }));
+        if (arr.length) return arr;
+      }
+    }
+
+    // Last resort: try item.servers or convert item.episodes object values
+    if (item.episodes && typeof item.episodes === 'object') {
+      const values = Object.values(item.episodes).filter(Boolean);
+      if (values.length) {
+        // if each value is an array of episodes
+        if (Array.isArray(values[0])) {
+          return values.map((arr, idx) => ({ server_name: `Server ${idx+1}`, items: arr }));
         } else {
-          alert("Không thể tải phụ đề vì video chưa sẵn sàng hoặc đang ở chế độ embed.");
+          // map each val to server object if shape matches
+          return values.map(v => ({ server_name: v.server_name || 'Server', items: v.items || v.server_data || (Array.isArray(v) ? v : []) }));
         }
-      };
-      reader.onerror = () => alert("Lỗi khi đọc file phụ đề. Vui lòng thử lại.");
-      reader.readAsText(file, 'UTF-8');
-    });
-
-    // Load movie info
-    function loadMovieInfo() {
-      movieInfo.innerHTML = `<h1>${name || "Phim"}</h1><p>Tập đang xem: ${epName}</p>`;
-    }
-
-    // Load breadcrumbs
-    function loadBreadcrumbs() {
-      const catSlug = category || "";
-      const countrySlug = region || "";
-      breadcrumbs.innerHTML = `
-        <a href="index.html">Trang chủ</a> > 
-        ${catSlug ? `<a href="index.html?category=${catSlug}">${labels[catSlug] || catSlug}</a> > ` : ""}
-        ${countrySlug ? `<a href="index.html?region=${countrySlug}">${labels[countrySlug] || countrySlug}</a> > ` : ""}
-        ${year ? `<a href="index.html?year=${year}">${year}</a> > ` : ""}
-        <a href="detail.html?slug=${encodeURIComponent(slug)}&src=${encodeURIComponent(source)}${category ? '&category=' + encodeURIComponent(category) : ''}${region ? '&region=' + encodeURIComponent(region) : ''}${year ? '&year=' + encodeURIComponent(year) : ''}${type ? '&type=' + encodeURIComponent(type) : ''}${search ? '&search=' + encodeURIComponent(search) : ''}">${name || "Phim"}</a> > Xem
-      `;
-    }
-
-    // Load episodes
-    async function loadEpisodes() {
-      if (!slug || !srcConf) {
-        episodeList.innerHTML = "<p>Không tìm thấy phim hoặc nguồn không hợp lệ.</p>";
-        return;
       }
+    }
 
-      const url = srcConf.type === "nguonc" ? `${srcConf.base}/film/${slug}` : `${srcConf.base}/phim/${slug}`;
-      const res = await tryUrls([url]);
-      let episodes = [];
+    return [];
+  }
 
-      if (!res) {
-        console.warn(`Main API failed for ${url}, trying episodes endpoint`);
-        episodes = await fetchEpisodes(slug, srcConf);
+  async function loadEpisodes() {
+    if (!slug || !srcConf) {
+      episodeList.innerHTML = "<p>Không tìm thấy phim hoặc nguồn không hợp lệ.</p>";
+      return;
+    }
+
+    const url = srcConf.type === "nguonc" ? `${srcConf.base}/film/${slug}` : `${srcConf.base}/phim/${slug}`;
+    const res = await tryUrls([url]);
+    let servers = [];
+
+    if (!res) {
+      console.warn(`Main API failed for ${url}, trying episodes endpoint`);
+      const eps = await fetchEpisodes(slug, srcConf);
+      // eps may already be servers array or episodes list
+      if (eps && Array.isArray(eps) && eps.length && (eps[0].server_name || eps[0].items || eps[0].server_data)) {
+        servers = eps.map(s => ({ server_name: s.server_name || s.name || 'Server', items: s.items || s.server_data || s.episodes || [] }));
       } else {
-        const data = res.data;
-        console.log("API response:", data);
-        const item = data.data?.item || data.movie || data.data || {};
-        episodes = item.episodes || item.episode || item.data?.episodes || item.server_data || Object.values(item.episodes || {}).filter(Array.isArray) || [];
-        console.log("Episodes from main API:", episodes);
-        if (episodes.length === 0) {
-          console.warn("No episodes in main API, trying episodes endpoint");
-          episodes = await fetchEpisodes(slug, srcConf);
+        // wrap into single server
+        servers = [{ server_name: 'Server', items: eps }];
+      }
+    } else {
+      const data = res.data;
+      const item = data.data?.item || data.movie || data.data || {};
+      servers = normalizeServersFromItem(item);
+      if (!servers.length) {
+        // fallback to episodes endpoint
+        const eps2 = await fetchEpisodes(slug, srcConf);
+        if (eps2 && eps2.length) {
+          servers = eps2.map(s => ({ server_name: s.server_name || s.name || 'Server', items: s.items || s.server_data || s.episodes || [] }));
         }
       }
-
-      console.log("Final episodes:", episodes);
-      if (episodes.length === 0) {
-        episodeList.innerHTML = "<p>Phim hiện chưa có tập nào hoặc API không hợp lệ. Vui lòng thử lại sau.</p>";
-        return;
-      }
-
-      episodeList.innerHTML = "";
-      const vsDiv = document.createElement("div"); vsDiv.className = "episode-section open";
-      const vsToggle = document.createElement("button"); vsToggle.className = "toggle-btn"; vsToggle.innerHTML = 'Vietsub <span class="icon">V</span>'; vsDiv.appendChild(vsToggle);
-      const vsGrid = document.createElement("div"); vsGrid.className = "episode-grid"; vsDiv.appendChild(vsGrid);
-
-      const tmDiv = document.createElement("div"); tmDiv.className = "episode-section";
-      const tmToggle = document.createElement("button"); tmToggle.className = "toggle-btn"; tmToggle.innerHTML = 'Thuyết Minh <span class="icon">V</span>'; tmDiv.appendChild(tmToggle);
-      const tmGrid = document.createElement("div"); tmGrid.className = "episode-grid"; tmDiv.appendChild(tmGrid);
-
-      const ltDiv = document.createElement("div"); ltDiv.className = "episode-section";
-      const ltToggle = document.createElement("button"); ltToggle.className = "toggle-btn"; ltToggle.innerHTML = 'Lồng Tiếng <span class="icon">V</span>'; ltDiv.appendChild(ltToggle);
-      const ltGrid = document.createElement("div"); ltGrid.className = "episode-grid"; ltDiv.appendChild(ltGrid);
-
-      [vsToggle, tmToggle, ltToggle].forEach(toggle => {
-        toggle.addEventListener('click', () => {
-          const section = toggle.parentElement;
-          section.classList.toggle('open');
-          const icon = toggle.querySelector('.icon');
-          icon.textContent = section.classList.contains('open') ? 'V' : '^';
-        });
-      });
-
-      episodes.forEach((server, serverIdx) => {
-        const serverName = server.server_name || server.name || `Server ${serverIdx + 1}`;
-        let languageType = 'vs';
-        if (/thuyết minh|tm/i.test(serverName) || (server.language && /thuyết minh/i.test(server.language))) languageType = 'tm';
-        else if (/lồng tiếng|lt/i.test(serverName) || (server.language && /lồng tiếng/i.test(server.language))) languageType = 'lt';
-
-        const serverData = server.items || server.server_data || server.episodes || [];
-        const grid = languageType === 'tm' ? tmGrid : languageType === 'lt' ? ltGrid : vsGrid;
-
-        serverData.forEach((epItem, idx) => {
-          const m3u8 = epItem.link_m3u8 || epItem.link || epItem.m3u8 || "";
-          const embed = epItem.embed || epItem.link_embed || "";
-          const currEpName = epItem.name || epItem.title || `Tập ${idx + 1}`;
-          const queryParams = new URLSearchParams({ slug, src: source, name: name || '', category, region, year, type, search, epName: currEpName });
-
-          if (m3u8 && srcConf.type !== "nguonc") {
-            queryParams.set('ep', m3u8);
-            queryParams.set('isEmbed', false);
-            const btn = document.createElement("button");
-            btn.textContent = `${currEpName} (A)`;
-            btn.onclick = () => location.href = `watch.html?${queryParams.toString()}`;
-            if (currEpName === epName || m3u8 === ep) btn.classList.add("active");
-            grid.appendChild(btn);
-          }
-
-          if (embed && srcConf.type === "nguonc") {
-            queryParams.set('ep', embed);
-            queryParams.set('isEmbed', true);
-            const btn = document.createElement("button");
-            btn.textContent = `${currEpName} (B)`;
-            btn.onclick = () => location.href = `watch.html?${queryParams.toString()}`;
-            if (currEpName === epName || embed === ep) btn.classList.add("active");
-            grid.appendChild(btn);
-          }
-        });
-      });
-
-      if (vsGrid.children.length > 0) episodeList.appendChild(vsDiv);
-      if (tmGrid.children.length > 0) episodeList.appendChild(tmDiv);
-      if (ltGrid.children.length > 0) episodeList.appendChild(ltDiv);
-      if (episodeList.children.length === 0) episodeList.innerHTML = "<p>Phim hiện chưa có tập nào hoặc API không hợp lệ. Vui lòng thử lại sau.</p>";
     }
 
-    // Search và menu handlers
-    searchBtn.addEventListener("click", () => {
-      const q = searchInput.value.trim();
-      if (!q) return searchBox.classList.toggle("active"), searchInput.focus();
-      location.href = `index.html?search=${encodeURIComponent(q)}`;
+    // If still empty
+    if (!servers || servers.length === 0) {
+      episodeList.innerHTML = "<p>Phim hiện chưa có tập nào hoặc API không hợp lệ. Vui lòng thử lại sau.</p>";
+      return;
+    }
+
+    // Build UI: Vietsub / Thuyet Minh / Long Tieng groups
+    allEpisodes = [];
+    episodeList.innerHTML = "";
+    const vsDiv = document.createElement("div"); vsDiv.className = "episode-section open";
+    const vsToggle = document.createElement("button"); vsToggle.className = "toggle-btn"; vsToggle.innerHTML = 'Vietsub <span class="icon">V</span>'; vsDiv.appendChild(vsToggle);
+    const vsGrid = document.createElement("div"); vsGrid.className = "episode-grid"; vsDiv.appendChild(vsGrid);
+
+    const tmDiv = document.createElement("div"); tmDiv.className = "episode-section";
+    const tmToggle = document.createElement("button"); tmToggle.className = "toggle-btn"; tmToggle.innerHTML = 'Thuyết Minh <span class="icon">V</span>'; tmDiv.appendChild(tmToggle);
+    const tmGrid = document.createElement("div"); tmGrid.className = "episode-grid"; tmDiv.appendChild(tmGrid);
+
+    const ltDiv = document.createElement("div"); ltDiv.className = "episode-section";
+    const ltToggle = document.createElement("button"); ltToggle.className = "toggle-btn"; ltToggle.innerHTML = 'Lồng Tiếng <span class="icon">V</span>'; ltDiv.appendChild(ltToggle);
+    const ltGrid = document.createElement("div"); ltGrid.className = "episode-grid"; ltDiv.appendChild(ltGrid);
+
+    [vsToggle, tmToggle, ltToggle].forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const section = toggle.parentElement;
+        section.classList.toggle('open');
+        const icon = toggle.querySelector('.icon');
+        icon.textContent = section.classList.contains('open') ? 'V' : '^';
+      });
     });
 
-    searchInput.addEventListener("keydown", (e) => e.key === "Enter" && searchBtn.click());
+    let isVietsub = false;
 
-    menuBtn.addEventListener("click", (e) => { e.stopPropagation(); menuBtn.classList.toggle("active"); });
-    document.addEventListener("click", () => menuBtn.classList.remove("active"));
+    servers.forEach((server, serverIdx) => {
+      const serverName = server.server_name || server.name || `Server ${serverIdx + 1}`;
+      let languageType = 'vs';
+      if (/thuyết minh|thuyet|tm/i.test(serverName) || (server.language && /thuyết minh|thuyet|tm/i.test(server.language))) languageType = 'tm';
+      else if (/lồng tiếng|long tieng|lt/i.test(serverName) || (server.language && /lồng tiếng|long tieng|lt/i.test(server.language))) languageType = 'lt';
+      else isVietsub = true;
 
-    // Load on DOM content loaded
-    window.addEventListener("DOMContentLoaded", () => {
-      loadPlayer();
-      loadMovieInfo();
-      loadBreadcrumbs();
-      loadEpisodes();
+      const serverData = server.items || server.server_data || server.episodes || [];
+      const grid = languageType === 'tm' ? tmGrid : languageType === 'lt' ? ltGrid : vsGrid;
+
+      serverData.forEach((epItem, idx) => {
+        const m3u8 = epItem.link_m3u8 || epItem.link || epItem.m3u8 || epItem.file || "";
+        const embed = epItem.embed || epItem.link_embed || "";
+        const currEpName = epItem.name || epItem.title || epItem.slug || `Tập ${idx + 1}`;
+        const queryParams = new URLSearchParams({ slug, src: source, name: name || '', category, region, year, type, search, epName: currEpName });
+
+        // If m3u8 and not nguonc -> (A)
+        if (m3u8 && srcConf.type !== "nguonc") {
+          queryParams.set('ep', m3u8);
+          queryParams.set('isEmbed', false);
+          const btn = document.createElement("button");
+          btn.textContent = `${currEpName} (A)`;
+          btn.onclick = () => location.href = `watch.html?${queryParams.toString()}`;
+          if (currEpName === epName || m3u8 === ep) {
+            btn.classList.add("active");
+            currentEpisodeIndex = allEpisodes.length;
+          }
+          grid.appendChild(btn);
+          allEpisodes.push({ url: `watch.html?${queryParams.toString()}`, name: currEpName });
+        }
+
+        // If embed (nguonc) -> (B)
+        if (embed && srcConf.type === "nguonc") {
+          queryParams.set('ep', embed);
+          queryParams.set('isEmbed', true);
+          const btn = document.createElement("button");
+          btn.textContent = `${currEpName} (B)`;
+          btn.onclick = () => location.href = `watch.html?${queryParams.toString()}`;
+          if (currEpName === epName || embed === ep) {
+            btn.classList.add("active");
+            currentEpisodeIndex = allEpisodes.length;
+          }
+          grid.appendChild(btn);
+          allEpisodes.push({ url: `watch.html?${queryParams.toString()}`, name: currEpName });
+        }
+      });
     });
-  </script>
+
+    if (vsGrid.children.length > 0) episodeList.appendChild(vsDiv);
+    if (tmGrid.children.length > 0) episodeList.appendChild(tmDiv);
+    if (ltGrid.children.length > 0) episodeList.appendChild(ltDiv);
+    if (episodeList.children.length === 0) episodeList.innerHTML = "<p>Phim hiện chưa có tập nào hoặc API không hợp lệ. Vui lòng thử lại sau.</p>";
+
+    // Update movie info
+    loadMovieInfo(isVietsub);
+
+    // Episode navigation (prev/next)
+    prevEpisodeBtn.onclick = () => {
+      if (currentEpisodeIndex > 0) {
+        location.href = allEpisodes[currentEpisodeIndex - 1].url;
+      }
+    };
+    nextEpisodeBtn.onclick = () => {
+      if (currentEpisodeIndex < allEpisodes.length - 1) {
+        location.href = allEpisodes[currentEpisodeIndex + 1].url;
+      }
+    };
+    prevEpisodeBtn.disabled = currentEpisodeIndex <= 0;
+    nextEpisodeBtn.disabled = currentEpisodeIndex >= allEpisodes.length - 1;
+  }
+
+  // Search và menu handlers
+  searchBtn.addEventListener("click", () => {
+    const q = searchInput.value.trim();
+    if (!q) return searchBox.classList.toggle("active"), searchInput.focus();
+    location.href = `index.html?search=${encodeURIComponent(q)}`;
+  });
+  searchInput.addEventListener("keydown", (e) => e.key === "Enter" && searchBtn.click());
+  menuBtn.addEventListener("click", (e) => { e.stopPropagation(); menuBtn.classList.toggle("active"); });
+  document.addEventListener("click", () => menuBtn.classList.remove("active"));
+
+  // Load on DOM content loaded
+  window.addEventListener("DOMContentLoaded", () => {
+    loadPlayer();
+    loadBreadcrumbs();
+    loadEpisodes();
+    loadStory();
+    updateCurrentTime();
+  });
+</script>
+
 </body>
 </html>
