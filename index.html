@@ -5,517 +5,289 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Phim Nhà Bánh Mì</title>
   <style>
-    /* Basic theme (tối) */
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #1a191f;
-      color: #fff;
-      overflow-x: hidden;
-      -webkit-tap-highlight-color: transparent;
-    }
-    header {
-      background: #212026;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-    }
-    .Top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      max-width: 1200px;
-    }
-    .Logo {
-      font-size: 20px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-bottom: 6px;
-    }
-    .MenuBtn {
-      font-size: 22px;
-      cursor: pointer;
-      padding: 5px;
-      min-width: 44px;
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.1);
-      transition: background 0.2s;
-    }
-    .MenuBtn:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-    .MenuDropdown {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      width: 220px;
-      background: #2b2b32;
-      border-radius: 6px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      display: none;
-      opacity: 0;
-      transition: opacity 0.2s;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-    .MenuBtn.active .MenuDropdown {
-      display: block;
-      opacity: 1;
-    }
-    .MenuTab {
-      display: flex;
-      justify-content: space-around;
-      padding: 10px;
-    }
-    .TabBtn {
-      flex: 1;
-      padding: 8px;
-      background: #444;
-      border: none;
-      color: #fff;
-      cursor: pointer;
-      font-size: 13px;
-    }
-    .TabBtn.active {
-      background: #de1212;
-    }
-    .TabContent {
-      display: none;
-      padding: 10px;
-    }
-    .TabContent.active {
-      display: block;
-    }
-    .MenuDropdown h3 {
-      margin: 10px 0 5px 10px;
-      font-size: 14px;
-      border-bottom: 1px solid #444;
-      padding-bottom: 5px;
-    }
-    .MenuDropdown button {
-      display: block;
-      width: 100%;
-      margin: 5px 0;
-      padding: 8px;
-      border: none;
-      background: #444;
-      color: #fff;
-      border-radius: 6px;
-      cursor: pointer;
-      text-align: left;
-      transition: background 0.2s;
-      font-size: 13px;
-    }
-    .MenuDropdown button:hover {
-      background: #555;
-    }
-    .Search {
-      display: flex;
-      align-items: center;
-      position: relative;
-    }
-    .Search input {
-      width: 0;
-      opacity: 0;
-      transition: all 0.25s;
-      padding: 6px;
-      border: none;
-      border-radius: 5px;
-      outline: none;
-      background: #2a292f;
-      color: #fff;
-    }
-    .Search.active input {
-      width: 180px;
-      opacity: 1;
-    }
-    .Search button {
-      margin-left: 8px;
-      background: #de1212;
-      border: none;
-      padding: 7px 10px;
-      color: #fff;
-      cursor: pointer;
-      border-radius: 6px;
-      min-width: 44px;
-      min-height: 44px;
-    }
-    .movie_filter_container {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin: 15px 10px;
-      flex-wrap: wrap;
-    }
-    .movie_filter_container select {
-      background: #2a292f;
-      color: #fff;
-      border: 1px solid #444;
-      border-radius: 6px;
-      padding: 10px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: border 0.2s;
-    }
-    .movie_filter_container select:focus {
-      border-color: #de1212;
-      outline: none;
-    }
-    .movie_filter_container select option {
-      background: #2a292f;
-      color: #fff;
-    }
-    .movie_filter_container button {
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      background: #de1212;
-      color: #fff;
-      font-weight: 700;
-      transition: background 0.2s;
-      min-width: 44px;
-      min-height: 44px;
-    }
-    .movie_filter_container #resetBtn {
-      background: #555;
-    }
-    .movie_filter_container #resetBtn:hover {
-      background: #777;
-    }
-    .movie_filter_container button:hover {
-      background: #b00d0d;
-    }
-    main {
-      max-width: 1200px;
-      margin: 10px auto;
-      padding: 10px;
-    }
-    h2 {
-      margin: 10px 0;
-      font-size: 18px;
-    }
-    .Grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 15px;
-    }
-    .MovieCard {
-      background: #212026;
-      border-radius: 10px;
-      overflow: hidden;
-      text-align: center;
-      position: relative;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
-      cursor: pointer;
-    }
-    .poster {
-      position: relative;
-      overflow: hidden;
-      border-radius: 10px;
-    }
-    .poster img {
-      width: 100%;
-      height: 230px;
-      object-fit: cover;
-      display: block;
-    }
-    .badge {
-      position: absolute;
-      top: 6px;
-      left: 6px;
-      background: #de1212;
-      padding: 3px 6px;
-      font-size: 12px;
-      border-radius: 4px;
-    }
-    .episode-badge {
-      position: absolute;
-      bottom: 6px;
-      left: 6px;
-      background: #0078ff;
-      padding: 3px 6px;
-      font-size: 12px;
-      border-radius: 4px;
-    }
-    .source-label {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      background: rgba(0, 0, 0, 0.45);
-      padding: 3px 6px;
-      font-size: 12px;
-      border-radius: 4px;
-    }
-    .play-btn {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #de1212;
-      color: #fff;
-      font-size: 20px;
-      padding: 10px 12px;
-      border-radius: 50%;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .poster:hover .play-btn {
-      opacity: 1;
-    }
-    .MovieCard h3 {
-      font-size: 14px;
-      margin: 8px 6px;
-      min-height: 36px;
-    }
-    .Pagination {
-      text-align: center;
-      margin: 20px 0;
-    }
-    .Pagination button {
-      background: #333;
-      color: #fff;
-      border: none;
-      padding: 8px 12px;
-      margin: 0 6px;
-      cursor: pointer;
-      border-radius: 6px;
-      min-width: 44px;
-      min-height: 44px;
-    }
-    .small-note {
-      font-size: 13px;
-      color: #ccc;
-      margin-top: 6px;
-      text-align: center;
-    }
-    .spinner {
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top: 4px solid #de1212;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    /* Banner styles - Netflix style */
-    .BannerContainer {
-      position: relative;
-      max-width: 800px;
-      margin: 10px auto;
-      overflow: hidden;
-      border-radius: 10px;
-      background: linear-gradient(to bottom, #2a292f, #1a191f);
-    }
-    .BannerTitle {
-      margin: 10px;
-      text-align: center;
-      font-size: 18px;
-    }
-    .BannerGrid {
-      display: flex;
-      transition: transform 0.5s ease;
-      width: 100%;
-    }
-    .BannerCard {
-      background: transparent;
-      border-radius: 8px;
-      overflow: hidden;
-      cursor: pointer;
-      flex: 0 0 100%;
-    }
-    .BannerPoster {
-      position: relative;
-      width: 100%;
-    }
-    .BannerPoster img {
-      width: 100%;
-      height: 400px;
-      object-fit: cover;
-      display: block;
-    }
-    .BannerNav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0, 0, 0, 0.7);
-      color: #fff;
-      border: none;
-      padding: 10px 15px;
-      cursor: pointer;
-      font-size: 24px;
-      border-radius: 50%;
-      z-index: 10;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .BannerNav:hover {
-      opacity: 1;
-      background: rgba(0, 0, 0, 0.9);
-    }
-    .BannerContainer:hover .BannerNav {
-      opacity: 1;
-    }
-    .BannerPrev {
-      left: 20px;
-    }
-    .BannerNext {
-      right: 20px;
-    }
-    @media (max-width: 1023px) {
-      .BannerPoster img { height: 200px; }
-      .BannerCard { flex: 0 0 150px; }
-      .BannerGrid {
-        overflow-x: auto;
-        scroll-behavior: smooth;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        width: auto;
-      }
-      .BannerGrid::-webkit-scrollbar {
-        display: none;
-      }
-      .BannerNav { display: block; padding: 8px; font-size: 20px; }
-    }
-    @media (max-width: 480px) {
-      .Logo { font-size: 18px; }
-      .MenuBtn { font-size: 18px; min-width: 44px; min-height: 44px; padding: 4px; }
-      .Search.active input { width: 140px; font-size: 14px; }
-      .movie_filter_container { gap: 8px; }
-      .movie_filter_container select, .movie_filter_container button { padding: 8px; font-size: 13px; min-height: 44px; }
-      .Grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
-      .MovieCard h3 { font-size: 13px; min-height: 32px; }
-      .poster img { height: 180px; }
-      .BannerPoster img { height: 140px; }
-      .BannerCard { flex: 0 0 140px; }
-      .MovieCard:hover { transform: none; }
-      .poster:hover img { filter: none; }
-      .play-btn { display: none; }
-    }
-    @media (max-width: 360px) {
-      .Search.active input { width: 100px; }
-      .Grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
-      .movie_filter_container { gap: 5px; }
-      .movie_filter_container select, .movie_filter_container button { padding: 6px; font-size: 12px; }
-      .MenuBtn { font-size: 16px; min-width: 40px; padding: 3px; }
-      .BannerCard { flex: 0 0 110px; }
-      .BannerPoster img { height: 120px; }
-    }
+/* ===== GLOBAL ===== */
+* { box-sizing: border-box; margin:0; padding:0; }
+html, body { height:100%; }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #1a191f;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* ===== HEADER ===== */
+header {
+  background:#212026;
+  padding:8px 12px;
+  position:sticky;
+  top:0; z-index:100;
+}
+.Top {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  max-width:1200px;
+  margin:0 auto;
+}
+.Logo {
+  font-size:18px;
+  font-weight:700;
+  color:#fff;
+}
+
+/* MENU BTN */
+.MenuBtn {
+  background:none;
+  border:none;
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+  padding:6px;
+  border-radius:6px;
+}
+.MenuBtn:active { background:rgba(255,255,255,0.12); }
+
+.MenuDropdown {
+  display:none;
+  position:absolute;
+  top:50px; left:12px;
+  width:200px;
+  background:#2b2b32;
+  border-radius:8px;
+  padding:8px;
+  box-shadow:0 6px 16px rgba(0,0,0,.6);
+}
+.MenuDropdown.show { display:block; }
+.MenuDropdown button {
+  width:100%;
+  padding:10px;
+  margin:4px 0;
+  border:none;
+  border-radius:6px;
+  background:#333;
+  color:#fff;
+  text-align:left;
+  cursor:pointer;
+}
+.MenuDropdown button:hover { background:#444; }
+
+/* SEARCH */
+.Search {
+    display: flex
+;
+    align-items: left;
+    gap: 6px;
+    align-content: space-between;
+    justify-content: space-evenly;
+    flex-wrap: nowrap;
+}
+.Search input {
+  width:0;
+  opacity:0;
+  transition:width .2s ease, opacity .2s ease;
+  padding:6px 8px;
+  border-radius:6px;
+  border:1px solid #333;
+  background:#232327;
+  color:#fff;
+  font-size:14px;
+}
+.Search.active input { width:140px; opacity:1; }
+.Search button {
+  background:#de1212;
+  border:none;
+  border-radius:6px;
+  color:#fff;
+  padding:8px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+/* ===== FILTER BAR ===== */
+.movie_filter_container {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+  padding:10px;
+}
+.movie_filter_container select,
+.movie_filter_container button {
+  padding:8px 10px;
+  border-radius:6px;
+  font-size:14px;
+  border:none;
+}
+.movie_filter_container select {
+  background:#232327;
+  color:#fff;
+}
+.movie_filter_container button {
+  background:#de1212;
+  color:#fff;
+  font-weight:600;
+}
+.movie_filter_container #resetBtn { background:#555; }
+
+/* ===== BANNER ===== */
+.BannerContainer {
+  margin:14px auto;
+  max-width:1200px;
+  border-radius:10px;
+  overflow:hidden;
+  position:relative;
+}
+.BannerGrid {
+  display:flex;
+  transition:transform .5s ease;
+}
+.BannerCard {
+  flex:0 0 100%;
+  position:relative;
+}
+.BannerPoster img {
+  width:100%;
+  height:220px; /* mobile default */
+  object-fit:cover;
+}
+.BannerCard::after {
+  content:"";
+  position:absolute; left:0; right:0; bottom:0;
+  height:40%;
+  background:linear-gradient(to top, rgba(0,0,0,.8), transparent);
+}
+.BannerText {
+  position:absolute;
+  bottom:12px; left:12px;
+  color:#fff;
+  max-width:70%;
+}
+.BannerText h2 { font-size:16px; margin-bottom:6px; }
+.BannerText p { font-size:13px; color:#ddd; }
+.BannerNav {
+  position:absolute;
+  top:50%; transform:translateY(-50%);
+  background:rgba(0,0,0,.5);
+  border:none;
+  color:#fff;
+  padding:10px;
+  border-radius:50%;
+  cursor:pointer;
+}
+.BannerPrev { left:10px; }
+.BannerNext { right:10px; }
+
+/* ===== PLAYER ===== */
+.player-container {
+  width:100%;
+  max-width:1000px;
+  margin:14px auto;
+  border-radius:8px;
+  overflow:hidden;
+  background:#000;
+  aspect-ratio:16/9;
+}
+.player-container iframe,
+.player-container video {
+  width:100%; height:100%;
+  border:0;
+  object-fit:contain;
+  background:#000;
+}
+
+/* ===== MOVIE GRID ===== */
+.Grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(140px,1fr));
+  gap:12px;
+  max-width:1200px;
+  margin:0 auto;
+  padding:10px;
+}
+.MovieCard {
+  background:#1f1f23;
+  border-radius:8px;
+  overflow:hidden;
+  text-align:center;
+  position:relative;
+}
+.poster img {
+  width:100%; height:200px;
+  object-fit:cover;
+  display:block;
+}
+.MovieCard h3 {
+  font-size:13px;
+  padding:6px;
+  min-height:32px;
+}
+.badge, .episode-badge, .source-label {
+  position:absolute;
+  padding:4px 6px;
+  font-size:11px;
+  border-radius:4px;
+  color:#fff;
+}
+.badge { top:6px; left:6px; background:#de1212; }
+.episode-badge { bottom:6px; left:6px; background:#0078ff; }
+.source-label { top:6px; right:6px; background:rgba(0,0,0,.6); }
+
+/* ===== PAGINATION ===== */
+#pagination {
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  flex-wrap:wrap;
+  margin:16px 0;
+}
+#pagination button {
+  background:#333;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  padding:6px 10px;
+  font-size:13px;
+  min-width:34px; min-height:34px;
+  cursor:pointer;
+}
+#pagination button:hover { background:#444; }
+#pagination button.active {
+  background:#de1212;
+  font-weight:700;
+}
+#pagination .prev-btn, #pagination .next-btn { background:#555; }
+
+/* ===== LOADER ===== */
+.spinner {
+  width:28px; height:28px;
+  border:4px solid rgba(255,255,255,.2);
+  border-top-color:#de1212;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:20px auto;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ===== RESPONSIVE ===== */
+@media (min-width:600px) {
+  .BannerPoster img { height:300px; }
+  .poster img { height:220px; }
+  .BannerText h2 { font-size:18px; }
+}
+@media (min-width:900px) {
+  .BannerPoster img { height:400px; }
+  .poster img { height:260px; }
+  .Logo { font-size:22px; }
+}
+
   </style>
 </head>
 <body>
   <header>
     <div class="Logo" id="logo">🎬 Bánh Mì 🎬</div>
     <div class="Top">
-      <div class="MenuBtn" id="menuBtn">☰
-        <div class="MenuDropdown">
-          <div class="MenuTab">
-            <button class="TabBtn active" onclick="showTab('category')">Thể loại</button>
-            <button class="TabBtn" onclick="showTab('region')">Quốc gia</button>
-            <button class="TabBtn" onclick="showTab('type')">Loại phim</button>
-          </div>
-          <div id="categoryTab" class="TabContent active">
-            <h3>Thể loại</h3>
-            <button onclick="quickFilter('hanh-dong','category')">Hành Động</button>
-            <button onclick="quickFilter('phieu-luu','category')">Phiêu Lưu</button>
-            <button onclick="quickFilter('hoat-hinh','category')">Hoạt Hình</button>
-            <button onclick="quickFilter('hai','category')">Hài</button>
-            <button onclick="quickFilter('hinh-su','category')">Hình Sự</button>
-            <button onclick="quickFilter('tai-lieu','category')">Tài Liệu</button>
-            <button onclick="quickFilter('chinh-kich','category')">Chính Kịch</button>
-            <button onclick="quickFilter('gia-dinh','category')">Gia Đình</button>
-            <button onclick="quickFilter('gia-tuong','category')">Giả Tưởng</button>
-            <button onclick="quickFilter('lich-su','category')">Lịch Sử</button>
-            <button onclick="quickFilter('kinh-di','category')">Kinh Dị</button>
-            <button onclick="quickFilter('nhac','category')">Nhạc</button>
-            <button onclick="quickFilter('bi-an','category')">Bí Ẩn</button>
-            <button onclick="quickFilter('lang-man','category')">Lãng Mạn</button>
-            <button onclick="quickFilter('khoa-hoc-vien-tuong','category')">Khoa Học Viễn Tưởng</button>
-            <button onclick="quickFilter('gay-can','category')">Gây Cấn</button>
-            <button onclick="quickFilter('chien-tranh','category')">Chiến Tranh</button>
-            <button onclick="quickFilter('tam-ly','category')">Tâm Lý</button>
-            <button onclick="quickFilter('tinh-cam','category')">Tình Cảm</button>
-            <button onclick="quickFilter('co-trang','category')">Cổ Trang</button>
-            <button onclick="quickFilter('mien-tay','category')">Miền Tây</button>
-            <button onclick="quickFilter('phim-18','category')">Phim 18+</button>
-          </div>
-          <div id="regionTab" class="TabContent">
-            <h3>Quốc gia</h3>
-            <button onclick="quickFilter('au-my','region')">Âu Mỹ</button>
-            <button onclick="quickFilter('anh','region')">Anh</button>
-            <button onclick="quickFilter('trung-quoc','region')">Trung Quốc</button>
-            <button onclick="quickFilter('indonesia','region')">Indonesia</button>
-            <button onclick="quickFilter('viet-nam','region')">Việt Nam</button>
-            <button onclick="quickFilter('phap','region')">Pháp</button>
-            <button onclick="quickFilter('hong-kong','region')">Hồng Kông</button>
-            <button onclick="quickFilter('han-quoc','region')">Hàn Quốc</button>
-            <button onclick="quickFilter('nhat-ban','region')">Nhật Bản</button>
-            <button onclick="quickFilter('thai-lan','region')">Thái Lan</button>
-            <button onclick="quickFilter('dai-loan','region')">Đài Loan</button>
-            <button onclick="quickFilter('nga','region')">Nga</button>
-            <button onclick="quickFilter('ha-lan','region')">Hà Lan</button>
-            <button onclick="quickFilter('philippines','region')">Philippines</button>
-            <button onclick="quickFilter('an-do','region')">Ấn Độ</button>
-            <button onclick="quickFilter('quoc-gia-khac','region')">Quốc gia khác</button>
-            <button onclick="quickFilter('duc','region')">Đức</button>
-            <button onclick="quickFilter('tay-ban-nha','region')">Tây Ban Nha</button>
-            <button onclick="quickFilter('tho-nhi-ky','region')">Thổ Nhĩ Kỳ</button>
-            <button onclick="quickFilter('mexico','region')">Mexico</button>
-            <button onclick="quickFilter('ba-lan','region')">Ba Lan</button>
-            <button onclick="quickFilter('uc','region')">Úc</button>
-            <button onclick="quickFilter('thuỵ-den','region')">Thụy Điển</button>
-            <button onclick="quickFilter('malaysia','region')">Malaysia</button>
-            <button onclick="quickFilter('brazil','region')">Brazil</button>
-            <button onclick="quickFilter('bo-dao-nha','region')">Bồ Đào Nha</button>
-            <button onclick="quickFilter('y','region')">Ý</button>
-            <button onclick="quickFilter('dan-mach','region')">Đan Mạch</button>
-            <button onclick="quickFilter('uae','region')">UAE</button>
-            <button onclick="quickFilter('na-uy','region')">Na Uy</button>
-            <button onclick="quickFilter('thuỵ-si','region')">Thụy Sĩ</button>
-            <button onclick="quickFilter('chau-phi','region')">Châu Phi</button>
-            <button onclick="quickFilter('nam-phi','region')">Nam Phi</button>
-            <button onclick="quickFilter('ukraina','region')">Ukraina</button>
-            <button onclick="quickFilter('a-rap-xe-ut','region')">Ả Rập Xê Út</button>
-            <button onclick="quickFilter('bi','region')">Bỉ</button>
-            <button onclick="quickFilter('ireland','region')">Ireland</button>
-            <button onclick="quickFilter('colombia','region')">Colombia</button>
-            <button onclick="quickFilter('phan-lan','region')">Phần Lan</button>
-            <button onclick="quickFilter('chile','region')">Chile</button>
-            <button onclick="quickFilter('hy-lap','region')">Hy Lạp</button>
-            <button onclick="quickFilter('nigeria','region')">Nigeria</button>
-            <button onclick="quickFilter('argentina','region')">Argentina</button>
-            <button onclick="quickFilter('singapore','region')">Singapore</button>
-          </div>
-          <div id="typeTab" class="TabContent">
-            <h3>Loại phim</h3>
-            <button onclick="quickFilter('phim-moi','type')">Phim mới</button>
-            <button onclick="quickFilter('phim-bo','type')">Phim bộ</button>
-            <button onclick="quickFilter('phim-le','type')">Phim lẻ</button>
-            <button onclick="quickFilter('shows','type')">TV Shows</button>
-            <button onclick="quickFilter('hoat-hinh','type')">Hoạt hình</button>
-            <button onclick="quickFilter('phim-vietsub','type')">Phim vietsub</button>
-            <button onclick="quickFilter('phim-thuyet-minh','type')">Phim thuyết minh</button>
-            <button onclick="quickFilter('phim-long-tieng','type')">Phim lồng tiếng</button>
-            <button onclick="quickFilter('phim-bo-dang-chieu','type')">Phim bộ đang chiếu</button>
-            <button onclick="quickFilter('phim-bo-da-hoan-thanh','type')">Phim bộ đã hoàn thành</button>
-            <button onclick="quickFilter('phim-sap-chieu','type')">Phim sắp chiếu</button>
-            <button onclick="quickFilter('subteam','type')">Subteam</button>
-            <button onclick="quickFilter('phim-chieu-rap','type')">Phim chiếu rạp</button>
-          </div>
-        </div>
-      </div>
+      
+       
       <div class="Search" id="searchBox">
         <input id="searchInput" placeholder="Nhập Tên Bánh..." aria-label="Tìm kiếm phim" />
         <button id="searchBtn" aria-label="Tìm kiếm">Tìm Bánh</button>
@@ -526,11 +298,7 @@
   <!-- Banner Section -->
   <section class="BannerContainer">
     <h2 class="BannerTitle">🎬 Bánh Mì...</h2>
-    <div class="BannerGrid" id="bannerList">
-      <button class="BannerNav BannerPrev" id="bannerPrev" aria-label="Banner trước">‹</button>
-      <button class="BannerNav BannerNext" id="bannerNext" aria-label="Banner sau">›</button>
-    </div>
-  </section>
+  
 
   <section class="movie_filter_container">
     <select id="category" aria-label="Chọn thể loại">
@@ -649,756 +417,363 @@
   <main>
     <h2 id="sectionTitle">🎬 Phim Mới!</h2>
     <div class="Grid" id="movieList"><div class="spinner"></div></div>
-    <div class="Pagination">
-      <button id="prevPage" aria-label="Trang trước">«</button>
-      <span id="pageNum">1</span>
-      <button id="nextPage" aria-label="Trang sau">»</button>
-    </div>
-  </main>
+ 
+ <script>
+/* === Full index JS (thay thế toàn bộ phần script cũ) === */
 
-  <script>
-    // Lazy loading polyfill for older browsers
-    if (!('loading' in HTMLImageElement.prototype)) {
-      const script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js';
-      script.async = true;
-      document.head.appendChild(script);
-    }
+/* Lazyload polyfill */
+if (!("loading" in HTMLImageElement.prototype)) {
+  const s = document.createElement("script");
+  s.src = "https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js";
+  s.async = true;
+  document.head.appendChild(s);
+}
 
-    // Config sources
-    const sources = [
-      { name: "🍞 Bánh Mì 01", base: "https://ophim1.com/v1/api", type: "ophim" },
-      { name: "🍞 Bánh Mì 02", base: "https://phimapi.com/v1/api", type: "phimapi" },
-      { name: "🍞 Bánh Mì 03", base: "https://phim.nguonc.com/api", type: "nguonc" }
-    ];
+/* Config sources (giữ nguyên như bạn) */
+const sources = [
+  { name: "🍞 Bánh Mì 01", base: "https://ophim1.com/v1/api", type: "ophim" },
+  { name: "🍞 Bánh Mì 02", base: "https://phimapi.com/v1/api", type: "phimapi" },
+  { name: "🍞 Bánh Mì 03", base: "https://phim.nguonc.com/api", type: "nguonc" }
+];
 
-    // Labels for display
-    const labels = {
-      "hanh-dong": "Hành Động",
-      "phieu-luu": "Phiêu Lưu",
-      "hoat-hinh": "Hoạt Hình",
-      "hai": "Hài",
-      "hinh-su": "Hình Sự",
-      "tai-lieu": "Tài Liệu",
-      "chinh-kich": "Chính Kịch",
-      "gia-dinh": "Gia Đình",
-      "gia-tuong": "Giả Tưởng",
-      "lich-su": "Lịch Sử",
-      "kinh-di": "Kinh Dị",
-      "nhac": "Nhạc",
-      "bi-an": "Bí Ẩn",
-      "lang-man": "Lãng Mạn",
-      "khoa-hoc-vien-tuong": "Khoa Học Viễn Tưởng",
-      "gay-can": "Gây Cấn",
-      "chien-tranh": "Chiến Tranh",
-      "tam-ly": "Tâm Lý",
-      "tinh-cam": "Tình Cảm",
-      "co-trang": "Cổ Trang",
-      "mien-tay": "Miền Tây",
-      "phim-18": "Phim 18+",
-      "au-my": "Âu Mỹ",
-      "anh": "Anh",
-      "trung-quoc": "Trung Quốc",
-      "indonesia": "Indonesia",
-      "viet-nam": "Việt Nam",
-      "phap": "Pháp",
-      "hong-kong": "Hồng Kông",
-      "han-quoc": "Hàn Quốc",
-      "nhat-ban": "Nhật Bản",
-      "thai-lan": "Thái Lan",
-      "dai-loan": "Đài Loan",
-      "nga": "Nga",
-      "ha-lan": "Hà Lan",
-      "philippines": "Philippines",
-      "an-do": "Ấn Độ",
-      "quoc-gia-khac": "Quốc gia khác",
-      "duc": "Đức",
-      "tay-ban-nha": "Tây Ban Nha",
-      "tho-nhi-ky": "Thổ Nhĩ Kỳ",
-      "mexico": "Mexico",
-      "ba-lan": "Ba Lan",
-      "uc": "Úc",
-      "thuỵ-den": "Thụy Điển",
-      "malaysia": "Malaysia",
-      "brazil": "Brazil",
-      "bo-dao-nha": "Bồ Đào Nha",
-      "y": "Ý",
-      "dan-mach": "Đan Mạch",
-      "uae": "UAE",
-      "na-uy": "Na Uy",
-      "thuỵ-si": "Thụy Sĩ",
-      "chau-phi": "Châu Phi",
-      "nam-phi": "Nam Phi",
-      "ukraina": "Ukraina",
-      "a-rap-xe-ut": "Ả Rập Xê Út",
-      "bi": "Bỉ",
-      "ireland": "Ireland",
-      "colombia": "Colombia",
-      "phan-lan": "Phần Lan",
-      "chile": "Chile",
-      "hy-lap": "Hy Lạp",
-      "nigeria": "Nigeria",
-      "argentina": "Argentina",
-      "singapore": "Singapore",
-      "phim-moi": "Phim mới",
-      "phim-bo": "Phim bộ",
-      "phim-le": "Phim lẻ",
-      "shows": "TV Shows",
-      "hoat-hinh": "Hoạt hình",
-      "phim-vietsub": "Phim vietsub",
-      "phim-thuyet-minh": "Phim thuyết minh",
-      "phim-long-tieng": "Phim lồng tiếng",
-      "phim-bo-dang-chieu": "Phim bộ đang chiếu",
-      "phim-bo-da-hoan-thanh": "Phim bộ đã hoàn thành",
-      "phim-sap-chieu": "Phim sắp chiếu",
-      "subteam": "Subteam",
-      "phim-chieu-rap": "Phim chiếu rạp"
-    };
+const labels = { /* ...giữ như cũ nếu cần... */ };
 
-    // DOM refs & state
-    const movieList = document.getElementById("movieList");
-    const bannerList = document.getElementById("bannerList");
-    const searchBox = document.getElementById("searchBox");
-    const searchInput = document.getElementById("searchInput");
-    const searchBtn = document.getElementById("searchBtn");
-    const filterBtn = document.getElementById("filterBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const menuBtn = document.getElementById("menuBtn");
-    const sectionTitle = document.getElementById("sectionTitle");
-    const bannerPrev = document.getElementById("bannerPrev");
-    const bannerNext = document.getElementById("bannerNext");
-    let currentPage = 1;
-    let lastMode = "normal"; // normal | filter | search
-    let bannerInterval;
-    let bannerIndex = 0;
-    let bannerData = [];
-    const cache = new Map(); // API cache
+/* DOM refs */
+const movieList = document.getElementById("movieList");
+const bannerList = document.getElementById("bannerList");
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+const filterBtn = document.getElementById("filterBtn");
+const resetBtn = document.getElementById("resetBtn");
+const menuBtn = document.getElementById("menuBtn");
+const sectionTitle = document.getElementById("sectionTitle");
+const bannerPrev = document.getElementById("bannerPrev");
+const bannerNext = document.getElementById("bannerNext");
 
-    // Helpers
-    function slugify(text) {
-      if (!text) return "";
-      return text.toString().toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-        .replace(/đ/g, "d").replace(/Đ/g, "D")
-        .replace(/[^a-z0-9\s-]/g, "")
-        .trim().replace(/\s+/g, "-");
-    }
+/* pagination element: nếu chưa có thì tự tạo và chèn ngay dưới movieList */
+let pagination = document.getElementById("pagination");
+if (!pagination) {
+  pagination = document.createElement("div");
+  pagination.id = "pagination";
+  pagination.className = "pagination";
+  if (movieList && movieList.parentNode) movieList.parentNode.insertBefore(pagination, movieList.nextSibling);
+  else document.body.appendChild(pagination);
+  console.log("[pagination] created dynamically");
+}
 
-    function fixImagePath(img, src) {
-      if (!img) return "";
-      if (img.startsWith("http")) return img;
-      if (src.type === "ophim") return "https://img.ophim.live/uploads/movies" + (img.startsWith("/") ? img : "/" + img);
-      if (src.type === "phimapi") return "https://phimimg.com" + (img.startsWith("/") ? img : "/" + img);
-      return img.startsWith("/") ? img : "/" + img;
-    }
+/* State */
+let currentPage = 1;
+let lastMode = "normal"; // normal | search | filter
+const PAGE_BLOCK = 6;    // hiển thị 6 nút mỗi block
+let totalPages = 50;     // fallback nếu API không trả về tổng
+const cache = new Map();
 
-    function hasItems(data) {
-      if (!data) return false;
-      if (Array.isArray(data)) return data.length > 0;
-      if (data.data && Array.isArray(data.data.items)) return data.data.items.length > 0;
-      if (Array.isArray(data.items)) return data.items.length > 0;
-      if (Array.isArray(data.data)) return data.data.length > 0;
-      return false;
-    }
+/* Helpers */
+function slugify(text) {
+  if (!text) return "";
+  return text.toString().toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d").replace(/Đ/g, "D")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim().replace(/\s+/g, "-");
+}
+function fixImagePath(img, src) {
+  if (!img) return "";
+  if (img.startsWith("http")) return img;
+  if (src?.type === "ophim") return "https://img.ophim.live/uploads/movies" + (img.startsWith("/") ? img : "/" + img);
+  if (src?.type === "phimapi") return "https://phimimg.com" + (img.startsWith("/") ? img : "/" + img);
+  return img.startsWith("/") ? img : "/" + img;
+}
+function extractItems(data) {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if (data.data?.items) return data.data.items;
+  if (data.items) return data.items;
+  if (Array.isArray(data.data)) return data.data;
+  if (data.data?.item) return [data.data.item];
+  if (data.movie) return [data.movie];
+  return [];
+}
 
-    function extractItems(data) {
-      if (!data) return [];
-      if (Array.isArray(data)) return data;
-      if (data.data && Array.isArray(data.data.items)) return data.data.items;
-      if (Array.isArray(data.items)) return data.items;
-      if (Array.isArray(data.data)) return data.data;
-      if (data.data && data.data.item) return [data.data.item];
-      if (data.movie) return [data.movie];
-      return [];
-    }
-
-    async function tryUrls(urls) {
-      for (const u of urls) {
-        if (cache.has(u)) return cache.get(u);
-        try {
-          const res = await fetch(u, { method: "GET" });
-          if (!res.ok) continue;
-          const json = await res.json();
-          if (hasItems(json) || json.data?.item || json.movie || json?.data) {
-            cache.set(u, { url: u, data: json });
-            return { url: u, data: json };
-          }
-        } catch (e) {
-          console.log("fetch fail:", u, e);
-        }
+/* Try list of URLs and return first working response + raw JSON */
+async function tryUrls(urls) {
+  for (const u of urls) {
+    if (cache.has(u)) return cache.get(u);
+    try {
+      const res = await fetch(u);
+      if (!res.ok) continue;
+      const json = await res.json();
+      // nếu có dữ liệu hợp lệ
+      if (extractItems(json).length || json.data?.item || json.movie) {
+        cache.set(u, json);
+        return json;
       }
-      return null;
+    } catch (e) {
+      // ignore
     }
+  }
+  return null;
+}
 
-    // Fetch Banner
-    async function fetchBanner() {
-      const bannerUrl = "https://ophim1.com/v1/api/danh-sach/phim-moi?limit=10";
-      try {
-        const res = await fetch(bannerUrl);
-        if (!res.ok) throw new Error("Failed");
-        const json = await res.json();
-        bannerData = extractItems(json).slice(0, 10);
-        if (bannerData.length === 0) {
-          bannerList.innerHTML = `<p class="small-note">Không có dữ liệu banner.</p>`;
-          return;
-        }
-        renderBanner();
-        if (window.innerWidth >= 1024) {
-          startBannerSlide();
-        }
-      } catch (e) {
-        console.log("Banner fetch error:", e);
-        bannerList.innerHTML = `<p class="small-note">Lỗi tải banner.</p>`;
+/* ---------------- Banner (giữ logic bạn muốn) ---------------- */
+async function fetchBanner() {
+  try {
+    const res = await fetch("");
+    const json = await res.json();
+    const items = extractItems(json).slice(0, 10);
+    if (!items.length) {
+      bannerList.innerHTML = `<p class="small-note">Không có dữ liệu banner.</p>`;
+      return;
+    }
+    bannerList.innerHTML = items.map(it => {
+      const img = fixImagePath(it.poster_url || it.thumb || it.image || it.poster, sources[0]);
+      const detailHref = `detail.html?slug=${encodeURIComponent(slugify(it.name || it.title || ""))}&src=${encodeURIComponent(sources[0].name)}`;
+      return `<div class="BannerCard" onclick="location.href='${detailHref}'"><div class="BannerPoster"><img loading="lazy" src="${img}" alt=""></div></div>`;
+    }).join("");
+    // optional: implement slide controls if you want (omitted for brevity)
+  } catch (e) {
+    bannerList.innerHTML = `<p class="small-note">Lỗi tải banner.</p>`;
+  }
+}
+
+/* ---------------- Fetch movies from multi sources ----------------
+   RETURN: { items: [...], detectedTotalPages: number|null }
+-----------------------------------------------------------------*/
+async function fetchMovies({ keyword = "", filters = {}, page = 1, mode = "normal" } = {}) {
+  const perSourceResults = [];
+  let detectedTotalPages = null;
+
+  for (const src of sources) {
+    const candidates = [];
+
+    if (mode === "search" && keyword) {
+      const slugKey = slugify(keyword);
+      if (src.type === "nguonc") {
+        candidates.push(`${src.base}/film/${slugKey}`);
+      } else {
+        candidates.push(`${src.base}/tim-kiem?keyword=${encodeURIComponent(keyword)}`);
+        candidates.push(`${src.base}/phim/${slugKey}`);
+      }
+    } else if (mode === "filter") {
+      const { category, region, year, type } = filters;
+      if (src.type === "ophim") {
+        if (category) candidates.push(`${src.base}/the-loai/${encodeURIComponent(category)}?page=${page}`);
+        if (region) candidates.push(`${src.base}/quoc-gia/${encodeURIComponent(region)}?page=${page}`);
+        if (year) candidates.push(`${src.base}/nam-phat-hanh/${encodeURIComponent(year)}?page=${page}`);
+      } else if (src.type === "phimapi") {
+        if (category) candidates.push(`${src.base}/the-loai/${encodeURIComponent(category)}?page=${page}`);
+      } else if (src.type === "nguonc") {
+        if (category) candidates.push(`${src.base}/films/the-loai/${encodeURIComponent(category)}?page=${page}`);
+      }
+    } else {
+      // normal
+      if (src.type === "ophim") {
+        candidates.push(`${src.base}/danh-sach/phim-moi?page=${page}`);
+        candidates.push(`${src.base}/danh-sach?page=${page}`);
+      } else if (src.type === "phimapi") {
+        candidates.push(`${src.base}/danh-sach/phim-moi?page=${page}`);
+      } else if (src.type === "nguonc") {
+        candidates.push(`${src.base}/films?page=${page}`);
       }
     }
 
-    function renderBanner() {
-      const isDesktop = window.innerWidth >= 1024;
-      bannerList.innerHTML = bannerData.map((item, idx) => {
-        const imgRaw = item.poster_url || item.thumb || item.image || item.poster || item.thumb_url;
-        const img = fixImagePath(imgRaw, sources[0]);
-        const detailHref = `detail.html?slug=${encodeURIComponent(slugify(item.name || item.title || ""))}&src=${encodeURIComponent(sources[0].name)}`;
+    const unique = [...new Set(candidates.filter(Boolean))];
+    if (!unique.length) continue;
+
+    const json = await tryUrls(unique);
+    if (!json) {
+      perSourceResults.push([]);
+      continue;
+    }
+
+    // try detect total pages from common response shapes
+    if (!detectedTotalPages) {
+      if (json.total_pages) detectedTotalPages = Number(json.total_pages);
+      else if (json.meta?.pagination?.total_pages) detectedTotalPages = Number(json.meta.pagination.total_pages);
+      else if (json.data?.meta?.pagination?.total_pages) detectedTotalPages = Number(json.data.meta.pagination.total_pages);
+      else if (json.data?.total) {
+        // if API gives items total count and we know page size later, we'll compute in caller
+        detectedTotalPages = null; // keep null for now
+      }
+    }
+
+    const items = extractItems(json);
+    const mapped = items.map(item => {
+      const imgRaw = item.thumb_url || item.poster_url || item.image || item.thumb || item.poster;
+      return {
+        name: item.name || item.title || item.ten || "",
+        year: item.year || item.release_date || item.nam || "",
+        episode: item.episode_current || item.episode || "",
+        poster: fixImagePath(imgRaw, src),
+        source: src.name,
+        slug: item.slug || slugify(item.name || item.title || "")
+      };
+    });
+    perSourceResults.push(mapped);
+  }
+
+  // merge interleaving like before
+  const results = [];
+  const maxLen = perSourceResults.length ? Math.max(...perSourceResults.map(a => a.length)) : 0;
+  for (let i = 0; i < maxLen; i++) {
+    for (const arr of perSourceResults) {
+      if (arr[i]) results.push(arr[i]);
+    }
+  }
+
+  return { items: results, detectedTotalPages };
+}
+
+/* ---------------- fetchMoviesFull - render và điều chỉnh totalPages ---------------- */
+async function fetchMoviesFull({ keyword = "", filters = {}, page = 1, mode = "normal" } = {}) {
+  if (!movieList) return;
+  movieList.innerHTML = `<div class="spinner"></div>`;
+  const { items, detectedTotalPages } = await fetchMovies({ keyword, filters, page, mode });
+
+  const isLaptop = window.innerWidth >= 1024;
+  const limit = isLaptop ? 10 : 6;
+  // Update totalPages if API gave it
+  if (detectedTotalPages && Number.isInteger(detectedTotalPages) && detectedTotalPages > 0) {
+    totalPages = detectedTotalPages;
+  } else {
+    // If API didn't give total pages:
+    // - if returned items < limit then assume this is last page -> totalPages = page
+    // - else ensure we allow showing some future pages so pagination isn't locked at 1
+    if (items.length < limit) {
+      totalPages = Math.max(totalPages, page); // likely last page
+    } else {
+      // allow at least current block + 2 blocks ahead (heuristic)
+      totalPages = Math.max(totalPages, page + PAGE_BLOCK * 2);
+    }
+  }
+
+  // render list (limit)
+  const display = items.slice(0, limit);
+  movieList.innerHTML = display.length === 0
+    ? `<p class="small-note">Không tìm thấy phim. Vui lòng thử lại hoặc thay đổi bộ lọc.</p>`
+    : display.map(m => {
+        const detailHref = `detail.html?slug=${encodeURIComponent(m.slug)}&src=${encodeURIComponent(m.source)}`;
         return `
-          <div class="BannerCard" onclick="location.href='${detailHref}'" role="link" aria-label="Xem chi tiết ${item.name || 'phim'}">
-            <div class="BannerPoster">
-              <img loading="lazy" src="${img}" alt="Poster ${item.name || 'phim'}" />
+          <div class="MovieCard" onclick="location.href='${detailHref}'" role="link" aria-label="Xem chi tiết phim ${m.name || 'Không tên'}">
+            <div class="poster">
+              <span class="source-label">${m.source}</span>
+              <img loading="lazy" src="${m.poster}" alt="Poster phim ${m.name || 'Không tên'}" />
+              ${m.year ? `<span class="badge">${m.year}</span>` : ""}
+              ${m.episode ? `<span class="episode-badge">${m.episode}</span>` : ""}
+             
             </div>
+            <h3>${m.name || ""}</h3>
           </div>`;
       }).join("");
-      if (isDesktop) {
-        bannerIndex = 0;
-        updateBannerTransform();
-        bannerPrev.onclick = () => {
-          bannerIndex = Math.max(0, bannerIndex - 1);
-          updateBannerTransform();
-          resetBannerInterval();
-        };
-        bannerNext.onclick = () => {
-          bannerIndex = Math.min(bannerData.length - 1, bannerIndex + 1);
-          updateBannerTransform();
-          resetBannerInterval();
-        };
-      }
-    }
 
-    function updateBannerTransform() {
-      const translateX = -bannerIndex * 100;
-      bannerList.style.transform = `translateX(${translateX}%)`;
-    }
+  renderPagination(page, totalPages);
+}
 
-    function startBannerSlide() {
-      bannerInterval = setInterval(() => {
-        const isDesktop = window.innerWidth >= 1024;
-        if (!isDesktop) return;
-        bannerIndex = (bannerIndex + 1) % bannerData.length;
-        updateBannerTransform();
-      }, 3000);
-    }
+/* ---------------- Pagination render + navigation ---------------- */
+function renderPagination(current, total) {
+  if (!pagination) return;
+  pagination.innerHTML = "";
 
-    function resetBannerInterval() {
-      clearInterval(bannerInterval);
-      startBannerSlide();
-    }
+  // Ensure total at least 1
+  total = Math.max(1, Number(total) || 1);
 
-    window.addEventListener('resize', () => {
-      clearInterval(bannerInterval);
-      renderBanner();
-      if (window.innerWidth >= 1024) {
-        startBannerSlide();
-      }
-    });
+  const blockStart = Math.floor((current - 1) / PAGE_BLOCK) * PAGE_BLOCK + 1;
+  const blockEnd = Math.min(blockStart + PAGE_BLOCK - 1, total);
 
-    // Fetch Movies
-    async function fetchMovies({ keyword = "", filters = {}, page = 1, mode = "normal", supplement = false } = {}) {
-      const perSourceResults = [];
-      for (const src of sources) {
-        try {
-          const candidates = [];
-          if (mode === "search" && keyword) {
-            const slug = slugify(keyword);
-            if (src.type === "nguonc") {
-              candidates.push(`${src.base}/film/${slug}`);
-            } else {
-              candidates.push(`${src.base}/tim-kiem?keyword=${encodeURIComponent(keyword)}`);
-              candidates.push(`${src.base}/phim/${slug}`);
-              candidates.push(`${src.base}/film/${slug}`);
-            }
-          } else if (mode === "filter") {
-            const { category, region, year, type } = filters;
-            const nonEmpty = [category, region, year, type].filter(Boolean).length;
+  // prev block button
+  if (blockStart > 1) {
+    const btn = document.createElement("button");
+    btn.className = "page-btn";
+    btn.textContent = "«";
+    btn.onclick = () => goToPage(blockStart - 1);
+    pagination.appendChild(btn);
+  }
 
-            if (src.type === "ophim") {
-              if (nonEmpty >= 2) {
-                if (category) {
-                  let u = `${src.base}/the-loai/${encodeURIComponent(category)}?page=${page}`;
-                  if (region) u += `&country=${encodeURIComponent(region)}`;
-                  if (year) u += `&year=${encodeURIComponent(year)}`;
-                  if (type) u += `&type=${encodeURIComponent(type)}&sort_field=modified.time&sort_type=desc`;
-                  candidates.push(u);
-                }
-                const params = new URLSearchParams();
-                if (category) params.append("filter[category]", category);
-                if (region) params.append("filter[region]", region);
-                if (year) params.append("filter[year]", year);
-                if (type) params.append("filter[type]", type);
-                params.append("page", page);
-                candidates.push(`${src.base}/danh-sach?${params.toString()}`);
-              } else {
-                if (category) candidates.push(`${src.base}/the-loai/${category}?page=${page}`);
-                if (region) candidates.push(`${src.base}/quoc-gia/${region}?page=${page}`);
-                if (year) candidates.push(`${src.base}/nam-phat-hanh/${year}?page=${page}`);
-                if (type) candidates.push(`${src.base}/danh-sach/${type}?page=${page}`);
-                candidates.push(`${src.base}/danh-sach?page=${page}`);
-              }
-            } else if (src.type === "phimapi") {
-              if (nonEmpty >= 2) {
-                if (category) {
-                  let u = `${src.base}/the-loai/${encodeURIComponent(category)}?sort_field=modified.time&sort_lang=&page=${page}`;
-                  if (region) u += `&country=${encodeURIComponent(region)}`;
-                  if (year) u += `&year=${encodeURIComponent(year)}`;
-                  if (type) u += `&type=${encodeURIComponent(type)}&sort_type=desc`;
-                  candidates.push(u);
-                }
-                if (region && !category) {
-                  let u = `${src.base}/quoc-gia/${encodeURIComponent(region)}?sort_field=modified.time&sort_lang=&page=${page}`;
-                  if (year) u += `&year=${encodeURIComponent(year)}`;
-                  if (type) u += `&type=${encodeURIComponent(type)}&sort_type=desc`;
-                  candidates.push(u);
-                }
-                let baseDS = `${src.base}/danh-sach?page=${page}&sort_field=modified.time&sort_lang=`;
-                if (category) baseDS += `&the-loai=${encodeURIComponent(category)}`;
-                if (region) baseDS += `&country=${encodeURIComponent(region)}`;
-                if (year) baseDS += `&year=${encodeURIComponent(year)}`;
-                if (type) baseDS += `&type=${encodeURIComponent(type)}&sort_type=desc`;
-                candidates.push(baseDS);
-              } else {
-                if (category) candidates.push(`${src.base}/the-loai/${encodeURIComponent(category)}?sort_field=modified.time&sort_lang=&page=${page}`);
-                if (region) candidates.push(`${src.base}/quoc-gia/${encodeURIComponent(region)}?sort_field=modified.time&sort_lang=&page=${page}`);
-                if (year) candidates.push(`${src.base}/nam/${encodeURIComponent(year)}?sort_field=modified.time&sort_lang=&page=${page}`);
-                if (type) candidates.push(`${src.base}/loai/${encodeURIComponent(type)}?sort_field=modified.time&sort_lang=&page=${page}`);
-                candidates.push(`${src.base}/danh-sach/phim-moi?page=${page}`);
-              }
-            } else if (src.type === "nguonc") {
-              if (category) candidates.push(`${src.base}/films/the-loai/${encodeURIComponent(category)}?page=${page}`);
-              else if (region) candidates.push(`${src.base}/films/quoc-gia/${encodeURIComponent(region)}?page=${page}`);
-              else if (year) candidates.push(`${src.base}/films/nam-phat-hanh/${encodeURIComponent(year)}?page=${page}`);
-              else if (type) candidates.push(`${src.base}/films/loai/${encodeURIComponent(type)}?page=${page}`);
-              
-            }
-          } else {
-            if (src.type === "ophim") {
-              candidates.push(`${src.base}/danh-sach/phim-moi?page=${page}`);
-              candidates.push(`${src.base}/danh-sach?page=${page}`);
-            } else if (src.type === "phimapi") {
-          
-            } else if (src.type === "nguonc") {
-              
-            }
-          }
+  // page buttons within block
+  for (let i = blockStart; i <= blockEnd; i++) {
+    const btn = document.createElement("button");
+    btn.className = "page-btn";
+    btn.textContent = i;
+    if (i === current) btn.classList.add("active");
+    btn.onclick = () => goToPage(i);
+    pagination.appendChild(btn);
+  }
 
-          const uniqCandidates = [...new Set(candidates.filter(Boolean))];
-          if (uniqCandidates.length === 0) continue;
-          const ok = await tryUrls(uniqCandidates);
-          if (ok && ok.data) {
-            const items = extractItems(ok.data);
-            const mapped = items.map(item => {
-              const imgRaw = item.thumb_url || item.poster_url || item.image || item.thumb || item.poster;
-              const img = fixImagePath(imgRaw, src);
-              let episode = "";
-              if (src.type === "nguonc") {
-                episode = item.episode_current || item.current_episode || item.episode || item.episodes || item.episode_total || "";
-              } else {
-                episode = item.episode_current || item.episode || item.episodes || "";
-              }
-              return {
-                name: item.name || item.title || item.ten || "",
-                year: item.year || item.release_date || item.nam || "",
-                episode: episode,
-                poster: img,
-                source: src.name,
-                slug: item.slug || item.slug_movie || slugify(item.name || item.title || "")
-              };
-            });
-            perSourceResults.push(mapped);
-          } else {
-            perSourceResults.push([]);
-          }
-        } catch (e) {
-          console.log("Error building/fetching for source", src.name, e);
-          perSourceResults.push([]);
-        }
-      }
+  // next block
+  if (blockEnd < total) {
+    const btn = document.createElement("button");
+    btn.className = "page-btn";
+    btn.textContent = "»";
+    btn.onclick = () => goToPage(blockEnd + 1);
+    pagination.appendChild(btn);
+  }
+}
 
-      let results = [];
-      const maxLen = perSourceResults.length ? Math.max(...perSourceResults.map(a => a.length)) : 0;
-      for (let i = 0; i < maxLen; i++) {
-        for (const arr of perSourceResults) {
-          if (arr[i]) results.push(arr[i]);
-        }
-      }
-      return results;
-    }
+function goToPage(page) {
+  currentPage = page;
+  if (lastMode === "search") {
+    fetchMoviesFull({ keyword: searchInput?.value?.trim() || "", page, mode: "search" });
+  } else if (lastMode === "filter") {
+    fetchMoviesFull({ filters: getFilters(), page, mode: "filter" });
+  } else {
+    fetchMoviesFull({ page, mode: "normal" });
+  }
+}
 
-    // Enhanced fetch with supplement
-    async function fetchMoviesFull({ keyword = "", filters = {}, page = 1, mode = "normal" } = {}) {
-      movieList.innerHTML = `<div class="spinner"></div>`;
-      try {
-        let results = await fetchMovies({ keyword, filters, page, mode });
-        const isLaptop = window.innerWidth >= 1024;
-        const targetLimit = isLaptop ? 10 : 6;
-        let totalFetched = results.length;
+/* ---------------- UI events (search/filter/reset/menu) ---------------- */
+function getFilters() {
+  return {
+    category: document.getElementById("category")?.value || "",
+    region: document.getElementById("region")?.value || "",
+    year: document.getElementById("year")?.value || "",
+    type: document.getElementById("type")?.value || ""
+  };
+}
 
-        if (mode === "normal" && totalFetched < targetLimit && results.length > 0) {
-          const supplementPage = page + 1;
-          const supplementResults = await fetchMovies({ keyword, filters, page: supplementPage, mode, supplement: true });
-          if (supplementResults.length > 0) {
-            results = results.concat(supplementResults);
-            totalFetched += supplementResults.length;
-          }
-        }
+searchBtn?.addEventListener("click", () => {
+  const q = searchInput?.value?.trim();
+  if (!q) {
+    // toggle search box
+    document.getElementById("searchBox")?.classList.toggle("active");
+    searchInput?.focus();
+    return;
+  }
+  currentPage = 1;
+  lastMode = "search";
+  fetchMoviesFull({ keyword: q, page: 1, mode: "search" });
+});
 
-        results = results.slice(0, targetLimit);
-        if (results.length === 0) {
-          movieList.innerHTML = `<p class="small-note">Không tìm thấy phim. Vui lòng thử lại hoặc thay đổi bộ lọc.</p>`;
-          return [];
-        }
+filterBtn?.addEventListener("click", () => {
+  currentPage = 1;
+  lastMode = "filter";
+  const f = getFilters();
+  fetchMoviesFull({ filters: f, page: 1, mode: "filter" });
+});
 
-        const currentFilters = getFilters();
-        const filterQS = new URLSearchParams(currentFilters).toString();
-        movieList.innerHTML = results.map(m => {
-          const detailHref = `detail.html?slug=${encodeURIComponent(m.slug)}&src=${encodeURIComponent(m.source)}${filterQS ? ("&" + filterQS) : ""}`;
-          return `
-            <div class="MovieCard" onclick="location.href='${detailHref}'" role="link" aria-label="Xem chi tiết phim ${m.name || 'Không tên'}">
-              <div class="poster">
-                <span class="source-label">${m.source}</span>
-                <img loading="lazy" src="${m.poster}" alt="Poster phim ${m.name || 'Không tên'}" />
-                ${m.year ? `<span class="badge">${m.year}</span>` : ""}
-                ${m.episode ? `<span class="episode-badge">${m.episode}</span>` : ""}
-                <div class="play-btn" aria-hidden="true">▶</div>
-              </div>
-              <h3>${m.name || ""}</h3>
-            </div>`;
-        }).join("");
-        document.getElementById("pageNum").textContent = page;
-        return results;
-      } catch (e) {
-        movieList.innerHTML = `<p class="small-note">Lỗi tải dữ liệu. Vui lòng thử lại sau.</p>`;
-        console.log("fetchMoviesFull error:", e);
-        return [];
-      }
-    }
+resetBtn?.addEventListener("click", () => {
+  document.getElementById("category") && (document.getElementById("category").value = "");
+  document.getElementById("region") && (document.getElementById("region").value = "");
+  document.getElementById("year") && (document.getElementById("year").value = "");
+  document.getElementById("type") && (document.getElementById("type").value = "");
+  if (searchInput) searchInput.value = "";
+  currentPage = 1;
+  lastMode = "normal";
+  sectionTitle && (sectionTitle.textContent = "🎬 Phim Mới!");
+  fetchMoviesFull({ page: 1, mode: "normal" });
+});
 
-    // UI helpers & events
-    function getFilters() {
-      return {
-        category: document.getElementById("category").value || "",
-        region: document.getElementById("region").value || "",
-        year: document.getElementById("year").value || "",
-        type: document.getElementById("type").value || ""
-      };
-    }
+menuBtn?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  menuBtn.classList.toggle("active");
+});
+document.addEventListener("click", () => menuBtn && menuBtn.classList && menuBtn.classList.remove("active"));
 
-    function applyTitleForFilters(filters, search) {
-      if (search) {
-        sectionTitle.textContent = `🔍 Kết quả tìm kiếm: "${search}"`;
-        return;
-      }
-      const parts = [];
-      if (filters.category) parts.push(`Thể loại: ${labels[filters.category] || filters.category}`);
-      if (filters.region) parts.push(`Quốc gia: ${labels[filters.region] || filters.region}`);
-      if (filters.year) parts.push(`Năm: ${filters.year}`);
-      if (filters.type) parts.push(`Loại: ${labels[filters.type] || filters.type}`);
-      if (parts.length) sectionTitle.textContent = `🎯 ${parts.join(" • ")}`;
-      else sectionTitle.textContent = "🎬 Phim Mới!";
-    }
+/* ---------------- Init on load ---------------- */
+window.addEventListener("DOMContentLoaded", () => {
+  fetchBanner();
+  fetchMoviesFull({ page: 1, mode: "normal" });
+});
+</script>
 
-    function showTab(tabId) {
-      document.querySelectorAll('.TabContent').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.TabBtn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(tabId + 'Tab').classList.add('active');
-      document.querySelector(`.TabBtn[onclick="showTab('${tabId}')"]`).classList.add('active');
-    }
-
-    searchBtn.addEventListener("click", () => {
-      const q = searchInput.value.trim();
-      if (!q) {
-        searchBox.classList.toggle("active");
-        searchInput.focus();
-        return;
-      }
-      currentPage = 1;
-      lastMode = "search";
-      applyTitleForFilters({}, q);
-      fetchMovies({ keyword: q, page: currentPage, mode: "search" }).then(results => {
-        const isLaptop = window.innerWidth >= 1024;
-        const limit = isLaptop ? 10 : 6;
-        const currentFilters = getFilters();
-        const filterQS = new URLSearchParams(currentFilters).toString();
-        const displayResults = results.slice(0, limit);
-        movieList.innerHTML = displayResults.length === 0
-          ? `<p class="small-note">Không tìm thấy phim. Vui lòng thử lại.</p>`
-          : displayResults.map(m => {
-              const detailHref = `detail.html?slug=${encodeURIComponent(m.slug)}&src=${encodeURIComponent(m.source)}${filterQS ? ("&" + filterQS) : ""}`;
-              return `
-                <div class="MovieCard" onclick="location.href='${detailHref}'" role="link" aria-label="Xem chi tiết phim ${m.name || 'Không tên'}">
-                  <div class="poster">
-                    <span class="source-label">${m.source}</span>
-                    <img loading="lazy" src="${m.poster}" alt="Poster phim ${m.name || 'Không tên'}" />
-                    ${m.year ? `<span class="badge">${m.year}</span>` : ""}
-                    ${m.episode ? `<span class="episode-badge">${m.episode}</span>` : ""}
-                    <div class="play-btn" aria-hidden="true">▶</div>
-                  </div>
-                  <h3>${m.name || ""}</h3>
-                </div>`;
-            }).join("");
-      });
-    });
-
-    filterBtn.addEventListener("click", () => {
-      const f = getFilters();
-      currentPage = 1;
-      lastMode = "filter";
-      applyTitleForFilters(f, "");
-      fetchMovies({ filters: f, page: currentPage, mode: "filter" }).then(results => {
-        const isLaptop = window.innerWidth >= 1024;
-        const limit = isLaptop ? 10 : 6;
-        const currentFilters = getFilters();
-        const filterQS = new URLSearchParams(currentFilters).toString();
-        const displayResults = results.slice(0, limit);
-        movieList.innerHTML = displayResults.length === 0
-          ? `<p class="small-note">Không tìm thấy phim. Vui lòng thử lại hoặc thay đổi bộ lọc.</p>`
-          : displayResults.map(m => {
-              const detailHref = `detail.html?slug=${encodeURIComponent(m.slug)}&src=${encodeURIComponent(m.source)}${filterQS ? ("&" + filterQS) : ""}`;
-              return `
-                <div class="MovieCard" onclick="location.href='${detailHref}'" role="link" aria-label="Xem chi tiết phim ${m.name || 'Không tên'}">
-                  <div class="poster">
-                    <span class="source-label">${m.source}</span>
-                    <img loading="lazy" src="${m.poster}" alt="Poster phim ${m.name || 'Không tên'}" />
-                    ${m.year ? `<span class="badge">${m.year}</span>` : ""}
-                    ${m.episode ? `<span class="episode-badge">${m.episode}</span>` : ""}
-                    <div class="play-btn" aria-hidden="true">▶</div>
-                  </div>
-                  <h3>${m.name || ""}</h3>
-                </div>`;
-            }).join("");
-      });
-    });
-
-    resetBtn.addEventListener("click", () => {
-      document.getElementById("category").value = "";
-      document.getElementById("region").value = "";
-      document.getElementById("year").value = "";
-      document.getElementById("type").value = "";
-      searchInput.value = "";
-      currentPage = 1;
-      lastMode = "normal";
-      sectionTitle.textContent = "🎬 Phim Mới!";
-      fetchMoviesFull({ page: 1, mode: "normal" });
-    });
-
-    document.getElementById("nextPage").addEventListener("click", () => {
-      if (currentPage >= 100) return; // Limit max page
-      currentPage++;
-      if (lastMode === "search") {
-        const q = searchInput.value.trim();
-        fetchMovies({ keyword: q, page: currentPage, mode: "search" }).then(results => {
-          const isLaptop = window.innerWidth >= 1024;
-          const limit = isLaptop ? 10 : 6;
-          const displayResults = results.slice(0, limit);
-          movieList.innerHTML = displayResults.length === 0
-            ? `<p class="small-note">Không tìm thấy phim. Vui lòng thử lại.</p>`
-            : displayResults.map(m => {
-                const detailHref = `detail.html?slug=${encodeURIComponent(m.slug)}&src=${encodeURIComponent(m.source)}`;
-                return `
-                  <div class="MovieCard" onclick="location.href='${detailHref}'" role="link" aria-label="Xem chi tiết phim ${m.name || 'Không tên'}">
-                    <div class="poster">
-                      <span class="source-label">${m.source}</span>
-                      <img loading="lazy" src="${m.poster}" alt="Poster phim ${m.name || 'Không tên'}" />
-                      ${m.year ? `<span class="badge">${m.year}</span>` : ""}
-                      ${m.episode ? `<span class="episode-badge">${m.episode}</span>` : ""}
-                      <div class="play-btn" aria-hidden="true">▶</div>
-                    </div>
-                    <h3>${m.name || ""}</h3>
-                  </div>`;
-              }).join("");
-        });
-      } else if (lastMode === "filter") {
-        fetchMovies({ filters: getFilters(), page: currentPage, mode: "filter" }).then(results => {
-          const isLaptop = window.innerWidth >= 1024;
-          const limit = isLaptop ? 10 : 6;
-          const displayResults = results.slice(0, limit);
-          movieList.innerHTML = displayResults.length === 0
-            ? `<p class="small-note">Không tìm thấy phim. Vui lòng thử lại hoặc thay đổi bộ lọc.</p>`
-            : displayResults.map(m => {
-                const detailHref = `detail.html?slug=${encodeURIComponent(m.slug)}&src=${encodeURIComponent(m.source)}`;
-                return `
-                  <div class="MovieCard" onclick="location.href='${detailHref}'" role="link" aria-label="Xem chi tiết phim ${m.name || 'Không tên'}">
-                    <div class="poster">
-                      <span class="source-label">${m.source}</span>
-                      <img loading="lazy" src="${m.poster}" alt="Poster phim ${m.name || 'Không tên'}" />
-                      ${m.year ? `<span class="badge">${m.year}</span>` : ""}
-                      ${m.episode ? `<span class="episode-badge">${m.episode}</span>` : ""}
-                      <div class="play-btn" aria-hidden="true">▶</div>
-                    </div>
-                    <h3>${m.name || ""}</h3>
-                  </div>`;
-              }).join("");
-        });
-      } else {
-        fetchMoviesFull({ page: currentPage });
-      }
-    });
-
-    document.getElementById("prevPage").addEventListener("click", () => {
-      if (currentPage > 1) {
-        currentPage--;
-        if (lastMode === "search") {
-          const q = searchInput.value.trim();
-          fetchMovies({ keyword: q, page: currentPage, mode: "search" }).then(results => {
-            const isLaptop = window.innerWidth >= 1024;
-            const limit = isLaptop ? 10 : 6;
-            const displayResults = results.slice(0, limit);
-            movieList.innerHTML = displayResults.length === 0
-              ? `<p class="small-note">Không tìm thấy phim. Vui lòng thử lại.</p>`
-              : displayResults.map(m => {
-                  const detailHref = `detail.html?slug=${encodeURIComponent(m.slug)}&src=${encodeURIComponent(m.source)}`;
-                  return `
-                    <div class="MovieCard" onclick="location.href='${detailHref}'" role="link" aria-label="Xem chi tiết phim ${m.name || 'Không tên'}">
-                      <div class="poster">
-                        <span class="source-label">${m.source}</span>
-                        <img loading="lazy" src="${m.poster}" alt="Poster phim ${m.name || 'Không tên'}" />
-                        ${m.year ? `<span class="badge">${m.year}</span>` : ""}
-                        ${m.episode ? `<span class="episode-badge">${m.episode}</span>` : ""}
-                        <div class="play-btn" aria-hidden="true">▶</div>
-                      </div>
-                      <h3>${m.name || ""}</h3>
-                    </div>`;
-                }).join("");
-          });
-        } else if (lastMode === "filter") {
-          fetchMovies({ filters: getFilters(), page: currentPage, mode: "filter" }).then(results => {
-            const isLaptop = window.innerWidth >= 1024;
-            const limit = isLaptop ? 10 : 6;
-            const displayResults = results.slice(0, limit);
-            movieList.innerHTML = displayResults.length === 0
-              ? `<p class="small-note">Không tìm thấy phim. Vui lòng thử lại hoặc thay đổi bộ lọc.</p>`
-              : displayResults.map(m => {
-                  const detailHref = `detail.html?slug=${encodeURIComponent(m.slug)}&src=${encodeURIComponent(m.source)}`;
-                  return `
-                    <div class="MovieCard" onclick="location.href='${detailHref}'" role="link" aria-label="Xem chi tiết phim ${m.name || 'Không tên'}">
-                      <div class="poster">
-                        <span class="source-label">${m.source}</span>
-                        <img loading="lazy" src="${m.poster}" alt="Poster phim ${m.name || 'Không tên'}" />
-                        ${m.year ? `<span class="badge">${m.year}</span>` : ""}
-                        ${m.episode ? `<span class="episode-badge">${m.episode}</span>` : ""}
-                        <div class="play-btn" aria-hidden="true">▶</div>
-                      </div>
-                      <h3>${m.name || ""}</h3>
-                    </div>`;
-                }).join("");
-          });
-        } else {
-          fetchMoviesFull({ page: currentPage });
-        }
-      }
-    });
-
-    document.getElementById("logo").addEventListener("click", () => {
-      location.href = "index.html";
-    });
-
-    menuBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      menuBtn.classList.toggle("active");
-    });
-
-    document.addEventListener("click", () => {
-      menuBtn.classList.remove("active");
-    });
-
-    function quickFilter(value, type = "category") {
-      document.getElementById(type).value = value;
-      menuBtn.classList.remove("active");
-      filterBtn.click();
-    }
-
-    // On load: check query string and apply
-    window.addEventListener("DOMContentLoaded", () => {
-      fetchBanner();
-      const params = new URLSearchParams(location.search);
-      const category = params.get("category") || "";
-      const region = params.get("region") || "";
-      const year = params.get("year") || "";
-      const type = params.get("type") || "";
-      const search = params.get("search") || "";
-
-      if (category) document.getElementById("category").value = category;
-      if (region) document.getElementById("region").value = region;
-      if (year) document.getElementById("year").value = year;
-      if (type) document.getElementById("type").value = type;
-      if (search) searchInput.value = search;
-
-      if (search) {
-        lastMode = "search";
-        applyTitleForFilters({}, search);
-        fetchMovies({ keyword: search, page: 1, mode: "search" }).then(results => {
-          const isLaptop = window.innerWidth >= 1024;
-          const limit = isLaptop ? 10 : 6;
-          const displayResults = results.slice(0, limit);
-          movieList.innerHTML = displayResults.length === 0
-            ? `<p class="small-note">Không tìm thấy phim. Vui lòng thử lại.</p>`
-            : displayResults.map(m => {
-                const detailHref = `detail.html?slug=${encodeURIComponent(m.slug)}&src=${encodeURIComponent(m.source)}&search=${encodeURIComponent(search)}`;
-                return `
-                  <div class="MovieCard" onclick="location.href='${detailHref}'" role="link" aria-label="Xem chi tiết phim ${m.name || 'Không tên'}">
-                    <div class="poster">
-                      <span class="source-label">${m.source}</span>
-                      <img loading="lazy" src="${m.poster}" alt="Poster phim ${m.name || 'Không tên'}" />
-                      ${m.year ? `<span class="badge">${m.year}</span>` : ""}
-                      ${m.episode ? `<span class="episode-badge">${m.episode}</span>` : ""}
-                      <div class="play-btn" aria-hidden="true">▶</div>
-                    </div>
-                    <h3>${m.name || ""}</h3>
-                  </div>`;
-              }).join("");
-        });
-      } else if (category || region || year || type) {
-        lastMode = "filter";
-        const f = { category, region, year, type };
-        applyTitleForFilters(f, "");
-        fetchMovies({ filters: f, page: 1, mode: "filter" }).then(results => {
-          const isLaptop = window.innerWidth >= 1024;
-          const limit = isLaptop ? 10 : 6;
-          const displayResults = results.slice(0, limit);
-          movieList.innerHTML = displayResults.length === 0
-            ? `<p class="small-note">Không tìm thấy phim. Vui lòng thử lại hoặc thay đổi bộ lọc.</p>`
-            : displayResults.map(m => {
-                const currentFilters = getFilters();
-                const filterQS = new URLSearchParams(currentFilters).toString();
-                const detailHref = `detail.html?slug=${encodeURIComponent(m.slug)}&src=${encodeURIComponent(m.source)}${filterQS ? ("&" + filterQS) : ""}`;
-                return `
-                  <div class="MovieCard" onclick="location.href='${detailHref}'" role="link" aria-label="Xem chi tiết phim ${m.name || 'Không tên'}">
-                    <div class="poster">
-                      <span class="source-label">${m.source}</span>
-                      <img loading="lazy" src="${m.poster}" alt="Poster phim ${m.name || 'Không tên'}" />
-                      ${m.year ? `<span class="badge">${m.year}</span>` : ""}
-                      ${m.episode ? `<span class="episode-badge">${m.episode}</span>` : ""}
-                      <div class="play-btn" aria-hidden="true">▶</div>
-                    </div>
-                    <h3>${m.name || ""}</h3>
-                  </div>`;
-              }).join("");
-        });
-      } else {
-        lastMode = "normal";
-        sectionTitle.textContent = "🎬 Phim Mới!";
-        fetchMoviesFull({ page: 1, mode: "normal" });
-      }
-    });
-
-    searchInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") searchBtn.click();
-    });
-  </script>
 </body>
 </html>
