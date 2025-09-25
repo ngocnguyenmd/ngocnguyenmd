@@ -1,10 +1,26 @@
-"|c|ban-gai-toi-tro-thanh-con-trai-roi",
-"|c|nguu-lang-chuc-nu",
-"|c|toi-da-cuop-mat-dem-dau-tien-cua-nam-chinh",
-"|c|truy-tim-su-that",
-"|c|bo-5-sieu-dang-cap",
-"|c|bo-5-sieu-dang-cap",
-"|c|bo-5-sieu-dang-cap",
+Api tại trang chủ phim có coitainer là phim đề cử
+https://ophim1.com/v1/api/home
+Api này danh sách phim  được làm thủ công như sau !
+[phim-moi | phim-bo | phim-le | tv-shows | hoat-hinh | phim-vietsub | phim-thuyet-minh | phim-long-tien | phim-bo-dang-chieu | phim-bo-hoan-thanh | phim-sap-chieu | subteam | phim-chieu-rap]
+https://ophim1.com/v1/api/danh-sach/phim-moi?page=1 (có thể sang trang khác page=1 khi bấm next thì chuyển sang page=2 tương ứng với link)
+Api này dùng cho khung tìm kiếm phim không phải từ khóa (chuyên nghiệp có giao diện khi tìm)
+https://ophim1.com/v1/api/tim-kiem?keyword=[keyword]
+https://ophim1.com/v1/api/tim-kiem?keyword=avengers (ví dụ đúng)
+Api này dùng cho thể loại (header)
+https://ophim1.com/v1/api/the-loai (dùng cho việc khai thác xem từ api này có thể loại gì để hiển thị cho người dùng khi bấm vào header thể loại)
+https://ophim1.com/v1/api/the-loai/hanh-dong?page=1 (ví dụ đúng)
+Api này dùng cho quốc gia (header)
+https://ophim1.com/v1/api/quoc-gia (dùng cho việc khai thác xem từ api này có quốc gia nào để hiển thị cho người dùng khi bấm vào header quốc gia)
+https://ophim1.com/v1/api/quoc-gia/han-quoc?page=1 (ví dụ đúng)
+Api này dùng cho lọc năm phát hành phim (code tùy chỉnh từ 1800 đến 2026!)(header)
+https://ophim1.com/v1/api/nam-phat-hanh/2020 (ví dụ đúng)
+Api này dùng cho hiển thị poster và lấy thông tin phim và link xem
+https://ophim1.com/v1/api/phim/[slug]
+https://ophim1.com/v1/api/phim/hien-ngu (ví dụ đúng)
+(poster dùng trong api có "seoSchema": quét tìm "image":link thực tế, lấy nó làm poster)
 
 
-"|a|
+tạo index trang chủ phim có giao diện từ code sau và loại bỏ header đang có và thêm header sau : thể loại,quốc gia, năm phát hành, phim lẻ, phim bộ
+
+https://ophim1.com/v1/api/the-loai (api dùng để quét xem có thể loại nào hiển thị khi click vào thể loại sổ xuống bảng table id hiển thị tất cả có trong api)
+https://ophim1.com/v1/api/the-loai/hanh-dong?page=1 (khi bấm vào table trên chọn hành động thì đúng với api này từ đó hiển thị trang 1(page=2 là trang 2))

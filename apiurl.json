@@ -1,47 +1,11 @@
 [
   {
-    "index1": [
-      "|Mới 2025!|",
-      "|b|giao-uoc-quy-du",
-      "|b|yeu-lua-gat-tra-thu",
-      "|a|lam-giau-voi-ma-2-cuoc-chien-hot-xoan",
-      "|a|shin-cau-be-but-chi-33-nong-bong-tay-nhung-vu-cong-sieu-cay-kasukabe",
-      "|a|avatar-3-lua-va-tro-tan",
-      "|b|giac-mong-ban-so",
-      "|a|ve-doi",
+    "indexos": [
+      "|Trung Quốc 2025!|",
+      "|b|yeu em",
+      "|b|Chuoc chuoc thieu hoa",
+      "|b|pho son hai"
     
-      "|Watch Now !|",
-      "|b|quai-vat-nho-nui-lang-lang",
-      "|b|rick-va-morty-phan-8",
-      "|b|na-tra-2-ma-dong-nao-hai",
-      "|c|vu-cuop-the-ky-phan-2",
-      "|b|f1-phim-dien-anh",
-      "|c|nguoi-dan-ong-cua-gia-dinh-phan-1",
-      "|b|bo-5-sieu-dang-cap",
-    
-
-      "|Hàn Quốc 2025|",
-      "|b|giac-mo-nguoi-luat-su",
-      "|b|cai-chet-nhan-dao",
-      "|b|sat-nhan-bo-ngua",
-      "|b|ngu-tru-cua-bao-chua",
-      "|b|chuyen-doi-bac-si-noi-tru",
-      "|b|anh-em-dai-bang",
-      "|b|nguu-lang-chuc-nu",
-     
-      
-      "|Trung Quốc 2025|",
-      "|b|tien-dai-co-cay",
-       "|b|sinh-van-vat", 
-       "|b|tu-da-quy",
-       "|b|du-tan-truong-an",
-       "|b|hien-ngu",
-       "|b|toi-o-dinh-cao-doi-cau",
-       "|b|pham-nhan-tu-tien-truyen",
-       
-
-      "|USA-Country|"
-      
        
 
 
@@ -60,26 +24,10 @@
     ]
   },
   {
-    "phim-viet": [
+    "phim-viet1": [
       "|Tình Cảm|",
-      "|b|do-danh-vo-yeu",
-      "|b|hai-muoi",
-      "|b|mat-biec",
-      "|b|dat-rung-phuong-nam",
-      "|c|duyen-ma",
-      "|b|7-nam-chua-cuoi-se-chia-tay",
-      "|Hài-Cinema|",
-      "|b|lam-giau-voi-ma",
-      "|b|gap-lai-chi-bau",
-      "|b|lat-mat-6-tam-ve-dinh-menh",
-      "|b|mai-2024",
-      "|b|my-nhan-ke",
-      "|TV|",
-      "|c|hau-due-mat-troi-viet-nam",
-      "|b|cha-toi-nguoi-o-lai",
-      "|b|hanh-phuc-bi-danh-cap",
-      "|b|cay-tao-no-hoa",
-      "|b|bong-dung-muon-khoc"
+      "|b|do danh vo yeu",
+      "|b|hai muoi"
     ]
   },
   {
@@ -89,16 +37,8 @@
   },
   {
     "truyen-hinh": [
-      "|Một nùi Thái Lan|",
-      "|c|tho-ngoc-noi-cung-trang",
-      "|b|sao-anh-bao-khong-thich-tre-con",
-      "|b|loi-the-nguyen-anh-trang",
-      "|b|khi-mat-troi-lan-cung-la-luc-cac-vi-sao-xuat-hien",
-      "|b|thu-ky-kim-sao-the-ban-thai",
-      "|b|thuoc-vai-se-duyen",
-      "|b|235-do-nghieng",
-      "|b|nguoc-dong-thoi-gian-de-yeu-anh-2018",
-      "|b|nguoc-dong-thoi-gian-de-yeu-anh-2"
+      "|Một nùi Thái Lan|"
+     
     ]
   },
   {
@@ -130,8 +70,7 @@
       "|c|song-dai-duong",
       "|b|quai-thu-dai-nao-so-thu",
       "|Anime-JP|",
-      "|c|sat-thu-ve-vuon",
-      "|c|hotel-inhumans"
+      "|c|sat-thu-ve-vuon"
       
     ]
   },
@@ -178,8 +117,4 @@
       "|OInternet|"
     ]
   }
-
 ]
-
-
-

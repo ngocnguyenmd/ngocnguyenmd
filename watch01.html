@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Phim Hay - Xem phim online với các tập được phân chia theo server">
+    <meta name="keywords" content="xem phim online, video player, danh sách tập phim">
+    <meta name="author" content="Phim Hay">
+    <title>Phim Hay - Xem phim</title>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" as="style" onload="this.rel='stylesheet'">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.rel='stylesheet'">
+    <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-color: #8B4513;
+            --primary-hover: #6B3A0F;
+            --bg-dark: #2C1E14;
+            --bg-section: #3F2A1D;
+            --text-white: #FFF8E1;
+            --text-gray: #D2B48C;
+            --accent-color: #FFD700;
+            --border-radius: 8px;
+            --transition: all 0.2s ease-out;
+            --green-check: #2ecc71;
+            --gradient-bg: #2C1E14;
+            --btn-vip-bg: #FFD700;
+            --btn-pro-bg: #1E90FF;
+            --btn-banhmi-bg: #FF4500;
+        }
+
+        [data-theme="light"] {
+            --bg-dark: #F5F5F5;
+            --bg-section: #EDEDED;
+            --text-white: #333333;
+            --text-gray: #555555;
+            --gradient-bg: #F5F5F5;
+            --btn-vip-bg: #FFC107;
+            --btn-pro-bg: #1E90FF;
+            --btn-banhmi-bg: #FF4500;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', Arial, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--gradient-bg);
+            color: var(--text-white);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            font-size: 15px;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--bg-dark);
+            padding: 10px 15px;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            max-height: 40px;
+        }
+
+        .logo-fallback {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .nav-menu a:hover {
+            background: var(--primary-hover);
+        }
+
+        .nav-menu a.active {
+            background: var(--primary-color);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-white);
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 8px;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            color: var(--accent-color);
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 15px 30px;
+            flex: 1;
+        }
+
+        .video-header {
+            width: 980px;
+            margin: 0 auto 10px;
+            margin-top: 43px;
+            padding: 10px;
+            background: var(--bg-section);
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .video-container {
+            width: 900px;
+            height: 445px;
+            margin: 0 auto 20px;
+            background: #000;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            position: relative;
+        }
+
+        #video-player {
+            width: 100%;
+            height: 100%;
+        }
+
+        .plyr--video {
+            width: 100%;
+            height: 100%;
+        }
+
+        .custom-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            background: var(--bg-section);
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+
+        .custom-btn {
+            background: var(--primary-color);
+            color: var(--text-white);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .custom-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .custom-btn:disabled {
+            background: var(--text-gray);
+            cursor: not-allowed;
+        }
+
+        .episodes-section {
+            margin-top: 20px;
+        }
+
+        .episodes-section h2 {
+            font-size: 1.6em;
+            font-weight: 600;
+            color: var(--text-white);
+            padding: 8px 12px;
+            background: var(--primary-color);
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toggle-episodes-btn {
+            background: var(--primary-hover);
+            color: var(--text-white);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .toggle-episodes-btn:hover {
+            background: var(--accent-color);
+            color: var(--bg-dark);
+        }
+
+        .language-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-section);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .language-table.hidden {
+            display: none;
+        }
+
+        .language-table th,
+        .language-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .language-table th {
+            background: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .language-table tr.current-episode td {
+            background: #000;
+            color: #FFF;
+            font-weight: 600;
+        }
+
+        .link-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .link-btn {
+            background: var(--primary-color);
+            color: var(--text-white);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .link-btn.vip {
+            background: var(--btn-vip-bg);
+            color: #2C1E14;
+        }
+
+        .link-btn.pro {
+            background: var(--btn-pro-bg);
+            color: #FFFFFF;
+        }
+
+        .link-btn.banhmi {
+            background: var(--btn-banhmi-bg);
+            color: #FFFFFF;
+        }
+
+        .link-btn:hover {
+            filter: brightness(1.2);
+        }
+
+        .language-table .unavailable {
+            color: var(--text-gray);
+            font-style: italic;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: var(--text-white);
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        .loading-spinner.visible {
+            display: block;
+        }
+
+        .loading-spinner::after {
+            content: '';
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--primary-color);
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin-left: 10px;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-white);
+            background: var(--primary-hover);
+            border-radius: var(--border-radius);
+            margin: 15px 0;
+            font-size: 1em;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        .error-message button {
+            background: var(--primary-color);
+            color: var(--text-white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: var(--transition);
+        }
+
+        .error-message button:hover {
+            background: var(--primary-hover);
+        }
+
+        footer {
+            background: var(--bg-section);
+            padding: 30px 15px;
+            text-align: center;
+        }
+
+        .footer-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-btn {
+            background: var(--primary-color);
+            color: var(--text-white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .footer-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: var(--text-white);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .scroll-top.visible {
+            display: flex;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 900px) {
+            .video-container {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 3/2;
+            }
+            .video-header {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .episodes-section h2 {
+                font-size: 1.4em;
+            }
+
+            .language-table th,
+            .language-table td {
+                padding: 8px;
+                font-size: 0.85em;
+            }
+
+            .link-btn {
+                min-width: 70px;
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+
+            .custom-btn {
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .episodes-section h2 {
+                font-size: 1.2em;
+            }
+
+            .language-table th,
+            .language-table td {
+                padding: 6px;
+                font-size: 0.8em;
+            }
+
+            .link-btn {
+                min-width: 60px;
+                padding: 5px 8px;
+                font-size: 0.75em;
+            }
+
+            .custom-btn {
+                padding: 5px 8px;
+                font-size: 0.75em;
+            }
+
+            .footer-btn {
+                padding: 8px 15px;
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <img src="https://via.placeholder.com/100x32?text=Logo" alt="Logo Phim Hay" class="logo" loading="eager" id="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+            <span class="logo-fallback" style="display:none;">Phim Nhà Bánh Mì</span>
+            <div class="nav-menu" role="navigation" aria-label="Menu điều hướng chính">
+                <a href="index.html">Trang chủ</a>
+                <a href="index1.html">Phim Đề Cử</a>
+                <a href="phim-han.html">Phim Hàn</a>
+                <a href="phim-trung.html">Phim Trung</a>
+                <a href="phim-viet.html">Phim Việt</a>
+                <a href="phim-my.html">Phim Mỹ</a>
+                <a href="truyen-hinh.html">Truyền hình</a>
+                <a href="hoat-hinh.html">Hoạt hình</a>
+                <a href="netflix.html">Thuyết Minh LT</a>
+                <a href="ykhoa.html">Y Khoa</a>
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    <main class="main-content" id="main-content">
+        <div class="loading-spinner" id="loading-spinner">Đang tải...</div>
+        <div class="error-message" id="error-message"></div>
+        <div class="video-header" id="video-header"></div>
+        <div class="video-container" id="video-container">
+            <video id="video-player" class="plyr" playsinline controls>
+                <source src="" type="application/x-mpegURL">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="custom-controls" id="custom-controls">
+            <button class="custom-btn" id="rewind-btn"><i class="fas fa-backward"></i> Tua lùi</button>
+            <button class="custom-btn" id="prev-episode-btn"><i class="fas fa-step-backward"></i> Tập trước</button>
+            <button class="custom-btn" id="next-episode-btn"><i class="fas fa-step-forward"></i> Tập sau</button>
+            <button class="custom-btn" id="forward-btn"><i class="fas fa-forward"></i> Tua tới</button>
+        </div>
+        <section class="episodes-section" id="episodes-section">
+            <h2>Danh sách tập <button class="toggle-episodes-btn" id="toggle-episodes-btn"><i class="fas fa-chevron-up"></i> Thu gọn</button></h2>
+            <div id="language-tables"></div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-buttons">
+            <button class="footer-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <i class="fas fa-arrow-up"></i> Lên đầu
+            </button>
+            <button class="footer-btn" onclick="window.location.reload()">
+                <i class="fas fa-sync"></i> Tải lại
+            </button>
+            <button class="footer-btn" id="clear-cache-btn">
+                <i class="fas fa-trash"></i> Xóa cache
+            </button>
+        </div>
+        <p class="footer-text">© 2025 Phim Nhà Bánh Mì.</p>
+    </footer>
+    <button class="scroll-top" id="scroll-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+class WatchApp {
+    constructor() {
+        this.elements = {
+            mainContent: document.getElementById('main-content'),
+            videoContainer: document.getElementById('video-container'),
+            videoPlayer: document.getElementById('video-player'),
+            languageTables: document.getElementById('language-tables'),
+            toggleEpisodesBtn: document.getElementById('toggle-episodes-btn'),
+            scrollTop: document.getElementById('scroll-top'),
+            themeToggle: document.getElementById('theme-toggle'),
+            loadingSpinner: document.getElementById('loading-spinner'),
+            clearCacheBtn: document.getElementById('clear-cache-btn'),
+            rewindBtn: document.getElementById('rewind-btn'),
+            prevEpisodeBtn: document.getElementById('prev-episode-btn'),
+            nextEpisodeBtn: document.getElementById('next-episode-btn'),
+            forwardBtn: document.getElementById('forward-btn'),
+            videoHeader: document.getElementById('video-header'),
+            errorMessage: document.getElementById('error-message'),
+            customControls: document.getElementById('custom-controls')
+        };
+        this.DB_NAME = 'MovieAppDB';
+        this.DB_VERSION = 1;
+        this.db = null;
+        this.movieData = null;
+        this.currentEpisode = null;
+        this.currentLinkType = null;
+        this.isEpisodesVisible = true;
+        this.player = null;
+        this.hls = null;
+        this.retryCount = 0;
+        this.maxRetries = 3;
+    }
+
+    async initDB() {
+        try {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains('cache')) {
+                        db.createObjectStore('cache', { keyPath: 'key' });
+                    }
+                    if (!db.objectStoreNames.contains('movies')) {
+                        db.createObjectStore('movies', { keyPath: 'id' });
+                    }
+                };
+                request.onsuccess = (event) => {
+                    this.db = event.target.result;
+                    resolve();
+                };
+                request.onerror = (event) => reject(event.target.error);
+            });
+        } catch (error) {
+            console.error('IndexedDB initialization failed:', error);
+            return null;
+        }
+    }
+
+    async getFromDB(storeName, key) {
+        if (!this.db) return null;
+        try {
+            return new Promise((resolve) => {
+                const transaction = this.db.transaction([storeName], 'readonly');
+                const store = transaction.objectStore(storeName);
+                const request = store.get(key);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => resolve(null);
+            });
+        } catch (error) {
+            console.error(`Error getting from ${storeName}:`, error);
+            return null;
+        }
+    }
+
+    async setToDB(storeName, data) {
+        if (!this.db) return;
+        try {
+            return new Promise((resolve) => {
+                const transaction = this.db.transaction([storeName], 'readwrite');
+                const store = transaction.objectStore(storeName);
+                store.put(data);
+                transaction.oncomplete = () => resolve();
+                transaction.onerror = () => resolve();
+            });
+        } catch (error) {
+            console.error(`Error saving to ${storeName}:`, error);
+        }
+    }
+
+    async clearCache() {
+        if (!this.db) return;
+        try {
+            const transaction = this.db.transaction(['cache', 'movies'], 'readwrite');
+            await Promise.all([
+                new Promise(resolve => {
+                    transaction.objectStore('cache').clear().onsuccess = resolve;
+                }),
+                new Promise(resolve => {
+                    transaction.objectStore('movies').clear().onsuccess = resolve;
+                })
+            ]);
+        } catch (error) {
+            console.error('Error clearing cache:', error);
+        }
+    }
+
+    showError(message) {
+        if (this.elements.errorMessage) {
+            this.elements.errorMessage.textContent = message;
+            this.elements.errorMessage.classList.add('visible');
+        }
+    }
+
+    clearError() {
+        if (this.elements.errorMessage) {
+            this.elements.errorMessage.classList.remove('visible');
+            this.elements.errorMessage.textContent = '';
+        }
+    }
+
+    setupEventListeners() {
+        if (this.elements.themeToggle) {
+            this.elements.themeToggle.addEventListener('click', () => {
+                const theme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+                document.body.dataset.theme = theme;
+                this.elements.themeToggle.innerHTML = `<i class="fas fa-${theme === 'light' ? 'moon' : 'sun'}"></i>`;
+                this.setToDB('cache', { key: 'theme', value: theme, timestamp: Date.now() });
+            });
+
+            this.getFromDB('cache', 'theme').then(theme => {
+                if (theme?.value) {
+                    document.body.dataset.theme = theme.value;
+                    this.elements.themeToggle.innerHTML = `<i class="fas fa-${theme.value === 'light' ? 'moon' : 'sun'}"></i>`;
+                }
+            });
+        }
+
+        window.addEventListener('scroll', () => {
+            if (this.elements.scrollTop) {
+                this.elements.scrollTop.classList.toggle('visible', window.scrollY > 200);
+            }
+        });
+
+        if (this.elements.scrollTop) {
+            this.elements.scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        }
+
+        if (this.elements.clearCacheBtn) {
+            this.elements.clearCacheBtn.addEventListener('click', async () => {
+                await this.clearCache();
+                window.location.reload();
+            });
+        }
+
+        if (this.elements.toggleEpisodesBtn) {
+            this.elements.toggleEpisodesBtn.addEventListener('click', () => {
+                this.isEpisodesVisible = !this.isEpisodesVisible;
+                const tables = this.elements.languageTables.getElementsByClassName('language-table');
+                for (let table of tables) {
+                    table.classList.toggle('hidden', !this.isEpisodesVisible);
+                }
+                this.elements.toggleEpisodesBtn.innerHTML = `<i class="fas fa-chevron-${this.isEpisodesVisible ? 'up' : 'down'}"></i> ${this.isEpisodesVisible ? 'Thu gọn' : 'Mở rộng'}`;
+            });
+        }
+
+        if (this.elements.rewindBtn) {
+            this.elements.rewindBtn.addEventListener('click', () => {
+                if (this.player) {
+                    const currentTime = this.player.currentTime;
+                    this.player.currentTime = Math.max(0, currentTime - 10);
+                }
+            });
+        }
+
+        if (this.elements.forwardBtn) {
+            this.elements.forwardBtn.addEventListener('click', () => {
+                if (this.player) {
+                    const currentTime = this.player.currentTime;
+                    this.player.currentTime = Math.min(this.player.duration, currentTime + 10);
+                }
+            });
+        }
+
+        if (this.elements.prevEpisodeBtn) {
+            this.elements.prevEpisodeBtn.addEventListener('click', () => this.changeEpisode(-1));
+        }
+
+        if (this.elements.nextEpisodeBtn) {
+            this.elements.nextEpisodeBtn.addEventListener('click', () => this.changeEpisode(1));
+        }
+
+        window.addEventListener('resize', () => this.adjustMainContentPadding());
+    }
+
+    adjustMainContentPadding() {
+        const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
+        if (this.elements.mainContent) {
+            this.elements.mainContent.style.paddingTop = `${headerHeight + 10}px`;
+        }
+    }
+
+    async loadMovieData() {
+        this.elements.loadingSpinner?.classList.add('visible');
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+            const apiSource = urlParams.get('apiSource');
+            const episode = urlParams.get('episode');
+            const link_m3u8 = urlParams.get('link_m3u8');
+            const link_embed = urlParams.get('link_embed');
+            const link_video = urlParams.get('link_video');
+            const movieName = decodeURIComponent(urlParams.get('movieName') || '');
+            const langParam = decodeURIComponent(urlParams.get('lang') || '');
+
+            if (!slug || !apiSource || !movieName) {
+                this.showError('Thiếu thông tin phim hoặc tập.');
+                return;
+            }
+
+            this.currentEpisode = episode || '1';
+            this.currentLinkType = link_m3u8 ? 'm3u8' : (link_embed ? 'embed' : (link_video ? 'video' : null));
+
+            const episodes = JSON.parse(sessionStorage.getItem('movieEpisodes') || '[]');
+            if (!episodes.length) {
+                this.showError('Không tìm thấy danh sách tập. Vui lòng quay lại trang chi tiết.');
+                return;
+            }
+
+            // Xác định lang từ URL hoặc server_name của episode hiện tại
+            let detectedLang = 1; // Mặc định Vietsub
+            const currentEpisodeData = episodes.find(ep => ep.name === this.currentEpisode && ep.link_m3u8 === link_m3u8);
+            if (currentEpisodeData && currentEpisodeData.server_name) {
+                if (currentEpisodeData.server_name.includes('Thuyết Minh') || currentEpisodeData.server_name.includes('Lồng Tiếng')) {
+                    detectedLang = 2;
+                } else if (currentEpisodeData.server_name.includes('Vietsub')) {
+                    detectedLang = 1;
+                }
+            } else if (langParam.includes('Thuyết Minh')) {
+                detectedLang = 2;
+            }
+
+            // Lấy tất cả các lang từ episodes
+            const availableLangs = [...new Set(episodes.map(ep => {
+                if (ep.server_name && (ep.server_name.includes('Thuyết Minh') || ep.server_name.includes('Lồng Tiếng'))) return 2;
+                if (ep.server_name && ep.server_name.includes('Vietsub')) return 1;
+                return 1; // Mặc định
+            }))].join(', ');
+
+            this.movieData = {
+                name: movieName,
+                slug,
+                apiSource,
+                lang: detectedLang,
+                episodes,
+                servers: this.groupEpisodesByServer(episodes),
+                type: episodes.length > 1 ? 'series' : 'movie'
+            };
+
+            this.elements.videoHeader.textContent = `Đang chạy: ${movieName} - Tập ${this.currentEpisode} (Lang: ${availableLangs})`;
+            document.title = `Phim Hay - ${movieName} - Tập ${this.currentEpisode} (Lang: ${availableLangs})`;
+            await this.setupVideoPlayer(link_m3u8, link_embed, link_video, this.currentLinkType);
+            this.renderEpisodesTables();
+            this.updateEpisodeButtons();
+            this.clearError();
+        } catch (error) {
+            console.error('Error loading movie data:', error);
+            this.showError('Lỗi tải thông tin phim. Vui lòng thử lại!');
+        } finally {
+            this.elements.loadingSpinner?.classList.remove('visible');
+        }
+    }
+
+    groupEpisodesByServer(episodes) {
+        const servers = {};
+        episodes.forEach(ep => {
+            const serverName = ep.server_name || `Server ${Object.keys(servers).length + 1}`;
+            if (!servers[serverName]) {
+                servers[serverName] = { server_name: serverName, server_data: [] };
+            }
+            servers[serverName].server_data.push(ep);
+        });
+        return Object.values(servers);
+    }
+
+    determineLinkType(episode) {
+        if (episode.link_m3u8) return 'm3u8';
+        if (episode.link_embed) return 'embed';
+        if (episode.link_video) return 'video';
+        return 'm3u8';
+    }
+
+    async setupVideoPlayer(link_m3u8, link_embed, link_video, link_type) {
+        if (!this.elements.videoContainer) return;
+
+        if (this.player) {
+            this.player.destroy();
+        }
+        if (this.hls) {
+            this.hls.destroy();
+            this.hls = null;
+        }
+
+        this.elements.videoContainer.innerHTML = `<video id="video-player" class="plyr" playsinline controls><source src="" type="application/x-mpegURL">Your browser does not support the video tag.</video>`;
+        this.elements.videoPlayer = document.getElementById('video-player');
+
+        this.player = new Plyr(this.elements.videoPlayer, {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'fullscreen'],
+            autoplay: true,
+            settings: ['quality', 'speed'],
+            speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] }
+        });
+
+        const setupStream = async (type, link) => {
+            if (type === 'm3u8' && link && Hls.isSupported()) {
+                this.hls = new Hls();
+                this.hls.loadSource(link);
+                this.hls.attachMedia(this.elements.videoPlayer);
+                await new Promise((resolve, reject) => {
+                    this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        this.player.play().then(resolve).catch(reject);
+                    });
+                    this.hls.on(Hls.Events.ERROR, (event, data) => {
+                        if (this.retryCount < this.maxRetries) {
+                            this.retryCount++;
+                            console.log(`Retrying m3u8 stream... Attempt ${this.retryCount}`);
+                            setTimeout(() => setupStream(type, link), 1000 * this.retryCount);
+                        } else {
+                            reject(new Error('Max retries reached'));
+                        }
+                    });
+                }).catch(err => {
+                    console.error('HLS Error:', err);
+                    this.showError('Lỗi tải video m3u8. Vui lòng thử link khác.');
+                });
+            } else if (type === 'embed' && link) {
+                this.elements.videoContainer.innerHTML = `<iframe src="${link}" frameborder="0" allowfullscreen style="width:100%;height:100%;border-radius:8px;"></iframe>`;
+                this.elements.customControls.style.display = 'none';
+            } else if (type === 'video' && link) {
+                this.player.source = {
+                    type: 'video',
+                    sources: [{ src: link, type: 'video/mp4' }]
+                };
+                await this.player.play().catch(err => {
+                    console.error('Error playing video:', err);
+                    this.showError('Lỗi tải video. Vui lòng thử link khác.');
+                });
+            } else {
+                this.showError('Không tìm thấy link video hợp lệ.');
+            }
+        };
+
+        if (!link_type && this.movieData && this.movieData.episodes.length) {
+            const firstEpisode = this.movieData.episodes[0];
+            link_type = this.determineLinkType(firstEpisode);
+            if (link_type === 'm3u8') link_m3u8 = firstEpisode.link_m3u8;
+            else if (link_type === 'embed') link_embed = firstEpisode.link_embed;
+            else if (link_type === 'video') link_video = firstEpisode.link_video;
+        }
+
+        this.retryCount = 0;
+        await setupStream(link_type, link_type === 'm3u8' ? link_m3u8 : (link_type === 'embed' ? link_embed : link_video));
+    }
+
+    updateEpisodeButtons() {
+        if (!this.movieData || !this.movieData.episodes) return;
+
+        const episodes = this.movieData.episodes;
+        const currentIndex = episodes.findIndex(ep => ep.name === this.currentEpisode && ep.link_m3u8 === this.getCurrentLinkM3u8());
+
+        this.elements.prevEpisodeBtn.disabled = currentIndex <= 0;
+        this.elements.nextEpisodeBtn.disabled = currentIndex >= episodes.length - 1;
+    }
+
+    getCurrentLinkM3u8() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('link_m3u8');
+    }
+
+    changeEpisode(direction) {
+        if (!this.movieData || !this.movieData.episodes) return;
+
+        const episodes = this.movieData.episodes;
+        const currentIndex = episodes.findIndex(ep => ep.name === this.currentEpisode && ep.link_m3u8 === this.getCurrentLinkM3u8());
+        const newIndex = currentIndex + direction;
+
+        if (newIndex >= 0 && newIndex < episodes.length) {
+            const newEpisode = episodes[newIndex];
+            const linkTypePriority = ['link_m3u8', 'link_embed', 'link_video'];
+            let selectedLink = null;
+            let selectedType = null;
+
+            for (const type of linkTypePriority) {
+                if (newEpisode[type]) {
+                    selectedLink = newEpisode[type];
+                    selectedType = type.replace('link_', '');
+                    break;
+                }
+            }
+
+            if (selectedLink && selectedType) {
+                let newLang = 1; // Mặc định Vietsub
+                if (newEpisode.server_name) {
+                    if (newEpisode.server_name.includes('Thuyết Minh') || newEpisode.server_name.includes('Lồng Tiếng')) {
+                        newLang = 2;
+                    } else if (newEpisode.server_name.includes('Vietsub')) {
+                        newLang = 1;
+                    }
+                }
+                const url = `watch01.html?slug=${encodeURIComponent(this.movieData.slug)}&apiSource=${encodeURIComponent(this.movieData.apiSource)}&episode=${encodeURIComponent(newEpisode.name)}&link_${selectedType}=${encodeURIComponent(selectedLink)}&movieName=${encodeURIComponent(this.movieData.name)}&lang=${encodeURIComponent(newLang)}&link_type=${encodeURIComponent(selectedType)}`;
+                window.location.href = url;
+            }
+        }
+    }
+
+    renderEpisodesTables() {
+        if (!this.movieData || !this.elements.languageTables) return;
+        const { servers, apiSource, type, slug, name } = this.movieData;
+        if (!servers?.length || !servers[0]?.server_data?.length) {
+            this.elements.episodesSection.style.display = 'none';
+            return;
+        }
+
+        this.elements.languageTables.innerHTML = '';
+        servers.forEach(server => {
+            const table = document.createElement('table');
+            table.className = 'language-table';
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th style="width: 10%;">Tập</th>
+                    <th style="width: 25%;">Ngôn ngữ</th>
+                    <th style="width: 65%;">Link</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+            server.server_data.forEach(episode => {
+                const { name: episodeName, link_m3u8, link_embed, link_video, server_name } = episode;
+                const episodeNumber = parseInt(episodeName) || episodeName;
+                const links = [];
+                if (link_m3u8) links.push({ type: 'm3u8', url: link_m3u8, label: 'Vip', class: 'vip' });
+                if (link_embed) links.push({ type: 'embed', url: link_embed, label: 'Pro', class: 'pro' });
+                if (link_video) links.push({ type: 'video', url: link_video, label: 'Bánh Mì', class: 'banhmi' });
+
+                let displayLang = 1; // Mặc định Vietsub
+                if (server_name) {
+                    if (server_name.includes('Thuyết Minh') || server_name.includes('Lồng Tiếng')) {
+                        displayLang = 2;
+                    } else if (server_name.includes('Vietsub')) {
+                        displayLang = 1;
+                    }
+                }
+
+                const watchUrl = (linkType, url) => `watch01.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(episodeNumber)}&link_${linkType}=${encodeURIComponent(url)}&movieName=${encodeURIComponent(name)}&lang=${encodeURIComponent(displayLang)}&link_type=${encodeURIComponent(linkType)}`;
+                
+                const linkText = links.length ? `<div class="link-buttons">${links.map(link => `<a href="${watchUrl(link.type, link.url)}" class="link-btn ${link.class}" data-link-type="${link.type}">${link.label}</a>`).join('')}</div>` : '<span class="unavailable">Không có</span>';
+                const tr = document.createElement('tr');
+                tr.className = (this.currentEpisode === episodeName && this.getCurrentLinkM3u8() === link_m3u8) ? 'current-episode' : '';
+                tr.innerHTML = `
+                    <td>${type === 'series' ? `Tập ${episodeNumber}` : 'Phim'}</td>
+                    <td>Lang: ${displayLang}</td>
+                    <td>${linkText}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            this.elements.languageTables.appendChild(table);
+        });
+    }
+
+    async init() {
+        try {
+            await this.initDB();
+            this.setupEventListeners();
+            this.adjustMainContentPadding();
+            if (window.location.protocol === 'file:') {
+                this.showError('Vui lòng chạy trên server để sử dụng đầy đủ tính năng.');
+                return;
+            }
+            await this.loadMovieData();
+        } catch (error) {
+            console.error('Initialization error:', error);
+            this.showError('Khởi tạo ứng dụng thất bại. Vui lòng thử lại!');
+        }
+    }
+}
+
+const app = new WatchApp();
+app.init();
+    </script>
+</body>
+</html>
