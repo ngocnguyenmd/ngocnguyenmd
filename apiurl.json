@@ -4,7 +4,9 @@
       "|Trung Quốc 2025!|",
       "|b|yeu em",
       "|b|Chuoc chuoc thieu hoa",
-      "|b|pho son hai"
+      "|b|pho son hai",
+      "|b|ngot ngao trong toan tinh"
+      
     
        
 
@@ -31,12 +33,19 @@
     ]
   },
   {
+    
     "phim-my1": [
-     "|Hành Động|",
-     "|b|biet doi sam set",
+     "|Âu Mỹ-Action|",
+     "|c|biet doi sam set",
+     "|c|tap lam nguoi xau phan 5",
      "|b|sieu nhan 2025",
-     "|b|bo-tu-sieu-dang-buoc-di-dau-tien"
- ]
+     "|b|bo-tu-sieu-dang-buoc-di-dau-tien",
+     "|b|mat vu phu ho",
+     "|b|the he v phan 2"
+
+
+   ]
+    
   },
   {
     "truyen-hinh": [
@@ -73,12 +82,22 @@
       "|c|song-dai-duong",
       "|b|quai-thu-dai-nao-so-thu",
       "|Anime-JP|",
-      "|c|sat-thu-ve-vuon"
+      "|c|sat-thu-ve-vuon",
+      "|c|bi-mat-cua-phu-thuy-tinh-lang",
+      "|b|dao hai tac",
+      "|c|rezero-kara-hajimeru-isekai-seikatsu",
+      "|c|spongebob-bot-bien-dao-tau",
+      "|c|that-nghiep-chuyen-sinh-2",
+      "|b|frieren-phap-su-tien-tang",
+      "|Doraemon|",
+      "|c|doraemon-2005",
+      "|c|doraemon-nobita-va-cuoc-phieu-luu-vao-the-gioi-trong-tranh",
+      "|c|doraemon-nobita-tham-hiem-vung-dat-moi-peko-va-5-nha-tham-hiem"
       
     ]
   },
   {
-    "y-khoa1": [
+    "ykhoa": [
     "|Chữa lành|",
       "|a|bac-si-ma",
       "|c|chut-nang-am-moi-ngay",
