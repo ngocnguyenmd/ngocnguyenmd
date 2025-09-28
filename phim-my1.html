@@ -6,517 +6,578 @@
     <meta name="description" content="Phim Hay - Xem phim online miễn phí, chất lượng cao">
     <meta name="keywords" content="phim Hàn, phim bộ, phim lẻ, xem phim online, phim chất lượng cao">
     <meta name="author" content="Phim Hay">
-    <title>Phim Hay - Phim Đề Cử</title>
+    <title>Phim Nhà Bánh Mì</title>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" as="style" onload="this.rel='stylesheet'">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.rel='stylesheet'">
     <style>
-        :root {
-            --primary-color: #8B4513;
-            --primary-hover: #6B3A0F;
-            --bg-dark: #2C1E14;
-            --bg-section: #3F2A1D;
-            --text-white: #FFF8E1;
-            --text-gray: #D2B48C;
-            --accent-color: #FFD700;
-            --border-radius: 8px;
-            --transition: all 0.2s ease-out;
-            --green-check: #2ecc71;
-            --gradient-bg: #2C1E14;
-        }
+   
+:root {
+    --primary-color: #1E3A8A; /* Xanh dương đậm */
+    --primary-hover: #3B82F6; /* Xanh dương sáng khi hover */
+    --bg-dark: #0F172A; /* Nền đen đậm */
+    --bg-section: #1E293B; /* Nền section tối */
+    --text-white: #F1F5F9; /* Chữ trắng nhẹ */
+    --text-gray: #94A3B8; /* Chữ xám nhẹ */
+    --accent-color: #60A5FA; /* Màu nhấn xanh dương nhạt */
+    --border-radius: 8px; /* Bo góc nhẹ hơn cho hiệu năng */
+    --transition: all 0.2s ease-in-out; /* Transition nhanh hơn */
+    --green-check: #4ADE80; /* Xanh lá cho badge */
+    --gradient-bg: linear-gradient(180deg, #0F172A, #1E3A8A); /* Gradient nền */
+}
 
-        [data-theme="light"] {
-            --bg-dark: #F5F5F5;
-            --bg-section: #EDEDED;
-            --text-white: #333333;
-            --text-gray: #555555;
-            --gradient-bg: #F5F5F5;
-        }
+[data-theme="light"] {
+    --bg-dark: #F1F5F9;
+    --bg-section: #E2E8F0;
+    --text-white: #1F2937;
+    --text-gray: #6B7280;
+    --gradient-bg: #F1F5F9;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', Arial, sans-serif;
-            scroll-behavior: smooth;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', Arial, sans-serif;
+    scroll-behavior: smooth;
+}
 
-        body {
-            background: var(--gradient-bg);
-            color: var(--text-white);
-            line-height: 1.5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            font-size: 15px;
-        }
+body {
+    background: var(--gradient-bg);
+    color: var(--text-white);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    font-size: 16px; /* Tăng nhẹ font-size cơ bản */
+}
 
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: var(--bg-dark);
-            padding: 10px 15px;
-            z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--bg-dark);
+    padding: 12px 10px; /* Giảm padding cho màn hình nhỏ */
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
 
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1200px;
-            margin: 0 auto;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1400px; /* Tăng max-width cho laptop */
+    margin: 0 auto;
+    gap: 10px;
+    flex-wrap: wrap;
+}
 
-        .logo {
-            max-height: 40px;
-        }
+.logo {
+    max-height: 40px; /* Giảm nhẹ để phù hợp với di động */
+    transition: var(--transition);
+}
 
-        .logo-fallback {
-            font-size: 1.5em;
-            font-weight: 600;
-            color: var(--primary-color);
-        }
+.logo-fallback {
+    font-size: 1.4em; /* Giảm nhẹ font-size */
+    font-weight: 600;
+    color: var(--accent-color);
+}
 
-        .search-container {
-            position: relative;
-            flex: 1;
-            max-width: 300px;
-        }
+.search-container {
+    position: relative;
+    flex: 1;
+    max-width: 100%; /* Đảm bảo full-width trên di động */
+    min-width: 200px; /* Đảm bảo không quá hẹp trên laptop */
+}
 
-        #search-input {
-            width: 100%;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 20px;
-            background: var(--bg-section);
-            color: var(--text-white);
-            font-size: 0.9em;
-            outline: none;
-            transition: var(--transition);
-        }
+#search-input {
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 20px;
+    background: var(--bg-section);
+    color: var(--text-white);
+    font-size: 0.9em;
+    outline: none;
+    transition: var(--transition);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
 
-        #search-input::placeholder {
-            color: var(--text-gray);
-        }
+#search-input::placeholder {
+    color: var(--text-gray);
+}
 
-        #search-input:focus {
-            background: var(--text-white);
-            color: var(--bg-dark);
-        }
+#search-input:focus {
+    background: var(--text-white);
+    color: var(--bg-dark);
+    box-shadow: 0 0 8px var(--accent-color);
+}
 
-        .search-results {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: var(--bg-section);
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            max-height: 300px;
-            overflow-y: auto;
-            display: none;
-            z-index: 1000;
-        }
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-section);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-height: 280px;
+    overflow-y: auto;
+    display: none;
+    z-index: 1000;
+}
 
-        .search-results .movie-item {
-            padding: 10px;
-            border-bottom: 1px solid var(--text-gray);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+.search-results .movie-item {
+    padding: 10px;
+    border-bottom: 1px solid var(--text-gray);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: var(--transition);
+}
 
-        .search-results .movie-item img {
-            width: 50px;
-            height: 75px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
+.search-results .movie-item img {
+    width: 45px; /* Giảm kích thước ảnh cho di động */
+    height: 67.5px;
+    object-fit: cover;
+    border-radius: 5px;
+}
 
-        .search-results .movie-item a {
-            color: var(--text-white);
-            text-decoration: none;
-            font-size: 0.9em;
-            flex: 1;
-        }
+.search-results .movie-item a {
+    color: var(--text-white);
+    text-decoration: none;
+    font-size: 0.85em;
+    flex: 1;
+}
 
-        .search-results .movie-item:hover {
-            background: var(--primary-hover);
-        }
+.search-results .movie-item:hover {
+    background: var(--primary-hover);
+}
 
-        .nav-menu {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            align-items: center;
-        }
+.nav-menu {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+}
 
-        .nav-menu a {
-            color: var(--text-white);
-            text-decoration: none;
-            font-size: 0.9em;
-            font-weight: 500;
-            padding: 8px 12px;
-            border-radius: 20px;
-            transition: var(--transition);
-        }
+.nav-menu a {
+    color: var(--text-white);
+    text-decoration: none;
+    font-size: 0.85em; /* Giảm nhẹ font-size */
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 20px;
+    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.05);
+}
 
-        .nav-menu a:hover {
-            background: var(--primary-hover);
-        }
+.nav-menu a:hover {
+    background: var(--primary-hover);
+    color: var(--text-white);
+}
 
-        .nav-menu a.active {
-            background: var(--primary-color);
-        }
+.nav-menu a.active {
+    background: var(--primary-color);
+    color: var(--text-white);
+}
 
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text-white);
-            font-size: 1.2em;
-            cursor: pointer;
-            padding: 8px;
-            transition: var(--transition);
-        }
+.theme-toggle {
+    background: none;
+    border: none;
+    color: var(--text-white);
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 8px;
+    transition: var(--transition);
+}
 
-        .theme-toggle:hover {
-            color: var(--accent-color);
-        }
+.theme-toggle:hover {
+    color: var(--accent-color);
+}
 
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 15px 30px;
-            flex: 1;
-        }
+.main-content {
+    max-width: 1400px; /* Tăng max-width cho laptop */
+    margin: 0 auto;
+    padding: 70px 10px 20px; /* Giảm padding cho di động */
+    flex: 1;
+}
 
-        .movie-section {
-            margin-bottom: 40px;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: fadeIn 0.3s ease-out forwards;
-            will-change: opacity, transform;
-        }
+.movie-section {
+    margin-bottom: 30px;
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeIn 0.4s ease-out forwards;
+    will-change: opacity, transform;
+}
 
-        .movie-section h2 {
-            font-size: 1.6em;
-            font-weight: 600;
-            color: var(--text-white);
-            padding: 8px 12px;
-            background: var(--primary-color);
-            border-radius: 6px;
-            margin-bottom: 15px;
-        }
+.movie-section h2 {
+    font-size: 1.5em; /* Giảm nhẹ font-size */
+    font-weight: 600;
+    color: var(--text-white);
+    padding: 8px 12px;
+    background: var(--primary-color);
+    border-radius: 6px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
 
-        .movie-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
+.movie-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Giảm kích thước tối thiểu */
+    gap: 15px;
+    margin-top: 10px;
+}
 
-        .movie-item {
-            background: var(--bg-section);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
+.movie-item {
+    background: var(--bg-section);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease; /* Giảm hiệu ứng transform */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
 
-        .movie-item:hover {
-            transform: scale(1.05);
-        }
+.movie-item:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
 
-        .movie-poster {
-            position: relative;
-            aspect-ratio: 2/3;
-            overflow: hidden;
-        }
+.movie-poster {
+    position: relative;
+    aspect-ratio: 2/3;
+    overflow: hidden;
+}
 
-        .movie-poster a {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
+.movie-poster a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
 
-        .movie-poster img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+.movie-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.2s ease; /* Giảm thời gian transition */
+}
 
-        .episode-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: var(--primary-color);
-            color: var(--text-white);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.8em;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+.movie-poster:hover img {
+    transform: scale(1.05); /* Giảm mức độ zoom */
+}
 
-        .episode-badge .check-icon {
-            color: var(--green-check);
-            font-size: 0.85em;
-        }
+.episode-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--primary-color);
+    color: var(--text-white);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
 
-        .new-badge {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            background: var(--accent-color);
-            color: #2C1E14;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.8em;
-            font-weight: 600;
-        }
+.episode-badge .check-icon {
+    color: var(--green-check);
+    font-size: 0.85em;
+}
 
-        .movie-title {
-            display: block;
-            margin: 10px;
-            color: var(--text-white);
-            text-decoration: none;
-            font-size: 0.9em;
-            font-weight: 500;
-            text-align: center;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+.new-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--accent-color);
+    color: var(--bg-dark);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: 600;
+}
 
-        footer {
-            background: var(--bg-section);
-            padding: 30px 15px;
-            text-align: center;
-        }
+.movie-title {
+    display: block;
+    margin: 10px;
+    color: var(--text-white);
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: 500;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: var(--transition);
+}
 
-        .footer-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
+.movie-title:hover {
+    color: var(--accent-color);
+}
 
-        .footer-btn {
-            background: var(--primary-color);
-            color: var(--text-white);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: var(--transition);
-        }
+footer {
+    background: var(--bg-section);
+    padding: 20px 10px; /* Giảm padding cho di động */
+    text-align: center;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+}
 
-        .footer-btn:hover {
-            background: var(--primary-hover);
-        }
+.footer-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
 
-        .scroll-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--primary-color);
-            color: var(--text-white);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
+.footer-btn {
+    background: var(--primary-color);
+    color: var(--text-white);
+    border: none;
+    padding: 10px 18px; /* Giảm kích thước nút */
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
 
-        .scroll-top:hover {
-            background: var(--primary-hover);
-        }
+.footer-btn:hover {
+    background: var(--primary-hover);
+}
 
-        .scroll-top.visible {
-            display: flex;
-        }
+.scroll-top {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    background: var(--primary-color);
+    color: var(--text-white);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
 
-        .loading-spinner {
-            display: none;
-            text-align: center;
-            padding: 20px;
-            color: var(--text-white);
-            font-size: 1em;
-            font-weight: 500;
-        }
+.scroll-top:hover {
+    background: var(--primary-hover);
+}
 
-        .loading-spinner.visible {
-            display: block;
-        }
+.scroll-top.visible {
+    display: flex;
+}
 
-        .loading-spinner::after {
-            content: '';
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            border: 3px solid var(--primary-color);
-            border-top: 3px solid transparent;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            margin-left: 10px;
-        }
+.loading-spinner {
+    display: none;
+    text-align: center;
+    padding: 15px;
+    color: var(--text-white);
+    font-size: 0.95em;
+    font-weight: 500;
+}
 
-        .error-message {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-white);
-            background: var(--primary-hover);
-            border-radius: var(--border-radius);
-            margin: 15px 0;
-            font-size: 1em;
-        }
+.loading-spinner.visible {
+    display: block;
+}
 
-        .error-message button {
-            background: var(--primary-color);
-            color: var(--text-white);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: var(--transition);
-        }
+.loading-spinner::after {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--primary-color);
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 8px;
+}
 
-        .error-message button:hover {
-            background: var(--primary-hover);
-        }
+.error-message {
+    text-align: center;
+    padding: 15px;
+    color: var(--text-white);
+    background: var(--primary-hover);
+    border-radius: var(--border-radius);
+    margin: 10px 0;
+    font-size: 0.95em;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
 
-        .skeleton {
-            background: var(--bg-section);
-            background-image: linear-gradient(90deg, var(--bg-section) 40%, rgba(255, 255, 255, 0.1) 50%, var(--bg-section) 60%);
-            background-size: 200% 100%;
-            border-radius: var(--border-radius);
-            animation: skeleton-loading 1.2s ease-in-out infinite;
-            width: 100%;
-            aspect-ratio: 2/3;
-        }
+.error-message button {
+    background: var(--primary-color);
+    color: var(--text-white);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: var(--transition);
+}
 
-        .skeleton-title {
-            background: var(--bg-section);
-            background-image: linear-gradient(90deg, var(--bg-section) 40%, rgba(255, 255, 255, 0.1) 50%, var(--bg-section) 60%);
-            background-size: 200% 100%;
-            height: 20px;
-            width: 60%;
-            margin: 10px auto;
-            border-radius: 5px;
-            animation: skeleton-loading 1.2s ease-in-out infinite;
-        }
+.error-message button:hover {
+    background: var(--primary-hover);
+}
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+.skeleton {
+    background: var(--bg-section);
+    background-image: linear-gradient(90deg, var(--bg-section) 40%, rgba(255, 255, 255, 0.1) 50%, var(--bg-section) 60%);
+    background-size: 200% 100%;
+    border-radius: var(--border-radius);
+    animation: skeleton-loading 1.2s ease-in-out infinite;
+    width: 100%;
+    aspect-ratio: 2/3;
+}
 
-        @keyframes skeleton-loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
+.skeleton-title {
+    background: var(--bg-section);
+    background-image: linear-gradient(90deg, var(--bg-section) 40%, rgba(255, 255, 255, 0.1) 50%, var(--bg-section) 60%);
+    background-size: 200% 100%;
+    height: 18px;
+    width: 70%;
+    margin: 8px auto;
+    border-radius: 5px;
+    animation: skeleton-loading 1.2s ease-in-out infinite;
+}
 
-        @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
-        @media (min-width: 1024px) {
-            .movie-list {
-                grid-template-columns: repeat(7, minmax(125px, 1fr));
-                gap: 30px;
-            }
-        }
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
 
-        @media (max-width: 1024px) {
-            .movie-list {
-                grid-template-columns: repeat(4, minmax(160px, 1fr));
-                gap: 15px;
-            }
-        }
+@keyframes fadeIn {
+    to { opacity: 1; transform: translateY(0); }
+}
 
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                align-items: center;
-                gap: 12px;
-            }
+/* Media Queries cho các kích thước màn hình */
 
-            .search-container {
-                max-width: 100%;
-                margin: 10px 0;
-            }
+/* Laptop (1366px trở lên) */
+@media (min-width: 1366px) {
+    .movie-list {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Tăng số cột */
+        gap: 20px;
+    }
+    .movie-section h2 {
+        font-size: 1.8em;
+    }
+    .search-container {
+        max-width: 400px; /* Tăng kích thước thanh tìm kiếm */
+    }
+    .nav-menu a {
+        font-size: 1em;
+        padding: 10px 15px;
+    }
+}
 
-            .nav-menu {
-                justify-content: center;
-                gap: 6px;
-            }
+/* Tablet (768px - 1365px) */
+@media (min-width: 768px) and (max-width: 1365px) {
+    .movie-list {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 15px;
+    }
+    .header-content {
+        gap: 15px;
+    }
+}
 
-            .movie-list {
-                grid-template-columns: repeat(3, minmax(140px, 1fr));
-                gap: 12px;
-            }
+/* Samsung A04 và các thiết bị di động (dưới 768px) */
+@media (max-width: 767px) {
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+    .search-container {
+        max-width: 100%;
+        margin: 8px 0;
+    }
+    .nav-menu {
+        justify-content: center;
+        gap: 5px;
+    }
+    .nav-menu a {
+        font-size: 0.8em;
+        padding: 6px 10px;
+    }
+    .movie-list {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Giảm kích thước cột */
+        gap: 10px;
+    }
+    .movie-section h2 {
+        font-size: 1.3em;
+        padding: 6px 10px;
+    }
+    .movie-item {
+        box-shadow: none; /* Loại bỏ shadow để tăng hiệu năng */
+    }
+    .movie-item:hover {
+        box-shadow: none;
+        transform: none; /* Loại bỏ transform để tăng hiệu năng */
+    }
+    .movie-poster:hover img {
+        transform: none; /* Loại bỏ zoom trên di động */
+    }
+}
 
-            .movie-section h2 {
-                font-size: 1.4em;
-            }
-        }
+/* Thiết bị rất nhỏ (dưới 480px) */
+@media (max-width: 480px) {
+    body {
+        font-size: 14px; /* Giảm font-size cho màn hình nhỏ */
+    }
+    .movie-list {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 8px;
+    }
+    .movie-section h2 {
+        font-size: 1.2em;
+        padding: 5px 8px;
+    }
+    .footer-btn {
+        padding: 8px 14px;
+        font-size: 0.85em;
+    }
+    .search-results .movie-item img {
+        width: 40px;
+        height: 60px;
+    }
+}
 
-        @media (max-width: 480px) {
-            .movie-list {
-                grid-template-columns: repeat(2, minmax(120px, 1fr));
-                gap: 10px;
-            }
-
-            .movie-section h2 {
-                font-size: 1.2em;
-                padding: 6px 10px;
-            }
-
-            .footer-btn {
-                padding: 8px 15px;
-                font-size: 0.85em;
-            }
-        }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-content">
             <img src="" alt="Logo Phim Hay" class="logo" loading="eager" id="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-            <span class="logo-fallback" style="display:none;">Phim Nhà Bánh Mì</span>
+            <span class="logo-fallback" style="display:none;">Phim Xịn Nhà Bánh Mì</span>
             <div class="search-container">
                 <input type="text" id="search-input" placeholder="Tìm kiếm phim..." aria-label="Tìm kiếm phim">
                 <div id="search-results" class="search-results"></div>
             </div>
             <div class="nav-menu" role="navigation" aria-label="Menu điều hướng chính">
-                <a href="indexos.html">Trang chủ</a>
-                <a href="Thu-vien1.html">Phim Thư Viện</a>
-                <a href="phim-han1.html">Phim Hàn</a>
-                <a href="phim-trung1.html">Phim Trung</a>
-                <a href="phim-viet1.html">Phim Việt</a>
-                <a href="phim-my1.html">Phim Mỹ</a>
-                <a href="truyen-hinh1.html">Truyền hình</a>
-                <a href="hoat-hinh1.html">Hoạt hình</a>
-                <a href="netflix1.html">Thuyết Minh LT</a>
+               <a href="indexos.html">Home</a>
+                <a href="thuvien1.html">Thư Viện</a>
+                <a href="phim-han1.html">Phim Hàn Quốc</a>
+                <a href="phim-trung1.html">Phim Trung Quốc</a>
+                <a href="phim-viet1.html">Phim Việt Nam</a>
+                <a href="phim-my1.html">Phim Nước Ngoài</a>
+                <a href="truyen-hinh1.html">TV-Show</a>
+                <a href="hoat-hinh1.html">Hoạt Hình</a>
+                <a href="netflix1.html">NETFLIX</a>
                 <a href="y-khoa1.html">Y Khoa</a>
                 <button class="theme-toggle" id="theme-toggle">
                     <i class="fas fa-moon"></i>
@@ -559,7 +620,7 @@ class MovieStreamingApp {
         this.DB_NAME = 'MovieAppDB';
         this.DB_VERSION = 1;
         this.CACHE_EXPIRY = 48 * 60 * 60 * 1000; // 48 hours
-        this.MOVIES_PER_PAGE = 30;
+        this.MOVIES_PER_PAGE = 20;
         this.MAX_CONCURRENT_REQUESTS = 3;
         this.REQUEST_TIMEOUT = 10000;
         this.API_SOURCES = {
@@ -803,7 +864,7 @@ class MovieStreamingApp {
     }
 
     highlightActiveMenu() {
-        const currentPageFile = window.location.pathname.split('/').pop() || 'index1.html';
+        const currentPageFile = window.location.pathname.split('/').pop() || 'indexos.html';
         document.querySelectorAll('.nav-menu a').forEach(link => {
             link.classList.toggle('active', link.getAttribute('href') === currentPageFile);
         });
@@ -987,7 +1048,6 @@ class MovieStreamingApp {
                                 const source = this.API_SOURCES[sourceCode];
                                 if (source) {
                                     apiSource = source.apiSource;
-                                    // Chuẩn hóa slug có dấu cách thành gạch ngang
                                     slug = this.normalizeString(sourceSlug).replace(/\s+/g, '-');
                                     originalSlug = sourceSlug;
                                     finalUrl = `${source.baseUrl}${slug}`;
@@ -1004,7 +1064,7 @@ class MovieStreamingApp {
                                 console.warn(`Invalid URL format: ${url}`);
                                 return;
                             }
-                            if (finalUrl && !this.requestedUrls.has(finalUrl)) {
+                            if (finalUrl && !this.requestedUrls.has(url)) {
                                 slugToSource.set(slug, { url: finalUrl, apiSource, originalSlug });
                                 apiUrls.push({ url: finalUrl, pageTag, apiSource, originalSlug });
                                 currentSectionUrls.push({ url: finalUrl, apiSource, originalSlug });
@@ -1326,7 +1386,7 @@ class MovieStreamingApp {
             this.setToDB('movies', { id: `movie_${movieId}`, data: movie, timestamp: Date.now() });
             const episodesQuery = movie.apiSource === 'custom' ? `&episodes=${encodeURIComponent(JSON.stringify(movie.episodes))}` : '';
             const detailUrl = `detail01.html?slug=${encodeURIComponent(movie.slug)}&apiSource=${encodeURIComponent(movie.apiSource)}&name=${encodeURIComponent(movie.name)}&episode_total=${movie.episode_total}&type=${movie.type}${episodesQuery}`;
-            const langText = movie.lang.toLowerCase().includes('thuyết minh') ? 'TM' : movie.lang.toLowerCase().includes('lồng tiếng') ? 'LT' : movie.lang.toLowerCase().includes('nonsub') ? 'NS' : 'VS';
+            const langText = movie.lang.toLowerCase().includes('thuyết minh') ? 'TM(00)' : movie.lang.toLowerCase().includes('lồng tiếng') ? 'LT(00)' : movie.lang.toLowerCase().includes('nonsub') ? 'NS' : '(Sub)';
             const langBadge = langText === 'VS' || langText === 'NS' ? langText : `<i class="fas fa-check check-icon"></i> ${langText}`;
             const newBadge = movie.sourceFile === 'customapi.txt' ? '<span class="new-badge">New</span>' : '';
             const div = document.createElement('div');

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -11,495 +10,626 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" as="style" onload="this.rel='stylesheet'">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.rel='stylesheet'">
     <style>
-        :root {
-            --primary-color: #8B4513;
-            --primary-hover: #6B3A0F;
-            --bg-dark: #2C1E14;
-            --bg-section: #3F2A1D;
-            --text-white: #FFF8E1;
-            --text-gray: #D2B48C;
-            --accent-color: #FFD700;
-            --border-radius: 8px;
-            --transition: all 0.2s ease-out;
-            --green-check: #2ecc71;
-            --gradient-bg: #2C1E14;
-            --btn-vip-bg: #FFD700;
-            --btn-pro-bg: #1E90FF;
-            --btn-banhmi-bg: #FF4500;
-        }
-
-        [data-theme="light"] {
-            --bg-dark: #F5F5F5;
-            --bg-section: #EDEDED;
-            --text-white: #333333;
-            --text-gray: #555555;
-            --gradient-bg: #F5F5F5;
-            --btn-vip-bg: #FFC107;
-            --btn-pro-bg: #1E90FF;
-            --btn-banhmi-bg: #FF4500;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', Arial, sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background: var(--gradient-bg);
-            color: var(--text-white);
-            line-height: 1.5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            font-size: 15px;
-        }
-
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: var(--bg-dark);
-            padding: 10px 15px;
-            z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1200px;
-            margin: 0 auto;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .logo {
-            max-height: 40px;
-        }
-
-        .logo-fallback {
-            font-size: 1.5em;
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            align-items: center;
-        }
-
-        .nav-menu a {
-            color: var(--text-white);
-            text-decoration: none;
-            font-size: 0.9em;
-            font-weight: 500;
-            padding: 8px 12px;
-            border-radius: 20px;
-            transition: var(--transition);
-        }
-
-        .nav-menu a:hover {
-            background: var(--primary-hover);
-        }
-
-        .nav-menu a.active {
-            background: var(--primary-color);
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text-white);
-            font-size: 1.2em;
-            cursor: pointer;
-            padding: 8px;
-            transition: var(--transition);
-        }
-
-        .theme-toggle:hover {
-            color: var(--accent-color);
-        }
-
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 15px 30px;
-            flex: 1;
-        }
-
-        .movie-details {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .movie-poster {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .movie-poster img {
-            width: 100%;
-            max-width: 250px;
-            border-radius: var(--border-radius);
-            object-fit: cover;
-            aspect-ratio: 2/3;
-        }
-
-        .watch-now-btn {
-            background: var(--primary-color);
-            color: var(--text-white);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: var(--transition);
-            text-decoration: none;
-        }
-
-        .watch-now-btn:hover {
-            background: var(--primary-hover);
-        }
-
-        .watch-now-btn.disabled {
-            background: var(--text-gray);
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        .movie-info {
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .movie-info h1 {
-            font-size: 1.8em;
-            font-weight: 600;
-            margin-bottom: 20px;
-            margin-top: 50px;
-        }
-
-        .movie-info p {
-            margin-bottom: 8px;
-            font-size: 0.95em;
-        }
-
-        .movie-info strong {
-            color: var(--accent-color);
-        }
-
-        .episodes-section {
-            margin-top: 20px;
-        }
-
-        .episodes-section h2 {
-            font-size: 1.6em;
-            font-weight: 600;
-            color: var(--text-white);
-            padding: 8px 12px;
-            background: var(--primary-color);
-            border-radius: 6px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .toggle-episodes-btn {
-            background: var(--primary-hover);
-            color: var(--text-white);
-            border: none;
-            padding: 5px 10px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: var(--transition);
-        }
-
-        .toggle-episodes-btn:hover {
-            background: var(--accent-color);
-            color: var(--bg-dark);
-        }
-
-        .language-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--bg-section);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            margin-bottom: 15px;
-        }
-
-        .language-table.hidden {
-            display: none;
-        }
-
-        .language-table th,
-        .language-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .language-table th {
-            background: var(--primary-color);
-            font-weight: 600;
-        }
-
-        .link-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .link-btn {
-            background: var(--primary-color);
-            color: var(--text-white);
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85em;
-            font-weight: 500;
-            text-decoration: none;
-            transition: var(--transition);
-            min-width: 80px;
-            text-align: center;
-        }
-
-        .link-btn.vip {
-            background: var(--btn-vip-bg);
-            color: #2C1E14;
-        }
-
-        .link-btn.pro {
-            background: var(--btn-pro-bg);
-            color: #FFFFFF;
-        }
-
-        .link-btn.banhmi {
-            background: var(--btn-banhmi-bg);
-            color: #FFFFFF;
-        }
-
-        .link-btn:hover {
-            filter: brightness(1.2);
-        }
-
-        .language-table .unavailable {
-            color: var(--text-gray);
-            font-style: italic;
-        }
-
-        footer {
-            background: var(--bg-section);
-            padding: 30px 15px;
-            text-align: center;
-        }
-
-        .footer-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .footer-btn {
-            background: var(--primary-color);
-            color: var(--text-white);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: var(--transition);
-        }
-
-        .footer-btn:hover {
-            background: var(--primary-hover);
-        }
-
-        .scroll-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--primary-color);
-            color: var(--text-white);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-
-        .scroll-top.visible {
-            display: flex;
-        }
-
-        .loading-spinner {
-            display: none;
-            text-align: center;
-            padding: 20px;
-            color: var(--text-white);
-            font-size: 1em;
-            font-weight: 500;
-        }
-
-        .loading-spinner.visible {
-            display: block;
-        }
-
-        .loading-spinner::after {
-            content: '';
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            border: 3px solid var(--primary-color);
-            border-top: 3px solid transparent;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            margin-left: 10px;
-        }
-
-        .error-message {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-white);
-            background: var(--primary-hover);
-            border-radius: var(--border-radius);
-            margin: 15px 0;
-            font-size: 1em;
-        }
-
-        .error-message button {
-            background: var(--primary-color);
-            color: var(--text-white);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: var(--transition);
-        }
-
-        .error-message button:hover {
-            background: var(--primary-hover);
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 768px) {
-            .movie-details {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .movie-poster img {
-                max-width: 200px;
-                margin-bottom: 200px;
-            }
-
-            .movie-info h1 {
-                font-size: 1.4em;
-            }
-
-            .episodes-section h2 {
-                font-size: 1.4em;
-            }
-
-            .language-table th,
-            .language-table td {
-                padding: 8px;
-                font-size: 0.85em;
-            }
-
-            .link-btn {
-                min-width: 70px;
-                padding: 6px 10px;
-                font-size: 0.8em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .movie-poster img {
-                max-width: 150px;
-            }
-
-            .movie-info h1 {
-                font-size: 1.2em;
-            }
-
-            .episodes-section h2 {
-                font-size: 1.2em;
-            }
-
-            .language-table th,
-            .language-table td {
-                padding: 6px;
-                font-size: 0.8em;
-            }
-
-            .link-btn {
-                min-width: 60px;
-                padding: 5px 8px;
-                font-size: 0.75em;
-            }
-
-            .footer-btn {
-                padding: 8px 15px;
-                font-size: 0.85em;
-            }
-        }
+:root {
+    --primary-color: #1E3A8A; /* Xanh dương đậm */
+    --primary-hover: #000000; /* Xanh dương sáng khi hover */
+    --bg-dark: #0F172A; /* Nền đen đậm */
+    --bg-section: #1E293B; /* Nền section tối */
+    --text-white: #F1F5F9; /* Chữ trắng nhẹ */
+    --text-gray: #94A3B8; /* Chữ xám nhẹ */
+    --accent-color: #60A5FA; /* Màu nhấn xanh dương nhạt */
+    --border-radius: 8px; /* Bo góc nhẹ */
+    --transition: all 0.2s ease-in-out; /* Transition nhanh */
+    --green-check: #4ADE80; /* Xanh lá cho badge */
+    --gradient-bg: linear-gradient(180deg, #0F172A, #1E3A8A); /* Gradient nền */
+    --btn-vip-bg: #60A5FA; /* Màu nút VIP */
+    --btn-pro-bg: #3B82F6; /* Màu nút Pro */
+    --btn-banhmi-bg: #2563EB; /* Màu nút Bánh Mì */
+}
+
+[data-theme="light"] {
+    --bg-dark: #F1F5F9;
+    --bg-section: #E2E8F0;
+    --text-white: #1F2937;
+    --text-gray: #6B7280;
+    --gradient-bg: #F1F5F9;
+    --btn-vip-bg: #93C5FD;
+    --btn-pro-bg: #2563EB;
+    --btn-banhmi-bg: #1E40AF;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', Arial, sans-serif;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--gradient-bg);
+    color: var(--text-white);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    font-size: 16px;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--bg-dark);
+    padding: 12px 10px;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.logo {
+    max-height: 40px;
+    transition: var(--transition);
+}
+
+.logo-fallback {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.nav-menu {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.nav-menu a {
+    color: var(--text-white);
+    text-decoration: none;
+    font-size: 0.85em;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 20px;
+    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-menu a:hover {
+    background: var(--primary-hover);
+    color: var(--text-white);
+}
+
+.nav-menu a.active {
+    background: var(--primary-color);
+    color: var(--text-white);
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    color: var(--text-white);
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 8px;
+    transition: var(--transition);
+}
+
+.theme-toggle:hover {
+    color: var(--accent-color);
+}
+
+.main-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 70px 10px 20px;
+    flex: 1;
+}
+
+.movie-details {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+.movie-poster {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.movie-poster img {
+    width: 100%;
+    max-width: 250px;
+    margin-top: 40px;
+    border-radius: var(--border-radius);
+    object-fit: cover;
+    aspect-ratio: 2/3;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: var(--transition);
+}
+
+.watch-now-btn {
+    background: var(--primary-color);
+    color: var(--text-white);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.watch-now-btn:hover {
+    background: var(--primary-hover);
+}
+
+.watch-now-btn.disabled {
+    background: var(--text-gray);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.movie-info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.movie-info h1 {
+    font-size: 1.8em;
+    font-weight: 600;
+    margin-bottom: 20px;
+    margin-top: 0;
+}
+
+.movie-info p {
+    margin-bottom: 10px;
+    font-size: 0.95em;
+}
+
+.movie-info strong {
+    color: var(--accent-color);
+}
+
+.episodes-section {
+    margin-top: 20px;
+}
+
+.episodes-section h2 {
+    font-size: 1.6em;
+    font-weight: 600;
+    color: var(--text-white);
+    padding: 8px 12px;
+    background: var(--primary-color);
+    border-radius: 6px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.toggle-episodes-btn {
+    background: var(--primary-hover);
+    color: var(--text-white);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition);
+}
+
+.toggle-episodes-btn:hover {
+    background: var(--accent-color);
+    color: var(--bg-dark);
+}
+
+.episode-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    padding: 10px;
+    background: var(--bg-section);
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    scroll-snap-type: x mandatory;
+}
+
+.episode-grid.hidden {
+    display: none;
+}
+
+.episode-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    background: var(--bg-dark);
+    border-radius: 6px;
+    transition: var(--transition);
+    scroll-snap-align: start;
+}
+
+.episode-item:hover {
+    background: var(--primary-hover);
+}
+
+.episode-number {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: var(--text-white);
+    margin-bottom: 8px;
+}
+
+.server-name {
+    font-size: 0.8em;
+    color: var(--text-gray);
+    margin-bottom: 8px;
+}
+
+.link-buttons {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.link-btn {
+    background: var(--primary-color);
+    color: var(--text-white);
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: 500;
+    text-decoration: none;
+    transition: var(--transition);
+    min-width: 60px;
+    text-align: center;
+}
+
+.link-btn.vip {
+    background: var(--btn-vip-bg);
+    color: var(--bg-dark);
+}
+
+.link-btn.pro {
+    background: var(--btn-pro-bg);
+    color: var(--text-white);
+}
+
+.link-btn.banhmi {
+    background: var(--btn-banhmi-bg);
+    color: var(--text-white);
+}
+
+.link-btn:hover {
+    filter: brightness(1.2);
+}
+
+.episode-item .unavailable {
+    color: var(--text-gray);
+    font-style: italic;
+    font-size: 0.8em;
+}
+
+footer {
+    background: var(--bg-section);
+    padding: 20px 10px;
+    text-align: center;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.footer-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.footer-btn {
+    background: var(--primary-color);
+    color: var(--text-white);
+    border: none;
+    padding: 10px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.footer-btn:hover {
+    background: var(--primary-hover);
+}
+
+.footer-text {
+    font-size: 0.85em;
+    color: var(--text-gray);
+}
+
+.scroll-top {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    background: var(--primary-color);
+    color: var(--text-white);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.scroll-top:hover {
+    background: var(--primary-hover);
+}
+
+.scroll-top.visible {
+    display: flex;
+}
+
+.loading-spinner {
+    display: none;
+    text-align: center;
+    padding: 15px;
+    color: var(--text-white);
+    font-size: 0.95em;
+    font-weight: 500;
+}
+
+.loading-spinner.visible {
+    display: block;
+}
+
+.loading-spinner::after {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--primary-color);
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 8px;
+}
+
+.error-message {
+    text-align: center;
+    padding: 15px;
+    color: var(--text-white);
+    background: var(--primary-hover);
+    border-radius: var(--border-radius);
+    margin: 10px 0;
+    font-size: 0.95em;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.error-message button {
+    background: var(--primary-color);
+    color: var(--text-white);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: var(--transition);
+}
+
+.error-message button:hover {
+    background: var(--primary-hover);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Media Queries cho các kích thước màn hình */
+
+/* Laptop (1366px trở lên) */
+@media (min-width: 1366px) {
+    .movie-details {
+        gap: 30px;
+    }
+    .movie-poster img {
+        max-width: 300px;
+    }
+    .movie-info h1 {
+        font-size: 2em;
+    }
+    .episodes-section h2 {
+        font-size: 1.8em;
+    }
+    .episode-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        padding: 12px;
+    }
+    .episode-item {
+        padding: 10px;
+    }
+    .episode-number {
+        font-size: 1em;
+    }
+    .server-name {
+        font-size: 0.9em;
+    }
+    .link-btn {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+}
+
+/* Tablet (768px - 1365px) */
+@media (min-width: 768px) and (max-width: 1365px) {
+    .movie-poster img {
+        max-width: 250px;
+    }
+    .movie-info h1 {
+        font-size: 1.6em;
+    }
+    .episodes-section h2 {
+        font-size: 1.5em;
+    }
+    .episode-grid {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 10px;
+    }
+}
+
+/* Samsung A04 và các thiết bị di động (dưới 768px) */
+@media (max-width: 767px) {
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+    .nav-menu {
+        justify-content: center;
+        gap: 5px;
+    }
+    .nav-menu a {
+        font-size: 0.8em;
+        padding: 6px 10px;
+    }
+    .movie-details {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    .movie-poster img {
+        max-width: 200px;
+        margin-bottom: 0;
+    }
+    .movie-info h1 {
+        font-size: 1.4em;
+        margin-top: 10px;
+    }
+    .episodes-section h2 {
+        font-size: 1.4em;
+        padding: 6px 10px;
+    }
+    .episode-grid {
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        gap: 8px;
+        padding: 8px;
+    }
+    .episode-item {
+        padding: 6px;
+    }
+    .episode-number {
+        font-size: 0.85em;
+    }
+    .server-name {
+        font-size: 0.75em;
+    }
+    .link-btn {
+        min-width: 50px;
+        padding: 5px 8px;
+        font-size: 0.75em;
+    }
+}
+
+/* Thiết bị rất nhỏ (dưới 480px) */
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+    .movie-poster img {
+        max-width: 150px;
+    }
+    .movie-info h1 {
+        font-size: 1.2em;
+    }
+    .episodes-section h2 {
+        font-size: 1.2em;
+        padding: 5px 8px;
+    }
+    .episode-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 6px;
+    }
+    .episode-item {
+        padding: 5px;
+    }
+    .episode-number {
+        font-size: 0.8em;
+    }
+    .server-name {
+        font-size: 0.7em;
+    }
+    .link-btn {
+        min-width: 45px;
+        padding: 4px 6px;
+        font-size: 0.7em;
+    }
+    .footer-btn {
+        padding: 8px 14px;
+        font-size: 0.85em;
+    }
+}
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-content">
-            <img src="https://via.placeholder.com/100x32?text=Logo" alt="Logo Phim Hay" class="logo" loading="eager" id="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-            <span class="logo-fallback" style="display:none;">Phim Nhà Bánh Mì</span>
+            <span class="logo-fallback" style="display: block;">Phim Nhà Bánh Mì</span>
             <div class="nav-menu" role="navigation" aria-label="Menu điều hướng chính">
-                <a href="indexos.html">Trang chủ</a>
-                <a href="Thu-vien1.html">Phim Đề Cử</a>
-                <a href="phim-han1.html">Phim Hàn</a>
-                <a href="phim-trung1.html">Phim Trung</a>
-                <a href="phim-viet1.html">Phim Việt</a>
-                <a href="phim-my1.html">Phim Mỹ</a>
-                <a href="truyen-hinh1.html">Truyền hình</a>
-                <a href="hoat-hinh1.html">Hoạt hình</a>
-                <a href="netflix1.html">Thuyết Minh LT</a>
+                <a href="indexos.html">Home</a>
+                <a href="Thuvien1.html">Thư Viện</a>
+                <a href="phim-han1.html">Phim Hàn Quốc</a>
+                <a href="phim-trung1.html">Phim Trung Quốc</a>
+                <a href="phim-viet1.html">Phim Việt Nam</a>
+                <a href="phim-my1.html">Phim Nước Ngoài</a>
+                <a href="truyen-hinh1.html">TV-Show</a>
+                <a href="hoat-hinh1.html">Hoạt Hình</a>
+                <a href="netflix1.html">NETFLIX</a>
                 <a href="y-khoa1.html">Y Khoa</a>
                 <button class="theme-toggle" id="theme-toggle">
                     <i class="fas fa-moon"></i>
@@ -882,9 +1012,9 @@ class MovieDetailApp {
         if (this.elements.toggleEpisodesBtn) {
             this.elements.toggleEpisodesBtn.addEventListener('click', () => {
                 this.isEpisodesVisible = !this.isEpisodesVisible;
-                const tables = this.elements.languageTables.getElementsByClassName('language-table');
-                for (let table of tables) {
-                    table.classList.toggle('hidden', !this.isEpisodesVisible);
+                const grids = this.elements.languageTables.getElementsByClassName('episode-grid');
+                for (let grid of grids) {
+                    grid.classList.toggle('hidden', !this.isEpisodesVisible);
                 }
                 this.elements.toggleEpisodesBtn.innerHTML = `<i class="fas fa-chevron-${this.isEpisodesVisible ? 'up' : 'down'}"></i> ${this.isEpisodesVisible ? 'Thu gọn' : 'Mở rộng'}`;
             });
@@ -1020,19 +1150,9 @@ class MovieDetailApp {
         }
 
         this.elements.languageTables.innerHTML = '';
-        const table = document.createElement('table');
-        table.className = 'language-table';
-        const thead = document.createElement('thead');
-        thead.innerHTML = `
-            <tr>
-                <th style="width: 10%;">Tập</th>
-                <th style="width: 25%;">Server</th>
-                <th style="width: 65%;">Link</th>
-            </tr>
-        `;
-        table.appendChild(thead);
+        const grid = document.createElement('div');
+        grid.className = 'episode-grid';
 
-        const tbody = document.createElement('tbody');
         servers.forEach(server => {
             server.server_data.forEach(episode => {
                 const { name: episodeName, link_m3u8, link_embed, link_video, lang } = episode;
@@ -1043,21 +1163,22 @@ class MovieDetailApp {
                 if (link_video) links.push({ type: 'video', url: link_video, label: 'Bánh Mì', class: 'banhmi' });
 
                 const watchUrl = (linkType, url) => `watch01.html?slug=${encodeURIComponent(slug)}&apiSource=${encodeURIComponent(apiSource)}&episode=${encodeURIComponent(episodeNumber)}&link_${linkType}=${encodeURIComponent(url)}&movieName=${encodeURIComponent(name)}&lang=${encodeURIComponent(lang || this.movieData.lang || 'Vietsub')}&link_type=${encodeURIComponent(linkType)}`;
-                
+
                 const linkText = links.length ? `<div class="link-buttons">${links.map(link => `<a href="${watchUrl(link.type, link.url)}" class="link-btn ${link.class}" data-link-type="${link.type}">${link.label}</a>`).join('')}</div>` : '<span class="unavailable">Không có</span>';
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${type === 'series' ? `Tập ${episodeNumber}` : 'Phim'}</td>
-                    <td>${server.server_name}</td>
-                    <td>${linkText}</td>
+
+                const episodeItem = document.createElement('div');
+                episodeItem.className = 'episode-item';
+                episodeItem.innerHTML = `
+                    <div class="episode-number">${type === 'series' ? `Tập ${episodeNumber}` : 'Phim'}</div>
+                    <div class="server-name">${server.server_name}</div>
+                    ${linkText}
                 `;
-                tbody.appendChild(tr);
+                grid.appendChild(episodeItem);
             });
         });
-        table.appendChild(tbody);
-        this.elements.languageTables.appendChild(table);
 
-        sessionStorage.setItem('movieEpisodes', JSON.stringify(servers.flatMap(s => s.server_data)));
+        this.elements.languageTables.appendChild(grid);
+        sessionStorage.setItem('movieEpisodes', JSON.stringify(servers));
     }
 
     async init() {
@@ -1080,43 +1201,42 @@ class MovieDetailApp {
 const app = new MovieDetailApp();
 app.init();
     </script>
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script>
+    <!-- Code injected by live-server -->
+    <script>
+        // <![CDATA[  <-- For SVG support
+        if ('WebSocket' in window) {
+            (function () {
+                function refreshCSS() {
+                    var sheets = [].slice.call(document.getElementsByTagName("link"));
+                    var head = document.getElementsByTagName("head")[0];
+                    for (var i = 0; i < sheets.length; ++i) {
+                        var elem = sheets[i];
+                        var parent = elem.parentElement || head;
+                        parent.removeChild(elem);
+                        var rel = elem.rel;
+                        if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+                            var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+                            elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+                        }
+                        parent.appendChild(elem);
+                    }
+                }
+                var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+                var address = protocol + window.location.host + window.location.pathname + '/ws';
+                var socket = new WebSocket(address);
+                socket.onmessage = function (msg) {
+                    if (msg.data == 'reload') window.location.reload();
+                    else if (msg.data == 'refreshcss') refreshCSS();
+                };
+                if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+                    console.log('Live reload enabled.');
+                    sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+                }
+            })();
+        } else {
+            console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+        }
+        // ]]>
+    </script>
 </body>
 </html>
