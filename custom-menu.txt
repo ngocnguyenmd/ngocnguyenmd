@@ -1,10 +1,39 @@
 # Danh sách chung : US/UK
 
 
-# Danh sách chung : Anime / Hoạt hình
+# Danh sách chung : Anime / Hoạt hình / Tổng hợp
 nhat ky du hanh di gioi cua nha thu thap nguyen lieu|phimapi
 vo han gacha|phimapi
 tham tu lung danh conan|phimapi
+
+
+
+# Danh sách chung : Ăn Cơm - Doraemon Movies 
+doraemon nobita va cuoc phieu luu vao the gioi trong tranh|phimapi
+doraemon nobita va ban giao huong dia cau|phimapi
+doraemon nobita va vung dat ly tuong tren bau troi|phimapi
+doraemon nobita va cuoc chien vu tru ti hon|phimapi
+doraemon nobita va nhung ban khung long moi|phimapi
+doraemon nobita va mat trang phieu luu ky|phimapi
+doraemon nobita va dao giau vang|phimapi
+doraemon nobita va chuyen tham hiem nam cuc kachi kochi|phimapi
+doraemon nobita va nuoc nhat thoi nguyen thuy|phimapi
+doraemon nobita va nhung hiep si khong gian|phimapi
+doraemon nobita tham hiem vung dat moi peko va 5 nha tham hiem|phimapi
+doraemon nobita va vien bao tang bao boi|phimapi
+doraemon Nobita va Hon Dao Dieu Ki Cuoc Phieu Luu Cua Loai Thu|phimapi
+doraemon nobita va binh doan nguoi sat|phimapi
+doraemon nobita va cuoc dai thuy chien o xu so nguoi ca|phimapi
+doraemon nobita va lich su khai pha vu tru|phimapi
+doraemon nobita va nguoi khong lo xanh|phimapi
+doraemon nobita va chuyen phieu luu vao xu quy|phimapi
+doraemon nobita o vuong quoc cho meo|phimapi
+doraemon nobita va nhung phap su gio bi an|phimapi
+doraemon nobita va vuong quoc robot|phimapi
+doraemon nobita va nhung dung si co canh|phimapi
+doraemon nobita va truyen thuyet vua Mat Troi|phimapi
+
+doraemon doi ban than 2|phimapi
 
 
 # Danh sách chung : ASIAN / Hàn / Trung
