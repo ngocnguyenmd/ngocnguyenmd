@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Xem Phim Online</title>
+<title>Phim Nhà Bánh Mì - Xem Phim Online</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -84,10 +84,10 @@ footer{background:#000;border-top:1px solid rgba(255,255,255,.08);color:#999;fon
 <div class="nav-wrapper">
   <div class="container">
     <div class="nav">
-      <a href="#" class="logo">Nhà Bánh Mì</a>
+      <a href="#" class="logo">Phim Nhà Bánh Mì</a>
       <div class="nav-search">
-        <input type="text" class="nav-search-input" id="nav-search-input" placeholder="Tìm - hoặc viết không dấu...">
-        <button class="nav-search-btn" id="nav-search-btn">👓️</button>
+        <input type="text" class="nav-search-input" id="nav-search-input" placeholder="Tìm phim, diễn viên...">
+        <button class="nav-search-btn" id="nav-search-btn">Tìm</button>
       </div>
       <div class="nav-menu-wrapper">
         <ul class="nav-menu" id="nav-menu">
@@ -266,7 +266,7 @@ function createMovieCard(m){const c=document.createElement('div');c.className='m
 function renderMoviesFinal(movs,cont){cont.innerHTML='';const disp=movs.slice(0,ITEMS_PER_PAGE);disp.forEach(m=>cont.appendChild(createMovieCard(m)));}
 function renderPagination(p,secId,more){const el=document.getElementById(`${secId}-pagination`);if(!el)return;el.innerHTML='';const prev=document.createElement('button');prev.className='page-btn';prev.textContent='‹';prev.disabled=p===1;prev.onclick=()=>currentSearchQuery?search(currentSearchQuery,p-1):loadContent(currentMode,currentFilter,p-1);el.appendChild(prev);for(let i=Math.max(1,p-3);i<=p+4;i++){const b=document.createElement('button');b.className='page-btn';if(i===p)b.classList.add('active');b.textContent=i;b.onclick=()=>currentSearchQuery?search(currentSearchQuery,i):loadContent(currentMode,currentFilter,i);el.appendChild(b);}const next=document.createElement('button');next.className='page-btn';next.textContent='›';next.disabled=!more;next.onclick=()=>currentSearchQuery?search(currentSearchQuery,p+1):loadContent(currentMode,currentFilter,p+1);el.appendChild(next);}
 function getTitle(m,f){if(m==='default')return'PHIM MỚI NHÀ BÁNH MÌ';if(m==='genre')return`THỂ LOẠI: ${Object.keys(GENRE_SLUG_MAP).find(k=>GENRE_SLUG_MAP[k]===f)?.toUpperCase()||f.toUpperCase()}`;if(m==='country')return`QUỐC GIA: ${Object.keys(COUNTRY_SLUG_MAP).find(k=>COUNTRY_SLUG_MAP[k]===f)?.toUpperCase()||f.toUpperCase()}`;if(m==='year')return`NĂM: ${f}`;if(m==='type')return{'phim-bo':'PHIM BỘ','phim-le':'PHIM LẺ'}[f]||f.toUpperCase();if(m==='cutee'){const l=Object.keys(CUTEE_MENU).find(k=>CUTEE_MENU[k].slug===f||CUTEE_MENU[k].filter===f);return l?.toUpperCase()||f.toUpperCase().replace(/-/g,' ');}return f?.toUpperCase()||'PHIM';}
-async function loadContent(m,f=null,p=1){ITEMS_PER_PAGE=(m==='genre')?8:12;currentMode=m;currentFilter=f;currentPage=p;if(m==='default'){document.querySelectorAll('#main-content > .section').forEach(x=>x.remove());loadCustomMenu();return;}const tit=getTitle(m,f),sid=`${m}-${f||''}-section`.replace(/--/g,'-');let sec=document.getElementById(sid);if(!sec)sec=createSection(sid,tit);else sec.querySelector('.section-header').textContent=tit;showSection(sec);const grid=document.getElementById(`${sid}-grid`);grid.innerHTML='';for(let i=0;i<12;i++)grid.appendChild(createSkeleton());const srcs=Object.values(API_SOURCES),prom=srcs.map(s=>fetchFromSource(s,p,m,f,false,false)),all=await Promise.all(prom),movs=interleaveSourcesProperly(all,false);renderMoviesFinal(movs,grid);renderPagination(p,sid,movs.length>=ITEMS_PER_PAGE);sec.scrollIntoView({behavior:'smooth'});}
+async function loadContent(m,f=null,p=1){ITEMS_PER_PAGE=(m==='genre')?8:100;currentMode=m;currentFilter=f;currentPage=p;if(m==='default'){document.querySelectorAll('#main-content > .section').forEach(x=>x.remove());loadCustomMenu();return;}const tit=getTitle(m,f),sid=`${m}-${f||''}-section`.replace(/--/g,'-');let sec=document.getElementById(sid);if(!sec)sec=createSection(sid,tit);else sec.querySelector('.section-header').textContent=tit;showSection(sec);const grid=document.getElementById(`${sid}-grid`);grid.innerHTML='';for(let i=0;i<12;i++)grid.appendChild(createSkeleton());const srcs=Object.values(API_SOURCES),prom=srcs.map(s=>fetchFromSource(s,p,m,f,false,false)),all=await Promise.all(prom),movs=interleaveSourcesProperly(all,false);renderMoviesFinal(movs,grid);renderPagination(p,sid,movs.length>=ITEMS_PER_PAGE);sec.scrollIntoView({behavior:'smooth'});}
 async function search(q=null,p=1){const raw=(q||document.getElementById('nav-search-input').value).trim();if(!raw)return loadContent('default');currentSearchQuery=raw;currentPage=p;const sid='search-section';let sec=document.getElementById(sid);if(!sec)sec=createSection(sid,`TÌM: "${raw}"`);else sec.querySelector('.section-header').textContent=`TÌM: "${raw}"`;showSection(sec);const grid=document.getElementById(`${sid}-grid`);grid.innerHTML='';for(let i=0;i<12;i++)grid.appendChild(createSkeleton());const srcs=Object.values(API_SOURCES),sp=srcs.map(s=>fetchFromSource(s,p,null,raw,true,false)),kp=srcs.map(s=>fetchFromSource(s,p,null,raw,false,true)),[sr,kr]=await Promise.all([Promise.all(sp),Promise.all(kp)]),movs=interleaveSourcesProperly([...sr,...kr],true);renderMoviesFinal(movs,grid);renderPagination(p,sid,movs.length>=ITEMS_PER_PAGE);sec.scrollIntoView({behavior:'smooth'});}
 async function loadCustomMenu(){try{const r=await fetch('custom-menu.txt?t='+Date.now());if(!r.ok)return;const txt=await r.text();if(!txt.trim())return;const g=parseCustomMenuWithGroups(txt);for(const [gn,it]of Object.entries(g)){if(it.length===0)continue;await loadCustomGroup(gn,it);}}catch(e){loadContentFromAPI('default');}}
 function parseCustomMenuWithGroups(txt){const lines=txt.split('\n'),gr={};let cur=null;lines.forEach(l=>{l=l.trim();if(!l)return;if(l.startsWith('#')){cur=l.substring(1).trim().toUpperCase();if(!gr[cur])gr[cur]=[];return;}if(!cur)return;const p=l.split('|');if(p.length<2)return;const [st,sk,dt]=p.map(x=>x.trim()),sl=st.toLowerCase().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,'-').replace(/^-+|-+$/g,'');gr[cur].push({slug:sl,source:sk.toLowerCase(),display:dt||st});});return gr;}
@@ -290,6 +290,4 @@ document.getElementById('nav-search-input').addEventListener('keypress',e=>{if(e
 loadContent('default');});
 </script>
 </body>
-
 </html>
-
