@@ -117,469 +117,424 @@ footer{background:#000;border-top:1px solid rgba(255,255,255,.08);color:#999;fon
 </footer>
 
 <script>
-/* ==== VANILLA JS – FULL CODE (ABC HIỆN NGAY, KHÔNG ĐEN, KHÔNG HOVER MỚI HIỆN) ==== */
-
-const GENRE_SLUG_MAP = {
-  'Hành Động': 'hanh-dong','Phiêu Lưu': 'phieu-luu','Hoạt Hình': 'hoat-hinh','Hài': 'phim-hai','Hài Hước': 'hai-huoc','Hình Sự': 'hinh-su','Tài Liệu': 'tai-lieu','Chính Kịch': 'chinh-kich','Gia Đình': 'gia-dinh','Giả Tưởng': 'gia-tuong','Lịch Sử': 'lich-su','Kinh Dị': 'kinh-di','Nhạc': 'am-nhac','Âm Nhạc': 'am-nhac','Bí Ẩn': 'bi-an','Lãng Mạn': 'lang-man','Tình Cảm': 'tinh-cam','Khoa Học Viễn Tưởng': 'khoa-hoc-vien-tuong','Gây Cấn': 'gay-can','Chiến Tranh': 'chien-tranh','Tâm Lý': 'tam-ly','Cổ Trang': 'co-trang','Miền Tây': 'mien-tay','Phim 18': 'phim-18','Thể Thao': 'the-thao','Võ Thuật': 'vo-thuat','Viễn Tưởng': 'vien-tuong','Khoa Học': 'khoa-hoc','Thần Thoại': 'than-thoai','Học Đường': 'hoc-duong','Kinh Điển': 'kinh-dien'
-};
-
-const COUNTRY_SLUG_MAP = {
-  'Âu Mỹ': 'au-my','Hàn Quốc': 'han-quoc','Trung Quốc': 'trung-quoc','Nhật Bản': 'nhat-ban','Thái Lan': 'thai-lan','Hồng Kông': 'hong-kong','Ấn Độ': 'an-do','Anh': 'anh','Pháp': 'phap','Canada': 'canada','Đức': 'duc','Tây Ban Nha': 'tay-ban-nha','Úc': 'uc','Ý': 'y','Hà Lan': 'ha-lan','Indonesia': 'indonesia','Nga': 'nga','Mexico': 'mexico','Ba Lan': 'ba-lan','Malaysia': 'malaysia','Bồ Đào Nha': 'bo-dao-nha','Thụy Điển': 'thuy-dien','Philippines': 'philippines','Đan Mạch': 'dan-mach','Thụy Sĩ': 'thuy-si','Ukraina': 'ukraina','UAE': 'uae','Ả Rập Xê Út': 'a-rap-xe-ut','Thổ Nhĩ Kỳ': 'tho-nhi-ky','Brazil': 'brazil','Na Uy': 'na-uy','Nam Phi': 'nam-phi','Việt Nam': 'viet-nam','Đài Loan': 'dai-loan','Châu Phi': 'chau-phi','Bỉ': 'bi','Ireland': 'ireland','Colombia': 'colombia','Phần Lan': 'phan-lan','Chile': 'chile','Hy Lạp': 'hy-lap','Nigeria': 'nigeria','Argentina': 'argentina','Singapore': 'singapore','Quốc Gia Khác': 'quoc-gia-khac'
-};
-
+// ==================== CẤU HÌNH & BIẾN TOÀN CỤC ====================
+const GENRE_SLUG_MAP = { 'Hành Động': 'hanh-dong','Phiêu Lưu': 'phieu-luu','Hoạt Hình': 'hoat-hinh','Hài': 'phim-hai','Hài Hước': 'hai-huoc','Hình Sự': 'hinh-su','Tài Liệu': 'tai-lieu','Chính Kịch': 'chinh-kich','Gia Đình': 'gia-dinh','Giả Tưởng': 'gia-tuong','Lịch Sử': 'lich-su','Kinh Dị': 'kinh-di','Nhạc': 'am-nhac','Âm Nhạc': 'am-nhac','Bí Ẩn': 'bi-an','Lãng Mạn': 'lang-man','Tình Cảm': 'tinh-cam','Khoa Học Viễn Tưởng': 'khoa-hoc-vien-tuong','Gây Cấn': 'gay-can','Chiến Tranh': 'chien-tranh','Tâm Lý': 'tam-ly','Cổ Trang': 'co-trang','Miền Tây': 'mien-tay','Phim 18': 'phim-18','Thể Thao': 'the-thao','Võ Thuật': 'vo-thuat','Viễn Tưởng': 'vien-tuong','Khoa Học': 'khoa-hoc','Thần Thoại': 'than-thoai','Học Đường': 'hoc-duong','Kinh Điển': 'kinh-dien' };
+const COUNTRY_SLUG_MAP = { 'Âu Mỹ': 'au-my','Hàn Quốc': 'han-quoc','Trung Quốc': 'trung-quoc','Nhật Bản': 'nhat-ban','Thái Lan': 'thai-lan','Hồng Kông': 'hong-kong','Ấn Độ': 'an-do','Anh': 'anh','Pháp': 'phap','Canada': 'canada','Đức': 'duc','Tây Ban Nha': 'tay-ban-nha','Úc': 'uc','Ý': 'y','Hà Lan': 'ha-lan','Indonesia': 'indonesia','Nga': 'nga','Mexico': 'mexico','Ba Lan': 'ba-lan','Malaysia': 'malaysia','Bồ Đào Nha': 'bo-dao-nha','Thụy Điển': 'thuy-dien','Philippines': 'philippines','Đan Mạch': 'dan-mach','Thụy Sĩ': 'thuy-si','Ukraina': 'ukraina','UAE': 'uae','Ả Rập Xê Út': 'a-rap-xe-ut','Thổ Nhĩ Kỳ': 'tho-nhi-ky','Brazil': 'brazil','Na Uy': 'na-uy','Nam Phi': 'nam-phi','Việt Nam': 'viet-nam','Đài Loan': 'dai-loan','Châu Phi': 'chau-phi','Bỉ': 'bi','Ireland': 'ireland','Colombia': 'colombia','Phần Lan': 'phan-lan','Chile': 'chile','Hy Lạp': 'hy-lap','Nigeria': 'nigeria','Argentina': 'argentina','Singapore': 'singapore','Quốc Gia Khác': 'quoc-gia-khac' };
 const TYPE_MAP = {'phim-bo': 'phim-bo','phim-le': 'phim-le','thuyet-minh': 'phim-thuyet-minh','chieu-rap': 'phim-chieu-rap'};
-const CUTEE_MENU = {
-  'Phim mới': { mode: 'default' },'Phim bộ': { mode: 'type', filter: 'phim-bo' },'Phim lẻ': { mode: 'type', filter: 'phim-le' },'Shows': { mode: 'cutee', slug: 'tv-shows' },'Hoạt hình': { mode: 'cutee', slug: 'hoat-hinh' },'Phim vietsub': { mode: 'cutee', slug: 'vietsub' },'Phim thuyết minh': { mode: 'cutee', slug: 'thuyet-minh' },'Phim lồng tiếng': { mode: 'cutee', slug: 'long-tieng' },'Phim bộ đang chiếu': { mode: 'cutee', slug: 'phim-dang-chieu' },'Phim bộ đã hoàn thành': { mode: 'cutee', slug: 'hoan-tat' },'Phim sắp chiếu': { mode: 'cutee', slug: 'phim-sap-chieu' },'Subteam': { mode: 'cutee', slug: 'subteam' },'Phim chiếu rạp': { mode: 'cutee', slug: 'phim-chieu-rap' }
+const CUTEE_MENU = { 'Phim mới': { mode: 'default' },'Phim bộ': { mode: 'type', filter: 'phim-bo' },'Phim lẻ': { mode: 'type', filter: 'phim-le' },'Shows': { mode: 'cutee', slug: 'tv-shows' },'Hoạt hình': { mode: 'cutee', slug: 'hoat-hinh' },'Phim vietsub': { mode: 'cutee', slug: 'vietsub' },'Phim thuyết minh': { mode: 'cutee', slug: 'thuyet-minh' },'Phim lồng tiếng': { mode: 'cutee', slug: 'long-tieng' },'Phim bộ đang chiếu': { mode: 'cutee', slug: 'phim-dang-chieu' },'Phim bộ đã hoàn thành': { mode: 'cutee', slug: 'hoan-tat' },'Phim sắp chiếu': { mode: 'cutee', slug: 'phim-sap-chieu' },'Subteam': { mode: 'cutee', slug: 'subteam' },'Phim chiếu rạp': { mode: 'cutee', slug: 'phim-chieu-rap' } };
+
+const API_SOURCES = { 
+  Ophim: { name: 'Ophim', code: 'ax', defaultUrl: p => `https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=${p}`, genreUrl: (s,p) => `https://ophim1.com/v1/api/the-loai/${s}?page=${p}`, countryUrl: (s,p) => `https://ophim1.com/v1/api/quoc-gia/${s}?page=${p}`, yearUrl: (y,p) => `https://ophim1.com/v1/api/nam-phat-hanh/${y}?page=${p}`, typeUrl: (t,p) => `https://ophim1.com/v1/api/danh-sach/${t}?page=${p}`, cuteeUrl: (s,p) => `https://ophim1.com/v1/api/danh-sach/${s}?page=${p}`, searchUrl: s => `https://ophim1.com/v1/api/phim/${s}`, keywordSearchUrl: (k,p=1) => `https://ophim1.com/v1/api/tim-kiem?keyword=${encodeURIComponent(k)}&page=${p}`, parser: d => d?.data?.items || [], searchParser: d => d?.data?.item ? [d.data.item] : [], keywordParser: d => d?.data?.items || [], getCdn: () => "https://img.ophim.live/uploads/movies/" }, 
+  Phimapi: { name: 'Phimapi', code: 'bx', defaultUrl: p => `https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=${p}`, genreUrl: (s,p) => `https://phimapi.com/v1/api/the-loai/${s}?page=${p}`, countryUrl: (s,p) => `https://phimapi.com/v1/api/quoc-gia/${s}?page=${p}`, yearUrl: (y,p) => `https://phimapi.com/v1/api/nam/${y}?page=${p}`, typeUrl: (t,p) => `https://phimapi.com/v1/api/danh-sach/${t}?page=${p}`, cuteeUrl: (s,p) => `https://phimapi.com/v1/api/danh-sach/${s}?page=${p}`, searchUrl: s => `https://phimapi.com/phim/${s}`, keywordSearchUrl: (k,p=1) => `https://phimapi.com/v1/api/tim-kiem?keyword=${encodeURIComponent(k)}&page=${p}`, parser: d => d?.data?.items || d?.items || [], searchParser: d => d?.movie ? [d.movie] : [], keywordParser: d => d?.data?.items || [], getCdn: d => (d?.data?.APP_DOMAIN_CDN_IMAGE || 'https://phimimg.com/').replace(/\/+$/, '') + '/' }, 
+  Nguonc: { name: 'Nguonc', code: 'cx', defaultUrl: p => `https://phim.nguonc.com/api/films/phim-moi-cap-nhat?page=${p}`, genreUrl: (s,p) => `https://phim.nguonc.com/api/films/danh-sach/${s}?page=${p}`, countryUrl: (s,p) => `https://phim.nguonc.com/api/films/quoc-gia/${s}?page=${p}`, yearUrl: (y,p) => `https://phim.nguonc.com/api/films/nam-phat-hanh/${y}?page=${p}`, typeUrl: (t,p) => `https://phim.nguonc.com/api/films/danh-sach/${t}?page=${p}`, cuteeUrl: (s,p) => { const m = {'tv-shows':'tv-shows','dang-chieu':'phim-dang-chieu','hoat-hinh':'hoat-hinh'}; return `https://phim.nguonc.com/api/films/danh-sach/${m[s]||s}?page=${p}`; }, searchUrl: s => `https://phim.nguonc.com/api/film/${s}`, keywordSearchUrl: (k,p=1) => `https://phim.nguonc.com/api/films/search?keyword=${encodeURIComponent(k)}&page=${p}`, parser: d => d?.items || [], searchParser: d => d?.movie ? [d.movie] : [], keywordParser: d => d?.items || [], getCdn: () => "https://phim.nguonc.com/public/images/Poster/" } 
 };
 
-const API_SOURCES={Ophim:{name:'Ophim',code:'ax',defaultUrl:p=>`https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=${p}`,genreUrlTheLoai:(s,p)=>`https://ophim1.com/v1/api/the-loai/${s}?page=${p}`,countryUrl:(s,p)=>`https://ophim1.com/v1/api/quoc-gia/${s}?page=${p}`,yearUrl:(y,p)=>`https://ophim1.com/v1/api/nam-phat-hanh/${y}?page=${p}`,typeUrl:(t,p)=>`https://ophim1.com/v1/api/danh-sach/${t}?page=${p}`,cuteeUrl:(s,p)=>`https://ophim1.com/v1/api/danh-sach/${s}?page=${p}`,searchUrl:s=>`https://ophim1.com/v1/api/phim/${s}`,keywordSearchUrl:(k,p=1)=>`https://ophim1.com/v1/api/tim-kiem?keyword=${encodeURIComponent(k)}&page=${p}`,parser:d=>d?.data?.items||[],searchParser:d=>d?.data?.item?[d.data.item]:[],keywordParser:d=>d?.data?.items||[],getCdn:()=>"https://img.ophim.live/uploads/movies/"},Phimapi:{name:'Phimapi',code:'bx',defaultUrl:p=>`https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=${p}`,genreUrlTheLoai:(s,p)=>`https://phimapi.com/v1/api/the-loai/${s}?page=${p}`,countryUrl:(s,p)=>`https://phimapi.com/v1/api/quoc-gia/${s}?page=${p}`,yearUrl:(y,p)=>`https://phimapi.com/v1/api/nam/${y}?page=${p}`,typeUrl:(t,p)=>`https://phimapi.com/v1/api/danh-sach/${t}?page=${p}`,cuteeUrl:(s,p)=>`https://phimapi.com/v1/api/danh-sach/${s}?page=${p}`,searchUrl:s=>`https://phimapi.com/phim/${s}`,keywordSearchUrl:(k,p=1)=>`https://phimapi.com/v1/api/tim-kiem?keyword=${encodeURIComponent(k)}&page=${p}`,parser:d=>d?.data?.items||d?.items||[],searchParser:d=>d?.movie?[d.movie]:[],keywordParser:d=>d?.data?.items||[],getCdn:d=>(d?.data?.APP_DOMAIN_CDN_IMAGE||'https://phimimg.com/').replace(/\/+$/,'')+'/'},Nguonc:{name:'Nguonc',code:'cx',defaultUrl:p=>`https://phim.nguonc.com/api/films/phim-moi-cap-nhat?page=${p}`,genreUrlTheLoai:(s,p)=>`https://phim.nguonc.com/api/films/danh-sach/${s}?page=${p}`,countryUrl:(s,p)=>`https://phim.nguonc.com/api/films/quoc-gia/${s}?page=${p}`,yearUrl:(y,p)=>`https://phim.nguonc.com/api/films/nam-phat-hanh/${y}?page=${p}`,typeUrl:(t,p)=>`https://phim.nguonc.com/api/films/danh-sach/${t}?page=${p}`,cuteeUrl:(s,p)=>{const m={'tv-shows':'tv-shows','dang-chieu':'phim-dang-chieu','hoat-hinh':'hoat-hinh'};return`https://phim.nguonc.com/api/films/danh-sach/${m[s]||s}?page=${p}`;},searchUrl:s=>`https://phim.nguonc.com/api/film/${s}`,keywordSearchUrl:(k,p=1)=>`https://phim.nguonc.com/api/films/search?keyword=${encodeURIComponent(k)}&page=${p}`,parser:d=>d?.items||[],searchParser:d=>d?.movie?[d.movie]:[],keywordParser:d=>d?.items||[],getCdn:()=>"https://phim.nguonc.com/public/images/Poster/"}};
+let ITEMS_PER_PAGE = 20, currentMode = 'default', currentFilter = null, currentPage = 1, currentSearchQuery = '';
+const CACHE_TTL = 6*60*60*1000;
+const PLACEHOLDER_LOW = 'abc.jpg'; // ABC.JPG CỦA BẠN
+const HEAVY_THRESHOLD = 1024 * 1024;
 
-let ITEMS_PER_PAGE=5,currentMode='default',currentFilter=null,currentPage=1,currentSearchQuery='';
-const CACHE_TTL=6*60*60*1000;
-const PLACEHOLDER_LOW = 'abc.jpg'; // ẢNH NẶNG → HIỆN ABC NGAY LẬP TỨC
-const HEAVY_THRESHOLD = 1024 * 1024; // >1MB
+// ==================== CACHE ====================
+const getCacheKey = (src, m, f, p, isS = false, isK = false) => isK ? `cache|k|${src}|${f}|${p}` : isS ? `cache|s|${src}|${f}` : `cache|${src}|${m}|${f||'d'}|${p}`;
+const getCache = k => { try { const r = localStorage.getItem(k); if (!r) return null; const c = JSON.parse(r); if (Date.now() - c.t > CACHE_TTL) { localStorage.removeItem(k); return null; } return c.d; } catch { return null; } };
+const setCache = (k, d) => { try { localStorage.setItem(k, JSON.stringify({ d, t: Date.now() })); } catch {} };
 
-function getCacheKey(s,m,f,p,isS=false,isK=false){return isK?`cache|keyword|${s}|${f}|${p||1}`:isS?`cache|search|${s}|${f}`:`cache|${s}|${m}|${f||'default'}|${p||1}`;}
-function getCache(k){try{const r=localStorage.getItem(k);if(!r)return null;const c=JSON.parse(r);if(Date.now()-c.timestamp>CACHE_TTL){localStorage.removeItem(k);return null;}return c.data;}catch(e){return null;}}
-function setCache(k,d){try{localStorage.setItem(k,JSON.stringify({data:d,timestamp:Date.now()}));}catch(e){}}
-
-function getEpisodeDisplay(i){
-  if(!i) return '';
+// ==================== EPISODE ====================
+const getEpisodeDisplay = i => {
+  if (!i) return '';
   const m = i.movie || i;
-  const e = i.episodes || m.episodes;
-  if((!m.episode_current && !m.current_episode) && (!m.episode_total && !m.total_episodes) && !Array.isArray(e)){
-    const t = m.type || m.tmdb?.type;
-    return t === 'tv' ? 'Phim bộ' : 'Phim lẻ';
-  }
+  const e = i.episodes || m.episodes || [];
+  if (!m.episode_current && !m.current_episode && !m.episode_total && !m.total_episodes && !Array.isArray(e)) return (m.type || m.tmdb?.type) === 'tv' ? 'Phim bộ' : 'Phim lẻ';
   let c = '', t = '', l = 0;
   const cur = m.episode_current || m.current_episode || '';
   const tot = m.episode_total || m.total_episodes || '';
   const cm = cur.match(/Tập (\d+)/i) || cur.match(/(\d+)/);
-  if(cm) c = cm[1];
-  if(tot) t = tot;
-  if(Array.isArray(e)) e.forEach(s => {
-    const d = s.server_data || s.items || [];
-    if(Array.isArray(d)) l += d.length;
-  });
-  let disp = '';
-  if(c && t) disp = `Tập ${c}/${t}`;
-  else if(c) disp = `Tập ${c}`;
-  else if(/full|hoàn tất|hoàn thành/i.test(cur)) disp = 'Hoàn tất';
-  else disp = 'Đang phát';
-  if(l > 0) disp += ` (${l} link)`;
+  if (cm) c = cm[1];
+  if (tot) t = tot;
+  if (Array.isArray(e)) e.forEach(s => { const d = s.server_data || s.items || []; if (Array.isArray(d)) l += d.length; });
+  let disp = c && t ? `Tập ${c}/${t}` : c ? `Tập ${c}` : /full|hoàn tất|hoàn thành/i.test(cur) ? 'Hoàn tất' : 'Đang phát';
+  if (l > 0) disp += ` (${l} link)`;
   return disp;
-}
+};
 
-async function fetchFromSource(src, p, m, f, isS = false, isK = false){
+// ==================== FETCH FULL SOURCE ====================
+const fetchFromSource = async (src, p, m, f, isS = false, isK = false) => {
   const ck = getCacheKey(src.name, m, f, p, isS, isK);
   const ca = getCache(ck);
-  if(ca) return ca.map(x => ({...x, sourceCode: src.code, sourceName: src.name}));
-  let urls = [];
-  if(isK) urls.push(src.keywordSearchUrl(f, p));
-  else if(isS) urls.push(src.searchUrl(f));
-  else if(m === 'genre') urls.push(src.genreUrlTheLoai?.(f, p) || src.defaultUrl(p));
-  else if(m === 'cutee' || m === 'type') urls.push(src.cuteeUrl?.(f, p) || src.typeUrl?.(f, p) || src.defaultUrl(p));
-  else if(m === 'country') urls.push(src.countryUrl(f, p));
-  else if(m === 'year') urls.push(src.yearUrl(f, p));
-  else urls.push(src.defaultUrl(p));
-  const pr = urls.map(async u => {
-    try{
-      const r = await fetch(u, {mode: 'cors'});
-      if(!r.ok) return null;
-      const d = await r.json();
-      const pa = isK ? (src.keywordParser || src.parser) : isS ? (src.searchParser || src.parser) : src.parser;
-      const it = pa(d) || [];
-      if(it.length > 0){
-        return {data: d, items: it, cdn: typeof src.getCdn === 'function' ? src.getCdn(d) : src.getCdn()};
-      }
-    }catch(e){ return null; }
-  });
-  const res = await Promise.all(pr);
-  const val = res.find(x => x !== null);
-  if(!val) return [];
-  const proc = val.items.map(it => {
-    let th = it.poster_url || it.poster || it.thumb_url || it.thumb || '';
-    if(src.name === 'Phimapi'){
-      th = it.poster_url || it.poster || '';
-    }else{
-      th = it.thumb_url || it.thumb || it.poster_url || it.poster || '';
-    }
-    if(th && !th.startsWith('https') && !th.startsWith('//')) th = val.cdn + th.replace(/^\/+/, '');
-    const po = it.poster_url || it.poster || th;
-    return {
-      name: it.name || it.origin_name || it.title || 'Không rõ',
-      thumb_url: th || '',
-      poster_url: po || th || '',
-      episodeDisplay: getEpisodeDisplay(it),
-      slug: it.slug || '',
-      sourceCode: src.code,
-      sourceName: src.name,
-      isSlugSearch: isS
-    };
-  }).filter(x => x.slug && x.thumb_url);
-  setCache(ck, proc);
-  return proc;
-}
+  if (ca) return ca;
 
-function interleaveSourcesProperly(res, isS = false){
-  const sl = [], kw = [];
-  res.forEach(a => (a[0]?.isSlugSearch ? sl : kw).push(a));
-  const seen = new Set(), fin = [];
-  const add = (arrs) => {
-    const ns = arrs.length;
-    let idx = new Array(ns).fill(0);
-    while(fin.length < ITEMS_PER_PAGE){
-      let ad = false;
-      for(let i = 0; i < ns; i++){
-        if(idx[i] < arrs[i].length){
-          const m = arrs[i][idx[i]];
-          if(!seen.has(m.slug)){
-            seen.add(m.slug);
-            fin.push(m);
-            ad = true;
-            idx[i]++;
-            if(fin.length >= ITEMS_PER_PAGE) break;
-          }else idx[i]++;
-        }
-      }
-      if(!ad) break;
-    }
-  };
-  add(sl); add(kw);
-  return fin;
-}
+  let url = '';
+  if (isK) url = src.keywordSearchUrl(f, p);
+  else if (isS) url = src.searchUrl(f);
+  else if (m === 'genre') url = src.genreUrl(f, p);
+  else if (m === 'country') url = src.countryUrl(f, p);
+  else if (m === 'year') url = src.yearUrl(f, p);
+  else if (m === 'type' || m === 'cutee') url = (src.cuteeUrl || src.typeUrl)(f, p);
+  else url = src.defaultUrl(p);
 
-function createSection(id, tit){
-  const s = document.createElement('div');
-  s.className = 'section';
-  s.id = id;
-  s.innerHTML = `<div class="progress-container" id="${id}-progress-cont"><div class="progress-bar" id="${id}-progress"></div></div><div class="container"><div class="section-header">${tit}</div><div class="movie-grid" id="${id}-grid"></div><div class="pagination" id="${id}-pagination"></div></div>`;
-  return s;
-}
+  try {
+    const r = await fetch(url, { mode: 'cors' });
+    if (!r.ok) return [];
+    const d = await r.json();
+    const parser = isK ? src.keywordParser : isS ? src.searchParser : src.parser;
+    let items = parser(d) || [];
+    
+    if (src.name === 'Ophim' && isK && d?.data?.items) items = d.data.items;
+    
+    const cdn = typeof src.getCdn === 'function' ? src.getCdn(d) : src.getCdn();
 
-function showSection(sec){
-  document.querySelectorAll('#main-content > .section').forEach(x => x.style.display = 'none');
-  const c = document.getElementById('main-content'), ex = document.getElementById(sec.id);
-  if(ex){ ex.style.display = 'block'; c.insertBefore(ex, c.firstChild); }
-  else{ c.insertBefore(sec, c.firstChild); sec.style.display = 'block'; }
-}
-
-function createMovieCard(m, progressId){
-  const c = document.createElement('div');
-  c.className = 'movie-item';
-  c.dataset.slug = m.slug;
-  c.dataset.source = m.sourceCode;
-  c.onclick = () => location.href = `detail.html?slug=${m.slug}&source=${m.sourceCode}`;
-  const tag = document.createElement('div');
-  tag.className = 'movie-source-tag';
-  tag.textContent = m.sourceCode;
-  const img = document.createElement('img');
-  img.alt = m.name;
-  img.style.opacity = '0';
-  img.style.transition = 'opacity .3s ease';
-  const cont = document.createElement('div');
-  cont.className = 'movie-item-content';
-  cont.innerHTML = `<div class="movie-item-title">${m.name}</div><div class="movie-infos"><div class="movie-info">★ <span>*</span></div><div class="movie-info">⏱ <span>${m.episodeDisplay}</span></div><div class="movie-info">HD</div><div class="movie-info">Bánh mì</div></div>`;
-  c.append(tag, img, cont);
-  return {card: c, img};
-}
-
-let loadedImages = 0, totalImages = 0, currentProgressId = null;
-function updateProgress(progressId){
-  loadedImages++;
-  const percent = (loadedImages / totalImages) * 100;
-  const bar = document.getElementById(progressId);
-  if(bar) bar.style.width = percent + '%';
-  if(loadedImages === totalImages){
-    const cont = document.getElementById(progressId + '-cont');
-    if(cont) cont.classList.add('done');
-  }
-}
-
-async function getImageSize(url){
-  try{
-    const r = await fetch(url, {method: 'HEAD'});
-    const s = r.headers.get('content-length');
-    return s ? parseInt(s, 10) : Infinity;
-  }catch(e){ return Infinity; }
-}
-
-async function renderMoviesFinal(movs, cont, progressId){
-  cont.innerHTML = '';
-  const disp = movs.slice(0, ITEMS_PER_PAGE);
-  totalImages = disp.length;
-  loadedImages = 0;
-  currentProgressId = progressId;
-  const cards = disp.map(m => createMovieCard(m, progressId));
-  cards.forEach((obj, idx) => { cont.appendChild(obj.card); });
-  const withSize = await Promise.all(disp.map(async (m, i) => {
-    const size = await getImageSize(m.thumb_url);
-    return {idx: i, img: cards[i].img, size, url: m.thumb_url};
-  }));
-  withSize.sort((a, b) => a.size - b.size);
-  let idx = 0;
-  const loadNext = () => {
-    if(idx >= withSize.length){
-      if(loadedImages === totalImages){
-        const cont = document.getElementById(progressId + '-cont');
-        if(cont) cont.classList.add('done');
-      }
-      return;
-    }
-    const item = withSize[idx++];
-    // HIỆN ABC NGAY LẬP TỨC NẾU ẢNH NẶNG
-    if(item.size > HEAVY_THRESHOLD){
-      item.img.src = PLACEHOLDER_LOW;
-      item.img.classList.add('loaded');
-      item.img.style.opacity = '1'; // HIỆN NGAY
-      updateProgress(progressId);
-      const real = new Image();
-      real.onload = () => {
-        item.img.src = item.url;
-        item.img.style.opacity = '1';
-        updateProgress(progressId);
+    const processed = items.map(it => {
+      let thumb = it.thumb_url || it.thumb || it.poster_url || it.poster || '';
+      if (src.name === 'Phimapi') thumb = it.poster_url || it.poster || '';
+      if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//')) thumb = cdn + thumb.replace(/^\/+/, '');
+      return {
+        name: it.name || it.origin_name || it.title || 'Không rõ',
+        thumb_url: thumb || '',
+        episodeDisplay: getEpisodeDisplay(it),
+        slug: it.slug || '',
+        sourceCode: src.code,
+        sourceName: src.name,
+        year: it.year || '',
+        lang: it.lang || '',
+        quality: it.quality || ''
       };
-      real.onerror = () => { updateProgress(progressId); };
-      real.src = item.url;
-    }else{
-      item.img.src = item.url;
-      item.img.onload = () => {
-        item.img.classList.add('loaded');
-        item.img.style.opacity = '1';
-        updateProgress(progressId);
-      };
-    }
-    setTimeout(loadNext, 50);
-  };
-  loadNext();
-}
+    }).filter(x => x.slug && x.thumb_url);
 
-function renderPagination(p, secId, more){
-  const el = document.getElementById(`${secId}-pagination`);
-  if(!el) return;
-  el.innerHTML = '';
-  const prev = document.createElement('button');
-  prev.className = 'page-btn';
-  prev.textContent = '‹';
-  prev.disabled = p === 1;
-  prev.onclick = () => currentSearchQuery ? search(currentSearchQuery, p-1) : loadContent(currentMode, currentFilter, p-1);
-  el.appendChild(prev);
-  for(let i = Math.max(1, p-3); i <= p+4; i++){
-    const b = document.createElement('button');
-    b.className = 'page-btn';
-    if(i === p) b.classList.add('active');
-    b.textContent = i;
-    b.onclick = () => currentSearchQuery ? search(currentSearchQuery, i) : loadContent(currentMode, currentFilter, i);
-    el.appendChild(b);
-  }
-  const next = document.createElement('button');
-  next.className = 'page-btn';
-  next.textContent = '›';
-  next.disabled = !more;
-  next.onclick = () => currentSearchQuery ? search(currentSearchQuery, p+1) : loadContent(currentMode, currentFilter, p+1);
-  el.appendChild(next);
-}
+    setCache(ck, processed);
+    return processed;
+  } catch (e) { console.error('FETCH ERR:', src.name, e); return []; }
+};
 
-function getTitle(m, f){
-  if(m === 'default') return 'PHIM MỚI PHIM MỚI NHÀ BÁNH MÌ';
-  if(m === 'genre') return `THỂ LOẠI: ${Object.keys(GENRE_SLUG_MAP).find(k => GENRE_SLUG_MAP[k] === f)?.toUpperCase() || f.toUpperCase()}`;
-  if(m === 'country') return `QUỐC GIA: ${Object.keys(COUNTRY_SLUG_MAP).find(k => COUNTRY_SLUG_MAP[k] === f)?.toUpperCase() || f.toUpperCase()}`;
-  if(m === 'year') return `NĂM: ${f}`;
-  if(m === 'type') return {'phim-bo':'PHIM BỘ','phim-le':'PHIM LẺ'}[f] || f.toUpperCase();
-  if(m === 'cutee'){
-    const l = Object.keys(CUTEE_MENU).find(k => CUTEE_MENU[k].slug === f || CUTEE_MENU[k].filter === f);
-    return l?.toUpperCase() || f.toUpperCase().replace(/-/g, ' ');
-  }
-  return f?.toUpperCase() || 'PHIM';
-}
+// ==================== TÌM KIẾM MỚI: TRÙNG SLUG → [ax bx cx] CẠNH NHAU ====================
+const searchInterleave = async (query, page) => {
+  const sources = Object.values(API_SOURCES);
+  const slugResults = await Promise.all(sources.map(src => fetchFromSource(src, null, null, query, true, false)));
+  const keyResults = await Promise.all(sources.map(src => fetchFromSource(src, page, null, query, false, true)));
 
-async function loadContent(m, f = null, p = 1){
-  ITEMS_PER_PAGE = 5;
-  currentMode = m;
-  currentFilter = f;
-  currentPage = p;
-  if(m === 'default'){
-    document.querySelectorAll('#main-content > .section').forEach(x => x.remove());
-    loadCustomMenu();
-    return;
-  }
-  const tit = getTitle(m, f), sid = `${m}-${f||''}-section`.replace(/--/g, '-');
-  let sec = document.getElementById(sid);
-  if(!sec) sec = createSection(sid, tit);
-  else{
-    sec.querySelector('.section-header').textContent = tit;
-    const prog = document.getElementById(`${sid}-progress`);
-    if(prog) prog.style.width = '0%';
-  }
-  showSection(sec);
-  const grid = document.getElementById(`${sid}-grid`);
-  grid.innerHTML = '';
-  const srcs = Object.values(API_SOURCES);
-  const prom = srcs.map(s => fetchFromSource(s, p, m, f, false, false));
-  const all = await Promise.all(prom);
-  const movs = interleaveSourcesProperly(all, false);
-  await renderMoviesFinal(movs, grid, `${sid}-progress`);
-  renderPagination(p, sid, movs.length >= ITEMS_PER_PAGE);
-  sec.scrollIntoView({behavior: 'smooth'});
-}
-
-async function search(q = null, p = 1){
-  const raw = (q || document.getElementById('nav-search-input').value).trim();
-  if(!raw) return loadContent('default');
-  currentSearchQuery = raw;
-  currentPage = p;
-  const sid = 'search-section';
-  let sec = document.getElementById(sid);
-  if(!sec) sec = createSection(sid, `TÌM: "${raw}"`);
-  else{
-    sec.querySelector('.section-header').textContent = `TÌM: "${raw}"`;
-    const prog = document.getElementById(`${sid}-progress`);
-    if(prog) prog.style.width = '0%';
-  }
-  showSection(sec);
-  const grid = document.getElementById(`${sid}-grid`);
-  grid.innerHTML = '';
-  const srcs = Object.values(API_SOURCES);
-  const sp = srcs.map(s => fetchFromSource(s, p, null, raw, true, false));
-  const kp = srcs.map(s => fetchFromSource(s, p, null, raw, false, true));
-  const [sr, kr] = await Promise.all([Promise.all(sp), Promise.all(kp)]);
-  const movs = interleaveSourcesProperly([...sr, ...kr], true);
-  await renderMoviesFinal(movs, grid, `${sid}-progress`);
-  renderPagination(p, sid, movs.length >= ITEMS_PER_PAGE);
-  sec.scrollIntoView({behavior: 'smooth'});
-}
-
-async function loadCustomMenu(){
-  try{
-    const r = await fetch('custom-menu.txt?t=' + Date.now());
-    if(!r.ok) return;
-    const txt = await r.text();
-    if(!txt.trim()) return;
-    const g = parseCustomMenuWithGroups(txt);
-    for(const [gn, it] of Object.entries(g)){
-      if(it.length === 0) continue;
-      await loadCustomGroup(gn, it);
-    }
-  }catch(e){ loadContentFromAPI('default'); }
-}
-
-function parseCustomMenuWithGroups(txt){
-  const lines = txt.split('\n'), gr = {};
-  let cur = null;
-  lines.forEach(l => {
-    l = l.trim();
-    if(!l) return;
-    if(l.startsWith('#')){
-      cur = l.substring(1).trim().toUpperCase();
-      if(!gr[cur]) gr[cur] = [];
-      return;
-    }
-    if(!cur) return;
-    const p = l.split('|');
-    if(p.length < 2) return;
-    const [st, sk, dt] = p.map(x => x.trim());
-    const sl = st.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-').replace(/^-+|-+$/g, '');
-    gr[cur].push({slug: sl, source: sk.toLowerCase(), display: dt || st});
+  const allMovies = [];
+  sources.forEach((src, idx) => {
+    const combined = [...(slugResults[idx] || []), ...(keyResults[idx] || [])];
+    combined.forEach(m => allMovies.push({ ...m, sourceCode: src.code }));
   });
-  return gr;
-}
 
-async function loadCustomGroup(gn, it){
-  const sid = `custom-group-${gn.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
-  let sec = document.getElementById(sid);
-  if(!sec) sec = createSection(sid, gn);
-  const cont = document.getElementById('main-content');
-  if(!document.getElementById(sid)) cont.appendChild(sec);
-  sec.style.display = 'block';
-  const grid = document.getElementById(`${sid}-grid`);
-  grid.innerHTML = '';
+  const grouped = {};
+  allMovies.forEach(m => {
+    if (!grouped[m.slug]) grouped[m.slug] = { ax: null, bx: null, cx: null };
+    grouped[m.slug][m.sourceCode] = m;
+  });
+
+  const finalOrder = [];
+  Object.values(grouped).forEach(g => {
+    if (g.ax) finalOrder.push(g.ax);
+    if (g.bx) finalOrder.push(g.bx);
+    if (g.cx) finalOrder.push(g.cx);
+  });
+
+  allMovies.forEach(m => {
+    if (!finalOrder.find(x => x.slug === m.slug && x.sourceCode === m.sourceCode)) {
+      finalOrder.push(m);
+    }
+  });
+
+  return finalOrder;
+};
+
+// ==================== INTERLEAVE THƯỜNG ====================
+const interleaveNormal = async (mode, filter, page) => {
+  const sources = Object.values(API_SOURCES);
+  const results = await Promise.all(sources.map(src => fetchFromSource(src, page, mode, filter)));
   const all = [];
-  for(const i of it){
+  const seen = new Set();
+  const idx = new Array(sources.length).fill(0);
+
+  while (all.length < ITEMS_PER_PAGE * 3) {
+    let added = false;
+    for (let i = 0; i < sources.length; i++) {
+      if (idx[i] < results[i].length) {
+        const m = results[i][idx[i]];
+        if (!seen.has(m.slug)) {
+          seen.add(m.slug);
+          all.push(m);
+          added = true;
+          idx[i]++;
+          if (all.length >= ITEMS_PER_PAGE * 3) break;
+        } else idx[i]++;
+      }
+    }
+    if (!added) break;
+  }
+  return all.slice(0, ITEMS_PER_PAGE);
+};
+
+// ==================== RENDER CARD (ABC ĐÈ LÊN KHUNG ẢNH - KHÔNG CHÀN) ====================
+let loaded = 0, total = 0, progId = null;
+const updateProg = id => {
+  loaded++;
+  const bar = document.getElementById(id);
+  if (bar) bar.style.width = (loaded / total * 100) + '%';
+  if (loaded === total) {
+    const c = document.getElementById(id + '-cont');
+    if (c) c.classList.add('done');
+  }
+};
+const createCards = (movies) => {
+  const cards = [];
+  for (const m of movies) {
+    const card = document.createElement('div'); 
+    card.className = 'movie-item'; 
+    card.dataset.slug = m.slug; 
+    card.dataset.source = m.sourceCode;
+    card.onclick = () => location.href = `detail.html?slug=${m.slug}&source=${m.sourceCode}`;
+    
+    const tag = document.createElement('div'); 
+    tag.className = 'movie-source-tag'; 
+    tag.textContent = m.sourceCode;
+
+    // KHUNG ẢNH CHÍNH (ẢNH GỐC)
+    const imgReal = document.createElement('img'); 
+    imgReal.alt = m.name; 
+    imgReal.className = 'movie-img-real';
+    imgReal.style.opacity = '0'; 
+    imgReal.style.transition = 'opacity .4s ease';
+    imgReal.style.position = 'absolute';
+    imgReal.style.top = '0'; imgReal.style.left = '0';
+    imgReal.style.width = '100%'; imgReal.style.height = '100%';
+    imgReal.style.objectFit = 'cover';
+
+    // KHUNG ABC ĐÈ LÊN (Z-INDEX CAO HƠN)
+    const imgPlaceholder = document.createElement('img'); 
+    imgPlaceholder.alt = m.name; 
+    imgPlaceholder.src = PLACEHOLDER_LOW; // ABC.JPG
+    imgPlaceholder.className = 'movie-img-placeholder';
+    imgPlaceholder.style.opacity = '1';
+    imgPlaceholder.style.position = 'absolute';
+    imgPlaceholder.style.top = '0'; imgPlaceholder.style.left = '0';
+    imgPlaceholder.style.width = '100%'; imgPlaceholder.style.height = '100%';
+    imgPlaceholder.style.objectFit = 'cover';
+    imgPlaceholder.style.zIndex = '2';
+    imgPlaceholder.style.transition = 'opacity .4s ease';
+
+    // CONTAINER ẢNH (RELATIVE ĐỂ ĐÈ)
+    const imgContainer = document.createElement('div');
+    imgContainer.className = 'movie-img-container';
+    imgContainer.style.position = 'relative';
+    imgContainer.style.width = '100%';
+    imgContainer.style.paddingBottom = '150%'; // TỶ LỆ 2:3
+    imgContainer.style.overflow = 'hidden';
+    imgContainer.style.borderRadius = '8px';
+    imgContainer.append(imgReal, imgPlaceholder);
+
+    const cont = document.createElement('div'); 
+    cont.className = 'movie-item-content';
+    cont.innerHTML = `<div class="movie-item-title">${m.name}</div><div class="movie-infos"><span>★ *</span><span>⏱ ${m.episodeDisplay}</span><span>${m.quality}</span><span>${m.lang}</span></div>`;
+    
+    card.append(tag, imgContainer, cont);
+    cards.push({card, imgReal, imgPlaceholder, url: m.thumb_url});
+  }
+  return cards;
+};
+const renderFinal = async (movies, container, id) => {
+  container.innerHTML = ''; 
+  const disp = movies.slice(0, ITEMS_PER_PAGE); 
+  total = disp.length; 
+  loaded = 0; 
+  progId = id;
+  const cards = createCards(disp);
+  cards.forEach(o => container.appendChild(o.card));
+  
+  // LOAD ẢNH GỐC → HIỆN ẢNH, ẨN ABC
+  cards.forEach((o, i) => {
+    const real = new Image();
+    real.onload = () => {
+      o.imgReal.src = o.url;
+      o.imgReal.style.opacity = '1';
+      o.imgPlaceholder.style.opacity = '0'; // ẨN ABC MƯỢT
+      updateProg(id);
+    };
+    real.onerror = () => {
+      o.imgPlaceholder.style.opacity = '1'; // GIỮ ABC NẾU LỖI
+      updateProg(id);
+    };
+    real.src = o.url;
+  });
+};
+
+// ==================== SECTION & PAGINATION ====================
+const createSec = (id, title) => {
+  const s = document.createElement('div'); 
+  s.className='section'; 
+  s.id=id;
+  s.innerHTML = `<div class="progress-container" id="${id}-progress-cont"><div class="progress-bar" id="${id}-progress"></div></div><div class="container"><div class="section-header">${title}</div><div class="movie-grid" id="${id}-grid"></div><div class="pagination" id="${id}-pagination"></div></div>`;
+  return s;
+};
+const showSec = sec => {
+  document.querySelectorAll('#main-content > .section').forEach(x=>x.style.display='none');
+  const c = document.getElementById('main-content'), ex = document.getElementById(sec.id);
+  if (ex) { ex.style.display='block'; c.insertBefore(ex, c.firstChild); }
+  else { c.insertBefore(sec, c.firstChild); sec.style.display='block'; }
+};
+const renderPag = (p, sid, more, totalItems, mode, filter) => {
+  const el = document.getElementById(`${sid}-pagination`); if (!el) return; el.innerHTML='';
+  const prev = document.createElement('button'); prev.className='page-btn'; prev.textContent='‹'; prev.disabled=p===1;
+  prev.onclick=()=>{ currentSearchQuery?search(currentSearchQuery,p-1):load(mode,filter,p-1); }; el.appendChild(prev);
+  const maxPage = Math.ceil(totalItems/ITEMS_PER_PAGE);
+  const start = Math.max(1, p-3), end = Math.min(p+4, maxPage);
+  for(let i=start;i<=end;i++){ 
+    const b=document.createElement('button'); 
+    b.className='page-btn'; 
+    if(i===p) b.classList.add('active'); 
+    b.textContent=i;
+    b.onclick=()=>{ currentSearchQuery?search(currentSearchQuery,i):load(mode,filter,i); }; 
+    el.appendChild(b); 
+  }
+  const next=document.createElement('button'); next.className='page-btn'; next.textContent='›'; next.disabled=!more || p>=maxPage;
+  next.onclick=()=>{ currentSearchQuery?search(currentSearchQuery,p+1):load(mode,filter,p+1); }; 
+  el.appendChild(next);
+};
+
+// ==================== TITLE & LOAD ====================
+const getTitle = (m,f) => {
+  if(m==='default') return 'PHIM MỚI NHÀ BÁNH MÌ';
+  if(m==='genre') return `THỂ LOẠI: ${Object.keys(GENRE_SLUG_MAP).find(k=>GENRE_SLUG_MAP[k]===f)?.toUpperCase()||f.toUpperCase()}`;
+  if(m==='country') return `QUỐC GIA: ${Object.keys(COUNTRY_SLUG_MAP).find(k=>COUNTRY_SLUG_MAP[k]===f)?.toUpperCase()||f.toUpperCase()}`;
+  if(m==='year') return `NĂM: ${f}`;
+  if(m==='type') return {'phim-bo':'PHIM BỘ','phim-le':'PHIM LẺ'}[f]||f.toUpperCase();
+  if(m==='cutee') { const l=Object.keys(CUTEE_MENU).find(k=>CUTEE_MENU[k].slug===f||CUTEE_MENU[k].filter===f); return l?.toUpperCase()||f.toUpperCase().replace(/-/g,' '); }
+  return f?.toUpperCase()||'PHIM';
+};
+const load = async (m, f=null, p=1) => {
+  currentSearchQuery = ''; 
+  document.getElementById('nav-search-input').value = ''; 
+  currentMode = m; currentFilter = f; currentPage = p;
+  if(m==='default'){ document.querySelectorAll('#main-content > .section').forEach(x=>x.remove()); loadTxt(); return; }
+  const title=getTitle(m,f), sid=`${m}-${f||''}-sec`.replace(/--/g,'-');
+  let sec=document.getElementById(sid); if(!sec) sec=createSec(sid,title);
+  else { sec.querySelector('.section-header').textContent=title; const pr=document.getElementById(`${sid}-progress`); if(pr)pr.style.width='0%'; }
+  showSec(sec); const grid=document.getElementById(`${sid}-grid`); grid.innerHTML='';
+  const movies=await interleaveNormal(m,f,p);
+  await renderFinal(movies,grid,`${sid}-progress`);
+  renderPag(p,sid,movies.length>=ITEMS_PER_PAGE, Infinity, m, f);
+  sec.scrollIntoView({behavior:'smooth'});
+};
+
+// ==================== TÌM KIẾM ====================
+let searchTotalItems = 0;
+const search = async (q=null,p=1) => {
+  const raw=(q||document.getElementById('nav-search-input').value).trim(); if(!raw) return load('default');
+  currentSearchQuery=raw; currentPage=p; const sid='search-sec';
+  let sec=document.getElementById(sid); if(!sec) sec=createSec(sid,`TÌM: "${raw}"`);
+  else { sec.querySelector('.section-header').textContent=`TÌM: "${raw}"`; const pr=document.getElementById(`${sid}-progress`); if(pr)pr.style.width='0%'; }
+  showSec(sec); const grid=document.getElementById(`${sid}-grid`); grid.innerHTML='';
+  
+  const allMovies = await searchInterleave(raw, p);
+  searchTotalItems = allMovies.length;
+  const pageMovies = allMovies.slice((p-1)*ITEMS_PER_PAGE, p*ITEMS_PER_PAGE);
+  
+  await renderFinal(pageMovies, grid, `${sid}-progress`);
+  renderPag(p, sid, allMovies.length > p*ITEMS_PER_PAGE, searchTotalItems, null, raw);
+  sec.scrollIntoView({behavior:'smooth'});
+};
+
+// ==================== TXT MENU ====================
+const loadTxt = async () => {
+  try {
+    const r = await fetch('custom-menu.txt?t=' + Date.now());
+    if (!r.ok) throw 1;
+    const txt = await r.text();
+    if (!txt.trim()) throw 1;
+    const groups = parseTxt(txt);
+    for (const [name, items] of Object.entries(groups)) if (items.length) await loadGroup(name, items);
+  } catch { loadDefaultAPI(); }
+};
+const parseTxt = txt => {
+  const lines = txt.split('\n'), g = {}; let cur = null;
+  lines.forEach(l => {
+    l = l.trim(); if (!l) return;
+    if (l.startsWith('#')) { cur = l.substring(1).trim().toUpperCase(); if (!g[cur]) g[cur] = []; return; }
+    if (!cur) return;
+    const p = l.split('|'); if (p.length < 2) return;
+    const [st, sk, dt] = p.map(x => x.trim());
+    const sl = st.toLowerCase().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,'-').replace(/^-+|-+$/g,'');
+    g[cur].push({slug:sl, source:sk.toLowerCase(), display:dt||st});
+  });
+  return g;
+};
+const loadGroup = async (name, items) => {
+  const sid = `txt-${name.toLowerCase().replace(/[^a-z0-9]/g,'-')}`;
+  let sec = document.getElementById(sid); if (!sec) sec = createSec(sid, name);
+  const cont = document.getElementById('main-content');
+  if (!document.getElementById(sid)) cont.appendChild(sec);
+  sec.style.display = 'block';
+  const grid = document.getElementById(`${sid}-grid`); grid.innerHTML = '';
+  const all = [];
+  for (const i of items) {
     const src = Object.values(API_SOURCES).find(s => s.name.toLowerCase() === i.source);
-    if(!src) continue;
+    if (!src) continue;
     const res = await fetchFromSource(src, null, null, i.slug, true, false);
     all.push(...res);
   }
   const seen = new Set(), fin = all.filter(m => !seen.has(m.slug) && seen.add(m.slug));
-  await renderMoviesFinal(fin, grid, `${sid}-progress`);
-  const pag = document.getElementById(`${sid}-pagination`);
-  if(pag) pag.style.display = 'none';
-}
+  await renderFinal(fin, grid, `${sid}-progress`);
+  const pag = document.getElementById(`${sid}-pagination`); if (pag) pag.style.display = 'none';
+};
+const loadDefaultAPI = async () => {
+  const sid = 'default-sec'; let sec = document.getElementById(sid); if (!sec) sec = createSec(sid, 'PHIM MỚI CẬP NHẬT');
+  showSec(sec); const grid = document.getElementById(`${sid}-grid`); grid.innerHTML = '';
+  const movies = await interleaveNormal('default', null, 1);
+  await renderFinal(movies, grid, `${sid}-progress`);
+  renderPag(1, sid, movies.length >= ITEMS_PER_PAGE, Infinity, 'default', null);
+};
 
-async function loadContentFromAPI(m, f = null, p = 1){
-  const sid = 'fallback-section';
-  let sec = document.getElementById(sid);
-  if(!sec) sec = createSection(sid, 'PHIM MỚI CẬP NHẬT');
-  showSection(sec);
-  const grid = document.getElementById(`${sid}-grid`);
-  grid.innerHTML = '';
-  const srcs = Object.values(API_SOURCES);
-  const prom = srcs.map(s => fetchFromSource(s, p, m, f));
-  const all = await Promise.all(prom);
-  const movs = interleaveSourcesProperly(all);
-  await renderMoviesFinal(movs, grid, `${sid}-progress`);
-  renderPagination(p, sid, movs.length >= ITEMS_PER_PAGE);
-}
-
+// ==================== MODAL & NAV ====================
 const modalBackdrop = document.getElementById('modalBackdrop');
 const modalTitle = document.getElementById('modalTitle');
 const modalBody = document.getElementById('modalBody');
 const modalClose = document.getElementById('modalClose');
 const hamburger = document.getElementById('hamburger');
 
-function openModal(tit, items, cb){
-  modalTitle.textContent = tit;
-  modalBody.innerHTML = '';
-  document.querySelectorAll('.modal-item.active').forEach(x => x.classList.remove('active'));
+const openModal = (t, items, cb) => {
+  modalTitle.textContent = t; modalBody.innerHTML = '';
+  document.querySelectorAll('.modal-item.active').forEach(x=>x.classList.remove('active'));
   items.forEach(it => {
-    const d = document.createElement('div');
-    d.className = 'modal-item';
-    d.textContent = it;
-    d.onclick = () => {
-      document.querySelectorAll('.modal-item.active').forEach(x => x.classList.remove('active'));
-      d.classList.add('active');
-      cb(it);
-    };
+    const d = document.createElement('div'); d.className = 'modal-item'; d.textContent = it;
+    d.onclick = () => { document.querySelectorAll('.modal-item.active').forEach(x=>x.classList.remove('active')); d.classList.add('active'); cb(it); };
     modalBody.appendChild(d);
   });
   modalBackdrop.classList.add('show');
-  setTimeout(() => { modalBackdrop.scrollTop = 0; }, 150);
-}
-
-function closeModal(){ modalBackdrop.classList.remove('show'); }
-
+};
+const closeModal = () => modalBackdrop.classList.remove('show');
 modalClose.onclick = closeModal;
-modalBackdrop.onclick = e => { if(e.target === modalBackdrop) closeModal(); };
+modalBackdrop.onclick = e => { if (e.target === modalBackdrop) closeModal(); };
 
 document.addEventListener('DOMContentLoaded', () => {
-  hamburger.onclick = () => openModal('DANH MỤC CHÍNH', ['Thể Loại','Quốc Gia','Năm','Khác','Phim Bộ','Phim Lẻ','Cinemax'], v => {
-    if(v === 'Thể Loại') openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), x => loadContent('genre', GENRE_SLUG_MAP[x], 1));
-    if(v === 'Quốc Gia') openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x => loadContent('country', COUNTRY_SLUG_MAP[x], 1));
-    if(v === 'Năm') openModal('NĂM', Array.from({length: 25}, (_, i) => 2025 - i), x => loadContent('year', x, 1));
-    if(v === 'Khác') openModal('KHÁC', Object.keys(CUTEE_MENU), x => { const c = CUTEE_MENU[x]; loadContent(c.mode, c.slug || c.filter, 1); });
-    if(v === 'Phim Bộ') loadContent('type', 'phim-bo', 1);
-    if(v === 'Phim Lẻ') loadContent('type', 'phim-le', 1);
-    if(v === 'Cinemax') loadContent('cutee', 'phim-chieu-rap', 1);
+  hamburger.onclick = () => openModal('MENU', ['Thể Loại','Quốc Gia','Năm','Khác','Phim Bộ','Phim Lẻ','Cinemax'], v => {
+    if(v==='Thể Loại') openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), x=>load('genre',GENRE_SLUG_MAP[x],1));
+    if(v==='Quốc Gia') openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x=>load('country',COUNTRY_SLUG_MAP[x],1));
+    if(v==='Năm') openModal('NĂM', Array.from({length:25},(_,i)=>2025-i), x=>load('year',x,1));
+    if(v==='Khác') openModal('KHÁC', Object.keys(CUTEE_MENU), x=>{const c=CUTEE_MENU[x];load(c.mode,c.slug||c.filter,1);});
+    if(v==='Phim Bộ') load('type','phim-bo',1);
+    if(v==='Phim Lẻ') load('type','phim-le',1);
+    if(v==='Cinemax') load('cutee','phim-chieu-rap',1);
   });
 
   document.querySelectorAll('.menu-trigger').forEach(el => {
-    el.onclick = e => {
-      e.preventDefault();
-      const tar = el.dataset.target;
-      if(tar === 'genre') openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), x => loadContent('genre', GENRE_SLUG_MAP[x], 1));
-      if(tar === 'country') openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x => loadContent('country', COUNTRY_SLUG_MAP[x], 1));
-      if(tar === 'year') openModal('NĂM', Array.from({length: 25}, (_, i) => 2025 - i), x => loadContent('year', x, 1));
-      if(tar === 'cutee') openModal('KHÁC', Object.keys(CUTEE_MENU), x => { const c = CUTEE_MENU[x]; loadContent(c.mode, c.slug || c.filter, 1); });
+    el.onclick = e => { e.preventDefault();
+      const t = el.dataset.target;
+      if(t==='genre') openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), x=>load('genre',GENRE_SLUG_MAP[x],1));
+      if(t==='country') openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x=>load('country',COUNTRY_SLUG_MAP[x],1));
+      if(t==='year') openModal('NĂM', Array.from({length:25},(_,i)=>2025-i), x=>load('year',x,1));
+      if(t==='cutee') openModal('KHÁC', Object.keys(CUTEE_MENU), x=>{const c=CUTEE_MENU[x];load(c.mode,c.slug||c.filter,1);});
     };
   });
 
-  document.getElementById('home-link').onclick = e => { e.preventDefault(); loadContent('default'); };
-  document.getElementById('phim-bo').onclick = e => { e.preventDefault(); loadContent('type', 'phim-bo', 1); };
-  document.getElementById('phim-le').onclick = e => { e.preventDefault(); loadContent('type', 'phim-le', 1); };
-  document.getElementById('phim-chieu-rap').onclick = e => { e.preventDefault(); loadContent('cutee', 'phim-chieu-rap', 1); };
+  document.getElementById('home-link').onclick = e => { e.preventDefault(); load('default'); };
+  document.getElementById('phim-bo').onclick = e => { e.preventDefault(); load('type','phim-bo',1); };
+  document.getElementById('phim-le').onclick = e => { e.preventDefault(); load('type','phim-le',1); };
+  document.getElementById('phim-chieu-rap').onclick = e => { e.preventDefault(); load('cutee','phim-chieu-rap',1); };
   document.getElementById('nav-search-btn').onclick = () => search();
-  document.getElementById('nav-search-input').addEventListener('keypress', e => { if(e.key === 'Enter') search(); });
-  loadContent('default');
+  document.getElementById('nav-search-input').addEventListener('keypress', e => { if(e.key==='Enter') search(); });
+
+  load('default');
 });
 </script>
 </body>
