@@ -134,7 +134,15 @@ const API_SOURCES = {
 let ITEMS_PER_PAGE = 20, currentMode = 'default', currentFilter = null, currentPage = 1, currentSearchQuery = '';
 const PLACEHOLDER_LOW = 'abc.jpg';
 
-// ==================== KHÔNG CẦN CACHE NỮA → LOẠI BỎ HOÀN TOÀN ====================
+// ==================== LƯU / KHÔI PHỤC TRẠNG THÁI ====================
+const STATE_KEY = 'phim_state';
+const saveState = () => localStorage.setItem(STATE_KEY, JSON.stringify({mode:currentMode,filter:currentFilter,page:currentPage,search:currentSearchQuery}));
+const loadState = () => {
+  try{ const s = JSON.parse(localStorage.getItem(STATE_KEY)||'{}');
+    if(s.mode){ currentMode=s.mode; currentFilter=s.filter; currentPage=s.page||1; currentSearchQuery=s.search||''; }
+  }catch{}
+};
+const clearState = () => localStorage.removeItem(STATE_KEY);
 
 // ==================== EPISODE ====================
 const getEpisodeDisplay = i => {
@@ -154,7 +162,7 @@ const getEpisodeDisplay = i => {
   return disp;
 };
 
-// ==================== FETCH & PROCESS (LUÔN MỚI) ====================
+// ==================== FETCH & PROCESS ====================
 const fetchFromSource = async (src, p, m, f, isS = false, isK = false) => {
   let url = '';
   if (isK) url = src.keywordSearchUrl(f, p);
@@ -195,7 +203,6 @@ const fetchFromSource = async (src, p, m, f, isS = false, isK = false) => {
   } catch (e) { console.error('FETCH ERR:', src.name, e); return []; }
 };
 
-// ==================== INTERLEAVE FULL (AX→BX→CX, LẤY 60 → LỌC TRÙNG → CẮT 20) ====================
 const interleaveFull = async (mode, filter, page, isSearch = false, isKeyword = false) => {
   const sources = Object.values(API_SOURCES);
   const results = await Promise.all(sources.map(src => fetchFromSource(src, page, mode, filter, isSearch, isKeyword)));
@@ -222,7 +229,7 @@ const interleaveFull = async (mode, filter, page, isSearch = false, isKeyword = 
   return all.slice(0, ITEMS_PER_PAGE);
 };
 
-// ==================== TÌM KIẾM (SLUG ƯU TIÊN + KHÔNG TRÙNG) ====================
+// ==================== TÌM KIẾM ====================
 const search = async (q=null, p=1) => {
   const raw = (q || document.getElementById('nav-search-input').value).trim();
   if (!raw) return load('default');
@@ -239,9 +246,10 @@ const search = async (q=null, p=1) => {
   await renderFinal(fin, grid, `${sid}-progress`);
   renderPag(p, sid, fin.length >= ITEMS_PER_PAGE);
   sec.scrollIntoView({behavior:'smooth'});
+  saveState();
 };
 
-// ==================== RENDER CARD (GIỮ NGUYÊN GIAO DIỆN + ẢNH MƯỢT) ====================
+// ==================== RENDER CARD ====================
 let loaded = 0, total = 0, progId = null;
 const updateProg = id => {
   loaded++;
@@ -254,12 +262,15 @@ const updateProg = id => {
 };
 const createCard = (m, id) => {
   const c = document.createElement('div'); c.className = 'movie-item'; c.dataset.slug = m.slug; c.dataset.source = m.sourceCode;
-  c.onclick = () => location.href = `detail.html?slug=${m.slug}&source=${m.sourceCode}`;
+  c.onclick = () => {
+    saveState(); // <-- LƯU TRƯỚC KHI QUA DETAIL
+    location.href = `detail.html?slug=${m.slug}&source=${m.sourceCode}`;
+  };
 
   const sourceTag = document.createElement('div'); sourceTag.className = 'movie-source-tag'; sourceTag.textContent = m.sourceCode;
   const qualityTag = document.createElement('div'); qualityTag.className = 'movie-quality-tag'; qualityTag.textContent = m.quality || ''; if (!qualityTag.textContent) qualityTag.style.display = 'none';
   const epTag = document.createElement('div'); epTag.className = 'movie-ep-tag'; epTag.textContent = m.episodeDisplay || ''; if (!epTag.textContent) epTag.style.display = 'none';
-  const langTag = document.createElement('div'); langTag.className = 'movie-lang-tag'; langTag.textContent = m.lang || ''; if (!langTag.textContent) langTag.style.display = 'none';
+const langTag = document.createElement('div'); langTag.className = 'movie-lang-tag';
   const yearTag = document.createElement('div'); yearTag.className = 'movie-year-tag'; yearTag.textContent = m.year || ''; if (!yearTag.textContent) yearTag.style.display = 'none';
   const titleTag = document.createElement('div'); titleTag.className = 'movie-title'; titleTag.textContent = m.name;
 
@@ -300,11 +311,11 @@ const showSec = sec => {
 const renderPag = (p, sid, more) => {
   const el = document.getElementById(`${sid}-pagination`); if (!el) return; el.innerHTML='';
   const prev = document.createElement('button'); prev.className='page-btn'; prev.textContent='‹'; prev.disabled=p===1;
-  prev.onclick=()=>currentSearchQuery?search(currentSearchQuery,p-1):load(currentMode,currentFilter,p-1); el.appendChild(prev);
+  prev.onclick=()=>{ currentSearchQuery?search(currentSearchQuery,p-1):load(currentMode,currentFilter,p-1); }; el.appendChild(prev);
   for(let i=Math.max(1,p-3);i<=p+4;i++){ const b=document.createElement('button'); b.className='page-btn'; if(i===p)b.classList.add('active'); b.textContent=i;
-  b.onclick=()=>currentSearchQuery?search(currentSearchQuery,i):load(currentMode,currentFilter,i); el.appendChild(b); }
+  b.onclick=()=>{ currentSearchQuery?search(currentSearchQuery,i):load(currentMode,currentFilter,i); }; el.appendChild(b); }
   const next=document.createElement('button'); next.className='page-btn'; next.textContent='›'; next.disabled=!more;
-  next.onclick=()=>currentSearchQuery?search(currentSearchQuery,p+1):load(currentMode,currentFilter,p+1); el.appendChild(next);
+  next.onclick=()=>{ currentSearchQuery?search(currentSearchQuery,p+1):load(currentMode,currentFilter,p+1); }; el.appendChild(next);
 };
 
 // ==================== TITLE & LOAD ====================
@@ -318,10 +329,10 @@ const getTitle = (m,f) => {
   return f?.toUpperCase()||'PHIM';
 };
 const load = async (m, f=null, p=1) => {
-  currentSearchQuery = ''; // ĐẢM BẢO KHÔNG DÍNH TÌM KIẾM CŨ
+  currentSearchQuery = '';
   document.getElementById('nav-search-input').value = '';
   currentMode=m; currentFilter=f; currentPage=p;
-  if(m==='default'){ document.querySelectorAll('#main-content > .section').forEach(x=>x.remove()); loadTxt(); return; }
+  if(m==='default'){ document.querySelectorAll('#main-content > .section').forEach(x=>x.remove()); loadTxt(); saveState(); return; }
   const title=getTitle(m,f), sid=`${m}-${f||''}-sec`.replace(/--/g,'-');
   let sec=document.getElementById(sid); if(!sec) sec=createSec(sid,title);
   else { sec.querySelector('.section-header').textContent=title; const pr=document.getElementById(`${sid}-progress`); if(pr)pr.style.width='0%'; }
@@ -330,9 +341,10 @@ const load = async (m, f=null, p=1) => {
   await renderFinal(movies,grid,`${sid}-progress`);
   renderPag(p,sid,movies.length>=ITEMS_PER_PAGE);
   sec.scrollIntoView({behavior:'smooth'});
+  saveState();
 };
 
-// ==================== TXT MENU (KHÔNG TRÙNG) ====================
+// ==================== TXT MENU ====================
 const loadTxt = async () => {
   try {
     const r = await fetch('custom-menu.txt?t=' + Date.now());
@@ -380,6 +392,7 @@ const loadDefaultAPI = async () => {
   const movies = await interleaveFull('default', null, 1);
   await renderFinal(movies, grid, `${sid}-progress`);
   renderPag(1, sid, movies.length >= ITEMS_PER_PAGE);
+  saveState();
 };
 
 // ==================== MODAL & NAV ====================
@@ -404,15 +417,40 @@ modalClose.onclick = closeModal;
 modalBackdrop.onclick = e => { if (e.target === modalBackdrop) closeModal(); };
 
 document.addEventListener('DOMContentLoaded', () => {
-  hamburger.onclick = () => openModal('MENU', ['Thể Loại','Quốc Gia','Năm','Khác','Phim Bộ','Phim Lẻ','Cinemax'], v => {
-    if(v==='Thể Loại') openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), x=>load('genre',GENRE_SLUG_MAP[x],1));
-    if(v==='Quốc Gia') openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x=>load('country',COUNTRY_SLUG_MAP[x],1));
-    if(v==='Năm') openModal('NĂM', Array.from({length:25},(_,i)=>2025-i), x=>load('year',x,1));
-    if(v==='Khác') openModal('KHÁC', Object.keys(CUTEE_MENU), x=>{const c=CUTEE_MENU[x];load(c.mode,c.slug||c.filter,1);});
-    if(v==='Phim Bộ') load('type','phim-bo',1);
-    if(v==='Phim Lẻ') load('type','phim-le',1);
-    if(v==='Cinemax') load('cutee','phim-chieu-rap',1);
-  });
+  // KHOI PHỤC TRẠNG THÁI KHI QUAY LẠI TỪ DETAIL
+  loadState();
+  if (currentSearchQuery) {
+    document.getElementById('nav-search-input').value = currentSearchQuery;
+    search(currentSearchQuery, currentPage);
+  } else if (currentMode !== 'default') {
+    load(currentMode, currentFilter, currentPage);
+  } else {
+    load('default');
+  }
+
+ hamburger.onclick = () => openModal(
+  'MENU',
+  ['Trang chủ','Thể Loại','Quốc Gia','Năm','Khác','Phim Bộ','Phim Lẻ','Cinemax'],
+  v => {
+    if (v === 'Trang chủ') {
+      clearState();
+      window.location.href = 'index4.html'; // về lại trang chính
+      return;
+    }
+    if (v === 'Thể Loại')
+      openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), x => load('genre', GENRE_SLUG_MAP[x], 1));
+    if (v === 'Quốc Gia')
+      openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1));
+    if (v === 'Năm')
+      openModal('NĂM', Array.from({ length: 25 }, (_, i) => 2025 - i), x => load('year', x, 1));
+    if (v === 'Khác')
+      openModal('KHÁC', Object.keys(CUTEE_MENU), x => { const c = CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); });
+    if (v === 'Phim Bộ') load('type', 'phim-bo', 1);
+    if (v === 'Phim Lẻ') load('type', 'phim-le', 1);
+    if (v === 'Cinemax') load('cutee', 'phim-chieu-rap', 1);
+  }
+);
+
 
   document.querySelectorAll('.menu-trigger').forEach(el => {
     el.onclick = e => { e.preventDefault();
@@ -424,14 +462,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   });
 
-  document.getElementById('home-link').onclick = e => { e.preventDefault(); load('default'); };
+  document.getElementById('home-link').onclick = e => { e.preventDefault(); clearState(); load('default'); };
   document.getElementById('phim-bo').onclick = e => { e.preventDefault(); load('type','phim-bo',1); };
   document.getElementById('phim-le').onclick = e => { e.preventDefault(); load('type','phim-le',1); };
   document.getElementById('phim-chieu-rap').onclick = e => { e.preventDefault(); load('cutee','phim-chieu-rap',1); };
   document.getElementById('nav-search-btn').onclick = () => search();
   document.getElementById('nav-search-input').addEventListener('keypress', e => { if(e.key==='Enter') search(); });
-
-  load('default');
 });
 </script>
 </body>
