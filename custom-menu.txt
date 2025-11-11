@@ -36,7 +36,10 @@ doraemon doi ban than 2|nguonc
 yeu em|nguonc
 than den oi uoc di|nguonc
 hau due mat troi|nguonc
+di den noi co gio|phimapi
+
 
 # Danh sách chung : Rạp - NETFLIX
 ca map sieu bao chua|nguonc
 Titanic|nguonc
+
