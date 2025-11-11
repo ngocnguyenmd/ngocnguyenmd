@@ -21,8 +21,8 @@ a{text-decoration:none;color:inherit;}
 .nav-menu{display:inline-flex;list-style:none;gap:1.4rem;}
 .nav-menu a{color:#bbb;font-weight:500;font-size:.95rem;transition:color .25s;}
 .nav-menu a:hover{color:#fff;}
-.hamburger-menu{display:none;flex-direction:column;gap:4px;cursor:pointer;}
-.hamburger{width:22px;height:2px;background:#fff;}
+.hamburger-menu{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:10px;background:#fff;border-radius:6px;}
+.hamburger{width:24px;height:3px;background:#111;border-radius:1px;}
 .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);z-index:999;justify-content:center;align-items:center;opacity:0;transition:opacity .2s ease;}
 .modal-backdrop.show{display:flex;opacity:1;}
 .modal-box{background:#111;border:1px solid rgba(255,255,255,.1);border-radius:12px;width:90%;max-width:800px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;transform:scale(.95);transition:transform .2s ease;}
@@ -41,27 +41,43 @@ a{text-decoration:none;color:inherit;}
 .section{padding:2.5rem 0;position:relative;}
 .section-header{font-size:1.4rem;font-weight:700;margin-bottom:1.2rem;text-transform:uppercase;color:#fff;}
 .movie-grid{display:grid;grid-template-columns:repeat(5,minmax(180px,1fr));gap:1.3rem;}
-.movie-item{position:relative;border-radius:14px;overflow:hidden;background:#111;cursor:pointer;transition:transform .25s,box-shadow .25s;}
-.movie-item img{width:100%;height:340px;object-fit:cover;display:block;transition:opacity .3s ease;opacity:0;}
-.movie-item img.loaded{opacity:1;}
+.movie-item{position:relative;border-radius:14px;overflow:hidden;background:#111;cursor:pointer;transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column;}
 .movie-item:hover{transform:scale(1.04);box-shadow:0 12px 25px rgba(0,0,0,.5);}
-.movie-item-content{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.9) 20%,rgba(0,0,0,.05) 80%);opacity:0;padding:1rem;display:flex;flex-direction:column;justify-content:flex-end;transition:opacity .3s;}
-.movie-item:hover .movie-item-content{opacity:1;}
-.movie-item-title{font-weight:600;font-size:1rem;margin-bottom:.3rem;color:#fff;}
-.movie-infos{display:flex;flex-wrap:wrap;gap:6px 10px;font-size:.8rem;color:#bbb;}
-.movie-infos span{color:#ccc;}
-.movie-source-tag{position:absolute;top:8px;right:8px;background:#292929;color:#a1a1a1;font-size:.75rem;padding:2px 6px;border-radius:6px;pointer-events:none;}
+.movie-img-container{position:relative;width:100%;padding-bottom:150%;overflow:hidden;border-radius:8px;}
+.movie-img-real,.movie-img-placeholder{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:opacity .4s ease;}
+.movie-img-placeholder{z-index:2;opacity:1;}
+.movie-img-real{opacity:0;}
+.movie-source-tag,.movie-ep-tag,.movie-lang-tag,.movie-year-tag,.movie-quality-tag{position:absolute;padding:3px 7px;border-radius:6px;font-size:.75rem;z-index:3;color:#fff;font-weight:600;}
+.movie-source-tag{top:8px;right:8px;background:#000;color:#fff;}
+.movie-ep-tag{top:8px;left:8px;background:#2196f3;}
+.movie-lang-tag {
+    bottom: 48px;
+    left: 8px;
+    background: #ff9800;
+}
+.movie-year-tag {
+    bottom: 48px;
+    right: 8px;
+    background: #4caf50;
+}
+.movie-quality-tag {
+    top: 37px;
+    right: 8px;
+    background: #000;
+    color: #fff;
+}
+.movie-title{position:absolute;bottom:8px;left:8px;right:8px;background:rgba(0,0,0,.7);padding:4px 8px;border-radius:6px;font-weight:600;font-size:.85rem;color:#fff;z-index:3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.progress-container{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.1);overflow:hidden;z-index:10;opacity:1;transition:opacity .3s ease;}
+.progress-container.done{opacity:0;}
+.progress-bar{height:100%;background:#0a84ff;width:0%;transition:width .3s ease;}
 .pagination{display:flex;justify-content:center;margin-top:1rem;gap:6px;}
 .page-btn{background:#111;color:#fff;border:1px solid #222;padding:6px 10px;border-radius:6px;cursor:pointer;transition:background .25s;}
 .page-btn.active{background:#0a84ff;border-color:#0a84ff;}
 .page-btn:hover:not(.active){background:#222;}
 footer{background:#000;border-top:1px solid rgba(255,255,255,.08);color:#999;font-size:.9rem;text-align:center;padding:2rem 0;}
-.progress-container{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.1);overflow:hidden;z-index:10;opacity:1;transition:opacity .3s ease;}
-.progress-container.done{opacity:0;}
-.progress-bar{height:100%;background:#0a84ff;width:0%;transition:width .3s ease;}
 @media (max-width:1200px){.movie-grid{grid-template-columns:repeat(2,minmax(180px,1fr));}}
-@media (max-width:992px){.nav-menu-wrapper{display:none;}.hamburger-menu{display:flex;}.nav-search{max-width:none;flex:1;margin-left:1rem;}.movie-item img{height:260px;}}
-@media (max-width:600px){.container{padding:0 1rem;}.nav-search{margin-left:.5rem;}.movie-item img{height:290px;}.movie-item-title{font-size:.9rem;}.modal-box{width:95%;max-width:none;max-height:90vh;}.modal-grid{grid-template-columns:1fr;}.modal-item{padding:.5rem .8rem;font-size:.85rem;border-right:none;}}
+@media (max-width:992px){.nav-menu-wrapper{display:none;}.hamburger-menu{display:flex;}.nav-search{max-width:none;flex:1;margin-left:1rem;}}
+@media (max-width:600px){.container{padding:0 1rem;}.nav-search{margin-left:.5rem;}.movie-title{font-size:.75rem;}.modal-box{width:95%;max-width:none;max-height:90vh;}.modal-grid{grid-template-columns:1fr;}.modal-item{padding:.5rem .8rem;font-size:.85rem;border-right:none;}}
 </style>
 </head>
 <body>
@@ -72,7 +88,7 @@ footer{background:#000;border-top:1px solid rgba(255,255,255,.08);color:#999;fon
       <a href="#" class="logo">Phim Bánh Mì</a>
       <div class="nav-search">
         <input type="text" class="nav-search-input" id="nav-search-input" placeholder="Tìm - hoặc viết không dấu">
-        <button class="nav-search-btn" id="nav-search-btn">👓️</button>
+        <button class="nav-search-btn" id="nav-search-btn">Search</button>
       </div>
       <div class="nav-menu-wrapper">
         <ul class="nav-menu" id="nav-menu">
@@ -131,8 +147,7 @@ const API_SOURCES = {
 
 let ITEMS_PER_PAGE = 20, currentMode = 'default', currentFilter = null, currentPage = 1, currentSearchQuery = '';
 const CACHE_TTL = 6*60*60*1000;
-const PLACEHOLDER_LOW = 'abc.jpg'; // ABC.JPG CỦA BẠN
-const HEAVY_THRESHOLD = 1024 * 1024;
+const PLACEHOLDER_LOW = 'abc.jpg';
 
 // ==================== CACHE ====================
 const getCacheKey = (src, m, f, p, isS = false, isK = false) => isK ? `cache|k|${src}|${f}|${p}` : isS ? `cache|s|${src}|${f}` : `cache|${src}|${m}|${f||'d'}|${p}`;
@@ -194,8 +209,8 @@ const fetchFromSource = async (src, p, m, f, isS = false, isK = false) => {
         slug: it.slug || '',
         sourceCode: src.code,
         sourceName: src.name,
-        year: it.year || '',
-        lang: it.lang || '',
+        year: (it.year || '').toString(),
+        lang: (it.lang || '').toUpperCase(),
         quality: it.quality || ''
       };
     }).filter(x => x.slug && x.thumb_url);
@@ -205,7 +220,7 @@ const fetchFromSource = async (src, p, m, f, isS = false, isK = false) => {
   } catch (e) { console.error('FETCH ERR:', src.name, e); return []; }
 };
 
-// ==================== TÌM KIẾM MỚI: TRÙNG SLUG → [ax bx cx] CẠNH NHAU ====================
+// ==================== TÌM KIẾM MỚI ====================
 const searchInterleave = async (query, page) => {
   const sources = Object.values(API_SOURCES);
   const slugResults = await Promise.all(sources.map(src => fetchFromSource(src, null, null, query, true, false)));
@@ -266,7 +281,7 @@ const interleaveNormal = async (mode, filter, page) => {
   return all.slice(0, ITEMS_PER_PAGE);
 };
 
-// ==================== RENDER CARD (ABC ĐÈ LÊN KHUNG ẢNH - KHÔNG CHÀN) ====================
+// ==================== RENDER CARD (TÊN ĐÈ LÊN ẢNH + CHẤT LƯỢNG DƯỚI AX/BX/CX + KHÔNG HOVER) ====================
 let loaded = 0, total = 0, progId = null;
 const updateProg = id => {
   loaded++;
@@ -285,50 +300,57 @@ const createCards = (movies) => {
     card.dataset.slug = m.slug; 
     card.dataset.source = m.sourceCode;
     card.onclick = () => location.href = `detail.html?slug=${m.slug}&source=${m.sourceCode}`;
-    
-    const tag = document.createElement('div'); 
-    tag.className = 'movie-source-tag'; 
-    tag.textContent = m.sourceCode;
 
-    // KHUNG ẢNH CHÍNH (ẢNH GỐC)
+    // NHÃN NGUỒN (ĐEN, CHỮ TRẮNG, GÓC PHẢI-TRÊN)
+    const sourceTag = document.createElement('div');
+    sourceTag.className = 'movie-source-tag';
+    sourceTag.textContent = m.sourceCode;
+
+    // NHÃN CHẤT LƯỢNG (ĐEN, CHỮ TRẮNG, DƯỚI NGUỒN)
+    const qualityTag = document.createElement('div');
+    qualityTag.className = 'movie-quality-tag';
+    qualityTag.textContent = m.quality || '';
+    if (!qualityTag.textContent) qualityTag.style.display = 'none';
+
+    // NHÃN TẬP
+    const epTag = document.createElement('div');
+    epTag.className = 'movie-ep-tag';
+    epTag.textContent = m.episodeDisplay || '';
+    if (!epTag.textContent) epTag.style.display = 'none';
+
+    // NHÃN NGÔN NGỮ
+    const langTag = document.createElement('div');
+    langTag.className = 'movie-lang-tag';
+    langTag.textContent = m.lang || '';
+    if (!langTag.textContent) langTag.style.display = 'none';
+
+    // NHÃN NĂM
+    const yearTag = document.createElement('div');
+    yearTag.className = 'movie-year-tag';
+    yearTag.textContent = m.year || '';
+    if (!yearTag.textContent) yearTag.style.display = 'none';
+
+    // TÊN PHIM ĐÈ LÊN ẢNH (LUÔN HIỂN THỊ)
+    const titleTag = document.createElement('div');
+    titleTag.className = 'movie-title';
+    titleTag.textContent = m.name;
+
+    // KHUNG ẢNH
     const imgReal = document.createElement('img'); 
     imgReal.alt = m.name; 
     imgReal.className = 'movie-img-real';
-    imgReal.style.opacity = '0'; 
-    imgReal.style.transition = 'opacity .4s ease';
-    imgReal.style.position = 'absolute';
-    imgReal.style.top = '0'; imgReal.style.left = '0';
-    imgReal.style.width = '100%'; imgReal.style.height = '100%';
-    imgReal.style.objectFit = 'cover';
+    imgReal.style.opacity = '0';
 
-    // KHUNG ABC ĐÈ LÊN (Z-INDEX CAO HƠN)
     const imgPlaceholder = document.createElement('img'); 
     imgPlaceholder.alt = m.name; 
-    imgPlaceholder.src = PLACEHOLDER_LOW; // ABC.JPG
+    imgPlaceholder.src = PLACEHOLDER_LOW;
     imgPlaceholder.className = 'movie-img-placeholder';
-    imgPlaceholder.style.opacity = '1';
-    imgPlaceholder.style.position = 'absolute';
-    imgPlaceholder.style.top = '0'; imgPlaceholder.style.left = '0';
-    imgPlaceholder.style.width = '100%'; imgPlaceholder.style.height = '100%';
-    imgPlaceholder.style.objectFit = 'cover';
-    imgPlaceholder.style.zIndex = '2';
-    imgPlaceholder.style.transition = 'opacity .4s ease';
 
-    // CONTAINER ẢNH (RELATIVE ĐỂ ĐÈ)
     const imgContainer = document.createElement('div');
     imgContainer.className = 'movie-img-container';
-    imgContainer.style.position = 'relative';
-    imgContainer.style.width = '100%';
-    imgContainer.style.paddingBottom = '150%'; // TỶ LỆ 2:3
-    imgContainer.style.overflow = 'hidden';
-    imgContainer.style.borderRadius = '8px';
-    imgContainer.append(imgReal, imgPlaceholder);
+    imgContainer.append(imgReal, imgPlaceholder, sourceTag, qualityTag, epTag, langTag, yearTag, titleTag);
 
-    const cont = document.createElement('div'); 
-    cont.className = 'movie-item-content';
-    cont.innerHTML = `<div class="movie-item-title">${m.name}</div><div class="movie-infos"><span>★ *</span><span>⏱ ${m.episodeDisplay}</span><span>${m.quality}</span><span>${m.lang}</span></div>`;
-    
-    card.append(tag, imgContainer, cont);
+    card.append(imgContainer);
     cards.push({card, imgReal, imgPlaceholder, url: m.thumb_url});
   }
   return cards;
@@ -342,17 +364,16 @@ const renderFinal = async (movies, container, id) => {
   const cards = createCards(disp);
   cards.forEach(o => container.appendChild(o.card));
   
-  // LOAD ẢNH GỐC → HIỆN ẢNH, ẨN ABC
   cards.forEach((o, i) => {
     const real = new Image();
     real.onload = () => {
       o.imgReal.src = o.url;
       o.imgReal.style.opacity = '1';
-      o.imgPlaceholder.style.opacity = '0'; // ẨN ABC MƯỢT
+      o.imgPlaceholder.style.opacity = '0';
       updateProg(id);
     };
     real.onerror = () => {
-      o.imgPlaceholder.style.opacity = '1'; // GIỮ ABC NẾU LỖI
+      o.imgPlaceholder.style.opacity = '1';
       updateProg(id);
     };
     real.src = o.url;
@@ -375,7 +396,7 @@ const showSec = sec => {
 };
 const renderPag = (p, sid, more, totalItems, mode, filter) => {
   const el = document.getElementById(`${sid}-pagination`); if (!el) return; el.innerHTML='';
-  const prev = document.createElement('button'); prev.className='page-btn'; prev.textContent='‹'; prev.disabled=p===1;
+  const prev = document.createElement('button'); prev.className='page-btn'; prev.textContent='Previous'; prev.disabled=p===1;
   prev.onclick=()=>{ currentSearchQuery?search(currentSearchQuery,p-1):load(mode,filter,p-1); }; el.appendChild(prev);
   const maxPage = Math.ceil(totalItems/ITEMS_PER_PAGE);
   const start = Math.max(1, p-3), end = Math.min(p+4, maxPage);
@@ -387,7 +408,7 @@ const renderPag = (p, sid, more, totalItems, mode, filter) => {
     b.onclick=()=>{ currentSearchQuery?search(currentSearchQuery,i):load(mode,filter,i); }; 
     el.appendChild(b); 
   }
-  const next=document.createElement('button'); next.className='page-btn'; next.textContent='›'; next.disabled=!more || p>=maxPage;
+  const next=document.createElement('button'); next.className='page-btn'; next.textContent='Next'; next.disabled=!more || p>=maxPage;
   next.onclick=()=>{ currentSearchQuery?search(currentSearchQuery,p+1):load(mode,filter,p+1); }; 
   el.appendChild(next);
 };
