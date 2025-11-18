@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PhimHay247 - Phim Mới Cập Nhật Full HD</title>
+  <meta name="description" content="Xem phim online miễn phí, phim bộ, phim lẻ, thuyết minh, vietsub chất lượng cao"/>
+  <link rel="stylesheet" href="https://bit.ly/fa471" />
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <h1><i class="fa fa-film"></i> PhimHay247</h1>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Tìm tên phim, diễn viên..."/>
+        <button id="searchBtn"><i class="fa fa-search"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <div class="container">
+      <ul class="menu">
+        <li data-mode="default" class="active">Phim Mới</li>
+        <li data-mode="type" data-filter="phim-bo">Phim Bộ</li>
+        <li data-mode="type" data-filter="phim-le">Phim Lẻ</li>
+        <li data-mode="genre" data-filter="hoat-hinh">Hoạt Hình</li>
+        <li data-mode="cutee" data-slug="chieu-rap">Chiếu Rạp</li>
+        <li data-mode="cutee" data-slug="thuyet-minh">Thuyết Minh</li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="filters container">
+    <select id="genreFilter"><option value="">Thể Loại</option></select>
+    <select id="countryFilter"><option value="">Quốc Gia</option></select>
+    <select id="yearFilter"><option value="">Năm</option></select>
+  </section>
+
+  <main class="container">
+    <div id="movieGrid" class="movie-grid"></div>
+    <div id="loading" class="loading" style="display:none;">
+      <i class="fa fa-spinner fa-spin"></i> Đang tải phim...
+    </div>
+    <div id="loadMore" class="load-more">
+      <button id="btnLoadMore">Tải Thêm</button>
+    </div>
+  </main>
+
+  <div id="movieModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div class="modal-body">
+        <div class="modal-poster">
+          <img id="modalThumb" src="" alt=""/>
+        </div>
+        <div class="modal-info">
+          <h2 id="modalTitle"></h2>
+          <p><strong>Năm:</strong> <span id="modalYear"></span></p>
+          <p><strong>Quốc gia:</strong> <span id="modalCountry"></span></p>
+          <p><strong>Thể loại:</strong> <span id="modalGenre"></span></p>
+          <p><strong>Trạng thái:</strong> <span id="modalStatus"></span></p>
+          <p id="modalDesc"></p>
+          <a id="watchLink" class="btn-watch" target="_blank">
+            <i class="fa fa-play-circle"></i> Xem Phim Ngay
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
