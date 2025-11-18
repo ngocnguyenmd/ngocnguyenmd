@@ -1,38 +1,4 @@
-# Bộ
-hay lay em di anh co muon cuoi em khong|phimapi
-Quy co an danh|nguonc
-Than Den Oi Uoc Di | phimapi
-Tro Choi Thao Tung | phimapi
+# Home
+
 thien dia kiem tam|phimapi
-Bach Nguyet Phan Tinh | phimapi
-hay de toi toa sang | nguonc
-lam giang tien|ax
-Xin Hay Ket Hon Voi Toi Lan Nua | phimapi
-Nghich Ai | ophim
-am ha truyen 2025|phimapi
-
-
-
-# Phim nước ngoài / Movies
-Mat Vu Phu Ho | phimapi
-Bi Mat Kinh Hoang | phimapi
-
-
-# Phim Mới / Cổ trang
-Song trang hoan menh|Phimapi
-phuong hoang dai thuong|Phimapi
-Son ha cham|Phimapi
-toi lam bao mau o lanh cung|Phimapi
-Thuy long ngam|Phimapi
-
-
-# Anime / Hoạt Hình /Series
-Dao hai tac|Phimapi
-Tham tu lung danh conan|Phimapi
-nhung ke xau xa dot nhap|Phimapi
-
-
-# Anime / Movies / Lẻ
-Na Tra 2 Ma Dong Nao Hai | phimapi
-elio cau be den tu trai dat|Phimapi
-lilo va stitch 2025|Phimapi
+tham tu lung danh conan|nguonc
