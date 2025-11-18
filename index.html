@@ -275,79 +275,98 @@ a{text-decoration:none;color:inherit;}
     position: absolute;
     top: 12px;
     left: 12px;
-    background: linear-gradient(90deg, rgba(255, 255, 255, .15), #0a84ff);
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: .75rem;
-    font-weight: 700;
-    color: #f9f9f9d9;
+    background: linear-gradient(135deg, rgba(10, 132, 255, 0.9), rgba(10, 132, 255, 0.7));
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #ffffff;
     text-transform: uppercase;
     z-index: 3;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+    letter-spacing: 0.5px;
 }
-.movie-top-right{
-    position:absolute;
-    top:12px;
-    right:12px;
-    display:flex;
-    gap:6px;
-    z-index:3;
+
+.movie-top-right {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 8px;
+    z-index: 3;
 }
+
 .movie-quality-tag, .movie-source-tag {
-    background: rgb(0 0 0 / 30%);
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: .75rem;
-    font-weight: 700;
-    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #ffffff;
     text-transform: uppercase;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.5px;
 }
 
 .movie-lang-tag {
     position: absolute;
-    bottom: 10px;
+    bottom: 62px;
     left: 12px;
-    background: linear-gradient(90deg, rgba(255, 255, 255, .15), #0a84ff);
+    background: linear-gradient(135deg, rgba(10, 132, 255, 0.9), rgba(10, 132, 255, 0.7));
     padding: 4px 10px;
-    border-radius: 6px;
-    font-size: .75rem;
-    color: #fff;
-    font-weight: 700;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    color: #ffffff;
+    font-weight: 800;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+    letter-spacing: 0.5px;
 }
+
 .movie-year-tag {
     position: absolute;
-    bottom: 10px;
-    right: 8px;
-    background: linear-gradient(90deg, rgba(255, 255, 255, .15), #0a84ff);
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: .75rem;
-    color: #fff;
-    font-weight: 600;
+    bottom: 289px;
+    right: 180px;
+    background: linear-gradient(135deg, rgba(10, 132, 255, 0.9), rgba(10, 132, 255, 0.7));
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    color: #ffffff;
+    font-weight: 700;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+    letter-spacing: 0.5px;
 }
 
 /* TITLE */
 .movie-title {
     position: absolute;
-    bottom: 40px;
-    left: 10px;
-    right: 10px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: .9rem;
-    font-weight: 700;
+    bottom: 8px;
+    left: 12px;
+    right: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 800;
     color: #ffffff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     z-index: 3;
-    /* box-shadow: -3px 9px 6px rgba(0, 0, 0, .5); */
-    transition: transform .25s;
-
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.3px;
 }
-*
-.movie-item:hover .movie-title{
-    transform:translateY(-3px);
-    
+
+.movie-item:hover .movie-title {
+    transform: translateY(-5px);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
 }
 
 /* ===============================
@@ -500,7 +519,16 @@ const API_SOURCES = {
   Nguonc: { name: 'Nguonc', code: 'cx', defaultUrl: p => `https://phim.nguonc.com/api/films/phim-moi-cap-nhat?page=${p}`, genreUrl: (s,p) => `https://phim.nguonc.com/api/films/danh-sach/${s}?page=${p}`, countryUrl: (s,p) => `https://phim.nguonc.com/api/films/quoc-gia/${s}?page=${p}`, yearUrl: (y,p) => `https://phim.nguonc.com/api/films/nam-phat-hanh/${y}?page=${p}`, typeUrl: (t,p) => `https://phim.nguonc.com/api/films/danh-sach/${t}?page=${p}`, cuteeUrl: (s,p) => { const m = {'tv-shows':'tv-shows','dang-chieu':'phim-dang-chieu','hoat-hinh':'hoat-hinh'}; return `https://phim.nguonc.com/api/films/danh-sach/${m[s]||s}?page=${p}`; }, searchUrl: s => `https://phim.nguonc.com/api/film/${s}`, keywordSearchUrl: (k,p=1) => `https://phim.nguonc.com/api/films/search?keyword=${encodeURIComponent(k)}&page=${p}`, parser: d => d?.items || [], searchParser: d => d?.movie ? [d.movie] : [], keywordParser: d => d?.items || [], getCdn: () => "https://phim.nguonc.com/public/images/Poster/" } 
 };
 
-let ITEMS_PER_PAGE = 15, currentMode = 'default', currentFilter = null, currentPage = 1, currentSearchQuery = '';
+let ITEMS_PER_PAGE = 25, currentMode = 'default', currentFilter = null, currentPage = 1, currentSearchQuery = '';
+const MAX_CONCURRENT = 1;
+
+// ==================== PROXY ẢNH WESERV.NL (CHỈ THÊM ĐOẠN NÀY) ====================
+const proxyImage = (url) => {
+    if (!url || url.startsWith('data:') || url.includes('images.weserv.nl')) return url || 'https://via.placeholder.com/300x450/222222/999999?text=No+Image';
+    return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=600&h=900&fit=outside&output=webp&q=85&il`;
+};
+
+// Placeholder nhẹ khi lỗi ảnh
 const PLACEHOLDER_LOW = 'abc.jpg';
 
 // ==================== LƯU / KHÔI PHỤC TRẠNG THÁI ====================
@@ -618,7 +646,7 @@ const search = async (q=null, p=1) => {
   saveState();
 };
 
-// ==================== RENDER CARD ====================
+// ==================== RENDER CARD (ĐÃ QUA PROXY) ====================
 let loaded = 0, total = 0, progId = null;
 const updateProg = id => {
   loaded++;
@@ -629,6 +657,7 @@ const updateProg = id => {
     if (c) c.classList.add('done');
   }
 };
+
 const createCard = (m, id) => {
     const c = document.createElement('div');
     c.className = 'movie-item';
@@ -640,105 +669,98 @@ const createCard = (m, id) => {
         location.href = `detail.html?slug=${m.slug}&source=${m.sourceCode}`;
     };
 
-    // =======================
-    // TAG TRÊN TRÁI – EPISODE
-    // =======================
     const epTag = document.createElement('div');
     epTag.className = 'movie-ep-tag';
     epTag.textContent = m.episodeDisplay || '';
     if (!epTag.textContent) epTag.style.display = 'none';
 
-    // =======================
-    // TAG TRÊN PHẢI – GỘP (QUALITY + SOURCE)
-    // =======================
     const topRight = document.createElement('div');
     topRight.className = 'movie-top-right';
-
     const qualityTag = document.createElement('div');
     qualityTag.className = 'movie-quality-tag';
     qualityTag.textContent = m.quality || '';
     if (!qualityTag.textContent) qualityTag.style.display = 'none';
-
     const sourceTag = document.createElement('div');
     sourceTag.className = 'movie-source-tag';
     sourceTag.textContent = m.sourceCode || '';
-
     topRight.append(qualityTag, sourceTag);
 
-    // =======================
-    // TAG DƯỚI TRÁI – NGÔN NGỮ / AUDIO
-    // =======================
     const langTag = document.createElement('div');
     langTag.className = 'movie-lang-tag';
-    langTag.textContent = m.lang || m.language || "Vietsub"; // nếu không có -> Vietsub mặc định
+    langTag.textContent = m.lang || m.language || "Vietsub";
 
-    // =======================
-    // TAG DƯỚI PHẢI – NĂM
-    // =======================
     const yearTag = document.createElement('div');
     yearTag.className = 'movie-year-tag';
     yearTag.textContent = m.year || '';
     if (!yearTag.textContent) yearTag.style.display = 'none';
 
-    // =======================
-    // TITLE
-    // =======================
     const titleTag = document.createElement('div');
     titleTag.className = 'movie-title';
     titleTag.textContent = m.name;
 
-    // =======================
-    // IMAGE
-    // =======================
     const imgReal = document.createElement('img');
     imgReal.className = 'movie-img-real';
-    imgReal.alt = m.name;
+    imgReal.alt = m.name || '';
+    imgReal.loading = 'lazy';
 
     const imgPlaceholder = document.createElement('img');
     imgPlaceholder.className = 'movie-img-placeholder';
     imgPlaceholder.src = PLACEHOLDER_LOW;
     imgPlaceholder.alt = m.name;
 
-    // =======================
-    // IMAGE CONTAINER
-    // =======================
     const imgContainer = document.createElement('div');
     imgContainer.className = 'movie-img-container';
 
     imgContainer.append(
         imgReal,
         imgPlaceholder,
-        epTag,        // top-left
-        topRight,     // top-right (quality + source)
-        langTag,      // bottom-left
-        yearTag,      // bottom-right
-        titleTag      // title under
+        epTag,
+        topRight,
+        langTag,
+        yearTag,
+        titleTag
     );
 
     c.appendChild(imgContainer);
 
+    // ĐÃ QUA PROXY TỪ ĐÂY
     return {
         card: c,
         imgReal,
         imgPlaceholder,
-        url: m.thumb_url
+        url: proxyImage(m.thumb_url)  // ← Chỉ sửa đúng 1 dòng này là đủ
     };
 };
 
 const renderFinal = async (movies, container, id) => {
-  container.innerHTML = ''; const disp = movies.slice(0, ITEMS_PER_PAGE); total = disp.length; loaded = 0; progId = id;
+  container.innerHTML = '';
+  const disp = movies.slice(0, ITEMS_PER_PAGE);
+  total = disp.length; loaded = 0; progId = id;
   const cards = disp.map(m => createCard(m, id));
   cards.forEach(o => container.appendChild(o.card));
 
   cards.forEach(o => {
+    if (!o.url || o.url === PLACEHOLDER_LOW) {
+        o.imgPlaceholder.style.opacity = '1';
+        updateProg(id);
+        return;
+    }
     const real = new Image();
-    real.onload = () => { o.imgReal.src = o.url; o.imgReal.style.opacity = '1'; o.imgPlaceholder.style.opacity = '0'; updateProg(id); };
-    real.onerror = () => { o.imgPlaceholder.style.opacity = '1'; updateProg(id); };
+    real.onload = () => {
+        o.imgReal.src = o.url;
+        o.imgReal.style.opacity = '1';
+        o.imgPlaceholder.style.opacity = '0';
+        updateProg(id);
+    };
+    real.onerror = () => {
+        o.imgPlaceholder.style.opacity = '1';
+        updateProg(id);
+    };
     real.src = o.url;
   });
 };
 
-// ==================== SECTION & PAGINATION ====================
+// ==================== CÁC HÀM KHÁC GIỮ NGUYÊN 100% ====================
 const createSec = (id, title) => {
   const s = document.createElement('div'); s.className='section'; s.id=id;
   s.innerHTML = `<div class="progress-container" id="${id}-progress-cont"><div class="progress-bar" id="${id}-progress"></div></div><div class="container"><div class="section-header">${title}</div><div class="movie-grid" id="${id}-grid"></div><div class="pagination" id="${id}-pagination"></div></div>`;
@@ -760,7 +782,6 @@ const renderPag = (p, sid, more) => {
   next.onclick=()=>{ currentSearchQuery?search(currentSearchQuery,p+1):load(currentMode,currentFilter,p+1); }; el.appendChild(next);
 };
 
-// ==================== TITLE & LOAD ====================
 const getTitle = (m,f) => {
   if(m==='default') return 'PHIM MỚI NHÀ BÁNH MÌ';
   if(m==='genre') return `THỂ LOẠI: ${Object.keys(GENRE_SLUG_MAP).find(k=>GENRE_SLUG_MAP[k]===f)?.toUpperCase()||f.toUpperCase()}`;
@@ -770,6 +791,7 @@ const getTitle = (m,f) => {
   if(m==='cutee') { const l=Object.keys(CUTEE_MENU).find(k=>CUTEE_MENU[k].slug===f||CUTEE_MENU[k].filter===f); return l?.toUpperCase()||f.toUpperCase().replace(/-/g,' '); }
   return f?.toUpperCase()||'PHIM';
 };
+
 const load = async (m, f=null, p=1) => {
   currentSearchQuery = '';
   document.getElementById('nav-search-input').value = '';
@@ -786,7 +808,6 @@ const load = async (m, f=null, p=1) => {
   saveState();
 };
 
-// ==================== TXT MENU ====================
 const loadTxt = async () => {
   try {
     const r = await fetch('custom-menu.txt?t=' + Date.now());
@@ -837,7 +858,6 @@ const loadDefaultAPI = async () => {
   saveState();
 };
 
-// ==================== MODAL & NAV ====================
 const modalBackdrop = document.getElementById('modalBackdrop');
 const modalTitle = document.getElementById('modalTitle');
 const modalBody = document.getElementById('modalBody');
@@ -859,7 +879,6 @@ modalClose.onclick = closeModal;
 modalBackdrop.onclick = e => { if (e.target === modalBackdrop) closeModal(); };
 
 document.addEventListener('DOMContentLoaded', () => {
-  // KHOI PHỤC TRẠNG THÁI KHI QUAY LẠI TỪ DETAIL
   loadState();
   if (currentSearchQuery) {
     document.getElementById('nav-search-input').value = currentSearchQuery;
@@ -870,29 +889,19 @@ document.addEventListener('DOMContentLoaded', () => {
     load('default');
   }
 
- hamburger.onclick = () => openModal(
+  hamburger.onclick = () => openModal(
   'MENU',
   ['Trang chủ','Thể Loại','Quốc Gia','Năm','Khác','Phim Bộ','Phim Lẻ','Cinemax'],
   v => {
-    if (v === 'Trang chủ') {
-      clearState();
-      window.location.href = 'index.html'; // về lại trang chính
-      return;
-    }
-    if (v === 'Thể Loại')
-      openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), x => load('genre', GENRE_SLUG_MAP[x], 1));
-    if (v === 'Quốc Gia')
-      openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1));
-    if (v === 'Năm')
-      openModal('NĂM', Array.from({ length: 25 }, (_, i) => 2025 - i), x => load('year', x, 1));
-    if (v === 'Khác')
-      openModal('KHÁC', Object.keys(CUTEE_MENU), x => { const c = CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); });
+    if (v === 'Trang chủ') { clearState(); window.location.href = 'index.html'; return; }
+    if (v === 'Thể Loại') openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), x => load('genre', GENRE_SLUG_MAP[x], 1));
+    if (v === 'Quốc Gia') openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1));
+    if (v === 'Năm') openModal('NĂM', Array.from({ length: 25 }, (_, i) => 2025 - i), x => load('year', x, 1));
+    if (v === 'Khác') openModal('KHÁC', Object.keys(CUTEE_MENU), x => { const c = CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); });
     if (v === 'Phim Bộ') load('type', 'phim-bo', 1);
     if (v === 'Phim Lẻ') load('type', 'phim-le', 1);
     if (v === 'Cinemax') load('cutee', 'phim-chieu-rap', 1);
-  }
-);
-
+  });
 
   document.querySelectorAll('.menu-trigger').forEach(el => {
     el.onclick = e => { e.preventDefault();
