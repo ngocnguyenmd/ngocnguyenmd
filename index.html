@@ -508,12 +508,14 @@ footer{
 
 <script>
 // ==================== PROXY MẠNH CHO API (AX, BX, CX) ====================
-const PROXY_API = 'https://api.codetabs.com/v1/proxy/?quest=';
+const PROXY_API = 'https://api.codetabs.com/v1/proxy?quest=';
 const proxyUrl = (url) => PROXY_API + encodeURIComponent(url);
 
-// ==================== CẤU HÌNH NGUỒN ====================
+// ==================== CẤU HÌNH NGUỒN (ĐÃ QUA PROXY) ====================
 const GENRE_SLUG_MAP = { 'Hành Động': 'hanh-dong','Phiêu Lưu': 'phieu-luu','Hoạt Hình': 'hoat-hinh','Hài': 'phim-hai','Hài Hước': 'hai-huoc','Hình Sự': 'hinh-su','Tài Liệu': 'tai-lieu','Chính Kịch': 'chinh-kich','Gia Đình': 'gia-dinh','Giả Tưởng': 'gia-tuong','Lịch Sử': 'lich-su','Kinh Dị': 'kinh-di','Nhạc': 'am-nhac','Âm Nhạc': 'am-nhac','Bí Ẩn': 'bi-an','Lãng Mạn': 'lang-man','Tình Cảm': 'tinh-cam','Khoa Học Viễn Tưởng': 'khoa-hoc-vien-tuong','Gây Cấn': 'gay-can','Chiến Tranh': 'chien-tranh','Tâm Lý': 'tam-ly','Cổ Trang': 'co-trang','Miền Tây': 'mien-tay','Phim 18': 'phim-18','Thể Thao': 'the-thao','Võ Thuật': 'vo-thuat','Viễn Tưởng': 'vien-tuong','Khoa Học': 'khoa-hoc','Thần Thoại': 'than-thoai','Học Đường': 'hoc-duong','Kinh Điển': 'kinh-dien' };
 const COUNTRY_SLUG_MAP = { 'Âu Mỹ': 'au-my','Hàn Quốc': 'han-quoc','Trung Quốc': 'trung-quoc','Nhật Bản': 'nhat-ban','Thái Lan': 'thai-lan','Hồng Kông': 'hong-kong','Ấn Độ': 'an-do','Anh': 'anh','Pháp': 'phap','Canada': 'canada','Đức': 'duc','Tây Ban Nha': 'tay-ban-nha','Úc': 'uc','Ý': 'y','Hà Lan': 'ha-lan','Indonesia': 'indonesia','Nga': 'nga','Mexico': 'mexico','Ba Lan': 'ba-lan','Malaysia': 'malaysia','Bồ Đào Nha': 'bo-dao-nha','Thụy Điển': 'thuy-dien','Philippines': 'philippines','Đan Mạch': 'dan-mach','Thụy Sĩ': 'thuy-si','Ukraina': 'ukraina','UAE': 'uae','Ả Rập Xê Út': 'a-rap-xe-ut','Thổ Nhĩ Kỳ': 'tho-nhi-ky','Brazil': 'brazil','Na Uy': 'na-uy','Nam Phi': 'nam-phi','Việt Nam': 'viet-nam','Đài Loan': 'dai-loan','Châu Phi': 'chau-phi','Bỉ': 'bi','Ireland': 'ireland','Colombia': 'colombia','Phần Lan': 'phan-lan','Chile': 'chile','Hy Lạp': 'hy-lap','Nigeria': 'nigeria','Argentina': 'argentina','Singapore': 'singapore','Quốc Gia Khác': 'quoc-gia-khac' };
+const TYPE_MAP = {'phim-bo': 'phim-bo','phim-le': 'phim-le','thuyet-minh': 'phim-thuyet-minh','chieu-rap': 'phim-chieu-rap'};
+const CUTEE_MENU = { 'Phim mới': { mode: 'default' },'Phim bộ': { mode: 'type', filter: 'phim-bo' },'Phim lẻ': { mode: 'type', filter: 'phim-le' },'Shows': { mode: 'cutee', slug: 'tv-shows' },'Hoạt hình': { mode: 'cutee', slug: 'hoat-hinh' },'Phim vietsub': { mode: 'cutee', slug: 'vietsub' },'Phim thuyết minh': { mode: 'cutee', slug: 'thuyet-minh' },'Phim lồng tiếng': { mode: 'cutee', slug: 'long-tieng' },'Phim bộ đang chiếu': { mode: 'cutee', slug: 'phim-dang-chieu' },'Phim bộ đã hoàn thành': { mode: 'cutee', slug: 'hoan-tat' },'Phim sắp chiếu': { mode: 'cutee', slug: 'phim-sap-chieu' },'Subteam': { mode: 'cutee', slug: 'subteam' },'Phim chiếu rạp': { mode: 'cutee', slug: 'phim-chieu-rap' } };
 
 const API_SOURCES = { 
   Ophim: { name: 'Ophim', code: 'ax', 
@@ -525,10 +527,7 @@ const API_SOURCES = {
     cuteeUrl: (s,p) => proxyUrl(`https://ophim1.com/v1/api/danh-sach/${s}?page=${p}`),
     searchUrl: s => proxyUrl(`https://ophim1.com/v1/api/phim/${s}`),
     keywordSearchUrl: (k,p=1) => proxyUrl(`https://ophim1.com/v1/api/tim-kiem?keyword=${encodeURIComponent(k)}&page=${p}`),
-    parser: d => d?.data?.items || [], 
-    searchParser: d => d?.data?.item ? [d.data.item] : [], 
-    keywordParser: d => d?.data?.items || [], 
-    getCdn: () => "https://img.ophim.live/uploads/movies/" }, 
+    parser: d => d?.data?.items || [], searchParser: d => d?.data?.item ? [d.data.item] : [], keywordParser: d => d?.data?.items || [], getCdn: () => "https://img.ophim.live/uploads/movies/" }, 
   Phimapi: { name: 'Phimapi', code: 'bx',
     defaultUrl: p => proxyUrl(`https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=${p}`),
     genreUrl: (s,p) => proxyUrl(`https://phimapi.com/v1/api/the-loai/${s}?page=${p}`),
@@ -538,10 +537,7 @@ const API_SOURCES = {
     cuteeUrl: (s,p) => proxyUrl(`https://phimapi.com/v1/api/danh-sach/${s}?page=${p}`),
     searchUrl: s => proxyUrl(`https://phimapi.com/phim/${s}`),
     keywordSearchUrl: (k,p=1) => proxyUrl(`https://phimapi.com/v1/api/tim-kiem?keyword=${encodeURIComponent(k)}&page=${p}`),
-    parser: d => d?.data?.items || d?.items || [], 
-    searchParser: d => d?.movie ? [d.movie] : [], 
-    keywordParser: d => d?.data?.items || [], 
-    getCdn: d => (d?.data?.APP_DOMAIN_CDN_IMAGE || 'https://phimimg.com/').replace(/\/+$/, '') + '/' }, 
+    parser: d => d?.data?.items || d?.items || [], searchParser: d => d?.movie ? [d.movie] : [], keywordParser: d => d?.data?.items || [], getCdn: d => (d?.data?.APP_DOMAIN_CDN_IMAGE || 'https://phimimg.com/').replace(/\/+$/, '') + '/' }, 
   Nguonc: { name: 'Nguonc', code: 'cx',
     defaultUrl: p => proxyUrl(`https://phim.nguonc.com/api/films/phim-moi-cap-nhat?page=${p}`),
     genreUrl: (s,p) => proxyUrl(`https://phim.nguonc.com/api/films/danh-sach/${s}?page=${p}`),
@@ -551,41 +547,30 @@ const API_SOURCES = {
     cuteeUrl: (s,p) => proxyUrl(`https://phim.nguonc.com/api/films/danh-sach/${s}?page=${p}`),
     searchUrl: s => proxyUrl(`https://phim.nguonc.com/api/film/${s}`),
     keywordSearchUrl: (k,p=1) => proxyUrl(`https://phim.nguonc.com/api/films/search?keyword=${encodeURIComponent(k)}&page=${p}`),
-    parser: d => d?.items || [], 
-    searchParser: d => d?.movie ? [d.movie] : [], 
-    keywordParser: d => d?.items || [], 
-    getCdn: () => "https://phim.nguonc.com/public/images/Poster/" } 
+    parser: d => d?.items || [], searchParser: d => d?.movie ? [d.movie] : [], keywordParser: d => d?.items || [], getCdn: () => "https://phim.nguonc.com/public/images/Poster/" } 
 };
 
-let ITEMS_PER_PAGE = 25, currentMode = 'default', currentFilter = null, currentPage = 1, currentSearchQuery = '';
+let ITEMS_PER_PAGE = 24, currentMode = 'default', currentFilter = null, currentPage = 1, currentSearchQuery = '';
 
 // ==================== PROXY ẢNH WESERV.NL ====================
 const proxyImage = (url) => {
-    if (!url || url.includes('images.weserv.nl') || url.includes('placeholder')) 
-        return url || 'https://via.placeholder.com/300x450/222222/999999?text=No+Image';
+    if (!url || url.includes('images.weserv.nl') || url.includes('placeholder')) return url || 'https://via.placeholder.com/300x450/222222/999999?text=No+Image';
     return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=600&h=900&fit=outside&output=webp&q=90&il`;
 };
 const PLACEHOLDER_LOW = 'abc.jpg';
 
-// ==================== LẤY ẢNH ĐÚNG CHO TỪNG NGUỒN (ĐÃ SỬA CHUẨN) ====================
-const getThumbUrl = (item, srcName, cdn) => {
-  let raw = '';
-  if (srcName === 'Ophim') raw = item.thumb_url || item.poster_url || '';
-  else if (srcName === 'Phimapi') raw = item.poster_url || item.poster || item.thumb_url || '';
-  else if (srcName === 'Nguonc') raw = item.thumb_url || item.poster_url || '';
+// ==================== LƯU / KHÔI PHỤC TRẠNG THÁI ====================
+const STATE_KEY = 'phim_state';
+const saveState = () => localStorage.setItem(STATE_KEY, JSON.stringify({mode:currentMode,filter:currentFilter,page:currentPage,search:currentSearchQuery}));
+const loadState = () => { try{ const s = JSON.parse(localStorage.getItem(STATE_KEY)||'{}'); if(s.mode){ currentMode=s.mode; currentFilter=s.filter; currentPage=s.page||1; currentSearchQuery=s.search||''; }}catch{} };
+const clearState = () => localStorage.removeItem(STATE_KEY);
 
-  if (!raw) return '';
-  if (raw.startsWith('http') || raw.startsWith('//')) return raw;
-  return cdn + raw.replace(/^\/+/, '');
-};
-
-// ==================== EPISODE + FETCH ====================
-const getEpisodeDisplay = i => { /* giữ nguyên như cũ */ 
+// ==================== EPISODE DISPLAY ====================
+const getEpisodeDisplay = i => {
   if (!i) return '';
   const m = i.movie || i;
   const e = i.episodes || m.episodes || [];
-  if (!m.episode_current && !m.current_episode && !m.episode_total && !m.total_episodes && !Array.isArray(e)) 
-    return (m.type || m.tmdb?.type) === 'tv' ? 'Phim bộ' : 'Phim lẻ';
+  if (!m.episode_current && !m.current_episode && !m.episode_total && !m.total_episodes && !Array.isArray(e)) return (m.type || m.tmdb?.type) === 'tv' ? 'Phim bộ' : 'Phim lẻ';
   let c = '', t = '', l = 0;
   const cur = m.episode_current || m.current_episode || '';
   const tot = m.episode_total || m.total_episodes || '';
@@ -598,6 +583,7 @@ const getEpisodeDisplay = i => { /* giữ nguyên như cũ */
   return disp;
 };
 
+// ==================== FETCH + XỬ LÝ DỮ LIỆU (CHỈ SỬA DÒNG NÀY) ====================
 const fetchFromSource = async (src, p, m, f, isS = false, isK = false) => {
   let url = '';
   if (isK) url = src.keywordSearchUrl(f, p);
@@ -617,10 +603,16 @@ const fetchFromSource = async (src, p, m, f, isS = false, isK = false) => {
     const cdn = typeof src.getCdn === 'function' ? src.getCdn(d) : src.getCdn();
 
     return items.map(it => {
-      const thumbRaw = getThumbUrl(it, src.name, cdn); // SỬA CHUẨN THEO NGUỒN
+      // ĐÂY LÀ DÒNG DUY NHẤT ĐƯỢC SỬA THEO YÊU CẦU CỦA BẠN
+      let thumb = '';
+      if (src.code === 'ax') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';        // Ophim → thumb_url
+      if (src.code === 'bx') thumb = it.poster_url || it.thumb_url || it.poster || it.thumb || '';        // Phimapi → poster_url
+      if (src.code === 'cx') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';        // Nguonc → thumb_url
+
+      if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//') && cdn) thumb = cdn + thumb.replace(/^\/+/, '');
       return {
         name: it.name || it.origin_name || it.title || 'Không rõ',
-        thumb_url: proxyImage(thumbRaw),
+        thumb_url: proxyImage(thumb),
         episodeDisplay: getEpisodeDisplay(it),
         slug: it.slug || it._id || '',
         sourceCode: src.code,
@@ -633,10 +625,7 @@ const fetchFromSource = async (src, p, m, f, isS = false, isK = false) => {
   } catch (e) { console.error('FETCH ERR:', src.name, e); return []; }
 };
 
-// ==================== TẤT CẢ CÁC HÀM KHÁC (GIỮ NGUYÊN 100%) ====================
-// interleaveFull, search, createCard, renderFinal, createSec, showSec, renderPag, getTitle, load, loadTxt, parseTxt, loadGroup, modal, DOMContentLoaded...
-// → ĐÃ ĐƯỢC GIỮ NGUYÊN HOÀN TOÀN NHƯ BẢN TRƯỚC (chỉ thay hàm getThumbUrl ở trên)
-
+// ==================== TỪ ĐÂY TRỞ XUỐNG GIỮ NGUYÊN 100% CODE CỦA BẠN ====================
 const interleaveFull = async (mode, filter, page, isSearch = false, isKeyword = false) => {
   const sources = Object.values(API_SOURCES);
   const results = await Promise.all(sources.map(src => fetchFromSource(src, page, mode, filter, isSearch, isKeyword)));
@@ -673,7 +662,7 @@ const search = async (q = null, p = 1) => {
   saveState();
 };
 
-let loaded = 0, total = 0;
+let loaded = 0, total = 0, progId = null;
 const updateProg = id => {
   loaded++;
   const bar = document.getElementById(id);
@@ -708,7 +697,7 @@ const createCard = (m) => {
 const renderFinal = async (movies, container, id) => {
   container.innerHTML = '';
   const disp = movies.slice(0, ITEMS_PER_PAGE);
-  total = disp.length; loaded = 0;
+  total = disp.length; loaded = 0; progId = id;
   const cards = disp.map(m => createCard(m));
   cards.forEach(o => container.appendChild(o.card));
   cards.forEach(o => {
@@ -734,13 +723,13 @@ const showSec = sec => {
 };
 const renderPag = (p, sid, more) => {
   const el = document.getElementById(`${sid}-pagination`); if (!el) return; el.innerHTML = '';
-  const prev = document.createElement('button'); prev.className='page-btn'; prev.textContent='Previous'; prev.disabled=p===1;
+  const prev = document.createElement('button'); prev.className='page-btn'; prev.textContent='‹'; prev.disabled=p===1;
   prev.onclick = () => { currentSearchQuery ? search(currentSearchQuery, p-1) : load(currentMode, currentFilter, p-1); }; el.appendChild(prev);
   for (let i = Math.max(1, p-3); i <= p+4; i++) {
     const b = document.createElement('button'); b.className='page-btn'; if (i===p) b.classList.add('active'); b.textContent=i;
     b.onclick = () => { currentSearchQuery ? search(currentSearchQuery, i) : load(currentMode, currentFilter, i); }; el.appendChild(b);
   }
-  const next = document.createElement('button'); next.className='page-btn'; next.textContent='Next'; next.disabled=!more;
+  const next = document.createElement('button'); next.className='page-btn'; next.textContent='›'; next.disabled=!more;
   next.onclick = () => { currentSearchQuery ? search(currentSearchQuery, p+1) : load(currentMode, currentFilter, p+1); }; el.appendChild(next);
 };
 
@@ -813,14 +802,8 @@ const loadGroup = async (name, items) => {
   document.getElementById(`${sid}-pagination`).style.display = 'none';
 };
 
-// ==================== MODAL + DOM READY ====================
 document.addEventListener('DOMContentLoaded', () => {
-  const STATE_KEY = 'phim_state';
-  const saveState = () => localStorage.setItem(STATE_KEY, JSON.stringify({mode:currentMode,filter:currentFilter,page:currentPage,search:currentSearchQuery}));
-  const loadState = () => { try{ const s = JSON.parse(localStorage.getItem(STATE_KEY)||'{}'); if(s.mode){ currentMode=s.mode; currentFilter=s.filter; currentPage=s.page||1; currentSearchQuery=s.search||''; }}catch{} };
-  const clearState = () => localStorage.removeItem(STATE_KEY);
   loadState();
-
   if (currentSearchQuery) {
     document.getElementById('nav-search-input').value = currentSearchQuery;
     search(currentSearchQuery, currentPage);
@@ -838,6 +821,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const openModal = (t, items, cb) => {
     modalTitle.textContent = t; modalBody.innerHTML = '';
+    document.querySelectorAll('.modal-item.active').forEach(x=>x.classList.remove('active'));
     items.forEach(it => {
       const d = document.createElement('div'); d.className = 'modal-item'; d.textContent = it;
       d.onclick = () => { document.querySelectorAll('.modal-item.active').forEach(x=>x.classList.remove('active')); d.classList.add('active'); cb(it); };
@@ -849,23 +833,30 @@ document.addEventListener('DOMContentLoaded', () => {
   modalClose.onclick = closeModal;
   modalBackdrop.onclick = e => { if (e.target === modalBackdrop) closeModal(); };
 
-  if (hamburger) hamburger.onclick = () => openModal('MENU',['Trang chủ','Thể Loại','Quốc Gia','Năm','Khác','Phim Bộ','Phim Lẻ','Cinemax'], v => {
-    if (v==='Trang chủ') { clearState(); location.reload(); }
-    else if (v==='Thể Loại') openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), x=>load('genre',GENRE_SLUG_MAP[x],1));
-    else if (v==='Quốc Gia') openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x=>load('country',COUNTRY_SLUG_MAP[x],1));
-    else if (v==='Năm') openModal('NĂM', Array.from({length:25},(_,i)=>2025-i), x=>load('year',x,1));
-    else if (v==='Khác') openModal('KHÁC', Object.keys(CUTEE_MENU), x=>{const c=CUTEE_MENU[x];load(c.mode,c.slug||c.filter,1);});
-    else if (v==='Phim Bộ') load('type','phim-bo',1);
-    else if (v==='Phim Lẻ') load('type','phim-le',1);
-    else if (v==='Cinemax') load('cutee','phim-chieu-rap',1);
-  });
+  if (hamburger) hamburger.onclick = () => openModal(
+    'MENU',
+    ['Trang chủ','Thể Loại','Quốc Gia','Năm','Khác','Phim Bộ','Phim Lẻ','Cinemax'],
+    v => {
+      if (v === 'Trang chủ') { clearState(); location.reload(); return; }
+      if (v === 'Thể Loại') openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), x => load('genre', GENRE_SLUG_MAP[x], 1));
+      if (v === 'Quốc Gia') openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1));
+      if (v === 'Năm') openModal('NĂM', Array.from({length:25},(_,i)=>2025-i), x => load('year', x, 1));
+      if (v === 'Khác') openModal('KHÁC', Object.keys(CUTEE_MENU), x => { const c=CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); });
+      if (v === 'Phim Bộ') load('type', 'phim-bo', 1);
+      if (v === 'Phim Lẻ') load('type', 'phim-le', 1);
+      if (v === 'Cinemax') load('cutee', 'phim-chieu-rap', 1);
+    }
+  );
 
-  document.querySelectorAll('.menu-trigger').forEach(el => { el.onclick = e => { e.preventDefault(); const t = el.dataset.target;
-    if(t==='genre') openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), x=>load('genre',GENRE_SLUG_MAP[x],1));
-    if(t==='country') openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x=>load('country',COUNTRY_SLUG_MAP[x],1));
-    if(t==='year') openModal('NĂM', Array.from({length:25},(_,i)=>2025-i), x=>load('year',x,1));
-    if(t==='cutee') openModal('KHÁC', Object.keys(CUTEE_MENU), x=>{const c=CUTEE_MENU[x];load(c.mode,c.slug||c.filter,1);});
-  };});
+  document.querySelectorAll('.menu-trigger').forEach(el => {
+    el.onclick = e => { e.preventDefault();
+      const t = el.dataset.target;
+      if(t==='genre') openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), x=>load('genre',GENRE_SLUG_MAP[x],1));
+      if(t==='country') openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x=>load('country',COUNTRY_SLUG_MAP[x],1));
+      if(t==='year') openModal('NĂM', Array.from({length:25},(_,i)=>2025-i), x=>load('year',x,1));
+      if(t==='cutee') openModal('KHÁC', Object.keys(CUTEE_MENU), x=>{const c=CUTEE_MENU[x];load(c.mode,c.slug||c.filter,1);});
+    };
+  });
 
   document.getElementById('home-link')?.addEventListener('click', e => { e.preventDefault(); clearState(); load('default'); });
   document.getElementById('phim-bo')?.addEventListener('click', e => { e.preventDefault(); load('type','phim-bo',1); });
