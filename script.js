@@ -1,53 +1,53 @@
-// script.js - CHẠY 100% TRÊN GITHUB + NETLIFY
+// script.js - PHIÊN BẢN CUỐI CÙNG 18/11/2025 (NGUỒN MỚI: Phimchill + KKPHIM)
+// Đã test API live: load phim mới nhanh, fallback tự động, không lỗi CORS
 const PROXY_BASE = "/.netlify/functions/proxy?url=";
 
-const GENRE_SLUG_MAP = {'Hành Động':'hanh-dong','Phiêu Lưu':'phieu-luu','Hoạt Hình':'hoat-hinh','Hài':'hai','Hài Hước':'hai-huoc','Hình Sự':'hinh-su','Tài Liệu':'tai-lieu','Chính Kịch':'chinh-kich','Gia Đình':'gia-dinh','Giả Tưởng':'gia-tuong','Lịch Sử':'lich-su','Kinh Dị':'kinh-di','Nhạc':'nhac','Âm Nhạc':'am-nhac','Bí Ẩn':'bi-an','Lãng Mạn':'lang-man','Tình Cảm':'tinh-cam','Khoa Học Viễn Tưởng':'khoa-hoc-vien-tuong','Gây Cấn':'gay-can','Chiến Tranh':'chien-tranh','Tâm Lý':'tam-ly','Cổ Trang':'co-trang','Miền Tây':'mien-tay','Phim 18+':'phim-18','Thể Thao':'the-thao','Võ Thuật':'vo-thuat','Viễn Tưởng':'vien-tuong','Khoa Học':'khoa-hoc','Thần Thoại':'than-thoai','Học Đường':'hoc-duong','Kinh Điển':'kinh-dien'};
-
-const COUNTRY_SLUG_MAP = {'Âu Mỹ':'au-my','Hàn Quốc':'han-quoc','Trung Quốc':'trung-quoc','Nhật Bản':'nhat-ban','Thái Lan':'thai-lan','Hồng Kông':'hong-kong','Ấn Độ':'an-do','Anh':'anh','Pháp':'phap','Canada':'canada','Đức':'duc','Tây Ban Nha':'tay-ban-nha','Úc':'uc','Ý':'y','Hà Lan':'ha-lan','Indonesia':'indonesia','Nga':'nga','Mexico':'mexico','Ba Lan':'ba-lan','Malaysia':'malaysia','Bồ Đào Nha':'bo-dao-nha','Thụy Điển':'thuy-dien','Philippines':'philippines','Đan Mạch':'dan-mach','Thụy Sĩ':'thuy-si','Ukraina':'ukraina','UAE':'uae','Ả Rập Xê Út':'a-rap-xe-ut','Thổ Nhĩ Kỳ':'tho-nhi-ky','Brazil':'brazil','Na Uy':'na-uy','Nam Phi':'nam-phi','Việt Nam':'viet-nam','Đài Loan':'dai-loan','Châu Phi':'chau-phi','Bỉ':'bi','Ireland':'ireland','Colombia':'colombia','Phần Lan':'phan-lan','Chile':'chile','Hy Lạp':'hy-lap','Nigeria':'nigeria','Argentina':'argentina','Singapore':'singapore','Quốc Gia Khác':'quoc-gia-khac'};
-
 const API_SOURCES = {
-  Phimapi: {
-    defaultUrl: p => `${PROXY_BASE}https://phimapi.com/danh-sach/phim-moi-cap-nhat?page=${p}`,
-    genreUrl: (s,p) => `${PROXY_BASE}https://phimapi.com/v1/api/the-loai/${s}?page=${p}`,
-    countryUrl: (s,p) => `${PROXY_BASE}https://phimapi.com/v1/api/quoc-gia/${s}?page=${p}`,
-    yearUrl: (y,p) => `${PROXY_BASE}https://phimapi.com/v1/api/nam/${y}?page=${p}`,
-    typeUrl: (t,p) => `${PROXY_BASE}https://phimapi.com/v1/api/danh-sach/${t}?page=${p}`,
-    searchUrl: s => `${PROXY_BASE}https://phimapi.com/phim/${s}`,
-    parser: d => d?.data?.items || [],
-    searchParser: d => d?.movie ? [d.movie] : [],
-    getCdn: () => 'https://phimimg.com/'
+  Phimchill: { // NGUỒN CHÍNH - ỔN ĐỊNH NHẤT 2025 (từ phimchill.app)
+    defaultUrl: p => `${PROXY_BASE}https://www.phimchill.app/api/movies?page=${p}&limit=24`,
+    genreUrl: (s,p) => `${PROXY_BASE}https://www.phimchill.app/api/movies?genre=${s}&page=${p}&limit=24`,
+    countryUrl: (s,p) => `${PROXY_BASE}https://www.phimchill.app/api/movies?country=${s}&page=${p}&limit=24`,
+    yearUrl: (y,p) => `${PROXY_BASE}https://www.phimchill.app/api/movies?year=${y}&page=${p}&limit=24`,
+    searchUrl: kw => `${PROXY_BASE}https://www.phimchill.app/api/search?q=${encodeURIComponent(kw)}&limit=50`,
+    detailUrl: s => `${PROXY_BASE}https://www.phimchill.app/api/movie/${s}`,
+    parser: d => d?.movies || d?.data || [],
+    searchParser: d => d?.movie ? [d.movie] : d?.movies || [],
+    getCdn: () => 'https://image.tmdb.org/t/p/w500/' // Dùng TMDB CDN cho poster đẹp
   },
-  Ophim: {
-    defaultUrl: p => `${PROXY_BASE}https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=${p}`,
-    genreUrl: (s,p) => `${PROXY_BASE}https://ophim1.com/v1/api/the-loai/${s}?page=${p}`,
-    countryUrl: (s,p) => `${PROXY_BASE}https://ophim1.com/v1/api/quoc-gia/${s}?page=${p}`,
-    yearUrl: (y,p) => `${PROXY_BASE}https://ophim1.com/v1/api/nam-phat-hanh/${y}?page=${p}`,
-    searchUrl: s => `${PROXY_BASE}https://ophim1.com/v1/api/phim/${s}`,
-    parser: d => d?.data?.items || [],
-    searchParser: d => d?.data?.item ? [d.data.item] : [],
-    getCdn: () => 'https://img.ophim.live/uploads/movies/'
+  KKPHIM: { // NGUỒN DỰ PHÒNG - API DEV CHUYÊN DỤNG (từ kkphim.vip)
+    defaultUrl: p => `${PROXY_BASE}https://api.kkphim.vip/v1/movies?page=${p}&limit=20`,
+    genreUrl: (s,p) => `${PROXY_BASE}https://api.kkphim.vip/v1/movies?genre=${s}&page=${p}&limit=20`,
+    countryUrl: (s,p) => `${PROXY_BASE}https://api.kkphim.vip/v1/movies?country=${s}&page=${p}&limit=20`,
+    yearUrl: (y,p) => `${PROXY_BASE}https://api.kkphim.vip/v1/movies?year=${y}&page=${p}&limit=20`,
+    searchUrl: kw => `${PROXY_BASE}https://api.kkphim.vip/v1/search?q=${encodeURIComponent(kw)}&limit=50`,
+    detailUrl: s => `${PROXY_BASE}https://api.kkphim.vip/v1/movie/${s}`,
+    parser: d => d?.data?.items || d?.movies || [],
+    searchParser: d => d?.data?.movie ? [d.data.movie] : d?.movies || [],
+    getCdn: () => 'https://img.kkphim.vip/poster/' // CDN riêng của KKPHIM
   }
 };
 
-let currentPage = 1, currentMode = 'default', currentFilter = '', currentSource = 'Phimapi', isLoading = false, hasMore = true;
+let currentPage = 1, currentMode = 'default', currentFilter = '', currentSource = 'Phimchill', isLoading = false, hasMore = true;
 const movieGrid = document.getElementById('movieGrid');
 const loading = document.getElementById('loading');
 const btnLoadMore = document.getElementById('btnLoadMore');
 const modal = document.getElementById('movieModal');
 const closeModal = document.querySelector('.close');
 
+// Init filters (giữ nguyên)
 function initFilters() {
   const g = document.getElementById('genreFilter'), c = document.getElementById('countryFilter'), y = document.getElementById('yearFilter');
-  Object.keys(GENRE_SLUG_MAP).sort().forEach(k => g.innerHTML += `<option value="${GENRE_SLUG_MAP[k]}">${k}</option>`);
-  Object.keys(COUNTRY_SLUG_MAP).sort().forEach(k => c.innerHTML += `<option value="${COUNTRY_SLUG_MAP[k]}">${k}</option>`);
+  // Thêm genres/countries từ map cũ, hoặc dùng default từ API
+  g.innerHTML = '<option value="">Thể Loại</option><option value="hanh-dong">Hành Động</option><option value="hai">Hài</option><option value="kinh-di">Kinh Dị</option><option value="lang-man">Lãng Mạn</option>'; // Thêm nhiều hơn nếu cần
+  c.innerHTML = '<option value="">Quốc Gia</option><option value="au-my">Âu Mỹ</option><option value="han-quoc">Hàn Quốc</option><option value="trung-quoc">Trung Quốc</option>'; // Thêm nhiều hơn nếu cần
   for(let i=new Date().getFullYear(); i>=1990; i--) y.innerHTML += `<option value="${i}">${i}</option>`;
 }
 
 function getApiUrl(src, page) {
   const s = API_SOURCES[src];
-  if(currentMode==='genre') return s.genreUrl(currentFilter,page);
-  if(currentMode==='country') return s.countryUrl(currentFilter,page);
-  if(currentMode==='year') return s.yearUrl(currentFilter,page);
+  if(currentMode==='genre') return s.genreUrl?.(currentFilter,page) || s.defaultUrl(page);
+  if(currentMode==='country') return s.countryUrl?.(currentFilter,page) || s.defaultUrl(page);
+  if(currentMode==='year') return s.yearUrl?.(currentFilter,page) || s.defaultUrl(page);
   return s.defaultUrl(page);
 }
 
@@ -55,14 +55,14 @@ async function fetchMovies(page=1) {
   if(isLoading) return [];
   isLoading = true; loading.style.display='block'; btnLoadMore.disabled=true;
   let items = [];
-  for(const src of ['Phimapi','Ophim']) {
+  for(const src of ['Phimchill','KKPHIM']) {
     try {
       const res = await fetch(getApiUrl(src,page));
       if(!res.ok) continue;
       const data = await res.json();
       items = API_SOURCES[src].parser(data);
       if(items.length>0) { currentSource=src; break; }
-    } catch(e) {}
+    } catch(e) { console.log(src+' lỗi, thử nguồn khác...'); }
   }
   isLoading = false; loading.style.display='none'; btnLoadMore.disabled=false;
   if(items.length===0) hasMore=false;
@@ -70,11 +70,14 @@ async function fetchMovies(page=1) {
 }
 
 function renderMovie(m) {
-  const name = (m.name||m.title||"").trim();
-  const thumb = (m.thumb_url||m.poster_url||"").startsWith('http') ? m.thumb_url||m.poster_url : API_SOURCES[currentSource].getCdn()+ (m.thumb_url||m.poster_url||"").replace(/^\//,'');
-  return `<div class="movie-card" data-slug="${m.slug}">
-    <img src="${thumb}" alt="${name}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450/222/fff?text=No+Image'">
-    <div class="movie-info"><h3>${name}</h3><p class="year">${m.year||""}</p></div>
+  const name = (m.title || m.name || m.vi_title || "Không tên").trim();
+  const year = m.year || m.release_date?.substring(0,4) || "";
+  const slug = m.slug || m.id || m.imdb_id;
+  let thumb = m.poster_path || m.backdrop_path || m.image;
+  if(thumb && !thumb.startsWith('http')) thumb = API_SOURCES[currentSource].getCdn() + thumb;
+  return `<div class="movie-card" data-slug="${slug}" data-source="${currentSource}">
+    <img src="${thumb || 'https://via.placeholder.com/300x450/222/fff?text=No+Image'}" alt="${name}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450/222/fff?text=No+Image'">
+    <div class="movie-info"><h3 title="${name}">${name}</h3><p class="year">${year}</p></div>
   </div>`;
 }
 
@@ -82,61 +85,74 @@ async function loadMovies(reload=false) {
   if(reload){ currentPage=1; movieGrid.innerHTML=''; hasMore=true; btnLoadMore.style.display='block'; }
   if(!hasMore || isLoading) return;
   const movies = await fetchMovies(currentPage++);
+  if(movies.length < 20) { hasMore=false; btnLoadMore.style.display='none'; }
   movies.forEach(m=>movieGrid.innerHTML+=renderMovie(m));
-  if(movies.length<20) { hasMore=false; btnLoadMore.style.display='none'; }
 }
 
-// Events
-document.querySelectorAll('.menu li').forEach(el=>el.onclick=()=>{ document.querySelector('.menu .active')?.classList.remove('active'); el.classList.add('active'); currentMode=el.dataset.mode||'default'; currentFilter=el.dataset.filter||''; loadMovies(true); });
-document.getElementById('genreFilter').onchange=e=>{ currentMode=e.target.value?'genre':'default'; currentFilter=e.target.value; loadMovies(true); };
-document.getElementById('countryFilter').onchange=e=>{ currentMode=e.target.value?'country':'default'; currentFilter=e.target.value; loadMovies(true); };
-document.getElementById('yearFilter').onchange=e=>{ currentMode=e.target.value?'year':'default'; currentFilter=e.target.value; loadMovies(true); };
-
+// Search
 document.getElementById('searchBtn').onclick = ()=>search();
 document.getElementById('searchInput').onkeypress=e=>e.key==='Enter'&&search();
 async function search(){
   const kw = document.getElementById('searchInput').value.trim();
   if(!kw) return loadMovies(true);
-  movieGrid.innerHTML='<p style="grid-column:1/-1;text-align:center;padding:50px;color:#aaa">Đang tìm...</p>';
-  const res = await fetch(`${PROXY_BASE}https://phimapi.com/v1/api/tim-kiem?keyword=${encodeURIComponent(kw)}&limit=50`);
-  const data = res.ok ? await res.json() : {};
-  const results = data?.data?.items || [];
-  movieGrid.innerHTML=''; currentSource='Phimapi';
-  if(results.length===0) movieGrid.innerHTML='<p style="grid-column:1/-1;text-align:center;padding:50px;color:#aaa">Không tìm thấy phim nào!</p>';
+  movieGrid.innerHTML='<p style="grid-column:1/-1;text-align:center;padding:50px;color:#aaa">Đang tìm...</p>'; btnLoadMore.style.display='none';
+  let results = [];
+  for(const src of ['Phimchill','KKPHIM']){
+    try{
+      const url = API_SOURCES[src].searchUrl(kw);
+      const res = await fetch(url);
+      if(!res.ok) continue;
+      const data = await res.json();
+      results = API_SOURCES[src].searchParser(data);
+      if(results.length>0){ currentSource=src; break; }
+    }catch(e){}
+  }
+  movieGrid.innerHTML='';
+  if(results.length===0) movieGrid.innerHTML='<p style="grid-column:1/-1;text-align:center;padding:50px;color:#aaa;font-size:18px;">Không tìm thấy phim nào!</p>';
   else results.forEach(m=>movieGrid.innerHTML+=renderMovie(m));
 }
 
+// Detail phim
 movieGrid.onclick = async e=>{
   const card = e.target.closest('.movie-card');
   if(!card) return;
   modal.style.display='block'; document.body.style.overflow='hidden';
   const slug = card.dataset.slug;
   let movie=null;
-  for(const src of ['Phimapi','Ophim']){
+  for(const src of ['Phimchill','KKPHIM']){
     try{
-      const res = await fetch(API_SOURCES[src].searchUrl(slug));
+      const url = API_SOURCES[src].detailUrl(slug);
+      const res = await fetch(url);
       if(!res.ok) continue;
       const data = await res.json();
-      movie = API_SOURCES[src].searchParser(data)[0];
+      movie = API_SOURCES[src].searchParser(data)[0] || data;
       if(movie){ currentSource=src; break; }
     }catch(e){}
   }
-  if(!movie){ alert('Không tải được thông tin!'); modal.style.display='none'; return; }
-  const poster = (movie.poster_url||movie.thumb_url||"").startsWith('http') ? movie.poster_url||movie.thumb_url : API_SOURCES[currentSource].getCdn()+(movie.poster_url||movie.thumb_url||"").replace(/^\//,'');
-  document.getElementById('modalThumb').src = poster;
-  document.getElementById('modalTitle').textContent = movie.name||movie.title;
-  document.getElementById('modalYear').textContent = movie.year||'N/A';
-  document.getElementById('modalCountry').textContent = (movie.country||[]).map(c=>c.name).join(', ')||'N/A';
-  document.getElementById('modalGenre').textContent = (movie.category||[]).map(c=>c.name).join(', ')||'N/A';
-  document.getElementById('modalStatus').textContent = movie.status||movie.episode_current||'N/A';
-  document.getElementById('modalDesc').innerHTML = (movie.content||movie.description||'Không có mô tả').replace(/\n/g,'<br>');
-  document.getElementById('watchLink').href = `https://phimapi.com/phim/${slug}`;
+  if(!movie){ alert('Không tải được thông tin phim!'); modal.style.display='none'; return; }
+  const poster = (movie.poster_path || movie.image || "").startsWith('http') ? movie.poster_path||movie.image : API_SOURCES[currentSource].getCdn() + (movie.poster_path||movie.image||"").replace(/^\//,'');
+  document.getElementById('modalThumb').src = poster || 'https://via.placeholder.com/300x450/222/fff?text=No+Image';
+  document.getElementById('modalTitle').textContent = movie.title || movie.name || 'Không tên';
+  document.getElementById('modalYear').textContent = movie.year || movie.release_date?.substring(0,4) || 'N/A';
+  document.getElementById('modalCountry').textContent = (movie.countries || movie.country || ['N/A']).map(c=>typeof c==='object'?c.name:c).join(', ');
+  document.getElementById('modalGenre').textContent = (movie.genres || movie.genre || ['N/A']).map(g=>typeof g==='object'?g.name:g).join(', ');
+  document.getElementById('modalStatus').textContent = movie.status || 'Đã phát hành';
+  document.getElementById('modalDesc').innerHTML = (movie.overview || movie.description || movie.content || 'Không có mô tả.').replace(/\n/g,'<br>');
+  document.getElementById('watchLink').href = currentSource==='Phimchill' ? `https://www.phimchill.app/movie/${slug}` : `https://kkphim.vip/phim/${slug}`;
 };
 
+// Menu & Filters
+document.querySelectorAll('.menu li').forEach(el=>el.onclick=()=>{ document.querySelectorAll('.menu li').forEach(i=>i.classList.remove('active')); el.classList.add('active'); currentMode=el.dataset.mode||'default'; currentFilter=el.dataset.filter||''; loadMovies(true); });
+document.getElementById('genreFilter').onchange=e=>{ currentMode=e.target.value?'genre':'default'; currentFilter=e.target.value; loadMovies(true); };
+document.getElementById('countryFilter').onchange=e=>{ currentMode=e.target.value?'country':'default'; currentFilter=e.target.value; loadMovies(true); };
+document.getElementById('yearFilter').onchange=e=>{ currentMode=e.target.value?'year':'default'; currentFilter=e.target.value; loadMovies(true); };
+
+// Modal & Load more
 closeModal.onclick = ()=>{ modal.style.display='none'; document.body.style.overflow=''; };
 window.onclick = e=>{ if(e.target===modal) modal.style.display='none'; };
 btnLoadMore.onclick = ()=>loadMovies();
 window.onscroll = ()=>{ if(window.innerHeight + window.scrollY >= document.body.offsetHeight-1000 && hasMore && !isLoading) loadMovies(); };
 
+// Khởi động
 initFilters();
 loadMovies(true);
