@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="page-title">Movies</title>
-
-  <!-- SEO -->
-  <meta property="og:title" content="" id="og-title" />
-  <meta property="og:description" content="" id="og-desc" />
-  <meta property="og:image" content="" id="og-image" />
-  <meta property="og:url" content="" id="og-url" />
-  <meta property="og:type" content="video.movie" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="page-title">Movies</title>
+    <!-- SEO -->
+    <meta property="og:title" content="" id="og-title" />
+    <meta property="og:description" content="" id="og-desc" />
+    <meta property="og:image" content="" id="og-image" />
+    <meta property="og:url" content="" id="og-url" />
+    <meta property="og:type" content="video.movie" />
 <style>
 /* ======== RESET ======== */
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -23,27 +22,27 @@ img{user-select:none;-webkit-user-drag:none;pointer-events:none;}
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:-1;}
 
 /* ======== CONTAINER ======== */
-.container{max-width:1300px;margin:0 auto;padding:0 1.5rem;position:relative;z-index:10;}
+.container{max-width:1200px;margin:0 auto;padding:0 1rem;position:relative;z-index:10;}
 
 /* ======== HEADER ======== */
-header{background:rgba(17,17,17,.95);backdrop-filter:blur(20px);padding:15px 0;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.08);}
-.nav{display:flex;justify-content:space-between;align-items:center;max-width:1300px;margin:0 auto;padding:0 1.5rem;}
-.logo{font-size:1.2rem;font-weight:700;color:#fff;letter-spacing:-.5px;cursor:pointer;}
-.back-home{background:#0a84ff;color:#fff;padding:8px 16px;border-radius:18px;font-size:.9rem;font-weight:500;transition:all .25s;cursor:pointer;}
+header{background:rgba(17,17,17,.95);backdrop-filter:blur(20px);padding:10px 0;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.08);}
+.nav{display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;padding:0 1rem;}
+.logo{font-size:1.1rem;font-weight:700;color:#fff;letter-spacing:-.5px;cursor:pointer;}
+.back-home{background:#0a84ff;color:#fff;padding:6px 12px;border-radius:16px;font-size:.85rem;font-weight:500;transition:all .25s;cursor:pointer;}
 .back-home:hover{background:#006edc;transform:scale(1.04);}
 
 /* ======== INFO CARD ======== */
-.info-card{background:#111;padding:2rem;border-radius:14px;border:1px solid rgba(255,255,255,.08);box-shadow:0 10px 30px rgba(0,0,0,.5);margin-top:2rem;}
+.info-card{background:#111;padding:1.5rem;border-radius:12px;border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 24px rgba(0,0,0,.5);margin-top:1.5rem;}
 
 /* ======== LAYOUT: POSTER + INFO (BÊN PHẢI) ======== */
-.detail-wrapper{display:flex;gap:2rem;align-items:flex-start;}
-.poster-wrapper{flex:0 0 260px;position:relative;perspective:1000px;}
-.info-wrapper{flex:1;min-width:0;display:flex;flex-direction:column;gap:1rem;}
+.detail-wrapper{display:flex;gap:1.5rem;align-items:flex-start;}
+.poster-wrapper{flex:0 0 220px;position:relative;perspective:1000px;display:flex;flex-direction:column;align-items:center;}
+.info-wrapper{flex:1;min-width:0;display:flex;flex-direction:column;gap:0.8rem;}
 
 /* ======== POSTER TILT EFFECT - GIỐNG ROPHIM ======== */
-.tilt-card{width:260px;height:390px;position:relative;transform-style:preserve-3d;transition:transform .15s ease-out;box-shadow:0 8px 20px rgba(0,0,0,.6);border-radius:12px;overflow:hidden;cursor:pointer;}
-.tilt-card:hover{box-shadow:0 20px 40px rgba(0,0,0,.8);}
-.poster-front{width:100%;height:100%;object-fit:cover;border-radius:12px;transition:filter .3s;}
+.tilt-card{width:220px;height:330px;position:relative;transform-style:preserve-3d;transition:transform .15s ease-out;box-shadow:0 6px 16px rgba(0,0,0,.6);border-radius:10px;overflow:hidden;cursor:pointer;}
+.tilt-card:hover{box-shadow:0 16px 32px rgba(0,0,0,.8);}
+.poster-front{width:100%;height:100%;object-fit:cover;border-radius:10px;transition:filter .3s;}
 .tilt-card:hover .poster-front{filter:brightness(1.15);}
 .tilt-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent 40%,rgba(0,0,0,.4));opacity:0;transition:opacity .3s;pointer-events:none;}
 .tilt-card:hover .tilt-overlay{opacity:1;}
@@ -51,44 +50,20 @@ header{background:rgba(17,17,17,.95);backdrop-filter:blur(20px);padding:15px 0;p
 .tilt-card:hover .tilt-glare{opacity:1;}
 
 /* ======== TEXT ======== */
-.title{font-size:1.8rem;font-weight:700;color:#0a84ff;margin-bottom:.5rem;}
-.original-title{font-size:1rem;color:#aaa;margin-bottom:.5rem;font-style:italic;}
-
-/* ======== INFO TABLE ======== */
-.info-table{width:100%;border-collapse:collapse;margin:0;background:#1a1a1a;border-radius:12px;overflow:hidden;}
-.info-table td{padding:.9rem 1rem;border-bottom:1px solid rgba(255,255,255,.08);font-size:.95rem;}
-.info-table tr:last-child td{border-bottom:none;}
-.info-table .label{font-weight:600;color:#0a84ff;width:30%;min-width:120px;}
-.info-table .value{color:#ddd;}
-.info-table .value a{color:#0a84ff;text-decoration:underline;}
+.title{font-size:1.6rem;font-weight:700;color:#0a84ff;margin-bottom:.4rem;}
+.original-title{font-size:0.95rem;color:#aaa;margin-bottom:.4rem;font-style:italic;}
 
 /* ======== DESCRIPTION ======== */
-.desc{line-height:1.8;max-height:120px;overflow:hidden;transition:max-height .4s ease;color:#ddd;font-size:.95rem;}
-.desc.expanded{max-height:1000px;}
-.toggle-desc{color:#0a84ff;cursor:pointer;font-weight:600;margin-top:.6rem;display:inline-block;font-size:.9rem;}
+.desc{line-height:1.6;max-height:100px;overflow:hidden;transition:max-height .4s ease;color:#ddd;font-size:.9rem;}
+.desc.expanded{max-height:800px;}
+.toggle-desc{color:#0a84ff;cursor:pointer;font-weight:600;margin-top:.5rem;display:inline-block;font-size:.85rem;}
 .toggle-desc:hover{text-decoration:underline;}
 
 /* ======== ACTIONS ======== */
-.actions{display:flex;gap:12px;margin-top:.5rem;flex-wrap:wrap;}
-.btn{padding:12px 24px;border-radius:18px;font-weight:600;display:inline-flex;align-items:center;gap:8px;font-size:.95rem;transition:all .25s;}
+.actions{display:flex;gap:10px;margin-top:.4rem;flex-wrap:wrap;justify-content:center;}
+.btn{padding:10px 20px;border-radius:16px;font-weight:600;display:inline-flex;align-items:center;gap:6px;font-size:.9rem;transition:all .25s;}
 .btn-primary{background:#0a84ff;color:#fff;}
 .btn-primary:hover{background:#006edc;transform:scale(1.04);}
-.btn-secondary{background:#222;color:#fff;border:1px solid rgba(255,255,255,.15);}
-.btn-secondary:hover{background:#333;transform:scale(1.04);}
-
-/* ======== EPISODES ======== */
-.episodes-section{margin-top:1.5rem;}
-.section-title{font-size:1.4rem;font-weight:700;margin-bottom:1rem;text-transform:uppercase;color:#fff;border-left:4px solid #0a84ff;padding-left:.8rem;}
-.server-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem;}
-.server-tab{padding:8px 16px;background:#222;border-radius:18px;cursor:pointer;font-size:.9rem;transition:all .25s;}
-.server-tab.active,.server-tab:hover{background:#0a84ff;color:#fff;}
-.episode-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;}
-.episode-btn{padding:10px;text-align:center;background:#222;border-radius:18px;cursor:pointer;font-size:.9rem;transition:all .25s;}
-.episode-btn:hover,.episode-btn.active{background:#0a84ff;color:#fff;transform:scale(1.04);}
-
-/* ======== TRAILER ======== */
-.trailer-section{margin-top:1.5rem;}
-.trailer-iframe{width:100%;height:400px;border-radius:14px;border:none;box-shadow:0 8px 20px rgba(0,0,0,.5);}
 
 /* ======== SKELETON ======== */
 .skeleton{background:#222;border-radius:8px;animation:pulse 1.5s ease-in-out infinite;}
@@ -96,326 +71,174 @@ header{background:rgba(17,17,17,.95);backdrop-filter:blur(20px);padding:15px 0;p
 
 /* ======== RESPONSIVE ======== */
 @media (max-width:992px){
-  .poster-wrapper{flex:0 0 220px;}
-  .tilt-card{width:220px;height:330px;}
-  .info-card{padding:1.5rem;}
+    .poster-wrapper{flex:0 0 200px;}
+    .tilt-card{width:200px;height:300px;}
+    .info-card{padding:1.2rem;}
 }
 @media (max-width:768px){
-  .detail-wrapper{flex-direction:column;align-items:center;gap:1.5rem;}
-  .poster-wrapper{flex:0 0 100%;max-width:300px;}
-  .tilt-card{width:300px;height:450px;}
-  .title{font-size:1.5rem;text-align:center;}
-  .actions{justify-content:center;}
-  .episode-grid{grid-template-columns:repeat(4,1fr);}
-  .container{padding:0 1rem;}
-  .info-table .label{width:40%;}
+    .detail-wrapper{flex-direction:column;align-items:center;gap:1rem;}
+    .poster-wrapper{flex:0 0 100%;max-width:280px;}
+    .tilt-card{width:280px;height:420px;}
+    .title{font-size:1.4rem;text-align:center;}
+    .actions{justify-content:center;}
+    .container{padding:0 0.8rem;}
 }
 @media (max-width:480px){
-  .episode-grid{grid-template-columns:repeat(3,1fr);}
-  .desc{font-size:.9rem;}
-  .nav{padding:0 1rem;}
-  .back-home{font-size:.85rem;padding:6px 12px;}
-  .info-table td{padding:.7rem .8rem;font-size:.9rem;}
-  .tilt-card{width:260px;height:390px;}
+    .desc{font-size:.85rem;}
+    .nav{padding:0 0.8rem;}
+    .back-home{font-size:.8rem;padding:5px 10px;}
+    .tilt-card{width:240px;height:360px;}
 }
 </style>
 </head>
 <body>
-
-  <div class="bg-poster" id="bg-poster"></div>
-  <div class="overlay"></div>
-
-  <header>
-    <div class="nav">
-      <div class="logo" onclick="location.href='index.html'">Phim Nhà Bánh Mì</div>
-      <a href="index.html" class="back-home">Quay Lại</a>
-    </div>
-  </header>
-
-  <div class="container">
-    <div id="skeleton" style="display:block;">
-      <div class="info-card">
-        <div class="detail-wrapper">
-          <div class="poster-wrapper"><div class="skeleton" style="width:260px;height:390px;"></div></div>
-          <div class="info-wrapper">
-            <div class="skeleton" style="height:32px;width:70%;margin:10px 0;"></div>
-            <div class="skeleton" style="height:20px;width:50%;"></div>
-            <div class="skeleton" style="height:20px;width:60%;margin:8px 0;"></div>
-            <div class="skeleton" style="height:20px;width:50%;"></div>
-            <div class="skeleton" style="height:100px;margin:20px 0;"></div>
-          </div>
+    <div class="bg-poster" id="bg-poster"></div>
+    <div class="overlay"></div>
+    <header>
+        <div class="nav">
+            <div class="logo" onclick="location.href='index.html'">Phim Nhà Bánh Mì</div>
+            <a class='back-home' href='/'>Quay Lại</a>
         </div>
-      </div>
-    </div>
-
-    <div id="detail-content" style="display:none;">
-      <div class="info-card">
-        <div class="detail-wrapper">
-          <div class="poster-wrapper">
-            <div class="tilt-card" id="tiltCard">
-              <img id="poster" class="poster-front" src="" alt="" draggable="false">
-              <div class="tilt-overlay"></div>
-              <div class="tilt-glare"></div>
+    </header>
+    <div class="container">
+        <div id="skeleton" style="display:block;">
+            <div class="info-card">
+                <div class="detail-wrapper">
+                    <div class="poster-wrapper"><div class="skeleton" style="width:220px;height:330px;"></div></div>
+                    <div class="info-wrapper">
+                        <div class="skeleton" style="height:28px;width:70%;margin:8px 0;"></div>
+                        <div class="skeleton" style="height:18px;width:50%;"></div>
+                        <div class="skeleton" style="height:18px;width:60%;margin:6px 0;"></div>
+                        <div class="skeleton" style="height:18px;width:50%;"></div>
+                        <div class="skeleton" style="height:80px;margin:16px 0;"></div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="info-wrapper">
-            <h1 id="title" class="title"></h1>
-            <p id="original-title" class="original-title"></p>
-
-            <!-- TABLE INFO -->
-            <table class="info-table" id="info-table">
-              <tr><td class="label">Năm</td><td class="value" id="year">-</td></tr>
-              <tr><td class="label">Chất lượng</td><td class="value" id="quality">-</td></tr>
-              <tr><td class="label">Ngôn ngữ</td><td class="value" id="lang">-</td></tr>
-              <tr><td class="label">Tập hiện tại</td><td class="value" id="episode">-</td></tr>
-              <tr><td class="label">Đánh giá</td><td class="value" id="rating">-</td></tr>
-              <tr><td class="label">Thể loại</td><td class="value" id="genres">-</td></tr>
-              <tr><td class="label">Quốc gia</td><td class="value" id="countries">-</td></tr>
-              <tr><td class="label">Diễn viên</td><td class="value" id="actors">-</td></tr>
-            </table>
-
-            <p id="desc" class="desc"></p>
-            <span id="toggle-desc" class="toggle-desc">Xem thêm</span>
-
-            <div class="actions">
-              <a id="watch-btn" class="btn btn-primary">Xem Ngay</a>
-              <a id="trailer-btn" class="btn btn-secondary">Xem Trailer</a>
-            </div>
-
-            <div class="trailer-section" id="trailer-section" style="display:none;"></div>
-
-            <div class="episodes-section" id="episodes-section" style="display:none;">
-              <div class="section-title">Chọn tập phim</div>
-              <div id="server-tabs" class="server-tabs"></div>
-              <div id="episode-grid" class="episode-grid"></div>
-            </div>
-          </div>
         </div>
-      </div>
+        <div id="detail-content" style="display:none;">
+            <div class="info-card">
+                <div class="detail-wrapper">
+                    <div class="poster-wrapper">
+                        <div class="tilt-card" id="tiltCard">
+                            <img id="poster" class="poster-front" src="" alt="" draggable="false">
+                            <div class="tilt-overlay"></div>
+                            <div class="tilt-glare"></div>
+                        </div>
+                        <div class="actions">
+                            <a id="watch-btn" class="btn btn-primary">Xem Ngay</a>
+                        </div>
+                    </div>
+                    <div class="info-wrapper">
+                        <h1 id="title" class="title"></h1>
+                        <p id="original-title" class="original-title"></p>
+                        <p id="desc" class="desc"></p>
+                        <span id="toggle-desc" class="toggle-desc">Xem thêm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const slug = urlParams.get("slug");
-    let source = urlParams.get("source") || "ax";
-
-    const sourceMap = { "ax": "Ophim", "bx": "Phimapi", "cx": "Nguonc" };
-    source = sourceMap[source] || "Ophim";
-
-    const apis = {
-      Ophim: `https://ophim1.com/v1/api/phim/${slug}`,
-      Phimapi: `https://phimapi.com/phim/${slug}`,
-      Nguonc: `https://phim.nguonc.com/api/film/${slug}`,
-    };
-
-    function getPoster(movie, cdn = "") {
-      let url = "";
-      if (source === "Phimapi") url = movie.poster_url || movie.thumb_url;
-      else if (source === "Ophim") {
-        url = movie.poster_url || movie.thumb_url;
-        if (url && !url.includes('/uploads/movies/')) {
-          const name = url.split('/').pop().replace('-poster.jpg', '').replace('-thumb.jpg', '');
-          url = `${cdn || 'https://img.ophim.live'}/uploads/movies/${name}-thumb.jpg`;
-        }
-      }
-      else if (source === "Nguonc") url = movie.thumb_url || movie.thumb_url;
-
-      if (url && cdn && !url.startsWith('http')) url = cdn + '/' + url.replace(/^\/+/, '');
-      return url || 'https://via.placeholder.com/260x390/111/fff?text=No+Image';
-    }
-
-    function renderEpisodes(episodes) {
-      const episodesSection = document.getElementById('episodes-section');
-      if (!episodes || episodes.length === 0) {
-        document.getElementById('episode-grid').innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#aaa;">Phim lẻ - Xem ngay</p>';
-        document.getElementById('watch-btn').href = `watch.html?slug=${slug}&source=${Object.keys(sourceMap).find(k => sourceMap[k] === source)}&e=1`;
-        episodesSection.style.display = 'block';
-        return;
-      }
-
-      const tabs = document.getElementById('server-tabs');
-      const grid = document.getElementById('episode-grid');
-      tabs.innerHTML = ''; grid.innerHTML = '';
-      episodesSection.style.display = 'block';
-
-      episodes.forEach((server, i) => {
-        const tab = document.createElement('div');
-        tab.className = 'server-tab';
-        if (i === 0) tab.classList.add('active');
-        tab.textContent = server.server_name || `Server ${i+1}`;
-        tab.onclick = () => {
-          document.querySelectorAll('.server-tab').forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          renderEpisodeList(server.server_data || server.items || []);
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get("slug");
+        let source = urlParams.get("source") || "ax";
+        const sourceMap = { "ax": "Ophim", "bx": "Phimapi", "cx": "Nguonc" };
+        source = sourceMap[source] || "Ophim";
+        const apis = {
+            Ophim: `https://ophim1.com/v1/api/phim/${slug}`,
+            Phimapi: `https://phimapi.com/phim/${slug}`,
+            Nguonc: `https://phim.nguonc.com/api/film/${slug}`,
         };
-        tabs.appendChild(tab);
-      });
-
-      renderEpisodeList(episodes[0].server_data || episodes[0].items || []);
-    }
-
-    function renderEpisodeList(items) {
-      const grid = document.getElementById('episode-grid');
-      grid.innerHTML = '';
-      if (!items || items.length === 0) { grid.innerHTML = '<p style="grid-column:1/-1;color:#aaa;">Không có tập</p>'; return; }
-
-      items.forEach((ep, i) => {
-        const btn = document.createElement('div');
-        btn.className = 'episode-btn';
-        btn.textContent = ep.name || `Tập ${i + 1}`;
-        const episodeNumber = (i + 1).toString();
-        btn.onclick = () => {
-          grid.querySelectorAll('.episode-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          const encodedSource = Object.keys(sourceMap).find(k => sourceMap[k] === source);
-          document.getElementById('watch-btn').href = `watch.html?slug=${slug}&source=${encodedSource}&e=${episodeNumber}`;
-        };
-        grid.appendChild(btn);
-      });
-
-      if (grid.children[0]) grid.children[0].click();
-    }
-
-    // === Hiệu ứng nghiêng 3D khi di chuột (giống RoPhim) ===
-    let isHovering = false;
-    document.addEventListener('mousemove', (e) => {
-      if (!isHovering) return;
-      const card = document.getElementById('tiltCard');
-      if (!card) return;
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const rotateX = (y - centerY) / centerY * -15;
-      const rotateY = (x - centerX) / centerX * 15;
-      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
-    });
-
-    const tiltCard = document.getElementById('tiltCard');
-    if (tiltCard) {
-      tiltCard.addEventListener('mouseenter', () => { isHovering = true; });
-      tiltCard.addEventListener('mouseleave', () => {
-        isHovering = false;
-        tiltCard.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
-      });
-    }
-
-    async function loadDetail() {
-      const skeleton = document.getElementById("skeleton");
-      const content = document.getElementById("detail-content");
-      const bg = document.getElementById("bg-poster");
-
-      if (!slug) {
-        content.innerHTML = `<p style="color:#f66;text-align:center;">Không có phim!</p>`;
-        skeleton.style.display = 'none'; content.style.display = 'block';
-        return;
-      }
-
-      try {
-        const res = await fetch(apis[source]);
-        if (!res.ok) throw new Error("Không tải được phim");
-        const data = await res.json();
-
-        let movie = {}, episodes = [], cdn = "";
-        if (source === "Nguonc") { movie = data.movie; episodes = movie.episodes; }
-        else if (source === "Phimapi") { movie = data.movie; episodes = data.episodes; }
-        else if (source === "Ophim") { movie = data.data.item; episodes = movie.episodes; cdn = data.data.APP_DOMAIN_CDN_IMAGE || "https://img.ophim.live"; }
-
-        const poster = getPoster(movie, cdn);
-        document.getElementById('poster').src = poster;
-        bg.style.backgroundImage = `url(${poster})`;
-
-        document.getElementById('title').textContent = movie.name || "Không rõ";
-        document.getElementById('original-title').textContent = movie.origin_name || "";
-
-        // === ĐỔ DỮ LIỆU VÀO TABLE ===
-        document.getElementById('year').textContent = movie.year || '-';
-        document.getElementById('quality').textContent = movie.quality || '-';
-        document.getElementById('lang').textContent = movie.lang || movie.language || '-';
-        document.getElementById('episode').textContent = movie.episode_current || movie.current_episode || 'Full';
-        document.getElementById('rating').innerHTML = movie.tmdb?.vote_average ? `Star ${movie.tmdb.vote_average.toFixed(1)}` : '-';
-
-        // Thể loại
-        let genres = [];
-        if (source === "Ophim") genres = (movie.category || []).map(c => c.name);
-        else if (source === "Phimapi") genres = (movie.category || []).map(c => c.name);
-        else if (source === "Nguonc") genres = (movie.category?.list || []).map(c => c.name);
-        document.getElementById('genres').innerHTML = genres.length ? genres.join(', ') : '-';
-
-        // Quốc gia
-        let countries = [];
-        if (source === "Ophim") countries = (movie.country || []).map(c => c.name);
-        else if (source === "Phimapi") countries = (movie.country || []).map(c => c.name);
-        else if (source === "Nguonc") countries = (movie.country?.list || []).map(c => c.name);
-        document.getElementById('countries').innerHTML = countries.length ? countries.join(', ') : '-';
-
-        // Diễn viên
-        if (movie.actor && Array.isArray(movie.actor)) {
-          const actors = movie.actor.slice(0, 5).join(', ');
-          document.getElementById('actors').textContent = actors + (movie.actor.length > 5 ? '...' : '');
-        } else {
-          document.getElementById('actors').textContent = '-';
+        function getPoster(movie, cdn = "") {
+            let url = "";
+            if (source === "Phimapi") url = movie.poster_url || movie.thumb_url;
+            else if (source === "Ophim") {
+                url = movie.poster_url || movie.thumb_url;
+                if (url && !url.includes('/uploads/movies/')) {
+                    const name = url.split('/').pop().replace('-poster.jpg', '').replace('-thumb.jpg', '');
+                    url = `${cdn || 'https://img.ophim.live'}/uploads/movies/${name}-thumb.jpg`;
+                }
+            }
+            else if (source === "Nguonc") url = movie.thumb_url || movie.thumb_url;
+            if (url && cdn && !url.startsWith('http')) url = cdn + '/' + url.replace(/^\//, '');
+            return url || 'https://via.placeholder.com/220x330/111/fff?text=No+Image';
         }
-
-        const fullDesc = (movie.content || movie.description || "Không có mô tả").replace(/<[^>]+>/g, '').trim();
-        const descEl = document.getElementById('desc');
-        descEl.textContent = fullDesc;
-
-        const toggleBtn = document.getElementById('toggle-desc');
-        if (fullDesc.length > 200) {
-          toggleBtn.style.display = 'inline-block';
-          toggleBtn.onclick = () => {
-            descEl.classList.toggle('expanded');
-            toggleBtn.textContent = descEl.classList.contains('expanded') ? 'Thu gọn' : 'Xem thêm';
-          };
-        } else {
-          toggleBtn.style.display = 'none';
+        // === Hiệu ứng nghiêng 3D khi di chuột (giống RoPhim) ===
+        let isHovering = false;
+        document.addEventListener('mousemove', (e) => {
+            if (!isHovering) return;
+            const card = document.getElementById('tiltCard');
+            if (!card) return;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / centerY * -15;
+            const rotateY = (x - centerX) / centerX * 15;
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+        });
+        const tiltCard = document.getElementById('tiltCard');
+        if (tiltCard) {
+            tiltCard.addEventListener('mouseenter', () => { isHovering = true; });
+            tiltCard.addEventListener('mouseleave', () => {
+                isHovering = false;
+                tiltCard.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+            });
         }
-
-        const trailerBtn = document.getElementById('trailer-btn');
-        const trailerSection = document.getElementById('trailer-section');
-        if (movie.trailer_url) {
-          const trailerId = movie.trailer_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-          if (trailerId) {
-            trailerBtn.style.display = 'inline-flex';
-            trailerBtn.onclick = () => {
-              if (trailerSection.style.display === 'block') {
-                trailerSection.style.display = 'none';
-                trailerBtn.textContent = 'Xem Trailer';
-              } else {
-                trailerSection.innerHTML = `<iframe class="trailer-iframe" src="https://www.youtube.com/embed/${trailerId[1]}" frameborder="0" allowfullscreen></iframe>`;
-                trailerSection.style.display = 'block';
-                trailerBtn.textContent = 'Ẩn Trailer';
-              }
-            };
-          }
-        } else {
-          trailerBtn.style.display = 'none';
+        async function loadDetail() {
+            const skeleton = document.getElementById("skeleton");
+            const content = document.getElementById("detail-content");
+            const bg = document.getElementById("bg-poster");
+            if (!slug) {
+                content.innerHTML = `<p style="color:#f66;text-align:center;">Không có phim!</p>`;
+                skeleton.style.display = 'none'; content.style.display = 'block';
+                return;
+            }
+            try {
+                const res = await fetch(apis[source]);
+                if (!res.ok) throw new Error("Không tải được phim");
+                const data = await res.json();
+                let movie = {}, episodes = [], cdn = "";
+                if (source === "Nguonc") { movie = data.movie; episodes = movie.episodes; }
+                else if (source === "Phimapi") { movie = data.movie; episodes = data.episodes; }
+                else if (source === "Ophim") { movie = data.data.item; episodes = movie.episodes; cdn = data.data.APP_DOMAIN_CDN_IMAGE || "https://img.ophim.live"; }
+                const poster = getPoster(movie, cdn);
+                document.getElementById('poster').src = poster;
+                bg.style.backgroundImage = `url(${poster})`;
+                document.getElementById('title').textContent = movie.name || "Không rõ";
+                document.getElementById('original-title').textContent = movie.origin_name || "";
+                const fullDesc = (movie.content || movie.description || "Không có mô tả").replace(/<[^>]+>/g, '').trim();
+                const descEl = document.getElementById('desc');
+                descEl.textContent = fullDesc;
+                const toggleBtn = document.getElementById('toggle-desc');
+                if (fullDesc.length > 200) {
+                    toggleBtn.style.display = 'inline-block';
+                    toggleBtn.onclick = () => {
+                        descEl.classList.toggle('expanded');
+                        toggleBtn.textContent = descEl.classList.contains('expanded') ? 'Thu gọn' : 'Xem thêm';
+                    };
+                } else {
+                    toggleBtn.style.display = 'none';
+                }
+                // Cài đặt nút Xem Ngay cho phim lẻ
+                const encodedSource = Object.keys(sourceMap).find(k => sourceMap[k] === source);
+                document.getElementById('watch-btn').href = `watch.html?slug=${slug}&source=${encodedSource}&e=1`;
+                document.getElementById('page-title').textContent = `${movie.name} - Phim Nhà Bánh Mì`;
+                document.getElementById('og-title').content = movie.name;
+                document.getElementById('og-desc').content = fullDesc.substring(0, 160) + '...';
+                document.getElementById('og-image').content = poster;
+                document.getElementById('og-url').content = location.href;
+                skeleton.style.display = 'none';
+                content.style.display = 'block';
+            } catch (err) {
+                console.error(err);
+                content.innerHTML = `<p style="color:#f66;text-align:center;">Lỗi: ${err.message}</p>`;
+                skeleton.style.display = 'none';
+                content.style.display = 'block';
+            }
         }
-
-        renderEpisodes(episodes);
-
-        document.getElementById('page-title').textContent = `${movie.name} - Phim Nhà Bánh Mì`;
-        document.getElementById('og-title').content = movie.name;
-        document.getElementById('og-desc').content = fullDesc.substring(0, 160) + '...';
-        document.getElementById('og-image').content = poster;
-        document.getElementById('og-url').content = location.href;
-
-        skeleton.style.display = 'none';
-        content.style.display = 'block';
-
-      } catch (err) {
-        console.error(err);
-        content.innerHTML = `<p style="color:#f66;text-align:center;">Lỗi: ${err.message}</p>`;
-        skeleton.style.display = 'none';
-        content.style.display = 'block';
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", loadDetail);
-  </script>
+        document.addEventListener("DOMContentLoaded", loadDetail);
+    </script>
 </body>
-
 </html>
