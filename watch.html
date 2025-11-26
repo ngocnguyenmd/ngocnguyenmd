@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -10,643 +11,65 @@
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.13"></script>
 
   <style>
-    :root{
-      --main-color: #0a84ff;
-      --main-color-hover: #0066cc;
-      --bg-dark: #0a0a14;
-      --card-bg: #1a1a2e;
-      --card-border: #2a2a4a;
-      --text-color: #ffffff;
-      --text-secondary: #b0b0c0;
-      --border-color: rgba(255,255,255,.1);
-      --radius: 16px;
-      --radius-sm: 12px;
-      --shadow: 0 10px 30px rgba(0,0,0,.4);
-      --shadow-lg: 0 20px 50px rgba(0,0,0,.6);
-      --success: #4ade80;
-      --warning: #fbbf24;
-      --error: #f87171;
-      --gradient-primary: linear-gradient(135deg, #0a84ff, #0066cc);
-      --gradient-dark: linear-gradient(135deg, #1a1a2e, #0a0a14);
+    :root{--main-color:#0a84ff;--bg-dark:#000;--card-bg:#111;--text-color:#fff;--border-color:rgba(255,255,255,.08);--radius:14px;--shadow:0 10px 30px rgba(0,0,0,.5)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Roboto,sans-serif;background:var(--bg-dark);color:var(--text-color);overflow-x:hidden;line-height:1.5}
+    a{text-decoration:none;color:inherit}
+    img{user-select:none;-webkit-user-drag:none;pointer-events:none}
+    .bg-blur{position:fixed;top:0;left:0;width:100%;height:100%;background-size:cover;background-position:center;filter:blur(14px) brightness(0.3);z-index:-2;opacity:0;transition:opacity .6s}
+    .bg-blur.loaded{opacity:1}
+    .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:-1}
+    .main-container{max-width:960px;margin:0 auto;padding:0 1.5rem;position:relative;z-index:10}
+    #player-area{width:100%;margin:20px auto;background:#000;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:16/9;position:relative;border:2px solid #111}
+    #player-area video,#player-area iframe{width:100%;height:100%;border:none;object-fit:contain;background:#000}
+    .loading-overlay{position:absolute;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;border-radius:var(--radius)}
+    .spinner{width:52px;height:52px;border:5px solid #222;border-top:5px solid var(--main-color);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .title-bar{margin:16px auto 22px;padding:15px 20px;text-align:center;font-weight:700;font-size:1.2rem;color:var(--main-color);background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius);box-shadow:0 4px 12px rgba(10,132,255,.1);backdrop-filter:blur(8px)}
+    .bar{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:18px auto;max-width:100%}
+    .btn{padding:11px 22px;border:none;border-radius:12px;font-weight:600;cursor:pointer;font-size:14.5px;transition:all .22s ease;min-width:86px;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--card-bg);color:#ccc;border:1px solid var(--border-color)}
+    .btn:hover{background:rgba(10,132,255,.15);border-color:var(--main-color);color:var(--main-color)}
+    .btn.active{background:var(--main-color);color:#fff;border-color:var(--main-color);transform:scale(1.04)}
+    .source-btn{position:relative}
+    .source-btn .dropdown{position:absolute;top:100%;left:0;right:0;background:var(--card-bg);border:1px solid var(--main-color);border-top:none;border-radius:0 0 var(--radius) var(--radius);overflow:hidden;display:none;z-index:10}
+    .source-btn:hover .dropdown{display:block}
+    .dropdown button{width:100%;padding:10px 16px;background:transparent;color:#fff;border:none;text-align:center;font-size:14px;cursor:pointer;transition:background .2s}
+    .dropdown button:hover{background:rgba(10,132,255,.2)}
+    .ep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:12px;padding:18px 10px;margin:0 auto 24px;border-radius:var(--radius);background:var(--card-bg);box-shadow:var(--shadow)}
+    .ep-btn{min-width:54px;height:54px;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;border:1px solid var(--border-color);border-radius:12px;font-weight:600;font-size:14.5px;cursor:pointer;transition:all .22s ease;box-shadow:0 3px 8px rgba(0,0,0,.3)}
+    .ep-btn:hover{background:var(--main-color);border-color:var(--main-color);color:#fff;transform:scale(1.06)}
+    .ep-btn.active{background:var(--main-color);border-color:var(--main-color);color:#fff;transform:scale(1.06)}
+    .plot-container{margin:0 auto 28px;padding:18px;background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius);color:#ddd;line-height:1.8;font-size:15.5px;overflow-y:auto;max-height:250px;box-shadow:var(--shadow);backdrop-filter:blur(6px)}
+    .plot-container h3{color:var(--main-color);margin-bottom:12px;font-size:1.25rem;font-weight:700}
+    .back-btn{display:block;margin:28px auto 48px;padding:16px;background:var(--main-color);color:#fff;text-align:center;border-radius:14px;font-weight:700;font-size:17px;transition:all .25s;box-shadow:0 6px 18px rgba(10,132,255,.3);max-width:100%}
+    .back-btn:hover{transform:scale(1.03);opacity:0.94}
+    #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#000;color:#fff;padding:14px 26px;border:1px solid var(--main-color);border-radius:12px;font-size:15px;visibility:hidden;opacity:0;transition:opacity .25s;z-index:9999;box-shadow:var(--shadow)}
+    #toast.show{visibility:visible;opacity:1}
+    #popup-confirm{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:9999;visibility:hidden;opacity:0;transition:opacity .25s}
+    #popup-confirm.show{visibility:visible;opacity:1}
+    #popup-box{background:var(--card-bg);padding:26px;border:1px solid var(--main-color);border-radius:14px;color:#fff;width:90%;max-width:400px;text-align:center;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+    .popup-btn{padding:12px 24px;margin:10px 8px;min-width:100px;border:none;border-radius:10px;font-weight:600;cursor:pointer;transition:all .22s}
+    .popup-yes{background:var(--main-color);color:#fff}
+    .popup-yes:hover{transform:scale(1.04)}
+    .popup-no{background:#333;color:#fff;border:1px solid var(--border-color)}
+    .popup-no:hover{background:#444}
+    .sub{position:absolute;bottom:14px;left:14px;right:14px;text-align:center;font-size:16.5px;color:#fff;text-shadow:1px 1px 3px #000;font-weight:600;line-height:1.4;pointer-events:none;background:rgba(0,0,0,.65);padding:7px 12px;border-radius:10px;display:inline-block;max-width:90%}
+    @media(max-width:768px){
+      .main-container{padding:0 1rem}
+      #player-area{margin:16px 0}
+      .title-bar{margin:14px 0;font-size:1.1rem;padding:13px}
+      .bar{gap:10px}
+      .btn{padding:10px 18px;font-size:14px}
+      .ep-grid{gap:10px;padding:16px 8px}
+      .ep-btn{height:50px;font-size:14px}
+      .back-btn{margin:24px 0 42px;font-size:16px}
+      .plot-container{padding:16px;font-size:15px;max-height:220px}
     }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    html, body {
-      height: 100%;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-color);
-      overflow-x: hidden;
-      line-height: 1.6;
-    }
-    
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-    
-    img {
-      user-select: none;
-      -webkit-user-drag: none;
-      pointer-events: none;
-    }
-    
-    .bg-blur {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      filter: blur(20px) brightness(0.25);
-      z-index: -2;
-      opacity: 0;
-      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .bg-blur.loaded {
-      opacity: 1;
-    }
-    
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at center, transparent 30%, rgba(10,10,20,0.9) 100%);
-      z-index: -1;
-    }
-    
-    .main-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-      position: relative;
-      z-index: 10;
-    }
-    
-    #player-area {
-      width: 100%;
-      margin: 25px auto;
-      background: #000;
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
-      aspect-ratio: 16/9;
-      position: relative;
-      border: 2px solid var(--card-border);
-      transition: all 0.3s ease;
-    }
-    
-    #player-area:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg), 0 0 30px rgba(10, 132, 255, 0.2);
-    }
-    
-    #player-area video, #player-area iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      object-fit: contain;
-      background: #000;
-    }
-    
-    .loading-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius);
-      backdrop-filter: blur(10px);
-    }
-    
-    .spinner {
-      width: 60px;
-      height: 60px;
-      border: 5px solid rgba(255,255,255,0.1);
-      border-top: 5px solid var(--main-color);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      position: relative;
-    }
-    
-    .spinner::after {
-      content: '';
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 3px solid transparent;
-      border-top: 3px solid var(--main-color);
-      animation: spinReverse 1.5s linear infinite;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    @keyframes spinReverse {
-      to { transform: rotate(-360deg); }
-    }
-    
-    .title-bar {
-      margin: 20px auto 25px;
-      padding: 20px 25px;
-      text-align: center;
-      font-weight: 700;
-      font-size: 1.4rem;
-      color: var(--text-color);
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .title-bar::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(10, 132, 255, 0.1), transparent);
-      transition: left 0.5s;
-    }
-    
-    .title-bar:hover::before {
-      left: 100%;
-    }
-    
-    .bar {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin: 20px auto;
-      max-width: 100%;
-    }
-    
-    .btn {
-      padding: 12px 24px;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 15px;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      min-width: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: var(--card-bg);
-      color: var(--text-secondary);
-      border: 1px solid var(--card-border);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      transition: left 0.5s;
-    }
-    
-    .btn:hover {
-      background: rgba(10, 132, 255, 0.15);
-      border-color: var(--main-color);
-      color: var(--text-color);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(10, 132, 255, 0.2);
-    }
-    
-    .btn:hover::before {
-      left: 100%;
-    }
-    
-    .btn.active {
-      background: var(--gradient-primary);
-      color: #fff;
-      border-color: var(--main-color);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(10, 132, 255, 0.3);
-    }
-    
-    .source-btn {
-      position: relative;
-    }
-    
-    .source-btn .dropdown {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: var(--card-bg);
-      border: 1px solid var(--main-color);
-      border-top: none;
-      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-      overflow: hidden;
-      display: none;
-      z-index: 10;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    }
-    
-    .source-btn:hover .dropdown {
-      display: block;
-      animation: fadeIn 0.2s ease;
-    }
-    
-    .dropdown button {
-      width: 100%;
-      padding: 12px 18px;
-      background: transparent;
-      color: var(--text-color);
-      border: none;
-      text-align: center;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-    
-    .dropdown button:hover {
-      background: rgba(10, 132, 255, 0.2);
-    }
-    
-    .ep-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-      gap: 14px;
-      padding: 22px 15px;
-      margin: 0 auto 30px;
-      border-radius: var(--radius);
-      background: var(--card-bg);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--card-border);
-    }
-    
-    .ep-btn {
-      min-width: 56px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #000;
-      color: var(--text-secondary);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      font-size: 15px;
-      cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 3px 10px rgba(0,0,0,.2);
-    }
-    
-    .ep-btn:hover {
-      background: var(--main-color);
-      border-color: var(--main-color);
-      color: #fff;
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 5px 15px rgba(10, 132, 255, 0.3);
-    }
-    
-    .ep-btn.active {
-      background: var(--gradient-primary);
-      border-color: var(--main-color);
-      color: #fff;
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 5px 15px rgba(10, 132, 255, 0.4);
-    }
-    
-    .plot-container {
-      margin: 0 auto 35px;
-      padding: 22px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      color: var(--text-secondary);
-      line-height: 1.8;
-      font-size: 16px;
-      overflow-y: auto;
-      max-height: 280px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(6px);
-    }
-    
-    .plot-container h3 {
-      color: var(--main-color);
-      margin-bottom: 15px;
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-    
-    .back-btn {
-      display: block;
-      margin: 35px auto 50px;
-      padding: 18px 30px;
-      background: var(--gradient-primary);
-      color: #fff;
-      text-align: center;
-      border-radius: var(--radius);
-      font-weight: 700;
-      font-size: 18px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 8px 25px rgba(10, 132, 255, 0.4);
-      max-width: 100%;
-      border: none;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .back-btn:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 12px 30px rgba(10, 132, 255, 0.6);
-    }
-    
-    .back-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s;
-    }
-    
-    .back-btn:hover::before {
-      left: 100%;
-    }
-    
-    #toast {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--card-bg);
-      color: var(--text-color);
-      padding: 16px 30px;
-      border: 1px solid var(--main-color);
-      border-radius: var(--radius-sm);
-      font-size: 16px;
-      visibility: hidden;
-      opacity: 0;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 9999;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    #toast.show {
-      visibility: visible;
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    
-    #popup-confirm {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      backdrop-filter: blur(5px);
-    }
-    
-    #popup-confirm.show {
-      visibility: visible;
-      opacity: 1;
-    }
-    
-    #popup-box {
-      background: var(--card-bg);
-      padding: 30px;
-      border: 1px solid var(--main-color);
-      border-radius: var(--radius);
-      color: var(--text-color);
-      width: 90%;
-      max-width: 450px;
-      text-align: center;
-      box-shadow: var(--shadow-lg);
-      backdrop-filter: blur(15px);
-      transform: scale(0.9);
-      transition: transform 0.3s ease;
-    }
-    
-    #popup-confirm.show #popup-box {
-      transform: scale(1);
-    }
-    
-    .popup-btn {
-      padding: 14px 28px;
-      margin: 12px 10px;
-      min-width: 110px;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      font-size: 16px;
-    }
-    
-    .popup-yes {
-      background: var(--gradient-primary);
-      color: #fff;
-    }
-    
-    .popup-yes:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 15px rgba(10, 132, 255, 0.4);
-    }
-    
-    .popup-no {
-      background: #333;
-      color: #fff;
-      border: 1px solid var(--card-border);
-    }
-    
-    .popup-no:hover {
-      background: #444;
-      transform: scale(1.05);
-    }
-    
-    .sub {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      text-align: center;
-      font-size: 18px;
-      color: #fff;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-      font-weight: 600;
-      line-height: 1.5;
-      pointer-events: none;
-      background: rgba(0,0,0,.7);
-      padding: 10px 20px;
-      border-radius: var(--radius-sm);
-      display: inline-block;
-      max-width: 80%;
-      backdrop-filter: blur(5px);
-    }
-    
-    .upload input[type="file"] {
-      display: none;
-    }
-    
-    .upload {
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .upload::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
-      background-size: 200% 100%;
-      animation: shine 3s infinite;
-    }
-    
-    @keyframes shine {
-      0% { background-position: -100% 0; }
-      100% { background-position: 100% 0; }
-    }
-    
-    .error-msg {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,.9);
-      color: var(--error);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      font-weight: 600;
-      border-radius: var(--radius);
-      backdrop-filter: blur(5px);
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @media(max-width: 768px) {
-      .main-container {
-        padding: 0 1rem;
-      }
-      
-      #player-area {
-        margin: 18px 0;
-      }
-      
-      .title-bar {
-        margin: 16px 0;
-        font-size: 1.2rem;
-        padding: 16px 20px;
-      }
-      
-      .bar {
-        gap: 12px;
-      }
-      
-      .btn {
-        padding: 10px 20px;
-        font-size: 14px;
-        min-width: 80px;
-      }
-      
-      .ep-grid {
-        gap: 12px;
-        padding: 18px 12px;
-        grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
-      }
-      
-      .ep-btn {
-        height: 50px;
-        font-size: 14px;
-      }
-      
-      .back-btn {
-        margin: 28px 0 40px;
-        font-size: 16px;
-        padding: 16px 25px;
-      }
-      
-      .plot-container {
-        padding: 18px;
-        font-size: 15px;
-        max-height: 240px;
-      }
-      
-      #popup-box {
-        padding: 25px;
-        max-width: 90%;
-      }
-    }
-    
-    @media(max-width: 480px) {
-      .ep-grid {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 10px;
-      }
-      
-      .ep-btn {
-        height: 46px;
-        font-size: 13px;
-        min-width: 46px;
-      }
-      
-      .btn {
-        font-size: 13px;
-        padding: 9px 16px;
-        min-width: 70px;
-      }
-      
-      .back-btn {
-        font-size: 15px;
-        padding: 14px 20px;
-      }
-      
-      .title-bar {
-        font-size: 1.1rem;
-        padding: 14px 18px;
-      }
-      
-      #toast {
-        font-size: 14px;
-        padding: 14px 25px;
-        max-width: 90%;
-      }
+    @media(max-width:480px){
+      .ep-grid{grid-template-columns:repeat(6,1fr);gap:8px}
+      .ep-btn{height:46px;font-size:13.5px}
+      .btn{font-size:13.5px;padding:9px 15px}
+      .back-btn{font-size:15.5px;padding:14px}
     }
   </style>
 </head>
@@ -661,53 +84,19 @@
       <div class="loading-overlay"><div class="spinner"></div></div>
       <video id="hls-video" playsinline controls preload="none" style="display:none"></video>
       <iframe id="embed-frame" style="display:none" allowfullscreen allow="autoplay" loading="lazy"></iframe>
-      <div class="error-msg" id="error-msg" style="display:none">Lỗi phát nguồn này</div>
+      <div class="error-msg" id="error-msg" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.8);color:#f66;display:flex;align-items:center;justify-content:center;font-size:1.15rem;">Lỗi phát nguồn này</div>
     </div>
 
     <div class="bar" id="source-mode-bar"></div>
     <div class="bar" id="server-select"></div>
 
     <div class="bar" id="ctl-bar">
-      <button class="btn" onclick="prevEp()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polygon points="11 19 2 12 11 5 11 19"></polygon>
-          <polygon points="22 19 13 12 22 5 22 19"></polygon>
-        </svg>
-        Trước
-      </button>
-      <button class="btn" onclick="seek(-40)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 20V4M6 16L2 12L6 8M18 16L22 12L18 8"></path>
-        </svg>
-        -40s
-      </button>
-      <button class="btn" onclick="seek(40)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 4V20M6 8L2 12L6 16M18 8L22 12L18 16"></path>
-        </svg>
-        +40s
-      </button>
-      <button class="btn" onclick="nextEp()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polygon points="5 4 15 12 5 20 5 4"></polygon>
-          <polygon points="19 5 19 19 12 12 19 5"></polygon>
-        </svg>
-        Sau
-      </button>
-      <label class="btn upload">
-        <input type="file" id="vi-sub" accept=".vtt,.srt" hidden>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-        </svg>
-        Vi Sub
-      </label>
-      <label class="btn upload">
-        <input type="file" id="en-sub" accept=".vtt,.srt" hidden>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-        </svg>
-        En Sub
-      </label>
+      <button class="btn" onclick="prevEp()">Tập trước</button>
+      <button class="btn" onclick="seek(-40)">-40s</button>
+      <button class="btn" onclick="seek(40)">+40s</button>
+      <button class="btn" onclick="nextEp()">Tập sau</button>
+      <label class="btn upload"><input type="file" id="vi-sub" accept=".vtt,.srt" hidden> Vi Sub</label>
+      <label class="btn upload"><input type="file" id="en-sub" accept=".vtt,.srt" hidden> En Sub</label>
     </div>
 
     <div class="ep-grid" id="ep-grid"></div>
@@ -717,31 +106,14 @@
       <p id="plot-text">Đang tải nội dung phim...</p>
     </div>
 
-    <button class='back-btn' onclick="window.location.href='/'">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 10px;">
-        <path d="M19 12H5M12 19l-7-7 7-7"></path>
-      </svg>
-      Quay lại Trang Chủ
-    </button>
+    <a class='back-btn' href='/'>Quay lại Trang Chủ</a>
   </div>
 
-  <div id="toast">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-      <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-    </svg>
-    Thông báo
-  </div>
+  <div id="toast">Thông báo</div>
 
   <div id="popup-confirm">
     <div id="popup-box">
-      <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--main-color)" stroke-width="1.5" style="margin: 0 auto 20px;">
-        <circle cx="12" cy="12" r="10"></circle>
-        <path d="M12 16v-4"></path>
-        <path d="M12 8h.01"></path>
-      </svg>
-      <h3 style="margin-bottom: 15px; color: var(--main-color);">Tập tiếp theo</h3>
-      <p style="margin-bottom: 25px; color: var(--text-secondary);">Bạn có muốn chuyển sang tập kế tiếp không?</p>
+      <p>Bạn có muốn chuyển sang tập kế tiếp không?</p>
       <button class="popup-btn popup-yes">Có</button>
       <button class="popup-btn popup-no">Không</button>
     </div>
@@ -784,16 +156,10 @@
   let popupTimeout = null;
 
   function showToast(m) {
-    toastEl.innerHTML = `
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-      </svg>
-      ${m}
-    `;
+    toastEl.textContent = m;
     toastEl.classList.add('show');
     clearTimeout(toastEl.timeout);
-    toastEl.timeout = setTimeout(() => toastEl.classList.remove('show'), 3000);
+    toastEl.timeout = setTimeout(() => toastEl.classList.remove('show'), 2500);
   }
 
   function showEndPopup() {
@@ -803,26 +169,13 @@
     clearTimeout(popupTimeout);
     popupTimeout = setTimeout(() => {
       if (warned) { popup.classList.remove('show'); warned = false; }
-    }, 10000);
+    }, 8000);
   }
 
-  popupYes.onclick = () => { 
-    clearTimeout(popupTimeout); 
-    popup.classList.remove('show'); 
-    warned = false; 
-    nextEp(); 
-  };
-  
-  popupNo.onclick = () => { 
-    clearTimeout(popupTimeout); 
-    popup.classList.remove('show'); 
-    warned = true; 
-  };
+  popupYes.onclick = () => { clearTimeout(popupTimeout); popup.classList.remove('show'); warned = false; nextEp(); };
+  popupNo.onclick = () => { clearTimeout(popupTimeout); popup.classList.remove('show'); warned = true; };
 
-  function epFromUrl() { 
-    const e = params.get('e'); 
-    return e ? Math.max(0, parseInt(e) - 1) : 0; 
-  }
+  function epFromUrl() { const e = params.get('e'); return e ? Math.max(0, parseInt(e) - 1) : 0; }
 
   function updateUrl(ep, src = srcName) {
     curEp = ep;
@@ -913,37 +266,11 @@
     const sourceDiv = document.createElement('div');
     sourceDiv.className = 'source-btn';
     sourceDiv.innerHTML = `
-      <button class="btn active" id="current-source">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-        </svg>
-        ${srcCode.toUpperCase()}
-      </button>
+      <button class="btn active" id="current-source">${srcCode.toUpperCase()}</button>
       <div class="dropdown">
-        <button onclick="changeSource('ax')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-          AX (Ophim)
-        </button>
-        <button onclick="changeSource('bx')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-          BX (Phimapi)
-        </button>
-        <button onclick="changeSource('cx')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-          CX (Nguonc)
-        </button>
+        <button onclick="changeSource('ax')">AX</button>
+        <button onclick="changeSource('bx')">BX</button>
+        <button onclick="changeSource('cx')">CX</button>
       </div>
     `;
     sourceModeBar.appendChild(sourceDiv);
@@ -956,14 +283,7 @@
       if (hasEmbed) {
         const b = document.createElement('button');
         b.className = 'btn active';
-        b.innerHTML = `
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-            <line x1="8" y1="21" x2="16" y2="21"></line>
-            <line x1="12" y1="17" x2="12" y2="21"></line>
-          </svg>
-          Embed
-        `;
+        b.textContent = 'Embed';
         b.onclick = () => showToast('Nguồn C chỉ hỗ trợ Embed');
         sourceModeBar.appendChild(b);
       }
@@ -971,14 +291,7 @@
       if (hasM3u8) {
         const b = document.createElement('button');
         b.className = 'btn';
-        b.innerHTML = `
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-          </svg>
-          M3U8
-        `;
+        b.textContent = 'M3U8';
         if (mode === 'm3u8') b.classList.add('active');
         b.onclick = () => { mode = 'm3u8'; play(curEp); };
         sourceModeBar.appendChild(b);
@@ -986,14 +299,7 @@
       if (hasEmbed) {
         const b = document.createElement('button');
         b.className = 'btn';
-        b.innerHTML = `
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-            <line x1="8" y1="21" x2="16" y2="21"></line>
-            <line x1="12" y1="17" x2="12" y2="21"></line>
-          </svg>
-          Embed
-        `;
+        b.textContent = 'Embed';
         if (mode === 'embed') b.classList.add('active');
         b.onclick = () => { mode = 'embed'; play(curEp); };
         sourceModeBar.appendChild(b);
@@ -1007,14 +313,7 @@
     servers.forEach((s, i) => {
       const b = document.createElement('button');
       b.className = 'btn';
-      b.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-          <line x1="8" y1="21" x2="16" y2="21"></line>
-          <line x1="12" y1="17" x2="12" y2="21"></line>
-        </svg>
-        ${s.name} (${s.data.length})
-      `;
+      b.textContent = `${s.name} (${s.data.length})`;
       if (i === curSrv) b.classList.add('active');
       b.onclick = () => switchServer(i);
       bar.appendChild(b);
@@ -1200,11 +499,11 @@
 
   document.getElementById('vi-sub').onchange = e => {
     const f = e.target.files[0];
-    if (f) { viSub = URL.createObjectURL(f); showToast('Vi Sub đã được tải lên'); if (mode === 'm3u8' && srcName !== 'Nguonc') play(curEp); }
+    if (f) { viSub = URL.createObjectURL(f); showToast('Vi Sub OK'); if (mode === 'm3u8' && srcName !== 'Nguonc') play(curEp); }
   };
   document.getElementById('en-sub').onchange = e => {
     const f = e.target.files[0];
-    if (f) { enSub = URL.createObjectURL(f); showToast('En Sub đã được tải lên'); if (mode === 'm3u8' && srcName !== 'Nguonc') play(curEp); }
+    if (f) { enSub = URL.createObjectURL(f); showToast('En Sub OK'); if (mode === 'm3u8' && srcName !== 'Nguonc') play(curEp); }
   };
 
   window.changeSource = async function(code) {
@@ -1235,4 +534,5 @@
   init();
 </script>
 </body>
+
 </html>
