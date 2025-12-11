@@ -1,6 +1,9 @@
 # Xem gần đây...!
 nguoc dong thoi gian ma den|phimapi
+thien dia kiem tam|phimapi
+
 
 # Danh sách tổng hợp...!
 tham tu lung danh conan|phimapi
 vo han gacha|phimapi
+
