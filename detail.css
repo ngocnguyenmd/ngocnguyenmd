@@ -1,0 +1,223 @@
+/* ======== RESET ======== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background: #000;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Roboto, sans-serif;
+    overflow-x: hidden;
+    line-height: 1.5;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+img {
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
+/* ======== CONTAINER ======== */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    position: relative;
+    z-index: 10;
+}
+
+/* ======== HEADER ======== */
+header {
+    background: rgba(17,17,17,.95);
+    backdrop-filter: blur(0); /* loại bỏ blur nặng */
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+.logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+    cursor: pointer;
+}
+.back-home {
+    background: #0a84ff;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: .85rem;
+    font-weight: 500;
+    transition: all .25s;
+    cursor: pointer;
+}
+.back-home:hover {
+    background: #006edc;
+    transform: scale(1.04);
+}
+
+/* ======== INFO CARD ======== */
+.info-card {
+    background: #111;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 8px 24px rgba(0,0,0,.5);
+    margin-top: 1.5rem;
+}
+
+/* ======== LAYOUT: POSTER + INFO ======== */
+.detail-wrapper {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+.poster-wrapper {
+    flex: 0 0 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.info-wrapper {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+/* ======== POSTER EFFECT NHẸ ======== */
+.tilt-card {
+    width: 220px;
+    height: 330px;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .2s ease;
+}
+.tilt-card:hover {
+    transform: scale(1.03); /* chỉ scale nhẹ, không rotate */
+}
+.poster-front {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: filter .3s;
+}
+.tilt-card:hover .poster-front {
+    filter: brightness(1.05);
+}
+
+/* ======== TEXT ======== */
+.title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0a84ff;
+    margin-bottom: .4rem;
+}
+.original-title {
+    font-size: .95rem;
+    color: #aaa;
+    margin-bottom: .4rem;
+    font-style: italic;
+}
+
+/* ======== DESCRIPTION ======== */
+.desc {
+    line-height: 1.6;
+    max-height: 100px;
+    overflow: hidden;
+    transition: max-height .4s ease;
+    color: #ddd;
+    font-size: .9rem;
+}
+.desc.expanded {
+    max-height: 800px;
+}
+.toggle-desc {
+    color: #0a84ff;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: .5rem;
+    display: inline-block;
+    font-size: .85rem;
+}
+.toggle-desc:hover {
+    text-decoration: underline;
+}
+
+/* ======== ACTIONS ======== */
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: .4rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.btn {
+    padding: 10px 20px;
+    border-radius: 16px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .9rem;
+    transition: all .25s;
+}
+.btn-primary {
+    background: #0a84ff;
+    color: #fff;
+}
+.btn-primary:hover {
+    background: #006edc;
+    transform: scale(1.04);
+}
+
+/* ======== SKELETON ======== */
+.skeleton {
+    background: #222;
+    border-radius: 8px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse {
+    0% { opacity: .6; }
+    50% { opacity: 1; }
+    100% { opacity: .6; }
+}
+
+/* ======== RESPONSIVE ======== */
+@media (max-width: 992px) {
+    .poster-wrapper { flex: 0 0 200px; }
+    .tilt-card { width: 200px; height: 300px; }
+    .info-card { padding: 1.2rem; }
+}
+@media (max-width: 768px) {
+    .detail-wrapper { flex-direction: column; align-items: center; gap: 1rem; }
+    .poster-wrapper { flex: 0 0 100%; max-width: 280px; }
+    .tilt-card { width: 280px; height: 420px; }
+    .title { font-size: 1.4rem; text-align: center; }
+    .actions { justify-content: center; }
+    .container { padding: 0 0.8rem; }
+}
+@media (max-width: 480px) {
+    .desc { font-size: .85rem; }
+    .nav { padding: 0 0.8rem; }
+    .back-home { font-size: .8rem; padding: 5px 10px; }
+    .tilt-card { width: 240px; height: 360px; }
+}
