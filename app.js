@@ -52,7 +52,7 @@ const API_SOURCES = {
   }
 };
 
-let ITEMS_PER_PAGE = 508;
+let ITEMS_PER_PAGE = 12;
 let currentMode = 'default';
 let currentFilter = null;
 let currentPage = 1;
@@ -599,7 +599,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   combinedFilterMode = choice === 'Bật (ax+bx)';
                   openModal('QUỐC GIA', ['Tất cả', ...Object.keys(COUNTRY_SLUG_MAP)], countryName => {
                     const countrySlug = countryName === 'Tất cả' ? null : COUNTRY_SLUG_MAP[countryName];
-                    openModal('NĂM', ['Tất cả', ...Array.from({ length: 25 }, (_, i) => 2025 - i)], yearStr => {
+                    openModal('NĂM', ['Tất cả', ...Array.from({ length: 25 }, (_, i) => 2026 - i)], yearStr => {
                       const year = yearStr === 'Tất cả' ? null : yearStr;
                       load('combined', null, 1, genreSlug, countrySlug, year);
                       closeModal();
@@ -617,7 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           if (v === 'Năm') {
-            openModal('NĂM', Array.from({ length: 25 }, (_, i) => 2025 - i), x => load('year', x, 1));
+            openModal('NĂM', Array.from({ length: 25 }, (_, i) => 2026 - i), x => load('year', x, 1));
             return;
           }
 
@@ -667,7 +667,7 @@ document.addEventListener('DOMContentLoaded', () => {
               combinedFilterMode = choice === 'Bật (ax+bx)';
               openModal('QUỐC GIA', ['Tất cả', ...Object.keys(COUNTRY_SLUG_MAP)], countryName => {
                 const countrySlug = countryName === 'Tất cả' ? null : COUNTRY_SLUG_MAP[countryName];
-                openModal('NĂM', ['Tất cả', ...Array.from({ length: 25 }, (_, i) => 2025 - i)], yearStr => {
+                openModal('NĂM', ['Tất cả', ...Array.from({ length: 25 }, (_, i) => 2026 - i)], yearStr => {
                   const year = yearStr === 'Tất cả' ? null : yearStr;
                   load('combined', null, 1, genreSlug, countrySlug, year);
                   closeModal();
@@ -683,7 +683,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (t === 'year') {
-        openModal('NĂM', Array.from({ length: 25 }, (_, i) => 2025 - i), x => load('year', x, 1));
+        openModal('NĂM', Array.from({ length: 25 }, (_, i) => 2026 - i), x => load('year', x, 1));
       }
 
       if (t === 'cutee') {
