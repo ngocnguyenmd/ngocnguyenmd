@@ -1,16 +1,49 @@
-# anime bộ
+# Đợi load vài giây...
 
-Shin|phimapi
-tham tu lung danh conan|phimapi
-tien dao so 1 phan 1|phimapi
-linh hon bac phan 1|phimapi
-horimiya nhung manh ghep bi mat|phimapi
-gachiakuta|phimapi
-dao hai tac|phimapi
-dai chien nguoi va than phan 1|phimapi
-dragon ball daima|phimapi
-dam phat chet luon phan 1|phimapi
-hoc vien sieu anh hung mua 1|phimapi
-tho san ti hon|phimapi
-huyet quy hon chien|phimapi
-phap su trang bi loai khoi to doi duoc mao hiem gia cap s don nhan|phimapi
+bang tuyet dao|ophim
+lam giang tien|ophim
+tu cam|ophim
+ket hon roi bat dau yeu|ophim
+kho do danh|ophim
+hoa gian lenh|ophim
+tieu dao 2025|ophim
+em la niem kieu hanh cua anh|ophim
+sinh van vat|ophim
+quoc sac phuong hoa|ophim
+cau chuyen hoa hong|ophim
+sa vao tinh yeu cuong nhiet cua chung ta|ophim
+ca map sieu bao chua|ophim
+trieu tuyet luc|ophim
+sau chi em|ophim
+song quy|ophim
+vo my nuong truyen ky|ophim
+mai hoa hong da|ophim
+anh dao ho phach|ophim
+gio thoi ban ha da man sinh truong|ophim
+rem ngoc chau sa|ophim
+luong ngon ta y|ophim
+khoi lua nhan gian cua toi|ophim
+thap nhi dam|ophim
+# Hàn
+
+bac si ma ca rong|nguonc
+hanh phuc chung cu co doc happiness|ophim
+khach san ma quai|ophim
+blackpink thap sang bau troi|nguonc
+chang quy cua toi|ophim
+hoi nhung ba me xanh|ophim
+ly giai tinh yeu|ophim
+mot seoul chua biet den|nguonc
+not tram doi bac si|ophim
+ngu tru cua bao chua|ophim
+
+# Thailand
+
+hoang tu ech|ophim
+
+# Việt
+
+lam giau voi ma 2 cuoc chien hot xoan|ophim
+nha gia tien|nguonc
+co dung hong thoat khoi toi|ophim
+cua lai vo bau|nguonc
