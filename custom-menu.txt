@@ -1,57 +1,16 @@
-#* Danh sách chỉ là đề cử
+# anime bộ
 
-pha ken 2025|ophim
-nhan chi so|ophim
-ai da giet chim hoa mi|ophim
-nu hoang part time la toi|ophim
-cong chua dien ha co tri|ophim
-nuoc mat phan hong|ophim
-
-#* USA
-
-fire country phan 4|ophim
-cau be mat tich phan 5|ophim
-tho san quai vat phan 4|ophim
-tu vu tru john wick ballerina|ophim
-mat vu phu ho|ophim
-quai xe baby|ophim
-#* Hàn
-
-dai ca ha ha ha|phimapi
-cho den thoi tan the|phimapi
-dai hong thuy|phimapi
-
-cung dien ma am|phimapi
-song trang hoan menh|phimapi
-ngu tru cua bao chua|phimapi
-
-#* Nhật bản
-
-100 met|ophim
-khach san sat thu|ophim
-nhat ky bai giang ky quai cua thay Chuzenji|ophim
-dai chien nguoi va than phan 3|ophim
-bi mat cua phu thuy tinh lang|ophim
-one punch man phan 3|ophim
-
-#* Hoạt hình
-
-the gioi ky ao cua gumball|ophim
-rick va morty phan 8|ophim
-tien si da hoi sinh the gioi phan 4|ophim
-nhung manh ghep cam xuc 2|ophim
-coco|ophim
-
-
-# Cũng hài hài Á
-
-anh hung tien mat|phimapi
-trung tam cham soc chan thuong|phimapi
-
-# Cảm Cảm Á
-
-toi nhu anh duong ruc ro|phimapi
-song quy|phimapi
-
-
-
+Shin|phimapi
+tham tu lung danh conan|phimapi
+tien dao so 1 phan 1|phimapi
+linh hon bac phan 1|phimapi
+horimiya nhung manh ghep bi mat|phimapi
+gachiakuta|phimapi
+dao hai tac|phimapi
+dai chien nguoi va than phan 1|phimapi
+dragon ball daima|phimapi
+dam phat chet luon phan 1|phimapi
+hoc vien sieu anh hung mua 1|phimapi
+tho san ti hon|phimapi
+huyet quy hon chien|phimapi
+phap su trang bi loai khoi to doi duoc mao hiem gia cap s don nhan|phimapi
