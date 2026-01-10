@@ -475,7 +475,7 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
 // ==================== LOAD CUSTOM MENU ====================
 const loadTxt = async () => {
   try {
-    const r = await fetch('custom-menu.txt?t=' + Date.now());
+    const r = await fetch('usa.txt?t=' + Date.now());
     if (!r.ok) throw 1;
     const txt = await r.text();
     if (!txt.trim()) throw 1;
