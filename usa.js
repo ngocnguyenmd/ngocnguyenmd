@@ -68,8 +68,8 @@ let currentYear = null;
 let combinedFilterMode = false;
 
 const proxyImage = (url) => {
-    // Bỏ proxy - không dùng nữa
-    return url || PLACEHOLDER_LOW;
+    if (!url || url.includes('images.weserv.nl') || url.includes('placeholder')) return url || 'https://via.placeholder.com/300x450/222222/999999?text=No+Image';
+    return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=200&h=300&fit=outside&output=webp&q=90&il`;
 };
 const PLACEHOLDER_LOW = 'abc.jpg';
 
@@ -286,11 +286,19 @@ const interleaveFull = async (mode, filter, page, genre=null, country=null, year
   
   const finalMovies = all.slice(0, ITEMS_PER_PAGE);
   
-  // Đặt placeholder trước, sau đó load TMDB bất đồng bộ
-  finalMovies.forEach(movie => {
-    movie.thumb_url = PLACEHOLDER_LOW; // Đặt placeholder trước
-    movie.usedTMDB = false;
-  });
+  // Ưu tiên ảnh TMDB cho tất cả nguồn (ax, bx, cx) để load nhanh hơn
+  await Promise.all(finalMovies.map(async (movie) => {
+    const tmdbImage = await searchTMDB(movie.name, movie.year, movie.originalName);
+    if (tmdbImage) {
+      // Tìm thấy trên TMDB - dùng ảnh TMDB (load nhanh)
+      movie.thumb_url = tmdbImage;
+      movie.usedTMDB = true;
+    } else {
+      // Không có trên TMDB - fallback về ảnh gốc từ 3 nguồn
+      movie.thumb_url = proxyImage(movie.thumb_url);
+      movie.usedTMDB = false;
+    }
+  }));
   
   return finalMovies;
 };
@@ -403,47 +411,24 @@ const renderFinal = async (movies, container, id) => {
   const cards = disp.map(m => createCard(m));
   cards.forEach(o => container.appendChild(o.card));
 
-  // Hiển thị placeholder ngay lập tức
   cards.forEach(o => {
-    o.imgPlaceholder.style.opacity = '1';
-    o.imgReal.style.opacity = '0';
-  });
-
-  // Load TMDB bất đồng bộ - từng ảnh một, hiện ngay khi có
-  cards.forEach((cardObj, index) => {
-    const movie = disp[index];
-    
-    searchTMDB(movie.name, movie.year, movie.originalName).then(tmdbImage => {
-      if (tmdbImage) {
-        // Có ảnh TMDB - load và hiện ngay
-        const img = new Image();
-        img.onload = () => {
-          cardObj.imgReal.src = tmdbImage;
-          cardObj.imgReal.style.opacity = '1';
-          cardObj.imgPlaceholder.style.opacity = '0';
-          
-          // Cập nhật badge thành TMDB
-          const sourceTag = cardObj.card.querySelector('.movie-source-tag');
-          if (sourceTag) {
-            sourceTag.textContent = 'TMDB';
-            sourceTag.style.background = 'linear-gradient(135deg, #01d277 0%, #00b4d8 100%)';
-          }
-          
-          updateProg(id);
-        };
-        img.onerror = () => {
-          // TMDB URL lỗi - giữ placeholder
-          updateProg(id);
-        };
-        img.src = tmdbImage;
-      } else {
-        // Không có TMDB - giữ placeholder
-        updateProg(id);
-      }
-    }).catch(() => {
-      // Lỗi tìm kiếm TMDB - giữ placeholder
+    if (!o.url) {
+      o.imgPlaceholder.style.opacity = '1';
       updateProg(id);
-    });
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      o.imgReal.src = o.url;
+      o.imgReal.style.opacity = '1';
+      o.imgPlaceholder.style.opacity = '0';
+      updateProg(id);
+    };
+    img.onerror = () => {
+      o.imgPlaceholder.style.opacity = '1';
+      updateProg(id);
+    };
+    img.src = o.url;
   });
 
   if (total === 0) {
@@ -643,11 +628,17 @@ const loadGroup = async (name, items) => {
   const seen = new Set();
   const fin = all.filter(m => !seen.has(m.slug + m.sourceCode) && seen.add(m.slug + m.sourceCode));
   
-  // Đặt placeholder trước
-  fin.forEach(movie => {
-    movie.thumb_url = PLACEHOLDER_LOW;
-    movie.usedTMDB = false;
-  });
+  // Ưu tiên ảnh TMDB cho tất cả nguồn trong custom menu
+  await Promise.all(fin.map(async (movie) => {
+    const tmdbImage = await searchTMDB(movie.name, movie.year, movie.originalName);
+    if (tmdbImage) {
+      movie.thumb_url = tmdbImage;
+      movie.usedTMDB = true;
+    } else {
+      movie.thumb_url = proxyImage(movie.thumb_url);
+      movie.usedTMDB = false;
+    }
+  }));
   
   await renderFinal(fin, grid, `${sid}-progress`);
   document.getElementById(`${sid}-pagination`).style.display = 'none';
