@@ -11,4 +11,3 @@ thieu hoa nhuoc cam|nguonc
 ngu phuc lam mon|nguonc
 thien dia kiem tam|nguonc
 thuy long ngam|nguonc
-tu cam|nguonc

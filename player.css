@@ -1,4 +1,4 @@
-:root{--main-color:#0a84ff;--bg-dark:#000;--card-bg:#111;--text-color:#fff;--border-color:rgba(255,255,255,.08);--radius:14px;--shadow:0 10px 30px rgba(0,0,0,.5)}
+:root{--main-color:#e50914;--bg-dark:#000;--card-bg:#111;--text-color:#fff;--border-color:rgba(255,255,255,.08);--radius:14px;--shadow:0 10px 30px rgba(0,0,0,.5)}
     *{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Roboto,sans-serif;background:var(--bg-dark);color:var(--text-color);overflow-x:hidden;line-height:1.5}
     a{text-decoration:none;color:inherit}

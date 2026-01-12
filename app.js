@@ -2,11 +2,6 @@ const GENRE_SLUG_MAP = { 'Hành Động': 'hanh-dong','Phiêu Lưu': 'phieu-luu'
 const COUNTRY_SLUG_MAP = { 'Âu Mỹ': 'au-my','Hàn Quốc': 'han-quoc','Trung Quốc': 'trung-quoc','Nhật Bản': 'nhat-ban','Thái Lan': 'thai-lan','Hồng Kông': 'hong-kong','Ấn Độ': 'an-do','Anh': 'anh','Pháp': 'phap','Canada': 'canada','Đức': 'duc','Tây Ban Nha': 'tay-ban-nha','Úc': 'uc','Ý': 'y','Hà Lan': 'ha-lan','Indonesia': 'indonesia','Nga': 'nga','Mexico': 'mexico','Ba Lan': 'ba-lan','Malaysia': 'malaysia','Bồ Đào Nha': 'bo-dao-nha','Thụy Điển': 'thuy-dien','Philippines': 'philippines','Đan Mạch': 'dan-mach','Thụy Sĩ': 'thuy-si','Ukraina': 'ukraina','UAE': 'uae','Ả Rập Xê Út': 'a-rap-xe-ut','Thổ Nhĩ Kỳ': 'tho-nhi-ky','Brazil': 'brazil','Na Uy': 'na-uy','Nam Phi': 'nam-phi','Việt Nam': 'viet-nam','Đài Loan': 'dai-loan','Châu Phi': 'chau-phi','Bỉ': 'bi','Ireland': 'ireland','Colombia': 'colombia','Phần Lan': 'phan-lan','Chile': 'chile','Hy Lạp': 'hy-lap','Nigeria': 'nigeria','Argentina': 'argentina','Singapore': 'singapore','Quốc Gia Khác': 'quoc-gia-khac' };
 const CUTEE_MENU = { 'Phim mới': { mode: 'default' },'Phim bộ': { mode: 'type', filter: 'phim-bo' },'Phim lẻ': { mode: 'type', filter: 'phim-le' },'Shows': { mode: 'cutee', slug: 'tv-shows' },'Hoạt hình': { mode: 'cutee', slug: 'hoat-hinh' },'Phim vietsub': { mode: 'cutee', slug: 'vietsub' },'Phim thuyết minh': { mode: 'cutee', slug: 'thuyet-minh' },'Phim lồng tiếng': { mode: 'cutee', slug: 'long-tieng' },'Phim bộ đang chiếu': { mode: 'cutee', slug: 'phim-dang-chieu' },'Phim bộ đã hoàn thành': { mode: 'cutee', slug: 'hoan-tat' },'Phim sắp chiếu': { mode: 'cutee', slug: 'phim-sap-chieu' },'Subteam': { mode: 'cutee', slug: 'subteam' },'Phim chiếu rạp': { mode: 'cutee', slug: 'phim-chieu-rap' } };
 
-// TMDB Configuration
-const TMDB_API_KEY = 'c1ba4826351c415243b3d8ea82a77cd7';
-const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
-const tmdbCache = new Map(); // Cache để tránh gọi API nhiều lần
-
 const API_SOURCES = { 
   Ophim: { 
     name: 'Ophim', code: 'ax',
@@ -57,7 +52,7 @@ const API_SOURCES = {
   }
 };
 
-let ITEMS_PER_PAGE = 120;
+let ITEMS_PER_PAGE = 12;
 let currentMode = 'default';
 let currentFilter = null;
 let currentPage = 1;
@@ -65,81 +60,17 @@ let currentSearchQuery = '';
 let currentGenre = null;
 let currentCountry = null;
 let currentYear = null;
-let combinedFilterMode = false;
+let combinedFilterMode = false; // true = lọc kết hợp (ax+bx), false = bình thường (ax+bx+cx)
 
 const proxyImage = (url) => {
     if (!url || url.includes('images.weserv.nl') || url.includes('placeholder')) return url || 'https://via.placeholder.com/300x450/222222/999999?text=No+Image';
-    return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=200&h=300&fit=outside&output=webp&q=90&il`;
+    return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=100&h=200&fit=outside&output=webp&q=90&il`;
 };
 const PLACEHOLDER_LOW = 'abc.jpg';
 
-// ==================== TMDB API Functions ====================
-const searchTMDB = async (title, year = null, originalName = null) => {
-  const cacheKey = `${title}_${originalName}_${year || ''}`;
-  if (tmdbCache.has(cacheKey)) {
-    return tmdbCache.get(cacheKey);
-  }
-
-  try {
-    // Thử tìm với tên gốc trước (thường là tên tiếng Anh)
-    let searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(originalName || title)}&language=en-US`;
-    let response = await fetch(searchUrl);
-    let data = await response.json();
-    
-    // Nếu không tìm thấy với tên gốc, thử tìm với tên Việt
-    if (!data.results || data.results.length === 0) {
-      searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}&language=vi-VN`;
-      response = await fetch(searchUrl);
-      data = await response.json();
-    }
-
-    if (!response.ok || !data.results || data.results.length === 0) {
-      tmdbCache.set(cacheKey, null);
-      return null;
-    }
-
-    // Ưu tiên kết quả có năm khớp
-    let result = data.results[0];
-    if (year) {
-      const yearMatch = data.results.find(r => {
-        const releaseYear = (r.release_date || r.first_air_date || '').substring(0, 4);
-        return releaseYear === year.toString();
-      });
-      if (yearMatch) result = yearMatch;
-    }
-
-    const posterPath = result.poster_path;
-    const tmdbImage = posterPath ? `${TMDB_IMAGE_BASE}${posterPath}` : null;
-    
-    tmdbCache.set(cacheKey, tmdbImage);
-    return tmdbImage;
-  } catch (error) {
-    console.error('TMDB search error:', error);
-    tmdbCache.set(cacheKey, null);
-    return null;
-  }
-};
-
 // ==================== LƯU / KHÔI PHỤC TRẠNG THÁI ====================
 const STATE_KEY = 'phim_state';
-const saveState = () => {
-  const state = {
-    mode: currentMode,
-    filter: currentFilter,
-    page: currentPage,
-    search: currentSearchQuery,
-    genre: currentGenre,
-    country: currentCountry,
-    year: currentYear,
-    combined: combinedFilterMode
-  };
-  try {
-    localStorage.setItem(STATE_KEY, JSON.stringify(state));
-  } catch (e) {
-    console.error('Save state error:', e);
-  }
-};
-
+const saveState = () => localStorage.setItem(STATE_KEY, JSON.stringify({mode:currentMode,filter:currentFilter,page:currentPage,search:currentSearchQuery,genre:currentGenre,country:currentCountry,year:currentYear,combined:combinedFilterMode}));
 const loadState = () => { 
   try{ 
     const s = JSON.parse(localStorage.getItem(STATE_KEY)||'{}'); 
@@ -150,14 +81,7 @@ const loadState = () => {
     }
   }catch{} 
 };
-
-const clearState = () => {
-  try {
-    localStorage.removeItem(STATE_KEY);
-  } catch (e) {
-    console.error('Clear state error:', e);
-  }
-};
+const clearState = () => localStorage.removeItem(STATE_KEY);
 
 // ==================== EPISODE DISPLAY ====================
 const getEpisodeDisplay = i => {
@@ -186,6 +110,7 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
   } else if (isS) {
     url = src.searchUrl(f);
   } else if (m === 'combined') {
+    // LỌC KẾT HỢP: thể loại + quốc gia + năm
     if (src.code === 'ax') {
       let base = 'https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat';
       if (genre) base = `https://ophim1.com/v1/api/the-loai/${genre}`;
@@ -236,11 +161,9 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
       if (src.code === 'cx') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
 
       if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//') && cdn) thumb = cdn + thumb.replace(/^\/+/, '');
-      
       return {
         name: it.name || it.origin_name || it.title || 'Không rõ',
-        originalName: it.origin_name || it.name || '',
-        thumb_url: thumb, // Giữ URL gốc tạm thời
+        thumb_url: proxyImage(thumb),
         episodeDisplay: getEpisodeDisplay(it),
         slug: it.slug || it._id || '',
         sourceCode: src.code,
@@ -249,18 +172,16 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
         lang: (it.lang || '').toUpperCase(),
         quality: it.quality || ''
       };
-    }).filter(x => x.slug);
-  } catch (e) { 
-    console.error('FETCH ERR:', src.name, e); 
-    return []; 
-  }
+    }).filter(x => x.slug && x.thumb_url);
+  } catch (e) { console.error('FETCH ERR:', src.name, e); return []; }
 };
 
 // ==================== GỘP DỮ LIỆU ====================
 const interleaveFull = async (mode, filter, page, genre=null, country=null, year=null, isSearch=false, isKeyword=false) => {
+  // Nếu lọc kết hợp (genre + country + year) → dùng ax + bx
   let sources = Object.values(API_SOURCES);
   if (combinedFilterMode && (mode === 'combined' || mode === 'genre' || mode === 'country' || mode === 'year')) {
-    sources = sources.filter(s => s.code !== 'cx');
+    sources = sources.filter(s => s.code !== 'cx'); // Loại cx
   }
   
   const results = await Promise.all(sources.map(src => fetchFromSource(src, page, mode, filter, genre, country, year, isSearch, isKeyword)));
@@ -283,24 +204,7 @@ const interleaveFull = async (mode, filter, page, genre=null, country=null, year
     }
     if (!added) break;
   }
-  
-  const finalMovies = all.slice(0, ITEMS_PER_PAGE);
-  
-  // Ưu tiên ảnh TMDB cho tất cả nguồn (ax, bx, cx) để load nhanh hơn
-  await Promise.all(finalMovies.map(async (movie) => {
-    const tmdbImage = await searchTMDB(movie.name, movie.year, movie.originalName);
-    if (tmdbImage) {
-      // Tìm thấy trên TMDB - dùng ảnh TMDB (load nhanh)
-      movie.thumb_url = tmdbImage;
-      movie.usedTMDB = true;
-    } else {
-      // Không có trên TMDB - fallback về ảnh gốc từ 3 nguồn
-      movie.thumb_url = proxyImage(movie.thumb_url);
-      movie.usedTMDB = false;
-    }
-  }));
-  
-  return finalMovies;
+  return all.slice(0, ITEMS_PER_PAGE);
 };
 
 // ==================== TÌM KIẾM ====================
@@ -365,11 +269,7 @@ const createCard = (m) => {
 
   const sourceTag = document.createElement('div');
   sourceTag.className = 'movie-source-tag';
-  // Hiển thị badge TMDB nếu dùng ảnh từ TMDB
-  sourceTag.textContent = m.usedTMDB ? 'TMDB' : m.sourceCode || '';
-  if (m.usedTMDB) {
-    sourceTag.style.background = 'linear-gradient(135deg, #01d277 0%, #00b4d8 100%)';
-  }
+  sourceTag.textContent = m.sourceCode || '';
 
   topRight.append(qualityTag, sourceTag);
 
@@ -432,7 +332,7 @@ const renderFinal = async (movies, container, id) => {
   });
 
   if (total === 0) {
-    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:100px;color:#aaa;">Không tìm thấy phim nào</div>';
+    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:100px;color:#aaa;">Không hổ trợ lọc hãy tìm bằng từ khóa nhé</div>';
   }
 };
 
@@ -526,6 +426,7 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   currentFilter = f;
   currentPage = p;
   
+  // FIX: Gán đúng giá trị theo mode
   if (m === 'genre') {
     currentGenre = f;
     currentCountry = c;
@@ -571,9 +472,10 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   saveState();
 };
 
+// ==================== LOAD CUSTOM MENU ====================
 const loadTxt = async () => {
   try {
-    const r = await fetch('custom-menu.txt?t=' + Date.now());
+    const r = await fetch('trangchu.txt?t=' + Date.now());
     if (!r.ok) throw 1;
     const txt = await r.text();
     if (!txt.trim()) throw 1;
@@ -627,23 +529,11 @@ const loadGroup = async (name, items) => {
   }
   const seen = new Set();
   const fin = all.filter(m => !seen.has(m.slug + m.sourceCode) && seen.add(m.slug + m.sourceCode));
-  
-  // Ưu tiên ảnh TMDB cho tất cả nguồn trong custom menu
-  await Promise.all(fin.map(async (movie) => {
-    const tmdbImage = await searchTMDB(movie.name, movie.year, movie.originalName);
-    if (tmdbImage) {
-      movie.thumb_url = tmdbImage;
-      movie.usedTMDB = true;
-    } else {
-      movie.thumb_url = proxyImage(movie.thumb_url);
-      movie.usedTMDB = false;
-    }
-  }));
-  
   await renderFinal(fin, grid, `${sid}-progress`);
   document.getElementById(`${sid}-pagination`).style.display = 'none';
 };
 
+// ==================== KHỞI TẠO ====================
 document.addEventListener('DOMContentLoaded', () => {
   loadState();
 

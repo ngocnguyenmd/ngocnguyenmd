@@ -4,7 +4,7 @@ const CUTEE_MENU = { 'Phim mới': { mode: 'default' },'Phim bộ': { mode: 'typ
 
 // TMDB Configuration
 const TMDB_API_KEY = 'c1ba4826351c415243b3d8ea82a77cd7';
-const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w200';
 const tmdbCache = new Map(); // Cache để tránh gọi API nhiều lần
 
 const API_SOURCES = { 
