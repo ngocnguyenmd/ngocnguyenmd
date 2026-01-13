@@ -29,7 +29,7 @@ let servers = [], episodes = [], curSrv = 0, curEp = 0;
 let movie = '', poster = '', cdn = '', plot = '';
 let warned = false;
 let popupTimeout = null;
-let currentPlayMode = 'so1'; // 'so1' hoặc 'so2' – người dùng chọn
+let currentPlayMode = 'so1';
 
 function showToast(m) {
   toastEl.textContent = m;
@@ -221,26 +221,66 @@ function playSo1(m3u8) {
 
   if (Hls.isSupported()) {
     hls = new Hls({
+      // Tối ưu cho mạng yếu
       enableWorker: true,
       autoStartLoad: true,
       startLevel: -1,
-      maxBufferLength: 12,
-      maxMaxBufferLength: 18,
-      maxBufferSize: 60 * 1000 * 1000,
-      maxBufferHole: 0.8,
+      
+      // Giảm buffer để tránh lag trên mạng yếu
+      maxBufferLength: 8,
+      maxMaxBufferLength: 12,
+      maxBufferSize: 30 * 1000 * 1000,
+      maxBufferHole: 0.5,
+      
+      // Tự động điều chỉnh chất lượng theo bandwidth
       capLevelToPlayerSize: true,
-      xhrSetup: xhr => { xhr.withCredentials = false; }
+      abrEwmaDefaultEstimate: 500000,
+      abrBandWidthFactor: 0.95,
+      abrBandWidthUpFactor: 0.7,
+      
+      // Giảm retry để tránh treo
+      manifestLoadingTimeOut: 10000,
+      manifestLoadingMaxRetry: 2,
+      levelLoadingTimeOut: 10000,
+      levelLoadingMaxRetry: 2,
+      fragLoadingTimeOut: 20000,
+      fragLoadingMaxRetry: 3,
+      
+      // Tối ưu audio sync
+      maxAudioFramesDrift: 5,
+      forceKeyFrameOnDiscontinuity: true,
+      enableSoftwareAES: true,
+      
+      xhrSetup: xhr => { 
+        xhr.withCredentials = false;
+        xhr.timeout = 15000;
+      }
     });
+    
     hls.loadSource(m3u8);
     hls.attachMedia(videoEl);
 
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       loading.style.display = 'none';
-      videoEl.play().catch(e => showToast('Không phát tự động, bấm play thủ công'));
+      videoEl.play().catch(e => showToast('Bấm play để phát'));
     });
 
-    hls.on(Hls.Events.ERROR, (e, d) => {
-      if (d.fatal) showToast('SO1 gặp lỗi – thử SO2 nếu có');
+    hls.on(Hls.Events.ERROR, (e, data) => {
+      if (data.fatal) {
+        switch(data.type) {
+          case Hls.ErrorTypes.NETWORK_ERROR:
+            showToast('Lỗi mạng - đang thử kết nối lại...');
+            hls.startLoad();
+            break;
+          case Hls.ErrorTypes.MEDIA_ERROR:
+            showToast('Lỗi media - đang khôi phục...');
+            hls.recoverMediaError();
+            break;
+          default:
+            showToast('Lỗi phát - thử SO2 hoặc đổi server');
+            break;
+        }
+      }
     });
   } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
     videoEl.src = m3u8;
@@ -264,33 +304,17 @@ function playSo2(embedUrl) {
 }
 
 function addAutoSkipLogic() {
-  videoEl._hasSkippedIntro = false;
   videoEl._hasSkippedMid = false;
 
-  let introSkipSeconds = 20;
   const midSkipPoint = 900;    // 15:00
   const midSkipAmount = 50;
-
-  videoEl.addEventListener('loadedmetadata', () => {
-    if (videoEl.duration < 300) introSkipSeconds = 10;
-    if (!videoEl._hasSkippedIntro && videoEl.duration > introSkipSeconds) {
-      videoEl.currentTime = introSkipSeconds;
-      videoEl._hasSkippedIntro = true;
-      showToast(`Bỏ ${introSkipSeconds}s đầu`);
-    }
-  }, { once: true });
 
   const timeUpdate = () => {
     const t = videoEl.currentTime;
     const d = videoEl.duration;
     if (!d || isNaN(d) || videoEl.seeking) return;
 
-    if (!videoEl._hasSkippedIntro && t < introSkipSeconds + 4) {
-      videoEl.currentTime = introSkipSeconds;
-      videoEl._hasSkippedIntro = true;
-      showToast(`Bỏ ${introSkipSeconds}s đầu`);
-    }
-
+    // Tua giữa phim ở phút 15
     if (!videoEl._hasSkippedMid && t >= midSkipPoint && t < midSkipPoint + 15) {
       const target = midSkipPoint + midSkipAmount;
       if (target < d) {
@@ -300,7 +324,10 @@ function addAutoSkipLogic() {
       }
     }
 
-    if (!warned && d && t >= d - 120 && curEp < episodes.length - 1) showEndPopup();
+    // Hiện popup gần hết phim
+    if (!warned && d && t >= d - 120 && curEp < episodes.length - 1) {
+      showEndPopup();
+    }
   };
 
   videoEl.addEventListener('timeupdate', timeUpdate);
@@ -309,7 +336,6 @@ function addAutoSkipLogic() {
   });
 }
 
-// ── THÊM HÀM NÀY ĐỂ SỬA LỖI seek is not defined ──────────────────────────────
 function seek(seconds) {
   if (videoEl.style.display === 'none' || isNaN(videoEl.duration)) {
     showToast('Không thể tua (chưa phát hoặc đang dùng embed)');
@@ -321,7 +347,6 @@ function seek(seconds) {
   
   showToast(seconds > 0 ? `+${seconds}s` : `${seconds}s`);
 }
-// ──────────────────────────────────────────────────────────────────────────────
 
 function play(i) {
   if (i < 0 || i >= episodes.length) return;
