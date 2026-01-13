@@ -253,7 +253,6 @@ function resetPlayer() {
   embedFrame.src = '';
   embedFrame.style.display = 'none';
   
-  // Xóa sạch track (phòng trường hợp cũ còn sót)
   while (videoEl.firstChild) {
     videoEl.removeChild(videoEl.firstChild);
   }
@@ -324,7 +323,7 @@ function playHLS(m3u8) {
 
     const wasPlaying = !videoEl.paused;
 
-    // Tùy chọn: tua bỏ opening (20s đầu) - có thể xóa nếu không cần
+    // Tùy chọn: bỏ opening 20s đầu (có thể xóa nếu không cần)
     if (!videoEl._skipIntroDone && t < 25 && d > 60) {
       videoEl.currentTime = 20;
       showToast('Bỏ 20s đầu');
@@ -332,9 +331,9 @@ function playHLS(m3u8) {
       if (wasPlaying) videoEl.play().catch(() => {});
     }
 
-    // Tua +50s khi đến khoảng 15:00 (chỉ 1 lần)
-    if (!videoEl._skipMidDone && t >= 890 && t < 920) {  // 14:50 ~ 15:20
-      const target = 950; // 15:00 + 50s
+    // Tự động tua +50s khi tới khoảng 15 phút
+    if (!videoEl._skipMidDone && t >= 890 && t < 920) {
+      const target = 950;
       if (target < d) {
         videoEl.currentTime = target;
         showToast('Tự động bỏ qua +50s');
@@ -343,7 +342,6 @@ function playHLS(m3u8) {
       }
     }
 
-    // Popup cảnh báo tập mới
     if (!warned && d && t >= d - 120 && curEp < episodes.length - 1) {
       showEndPopup();
     }
