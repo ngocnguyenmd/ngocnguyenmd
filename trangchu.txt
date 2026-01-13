@@ -4,7 +4,7 @@ cau va to la hai thai cuc doi lap|phimapi
 kiem com bang tro choi sinh tu|phimapi
 chen thanh cua eris|phimapi
 mogura ke lac giua hai the gioi|phimapi
-chu thuat hoi chien|ophim
+chu thuat hoi chien phan 3|phimapi
 dao hai tac|phimapi
 
 # Phim bộ 
@@ -37,4 +37,5 @@ tho ngoc noi cung trang|phimapi
 # Phim đang xem
 
 bac si than bi|phimapi
+
 tham tu lung danh conan|phimapi
