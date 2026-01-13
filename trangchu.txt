@@ -1,7 +1,40 @@
 # Vui lòng đợi chút...
 
-pha ken 2025|phimapi
+cau va to la hai thai cuc doi lap|phimapi
+kiem com bang tro choi sinh tu|phimapi
+chen thanh cua eris|phimapi
+mogura ke lac giua hai the gioi|phimapi
+chu thuat hoi chien|ophim
+dao hai tac|phimapi
+
+# Phim bộ 
+
+tai xe an danh phan 3|phimapi
+ngoc minh tra cot|phimapi
+yet hi|phimapi
+con say mua xuan|phimapi
+cau be mat tich phan 5|phimapi
+ten trom dau yeu|phimapi
+
+# Phim lẻ 
+
+cuoc phieu luu trong giac mong|phimapi 
+quai vat nho nui lang lang|ophim
+phi vu dong troi 2|phimapi
+thanh guom diet quy vo han thanh|phimapi
+avatar dong chay cua nuoc|phimapi
+dai mau|phimapi
+
+# Thái lan 
+
+ve dep tai sinh|phimapi
+oan gia phong cap cuu ban thai|phimapi
+dien ha va phu nhan kamduang|phimapi
+ke san nguoi ban thai|phimapi
+an mang trong con say|phimapi
+tho ngoc noi cung trang|phimapi
 
 # Phim đang xem
 
 bac si than bi|phimapi
+tham tu lung danh conan|phimapi
