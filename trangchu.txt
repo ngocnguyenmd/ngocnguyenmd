@@ -5,7 +5,7 @@ kiem com bang tro choi sinh tu|phimapi
 chen thanh cua eris|phimapi
 mogura ke lac giua hai the gioi|phimapi
 chu thuat hoi chien phan 3|phimapi
-dao hai tac|phimapi
+nu phan dien duoc hoang tu nuoc lang gieng yeu men|ophim
 
 # Phim bộ 
 
@@ -39,3 +39,4 @@ tho ngoc noi cung trang|phimapi
 bac si than bi|phimapi
 
 tham tu lung danh conan|phimapi
+
