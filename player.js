@@ -222,38 +222,38 @@ function playSo1(m3u8) {
   if (Hls.isSupported()) {
     hls = new Hls({
       // Tối ưu cho mạng yếu
-      enableWorker: true,
-      autoStartLoad: true,
-      startLevel: -1,
+       enableWorker: true,
+       autoStartLoad: true,
+       startLevel: 0,
       
       // Giảm buffer để tránh lag trên mạng yếu
-      maxBufferLength: 8,
-      maxMaxBufferLength: 12,
-      maxBufferSize: 30 * 1000 * 1000,
-      maxBufferHole: 0.5,
+      maxBufferLength: 20,
+      maxMaxBufferLength: 40,
+      maxBufferSize: 60 * 1000 * 1000,
+      maxBufferHole: 1.5,
       
       // Tự động điều chỉnh chất lượng theo bandwidth
       capLevelToPlayerSize: true,
-      abrEwmaDefaultEstimate: 500000,
-      abrBandWidthFactor: 0.95,
-      abrBandWidthUpFactor: 0.7,
+      abrEwmaDefaultEstimate: 1000000,
+      abrBandWidthFactor: 0.85,
+      abrBandWidthUpFactor: 0.6,
       
       // Giảm retry để tránh treo
-      manifestLoadingTimeOut: 10000,
-      manifestLoadingMaxRetry: 2,
-      levelLoadingTimeOut: 10000,
-      levelLoadingMaxRetry: 2,
-      fragLoadingTimeOut: 20000,
-      fragLoadingMaxRetry: 3,
+      manifestLoadingTimeOut: 15000,
+      manifestLoadingMaxRetry: 4,
+      levelLoadingTimeOut: 15000,
+      levelLoadingMaxRetry: 4,
+      fragLoadingTimeOut: 30000,
+      fragLoadingMaxRetry: 6,
       
       // Tối ưu audio sync
-      maxAudioFramesDrift: 5,
+      maxAudioFramesDrift: 10,
       forceKeyFrameOnDiscontinuity: true,
       enableSoftwareAES: true,
       
       xhrSetup: xhr => { 
         xhr.withCredentials = false;
-        xhr.timeout = 15000;
+        xhr.timeout = 20000;
       }
     });
     
