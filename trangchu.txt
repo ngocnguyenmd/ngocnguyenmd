@@ -1,12 +1,14 @@
-# Vui lòng đợi load...
+# Vui lòng đợi...
 
 tham tu lung danh conan|phimapi
 dao hai tac|phimapi
 doraemon nobita tay du ki|nguonc
-
+sakura thu linh the bai|phimapi
 thuy thu mat trang|ophim
+sieu nhan gao 2011|ophim
 ho lo bien|nguonc
 pokemon|phimapi
+
 
 # Hàn quốc
 
@@ -33,4 +35,6 @@ ve dep tai sinh|phimapi
 mat dang 2025|phimapi
 Rock And Soul|phimapi
 trai tim cua yiwha tinh yeu va bao thu|phimapi
+
+
 
