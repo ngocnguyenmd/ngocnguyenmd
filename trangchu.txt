@@ -1,29 +1,13 @@
 # Vui lòng đợi chút...
 
-cau va to la hai thai cuc doi lap|phimapi
-kiem com bang tro choi sinh tu|phimapi
-chen thanh cua eris|phimapi
-mogura ke lac giua hai the gioi|phimapi
 chu thuat hoi chien phan 3|phimapi
-nu phan dien duoc hoang tu nuoc lang gieng yeu men|ophim
+mac nhan tan kieu|phimapi
 
-# Phim bộ 
+# Hàn quốc 
 
-tai xe an danh phan 3|phimapi
-ngoc minh tra cot|phimapi
-yet hi|phimapi
+luat su cong ich|phimapi
+mong ngay mai den|phimapi
 con say mua xuan|phimapi
-cau be mat tich phan 5|phimapi
-ten trom dau yeu|phimapi
-
-# Phim lẻ 
-
-cuoc phieu luu trong giac mong|phimapi 
-quai vat nho nui lang lang|ophim
-phi vu dong troi 2|phimapi
-thanh guom diet quy vo han thanh|phimapi
-avatar dong chay cua nuoc|phimapi
-dai mau|phimapi
 
 # Thái lan 
 
@@ -39,4 +23,5 @@ tho ngoc noi cung trang|phimapi
 bac si than bi|phimapi
 
 tham tu lung danh conan|phimapi
+
 
