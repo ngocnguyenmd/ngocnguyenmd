@@ -1,27 +1,36 @@
-# Vui lòng đợi chút...
-
-chu thuat hoi chien phan 3|phimapi
-mac nhan tan kieu|phimapi
-
-# Hàn quốc 
-
-luat su cong ich|phimapi
-mong ngay mai den|phimapi
-con say mua xuan|phimapi
-
-# Thái lan 
-
-ve dep tai sinh|phimapi
-oan gia phong cap cuu ban thai|phimapi
-dien ha va phu nhan kamduang|phimapi
-ke san nguoi ban thai|phimapi
-an mang trong con say|phimapi
-tho ngoc noi cung trang|phimapi
-
-# Phim đang xem
-
-bac si than bi|phimapi
+# Vui lòng đợi load...
 
 tham tu lung danh conan|phimapi
+dao hai tac|phimapi
+doraemon nobita tay du ki|nguonc
 
+thuy thu mat trang|ophim
+ho lo bien|nguonc
+pokemon|phimapi
+
+# Hàn quốc
+
+con say mua xuan|phimapi
+tham phan trung sinh|phimapi
+ten trom dau yeu|phimapi
+mong ngay mai den|phimapi
+
+# Trung quốc
+
+ngoc minh tra cot|phimapi
+yet hi|phimapi
+mua dong phu day tuyet thu|nguonc
+
+# Eng/USA
+
+mot ngan cu dam|nguonc
+nguoi quan ly ca dem phan 2|nguonc
+benh vien pitt phan 2|nguonc
+
+# Thailand
+
+ve dep tai sinh|phimapi
+mat dang 2025|phimapi
+Rock And Soul|phimapi
+trai tim cua yiwha tinh yeu va bao thu|phimapi
 
