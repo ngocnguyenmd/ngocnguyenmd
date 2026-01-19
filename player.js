@@ -159,7 +159,7 @@ function renderSourceModeBar() {
   if (hasSo1) {
     const btn = document.createElement('button');
     btn.className = 'btn';
-    btn.textContent = 'SO1';
+    btn.textContent = 'Mượt 1';
     if (currentPlayMode === 'so1') btn.classList.add('active');
     btn.onclick = () => { currentPlayMode = 'so1'; play(curEp); };
     sourceModeBar.appendChild(btn);
@@ -168,7 +168,7 @@ function renderSourceModeBar() {
   if (hasSo2) {
     const btn = document.createElement('button');
     btn.className = 'btn';
-    btn.textContent = 'SO2';
+    btn.textContent = 'Mượt 2';
     if (currentPlayMode === 'so2') btn.classList.add('active');
     btn.onclick = () => { currentPlayMode = 'so2'; play(curEp); };
     sourceModeBar.appendChild(btn);
@@ -307,7 +307,7 @@ function addAutoSkipLogic() {
   videoEl._hasSkippedMid = false;
 
   const midSkipPoint = 900;    // 15:00
-  const midSkipAmount = 50;
+  const midSkipAmount = 20;
 
   const timeUpdate = () => {
     const t = videoEl.currentTime;
@@ -319,7 +319,7 @@ function addAutoSkipLogic() {
       const target = midSkipPoint + midSkipAmount;
       if (target < d) {
         videoEl.currentTime = target;
-        showToast('Bỏ +50s');
+        showToast('Bỏ 20s');
         videoEl._hasSkippedMid = true;
       }
     }
