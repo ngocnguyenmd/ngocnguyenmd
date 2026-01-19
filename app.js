@@ -64,7 +64,7 @@ let combinedFilterMode = false; // true = lọc kết hợp (ax+bx), false = bì
 
 const proxyImage = (url) => {
     if (!url || url.includes('images.weserv.nl') || url.includes('placeholder')) return url || 'https://via.placeholder.com/300x450/222222/999999?text=No+Image';
-    return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=100&h=200&fit=outside&output=webp&q=90&il`;
+    return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=10&h=300&fit=outside&output=webp&q=70&il`;
 };
 const PLACEHOLDER_LOW = 'abc.jpg';
 

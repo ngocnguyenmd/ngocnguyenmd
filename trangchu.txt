@@ -1,4 +1,4 @@
-# load một xíu là xong ngay...
+# Tùy chỉnh không có thì - bấm vào bộ lộc 三
 
 tieng yeu nay anh dich duoc khong|phimapi
 buoc vao tim em|phimapi
@@ -6,12 +6,12 @@ tham phan trung sinh|phimapi
 ten trom dau yeu|phimapi
 
 
-# Cuồn cuồn 
+# Hoạt hình - hay xem
 
 tham tu lung danh conan|phimapi
 dao hai tac|phimapi
 
-# Hàn quốc - Bộ
+# Hàn quốc - 270 
 
 baby den roi|phimapi
 dieu tra vien hong|phimapi
@@ -19,7 +19,7 @@ tu hom nay toi la con nguoi|phimapi
 con say mua xuan|phimapi
 
 
-# Trung Quốc - bộ
+# Trung Quốc - 480
 
 nu phap y ngu tu tieu ngo tac phan 2|phimapi
 tuyet thu tran sang dong|phimapi
@@ -27,12 +27,3 @@ mo mang tam mat|phimapi
 chuyen lon noi thanh pho nho|phimapi
 
 # Luyện nghe tiếng anh / Phim
-
-
-# Thailand
-
-ve dep tai sinh|phimapi
-mat dang 2025|phimapi
-Rock And Soul|phimapi
-trai tim cua yiwha tinh yeu va bao thu|phimapi
-
