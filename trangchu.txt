@@ -28,7 +28,7 @@ chuyen lon noi thanh pho nho|phimapi
 
 # Luyện nghe tiếng anh / Phim
 
-tho san quai vat phan 4|ophim
-kong dao dau lau|phimapi
-di tim nemo|ophim
-tap lam nguoi xau phan 5|phimapi
+ranh gioi toi ac|phimapi
+ky si cua bay vuong quoc|phimapi
+quai vat duoi gam giuong|phimapi
+
