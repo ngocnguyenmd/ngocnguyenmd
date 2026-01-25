@@ -1,7 +1,5 @@
 # Tùy chỉnh không có thì - bấm vào bộ lộc 三
 
-tieng yeu nay anh dich duoc khong|phimapi
-buoc vao tim em|phimapi
 tham phan trung sinh|phimapi
 ten trom dau yeu|phimapi
 
@@ -14,21 +12,22 @@ dao hai tac|phimapi
 # Hàn quốc - 270 
 
 baby den roi|phimapi
-dieu tra vien hong|phimapi
+ten trom dau yeu|phimapi
 tu hom nay toi la con nguoi|phimapi
-con say mua xuan|phimapi
 
 
 # Trung Quốc - 480
 
+mot tinh yeu bat ngo den|phimapi
+thai binh nien|ophim
+thu hut manh liet|phimapi
 nu phap y ngu tu tieu ngo tac phan 2|phimapi
-tuyet thu tran sang dong|phimapi
-mo mang tam mat|phimapi
-chuyen lon noi thanh pho nho|phimapi
+
 
 # Luyện nghe tiếng anh / Phim
 
 ranh gioi toi ac|phimapi
 ky si cua bay vuong quoc|phimapi
 quai vat duoi gam giuong|phimapi
+
 
