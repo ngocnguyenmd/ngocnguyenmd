@@ -307,7 +307,7 @@ function addAutoSkipLogic() {
   videoEl._hasSkippedMid = false;
 
   const midSkipPoint = 900;    // 15:00
-  const midSkipAmount = 20;
+  const midSkipAmount = 45;
 
   const timeUpdate = () => {
     const t = videoEl.currentTime;
@@ -319,7 +319,7 @@ function addAutoSkipLogic() {
       const target = midSkipPoint + midSkipAmount;
       if (target < d) {
         videoEl.currentTime = target;
-        showToast('Bỏ 20s');
+        showToast('Bỏ 45s');
         videoEl._hasSkippedMid = true;
       }
     }
@@ -416,4 +416,5 @@ async function init() {
     switchServer(0);
   }
 }
+
 init();
