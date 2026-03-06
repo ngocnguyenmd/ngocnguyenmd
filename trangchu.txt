@@ -7,3 +7,8 @@ frankenstein|phimapi
 # Hoạt hình - hay xem
 
 phi vu dong troi 2|phimapi
+the tom and jerry show phan 1|ophim
+
+# Phim Chung
+
+mon qua cua kluay|phimapi
