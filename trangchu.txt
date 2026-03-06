@@ -1,35 +1,9 @@
 # Tùy chỉnh không có thì - bấm vào bộ lộc 三
 
-tham phan trung sinh|phimapi
-ten trom dau yeu|phimapi
-
+ke an dat|phimapi
+avatar lua va tro tan|phimapi
+frankenstein|phimapi
 
 # Hoạt hình - hay xem
 
-tham tu lung danh conan|phimapi
-dao hai tac|phimapi
-
-# Hàn quốc - 270 
-
-baby den roi|phimapi
-ten trom dau yeu|phimapi
-tham phan trung sinh|phimapi
-tu hom nay toi la con nguoi|phimapi
-
-
-# Trung Quốc - 480
-
-mot tinh yeu bat ngo den|phimapi
-thai binh nien|ophim
-thu hut manh liet|phimapi
-nu phap y ngu tu tieu ngo tac phan 2|phimapi
-
-
-# Luyện nghe tiếng anh / Phim
-
-ranh gioi toi ac|phimapi
-ky si cua bay vuong quoc|phimapi
-quai vat duoi gam giuong|phimapi
-
-
-
+phi vu dong troi 2|phimapi
