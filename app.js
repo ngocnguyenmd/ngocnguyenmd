@@ -52,7 +52,7 @@ const API_SOURCES = {
   }
 };
 
-let ITEMS_PER_PAGE = 12;
+let ITEMS_PER_PAGE = 6;
 let currentMode = 'default';
 let currentFilter = null;
 let currentPage = 1;
@@ -62,10 +62,7 @@ let currentCountry = null;
 let currentYear = null;
 let combinedFilterMode = false; // true = lọc kết hợp (ax+bx), false = bình thường (ax+bx+cx)
 
-const proxyImage = (url) => {
-    if (!url || url.includes('images.weserv.nl') || url.includes('placeholder')) return url || 'https://via.placeholder.com/300x450/222222/999999?text=No+Image';
-    return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=10&h=300&fit=outside&output=webp&q=70&il`;
-};
+
 const PLACEHOLDER_LOW = 'abc.jpg';
 
 // ==================== LƯU / KHÔI PHỤC TRẠNG THÁI ====================
@@ -163,7 +160,7 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
       if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//') && cdn) thumb = cdn + thumb.replace(/^\/+/, '');
       return {
         name: it.name || it.origin_name || it.title || 'Không rõ',
-        thumb_url: proxyImage(thumb),
+        thumb_url: (thumb),
         episodeDisplay: getEpisodeDisplay(it),
         slug: it.slug || it._id || '',
         sourceCode: src.code,
