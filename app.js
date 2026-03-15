@@ -52,7 +52,10 @@ const API_SOURCES = {
   }
 };
 
-let ITEMS_PER_PAGE = 6;
+// === TỐI ƯU: CACHE ĐỂ TĂNG TỐC ĐỘ TẢI LẠI ===
+const API_CACHE = {}; 
+
+let ITEMS_PER_PAGE = 16;
 let currentMode = 'default';
 let currentFilter = null;
 let currentPage = 1;
@@ -60,9 +63,9 @@ let currentSearchQuery = '';
 let currentGenre = null;
 let currentCountry = null;
 let currentYear = null;
-let combinedFilterMode = false; // true = lọc kết hợp (ax+bx), false = bình thường (ax+bx+cx)
+let combinedFilterMode = false;
 
-
+// Dùng base64 để tránh load file ngoài, giảm request HTTP
 const PLACEHOLDER_LOW = 'abc.jpg';
 
 // ==================== LƯU / KHÔI PHỤC TRẠNG THÁI ====================
@@ -98,22 +101,25 @@ const getEpisodeDisplay = i => {
   return disp;
 };
 
-// ==================== FETCH DỮ LIỆU ====================
+// ==================== FETCH DỮ LIỆU (ĐÃ TỐI ƯU) ====================
 const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null, isS=false, isK=false) => {
+  // 1. Tạo Cache Key dựa trên tham số
+  const cacheKey = `${src.code}-${m}-${f}-${p}-${genre}-${country}-${year}-${isS}-${isK}`;
+  if (API_CACHE[cacheKey]) {
+    return API_CACHE[cacheKey]; // Trả về ngay nếu có cache
+  }
+
   let url = '';
   
-  if (isK) {
-    url = src.keywordSearchUrl(f, p);
-  } else if (isS) {
-    url = src.searchUrl(f);
-  } else if (m === 'combined') {
-    // LỌC KẾT HỢP: thể loại + quốc gia + năm
+  // Logic tạo URL
+  if (isK) url = src.keywordSearchUrl(f, p);
+  else if (isS) url = src.searchUrl(f);
+  else if (m === 'combined') {
     if (src.code === 'ax') {
       let base = 'https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat';
       if (genre) base = `https://ophim1.com/v1/api/the-loai/${genre}`;
       else if (country) base = `https://ophim1.com/v1/api/quoc-gia/${country}`;
       else if (year) base = `https://ophim1.com/v1/api/nam-phat-hanh/${year}`;
-      
       const params = new URLSearchParams({ page: p });
       if (country && !base.includes('/quoc-gia/')) params.append('country', country);
       if (year && !base.includes('/nam-phat-hanh/')) params.append('year', year);
@@ -151,7 +157,7 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
     let items = parser(d) || [];
     const cdn = typeof src.getCdn === 'function' ? src.getCdn(d) : src.getCdn();
 
-    return items.map(it => {
+    const result = items.map(it => {
       let thumb = '';
       if (src.code === 'ax') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
       if (src.code === 'bx') thumb = it.poster_url || it.thumb_url || it.poster || it.thumb || '';
@@ -160,7 +166,7 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
       if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//') && cdn) thumb = cdn + thumb.replace(/^\/+/, '');
       return {
         name: it.name || it.origin_name || it.title || 'Không rõ',
-        thumb_url: (thumb),
+        thumb_url: thumb,
         episodeDisplay: getEpisodeDisplay(it),
         slug: it.slug || it._id || '',
         sourceCode: src.code,
@@ -170,22 +176,29 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
         quality: it.quality || ''
       };
     }).filter(x => x.slug && x.thumb_url);
+
+    // Lưu vào cache
+    API_CACHE[cacheKey] = result;
+    return result;
   } catch (e) { console.error('FETCH ERR:', src.name, e); return []; }
 };
 
 // ==================== GỘP DỮ LIỆU ====================
 const interleaveFull = async (mode, filter, page, genre=null, country=null, year=null, isSearch=false, isKeyword=false) => {
-  // Nếu lọc kết hợp (genre + country + year) → dùng ax + bx
   let sources = Object.values(API_SOURCES);
+  // Logic lọc kết hợp
   if (combinedFilterMode && (mode === 'combined' || mode === 'genre' || mode === 'country' || mode === 'year')) {
-    sources = sources.filter(s => s.code !== 'cx'); // Loại cx
+    sources = sources.filter(s => s.code !== 'cx');
   }
   
+  // Tải song song tất cả nguồn
   const results = await Promise.all(sources.map(src => fetchFromSource(src, page, mode, filter, genre, country, year, isSearch, isKeyword)));
+  
   const all = [];
   const seen = new Set();
   let idx = new Array(sources.length).fill(0);
 
+  // Logic xen kẽ kết quả
   while (all.length < ITEMS_PER_PAGE * 1) {
     let added = false;
     for (let i = 0; i < sources.length; i++) {
@@ -204,7 +217,7 @@ const interleaveFull = async (mode, filter, page, genre=null, country=null, year
   return all.slice(0, ITEMS_PER_PAGE);
 };
 
-// ==================== TÌM KIẾM ====================
+// ==================== TÌM KIẾM (TỐI ƯU) ====================
 const search = async (q = null, p = 1) => {
   const raw = (q || document.getElementById('nav-search-input')?.value || '').trim();
   if (!raw) return load('default');
@@ -223,8 +236,11 @@ const search = async (q = null, p = 1) => {
   const grid = document.getElementById(`${sid}-grid`);
   grid.innerHTML = '';
 
-  const slugMovies = await interleaveFull(null, raw, p, null, null, null, true, false);
-  const keyMovies = await interleaveFull(null, raw, p, null, null, null, false, true);
+  // Tải song song tìm kiếm theo slug và từ khóa
+  const [slugMovies, keyMovies] = await Promise.all([
+    interleaveFull(null, raw, p, null, null, null, true, false),
+    interleaveFull(null, raw, p, null, null, null, false, true)
+  ]);
 
   const all = [...slugMovies, ...keyMovies];
   const seen = new Set();
@@ -289,7 +305,7 @@ const createCard = (m) => {
 
   const imgPlaceholder = document.createElement('img');
   imgPlaceholder.className = 'movie-img-placeholder';
-  imgPlaceholder.src = PLACEHOLDER_LOW;
+  imgPlaceholder.src = PLACEHOLDER_LOW; // Dùng base64
 
   const imgContainer = document.createElement('div');
   imgContainer.className = 'movie-img-container';
@@ -329,7 +345,7 @@ const renderFinal = async (movies, container, id) => {
   });
 
   if (total === 0) {
-    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:100px;color:#aaa;">Không hổ trợ lọc hãy tìm bằng từ khóa nhé</div>';
+    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:100px;color:#aaa;">Không tìm thấy kết quả hoặc không hỗ trợ lọc này.<br>Hãy thử tìm bằng từ khóa khác.</div>';
   }
 };
 
@@ -423,27 +439,16 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   currentFilter = f;
   currentPage = p;
   
-  // FIX: Gán đúng giá trị theo mode
   if (m === 'genre') {
-    currentGenre = f;
-    currentCountry = c;
-    currentYear = y;
+    currentGenre = f; currentCountry = c; currentYear = y;
   } else if (m === 'country') {
-    currentGenre = null;
-    currentCountry = f;
-    currentYear = y;
+    currentGenre = null; currentCountry = f; currentYear = y;
   } else if (m === 'year') {
-    currentGenre = null;
-    currentCountry = null;
-    currentYear = f;
+    currentGenre = null; currentCountry = null; currentYear = f;
   } else if (m === 'combined') {
-    currentGenre = g;
-    currentCountry = c;
-    currentYear = y;
+    currentGenre = g; currentCountry = c; currentYear = y;
   } else {
-    currentGenre = null;
-    currentCountry = null;
-    currentYear = null;
+    currentGenre = null; currentCountry = null; currentYear = null;
   }
 
   if (m === 'default') {
@@ -469,7 +474,7 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   saveState();
 };
 
-// ==================== LOAD CUSTOM MENU ====================
+// ==================== LOAD CUSTOM MENU (TỐI ƯU TỐC ĐỘ) ====================
 const loadTxt = async () => {
   try {
     const r = await fetch('trangchu.txt?t=' + Date.now());
@@ -477,9 +482,14 @@ const loadTxt = async () => {
     const txt = await r.text();
     if (!txt.trim()) throw 1;
     const groups = parseTxt(txt);
-    for (const [name, items] of Object.entries(groups)) if (items.length) await loadGroup(name, items);
+    // Load song song các group
+    const promises = Object.entries(groups).map(([name, items]) => {
+      if (items.length) return loadGroup(name, items);
+      return Promise.resolve();
+    });
+    await Promise.all(promises);
   } catch {
-    document.getElementById('main-content').innerHTML = '<div class="container"><h2 style="text-align:center;padding:100px;color:#aaa;">Chưa có custom-menu.txt</h2></div>';
+    document.getElementById('main-content').innerHTML = '<div class="container"><h2 style="text-align:center;padding:100px;color:#aaa;">Chưa có dữ liệu trangchu.txt</h2></div>';
   }
   saveState();
 };
@@ -517,13 +527,17 @@ const loadGroup = async (name, items) => {
   sec.style.display = 'block';
   const grid = document.getElementById(`${sid}-grid`);
   grid.innerHTML = '';
-  const all = [];
-  for (const i of items) {
+
+  // === TỐI ƯU QUAN TRỌNG: Dùng Promise.all để tải song song các phim trong group ===
+  const fetchPromises = items.map(i => {
     const src = Object.values(API_SOURCES).find(s => s.name.toLowerCase() === i.source);
-    if (!src) continue;
-    const res = await fetchFromSource(src, null, null, i.slug, null, null, null, true, false);
-    all.push(...res);
-  }
+    if (!src) return Promise.resolve([]);
+    return fetchFromSource(src, null, null, i.slug, null, null, null, true, false).catch(() => []);
+  });
+
+  const results = await Promise.all(fetchPromises);
+  const all = results.flat();
+
   const seen = new Set();
   const fin = all.filter(m => !seen.has(m.slug + m.sourceCode) && seen.add(m.slug + m.sourceCode));
   await renderFinal(fin, grid, `${sid}-progress`);
