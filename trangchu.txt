@@ -1,4 +1,23 @@
-# Phim chung
+# Tùy chỉnh không có thì - bấm vào bộ lộc 三
 
-phap su tien tang phan 2|nguonc 
+
+
+
+# Hoạt hình
+
+tham tu lung danh conan|phimapi
+dao hai tac|phimapi
+dao hai tac live action phan 2|phimapi
+
+# Hàn quốc - 270 
+
+
+
+
+# Trung Quốc - 480
+
+
+
+
+
 
