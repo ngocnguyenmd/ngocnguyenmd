@@ -39,8 +39,6 @@ img {
 button {
     font-family: inherit;
     cursor: pointer;
-    border: none;
-    background: none;
 }
 
 :focus-visible {
@@ -58,7 +56,7 @@ button {
 }
 
 /* ===============================
-   NAVIGATION
+   NAVIGATION (Netflix Style)
    =============================== */
 .nav-wrapper {
     position: sticky;
@@ -106,6 +104,7 @@ button {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 4px;
+    padding: 0;
     transition: all 0.3s ease;
 }
 
@@ -133,6 +132,7 @@ button {
 
 .nav-search-btn {
     background: #e50914;
+    border: none;
     color: #fff;
     font-weight: 700;
     padding: 10px 24px;
@@ -145,6 +145,7 @@ button {
 
 .nav-search-btn:hover {
     background: #c40812;
+    transform: scale(1.02);
 }
 
 .nav-search-btn:active {
@@ -216,7 +217,7 @@ button {
 }
 
 /* ===============================
-   MODAL
+   MODAL (Netflix Style)
    =============================== */
 .modal-backdrop {
     display: none;
@@ -282,6 +283,7 @@ button {
     justify-content: center;
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.1);
+    border: none;
     transition: all 0.2s ease;
 }
 
@@ -353,7 +355,7 @@ button {
 }
 
 /* ===============================
-   SECTION
+   SECTION (Netflix Style)
    =============================== */
 .section {
     padding: 3rem 0;
@@ -385,7 +387,7 @@ button {
 }
 
 /* ===============================
-   MOVIE GRID
+   MOVIE GRID (Netflix Style)
    =============================== */
 .movie-grid {
     display: grid;
@@ -393,20 +395,18 @@ button {
     gap: 0.8rem;
 }
 
-/* ĐÃ XÓA: will-change: transform; -> Gây tràn RAM trên A04 */
 .movie-item {
     position: relative;
     border-radius: 8px;
     overflow: hidden;
     background: #1a1a1a;
     cursor: pointer;
+    transform: translateZ(0);
+    will-change: transform;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.movie-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
-}
+
 
 /* Image Container */
 .movie-img-container {
@@ -446,7 +446,7 @@ button {
     transform: scale(1.05);
 }
 
-/* Tags */
+/* Tags Base Style */
 .movie-ep-tag,
 .movie-lang-tag,
 .movie-year-tag,
@@ -637,7 +637,7 @@ button {
     to { transform: rotate(360deg); }
 }
 
-/* Toast */
+/* Toast Notifications */
 .toast {
     position: fixed;
     bottom: 24px;
@@ -660,11 +660,20 @@ button {
     opacity: 1;
 }
 
-.toast.error { background: #e50914; }
-.toast.success { background: #00aa00; }
-.toast.info { background: #1a1a1a; border: 1px solid #e50914; }
+.toast.error {
+    background: #e50914;
+}
 
-/* Status Text */
+.toast.success {
+    background: #00aa00;
+}
+
+.toast.info {
+    background: #1a1a1a;
+    border: 1px solid #e50914;
+}
+
+/* Loading & Status Text */
 .loading-text,
 .no-results,
 .error-text {
@@ -688,9 +697,11 @@ button {
     animation: spin 0.8s linear infinite;
 }
 
-.error-text { color: #e50914; }
+.error-text {
+    color: #e50914;
+}
 
-/* Skeleton */
+/* Skeleton Loading */
 .skeleton {
     background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
     background-size: 200% 100%;
@@ -721,170 +732,125 @@ footer a {
     transition: color 0.2s ease;
 }
 
-footer a:hover { color: #ff4444; }
+footer a:hover {
+    color: #ff4444;
+}
 
 /* ===============================
    SCROLLBAR
    =============================== */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #0f0f0f; }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #555; }
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
 
+::-webkit-scrollbar-track {
+    background: #0f0f0f;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 
 /* ===============================
    RESPONSIVE - DESKTOP LARGE
    =============================== */
 @media (min-width: 1600px) {
-    .container { max-width: 1600px; }
-    .movie-grid { grid-template-columns: repeat(7, 1fr); gap: 1rem; }
+    .container {
+        max-width: 1600px;
+    }
+    
+    .movie-grid {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1rem;
+    }
 }
 
 /* ===============================
    RESPONSIVE - LAPTOP
    =============================== */
 @media (max-width: 1200px) {
-    .movie-grid { grid-template-columns: repeat(5, 1fr); }
-    .modal-grid { grid-template-columns: repeat(4, 1fr); }
+    .movie-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .modal-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }
 
 /* ===============================
    RESPONSIVE - TABLET
    =============================== */
 @media (max-width: 992px) {
-    .nav-menu-wrapper { display: none; }
-    .hamburger-menu { display: flex; }
-    .nav-search { max-width: none; flex: 1; margin-left: 1rem; }
-    .movie-grid { grid-template-columns: repeat(4, 1fr); }
-    .modal-grid { grid-template-columns: repeat(3, 1fr); }
+    .nav-menu-wrapper {
+        display: none;
+    }
+    
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    .nav-search {
+        max-width: none;
+        flex: 1;
+        margin-left: 1rem;
+    }
+    
+    .movie-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .modal-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 /* ===============================
    RESPONSIVE - TABLET SMALL
    =============================== */
 @media (max-width: 768px) {
-    .container { padding: 0 1.5rem; }
-    .nav { height: 64px; gap: 1rem; }
-    .logo { font-size: 2rem; }
-    .nav-search { margin-left: 1rem; max-width: 300px; }
-    .nav-search-btn { padding: 8px 16px; font-size: 0.85rem; }
-    .movie-grid { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
-    .section-header { font-size: 1.2rem; }
-    .modal-box { width: 95%; max-height: 80vh; }
-    .modal-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-
-/* ==================================================================
-   RESPONSIVE - MOBILE (TỐI ƯU CHỮA BÁNH LAG CHO SAMSUNG A04 360px)
-   ================================================================== */
-@media (max-width: 600px) {
     .container {
-        padding: 0 0.75rem; /* Giảm padding lấy chỗ cho thanh tìm kiếm */
+        padding: 0 1.5rem;
     }
     
     .nav {
-        height: 56px;
-        gap: 0.5rem; /* Bóp khoảng cách lại */
+        height: 64px;
+        gap: 1rem;
     }
     
     .logo {
-        font-size: 1.6rem;
-        letter-spacing: -1px;
+        font-size: 2rem;
     }
     
-    /* --- FIX THANH TÌM KIẾM BỊ BÓP ---
-       A04 chỉ có ~360px, phải ưu tiên không gian */
     .nav-search {
-        margin-left: 0;
-        max-width: 100%;
-        flex: 1;
-        min-width: 0; 
-    }
-    
-    .nav-search-input {
-        padding: 10px 8px;
-        /* QUAN TRỌNG: Font 16px chống Samsung Internet tự động Zoom Toàn màn hình */
-        font-size: 16px !important; 
+        margin-left: 1rem;
+        max-width: 300px;
     }
     
     .nav-search-btn {
-        padding: 0 10px;
-        font-size: 0.75rem;
-        /* QUAN TRỌNG: Touch target tối thiểu cho ngón tay bấm không trượt */
-        min-height: 44px;
-        min-width: 44px;
-        white-space: nowrap;
-    }
-
-    /* --- FIX HIỆU NĂNG (Chống giật/treo máy) ---
-       Tắt hiệu ứng Blur khi mở Modal vì GPU A04 không kịp xử lý */
-    .modal-backdrop {
-        background: rgba(0, 0, 0, 0.97) !important;
-        -webkit-backdrop-filter: none !important;
-        backdrop-filter: none !important;
-    }
-
-    /* Tắt hiệu ứng load nặng khi cuộn danh sách phim */
-    .movie-item {
-        transform: none !important;
-        transition: box-shadow 0.2s ease !important;
-    }
-    
-    /* Bỏ zoom ảnh khi hover (Mobile không có hover, nhưng đề phòng rớt mạng chạm lâu) */
-    .movie-item:hover {
-        transform: none !important;
-        box-shadow: none !important;
-    }
-    .movie-item:hover .movie-img-real {
-        transform: scale(1) !important;
-    }
-
-    /* --- FIX UI CHO MÀN HÌNH NHỎ --- */
-    .movie-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-    }
-    
-    .movie-title {
+        padding: 8px 16px;
         font-size: 0.85rem;
-        padding: 20px 8px 8px;
     }
     
-    .movie-ep-tag, .movie-quality-tag, .movie-year-tag, .movie-source-tag {
-        font-size: 0.6rem;
-        padding: 2px 5px;
+    .nav-menu {
+        gap: 1.5rem;
     }
     
-    .movie-ep-tag {
-        /* Tắt blur cho tag phim đang xem để giảm tải GPU */
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-        background: rgba(0, 0, 0, 0.95) !important;
-    }
-    
-    .section {
-        padding: 1.5rem 0;
+    .movie-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.6rem;
     }
     
     .section-header {
-        font-size: 1rem;
-        margin-bottom: 1rem;
+        font-size: 1.2rem;
     }
     
-    .pagination {
-        margin-top: 2rem;
-    }
-    
-    .page-btn {
-        min-width: 40px;
-        padding: 8px 12px;
-    }
-    
-    footer {
-        padding: 2rem 0;
-    }
-
     .modal-box {
         width: 95%;
         max-height: 80vh;
@@ -892,5 +858,60 @@ footer a:hover { color: #ff4444; }
     
     .modal-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ===============================
+   RESPONSIVE - MOBILE
+   =============================== */
+@media (max-width: 600px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .nav {
+        height: 56px;
+        gap: 0.75rem;
+    }
+    
+    .logo {
+        font-size: 1.8rem;
+    }
+    
+    .nav-search {
+        margin-left: 0.5rem;
+        max-width: 100%;
+        flex: 1;
+    }
+    
+    .nav-search-input {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+    
+    .nav-search-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .movie-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .section {
+        padding: 2rem 0;
+    }
+    
+    .section-header {
+        font-size: 1rem;
+    }
+    
+    .pagination {
+        margin-top: 2rem;
+    }
+    
+    footer {
+        padding: 2rem 0;
     }
 }
