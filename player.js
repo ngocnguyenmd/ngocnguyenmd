@@ -32,27 +32,36 @@ let popupTimeout = null;
 let currentPlayMode = 'so1';
 let hlsRetryCount = 0; 
 
-// ================= CẤU HÌNH PROXY TỰ ĐỘNG =================
-let proxyUrl = '';
-let isProxyEnabled = false; // Trạng thái nút (Mặc định TẮT)
+// ================= CẤU HÌNH DANH SÁCH PROXY =================
+let proxyList = []; // Mảng chứa các IP từ file txt
+let selectedProxyIndex = -1; // -1 = Tắt (Mạng trực tiếp), 0 = Dòng 1, 1 = Dòng 2...
 
-// Hàm đọc file proxy.txt từ cùng thư mục
 async function loadProxyConfig() {
   try {
     const r = await fetch('./proxy.txt?t=' + Date.now());
     if (r.ok) {
       const txt = await r.text();
-      // Lấy dòng đầu tiên chứa http(s)://
-      const match = txt.match(/https?:\/\/[^\s]+/);
-      if (match) {
-        proxyUrl = match[0].replace(/\/+$/, ''); // Xóa dấu / thừa ở cuối
-        console.log('Đã tải Proxy:', proxyUrl);
+      // Lọc từng dòng, loại bỏ dòng trống và lấy đúng định dạng http://
+      const lines = txt.split('\n').map(l => l.trim()).filter(l => l.startsWith('http://') || l.startsWith('https://'));
+      if (lines.length > 0) {
+        proxyList = lines.map(ip => ip.replace(/\/+$/, '')); // Xóa dấu / thừa ở cuối mỗi dòng
+        console.log(`Đã tải ${proxyList.length} Proxy`);
       }
     }
   } catch (e) {
-    console.log('Không tìm thấy file proxy.txt, dùng mạng trực tiếp.');
+    console.log('Không tìm thấy file proxy.txt');
   }
 }
+
+// Hàm toàn cục để Dropdown gọi khi chọn Proxy
+window.selectProxy = function(index) {
+  selectedProxyIndex = index;
+  currentPlayMode = 'so1';
+  hlsRetryCount = 0;
+  renderSourceModeBar(); // Cập nhật lại giao diện nút
+  play(curEp); // Chơi lại tập hiện tại với Proxy mới
+  showToast(index === -1 ? 'Đã tắt Proxy (Mạng trực tiếp)' : `Đã bật Proxy ${index + 1}`);
+};
 
 function showToast(m) {
   toastEl.textContent = m;
@@ -164,6 +173,7 @@ function loadPoster(url) {
 function renderSourceModeBar() {
   sourceModeBar.innerHTML = '';
 
+  // 1. Nút Chọn Nguồn API (AX, BX, CX)
   const sourceDiv = document.createElement('div');
   sourceDiv.className = 'source-btn';
   sourceDiv.innerHTML = `
@@ -183,8 +193,8 @@ function renderSourceModeBar() {
     const btn = document.createElement('button');
     btn.className = 'btn';
     btn.textContent = 'Mượt 1';
-    if (currentPlayMode === 'so1' && !isProxyEnabled) btn.classList.add('active');
-    btn.onclick = () => { currentPlayMode = 'so1'; isProxyEnabled = false; hlsRetryCount = 0; play(curEp); renderSourceModeBar(); };
+    if (currentPlayMode === 'so1' && selectedProxyIndex === -1) btn.classList.add('active');
+    btn.onclick = () => { currentPlayMode = 'so1'; selectedProxyIndex = -1; hlsRetryCount = 0; play(curEp); renderSourceModeBar(); };
     sourceModeBar.appendChild(btn);
   }
 
@@ -198,42 +208,36 @@ function renderSourceModeBar() {
   }
 
   // ==================================================================
-  // NÚT BẬT/TẮT PROXY
+  // 2. Nút DROPDOWN CHỌN TỪNG DÒNG PROXY
   // ==================================================================
-  if (hasSo1) {
-    const btn = document.createElement('button');
-    btn.className = 'btn';
-    btn.id = 'proxy-toggle-btn';
+  if (hasSo1 && proxyList.length > 0) {
+    const proxyDiv = document.createElement('div');
+    proxyDiv.className = 'source-btn';
     
-    // Nếu đang bật, đổi màu và chữ
-    if (isProxyEnabled) {
-      btn.classList.add('active');
-      btn.style.background = '#27ae60'; // Màu xanh lá khi BẬT
-      btn.textContent = 'Proxy ON';
-    } else {
-      btn.style.background = '#555'; // Màu xám khi TẮT
-      btn.textContent = proxyUrl ? 'Proxy OFF' : 'No Proxy';
+    // Định dạng text hiển thị trên nút chính
+    let btnText = 'Proxy OFF';
+    let btnStyle = 'background: #555;'; // Xám mặc định
+    if (selectedProxyIndex !== -1) {
+      // Lấy ngắn gọn IP (Ví dụ: http://188.239.43.6:80 -> 188.239...:80)
+      const shortIp = proxyList[selectedProxyIndex].replace('http://', '');
+      btnText = `Proxy ${selectedProxyIndex + 1} (${shortIp.substring(0, 12)}...)`;
+      btnStyle = 'background: #27ae60;'; // Xanh lá khi bật
     }
 
-    btn.onclick = () => {
-      if (!proxyUrl) {
-        showToast('Không tìm thấy cấu hình Proxy trong file proxy.txt');
-        return;
-      }
-      // Đảo trạng thái
-      isProxyEnabled = !isProxyEnabled; 
-      currentPlayMode = 'so1';
-      hlsRetryCount = 0;
-      
-      // Cập nhật lại giao diện các nút
-      renderSourceModeBar();
-      
-      // Chơi lại tập hiện tại để áp dụng Proxy mới
-      play(curEp);
-      
-      showToast(isProxyEnabled ? `Đã bật Proxy: ${proxyUrl}` : 'Đã tắt Proxy (Mạng trực tiếp)');
-    };
-    sourceModeBar.appendChild(btn);
+    // Tạo HTML cho danh sách thả xuống
+    let dropdownHtml = `<button onclick="selectProxy(-1)">🔴 Tắt Proxy</button>`;
+    proxyList.forEach((ip, i) => {
+      const shortIp = ip.replace('http://', '');
+      dropdownHtml += `<button onclick="selectProxy(${i})">🟢 Proxy ${i + 1} (${shortIp})</button>`;
+    });
+
+    proxyDiv.innerHTML = `
+      <button class="btn ${selectedProxyIndex !== -1 ? 'active' : ''}" style="${btnStyle}">${btnText}</button>
+      <div class="dropdown">
+        ${dropdownHtml}
+      </div>
+    `;
+    sourceModeBar.appendChild(proxyDiv);
   }
 }
 
@@ -277,7 +281,7 @@ function resetPlayer() {
   clearTimeout(popupTimeout);
 }
 
-// ================= CORE PLAYER (TÍCH HỢP LOGIC PROXY VÀO XHR) =================
+// ================= CORE PLAYER (TÍCH HỢP CHỌN DÒNG PROXY) =================
 function playSo1(m3u8) {
   resetPlayer();
   hlsRetryCount = 0; 
@@ -306,24 +310,22 @@ function playSo1(m3u8) {
       progressive: true,
       
       // =======================================================
-      // VÙNG CHẠN REQUEST: BẮT LINK M3U8 GÁN THÊM PROXY VÀO
+      // LOGIC CHÈN IP DỰA TRÊN DÒNG ĐÃ CHỌN
       // =======================================================
       xhrSetup: (xhr, url) => {
         let finalUrl = url;
         
-        // Nếu nút Proxy đang ON và có cấu hình IP
-        if (isProxyEnabled && proxyUrl) {
-          // Cấu trúc chuyển đổi: http://188.239.43.6:80/https://link-m3u8-goc.com/file.m3u8
-          // Nếu proxy của bạn cần mã hóa (encode), hãy đổi thành: proxyUrl + '/' + encodeURIComponent(url)
-          finalUrl = `${proxyUrl}/${url}`;
+        // Nếu có chọn Proxy (Index khác -1)
+        if (selectedProxyIndex !== -1 && proxyList[selectedProxyIndex]) {
+          const activeProxy = proxyList[selectedProxyIndex];
+          // Nối IP được chọn vào trước link gốc
+          finalUrl = `${activeProxy}/${url}`;
         }
 
         // Mở request bằng URL cuối cùng
         xhr.open('GET', finalUrl, true);
         xhr.withCredentials = false;
-        
-        // Nếu dùng Proxy, tăng timeout lên vì mạng đi vòng có thể chậm hơn
-        xhr.timeout = isProxyEnabled ? 25000 : 15000;
+        xhr.timeout = selectedProxyIndex !== -1 ? 25000 : 15000;
       }
     });
     
@@ -341,23 +343,18 @@ function playSo1(m3u8) {
           case Hls.ErrorTypes.NETWORK_ERROR:
             if (hlsRetryCount < 2) {
               hlsRetryCount++;
-              showToast(isProxyEnabled ? `Proxy lag, thử lại (${hlsRetryCount}/2)...` : `Mất kết nối (${hlsRetryCount}/2)...`);
+              showToast(selectedProxyIndex !== -1 ? `Proxy ${selectedProxyIndex + 1} lag, thử lại...` : `Mất kết nối (${hlsRetryCount}/2)...`);
               hls.startLoad();
             } else {
-              showToast('Lỗi mạng liên tục, thử chế độ khác...');
+              showToast('Lỗi mạng liên tục, thử đổi Proxy khác...');
               hls.destroy(); hls = null;
               const ep = episodes[curEp];
-              if (isProxyEnabled) {
-                // Nếu đang dùng Proxy mà lỗi -> Tự động tắt Proxy và chạy trực tiếp
-                isProxyEnabled = false;
-                renderSourceModeBar();
-                play(curEp);
-              } else if (ep && ep.link_so2) {
+              if (ep && ep.link_so2) {
                 currentPlayMode = 'so2';
                 playSo2(ep.link_so2);
                 renderSourceModeBar(); 
               } else {
-                errorMsg.textContent = 'Mạng quá yếu. Hãy bật Proxy hoặc đổi Server.';
+                errorMsg.textContent = 'Mạng lỗi. Hãy bấm nút Proxy và chọn IP khác.';
                 errorMsg.style.display = 'flex';
                 loading.style.display = 'none';
               }
@@ -400,7 +397,6 @@ function playSo2(embedUrl) {
 
 function addAutoSkipLogic() {
   videoEl._hasSkippedMid = false;
-
   const midSkipPoint = 900;    
   const midSkipAmount = 38;
 
@@ -434,10 +430,8 @@ function seek(seconds) {
     showToast('Không thể tua (đang dùng chế độ Embed)');
     return;
   }
-  
   const newTime = videoEl.currentTime + seconds;
   videoEl.currentTime = Math.max(0, Math.min(newTime, videoEl.duration));
-  
   showToast(seconds > 0 ? `+${seconds}s` : `${seconds}s`);
 }
 
@@ -506,10 +500,10 @@ async function init() {
   
   loading.style.display = 'flex';
   
-  // 1. Tải cấu hình Proxy trước
+  // 1. Đọc toàn bộ danh sách IP từ proxy.txt trước
   await loadProxyConfig();
   
-  // 2. Sau đó mới tải dữ liệu phim và khởi tạo
+  // 2. Sau đó mới load phim
   if (await loadMovie() && servers.length > 0) {
     switchServer(0);
   }
