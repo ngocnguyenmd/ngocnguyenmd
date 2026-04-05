@@ -30,6 +30,7 @@ let movie = '', poster = '', cdn = '', plot = '';
 let warned = false;
 let popupTimeout = null;
 let currentPlayMode = 'so1';
+let hlsRetryCount = 0; // Biến đếm lỗi mạng để chống load vô hạn
 
 function showToast(m) {
   toastEl.textContent = m;
@@ -161,7 +162,7 @@ function renderSourceModeBar() {
     btn.className = 'btn';
     btn.textContent = 'Mượt 1';
     if (currentPlayMode === 'so1') btn.classList.add('active');
-    btn.onclick = () => { currentPlayMode = 'so1'; play(curEp); };
+    btn.onclick = () => { currentPlayMode = 'so1'; hlsRetryCount = 0; play(curEp); };
     sourceModeBar.appendChild(btn);
   }
 
@@ -215,45 +216,46 @@ function resetPlayer() {
   clearTimeout(popupTimeout);
 }
 
+// ================= CORE PLAYER (TỐI ƯU MƯỢT MÀ CHO MẠNG YẾU & A04) =================
 function playSo1(m3u8) {
   resetPlayer();
+  hlsRetryCount = 0; // Reset đếm lỗi khi chuyển tập
   videoEl.style.display = 'block';
 
   if (Hls.isSupported()) {
     hls = new Hls({
-      // Tối ưu cho mạng yếu
-       enableWorker: true,
-       autoStartLoad: true,
-       startLevel: 0,
+      enableWorker: true,
+      lowLatencyMode: false, // BẮT BUỘC TẮT: Chế độ này vắt kiệt CPU máy yếu
       
-      // Giảm buffer để tránh lag trên mạng yếu
-      maxBufferLength: 20,
-      maxMaxBufferLength: 40,
-      maxBufferSize: 60 * 1000 * 1000,
-      maxBufferHole: 1.5,
+      // --- QUẢN LÝ BỘ NHỚ (RAM) ---
+      // Giảm buffer từ 60MB xuống 15MB để A04 không bị tràn RAM gây giật lag
+      maxBufferLength: 10,        // Chỉ tải trước 10 giây
+      maxMaxBufferLength: 20,     // Tối đa 20 giây
+      maxBufferSize: 15 * 1000 * 1000, // Chỉ dùng tối đa 15MB RAM (Trước đây là 60MB)
+      maxBufferHole: 0.5,         // Cho phép lỗ buffer nhỏ để không bị đơ
       
-      // Tự động điều chỉnh chất lượng theo bandwidth
-      capLevelToPlayerSize: true,
-      abrEwmaDefaultEstimate: 1000000,
-      abrBandWidthFactor: 0.85,
-      abrBandWidthUpFactor: 0.6,
+      // --- ĐIỀU CHỈNH CHẤT LƯỢNG TỰ ĐỘNG ---
+      capLevelToPlayerSize: true, // Không tải chất lượng quá cao so với màn hình
+      startLevel: -1,             // Để HLS tự chọn, nhưng sẽ bị bóp bởi cấu hình bên dưới
+      abrEwmaDefaultEstimate: 500000, // Đo mạng là 0.5Mbps đầu tiên (ép chất lượng thấp ngay lập tức)
+      abrBandWidthFactor: 0.8,    // Lùi lại 20% băng thông để tránh tải vượt quá khả năng mạng
+      abrBandWidthUpFactor: 0.5,  // Tăng chất lượng RẤT chậm để không bị dật khi mạng oscillate
       
-      // Giảm retry để tránh treo
-      manifestLoadingTimeOut: 15000,
-      manifestLoadingMaxRetry: 4,
-      levelLoadingTimeOut: 15000,
-      levelLoadingMaxRetry: 4,
-      fragLoadingTimeOut: 30000,
-      fragLoadingMaxRetry: 6,
+      // --- THỜI GIAN TIMEOUT & RETRY ---
+      // Chống load vòng vòng vô định
+      manifestLoadingTimeOut: 10000, 
+      manifestLoadingMaxRetry: 2,
+      levelLoadingTimeOut: 10000,
+      levelLoadingMaxRetry: 2,
+      fragLoadingTimeOut: 15000,   // Tối đa 15s cho 1 mảnh video
+      fragLoadingMaxRetry: 3,
       
-      // Tối ưu audio sync
-      maxAudioFramesDrift: 10,
-      forceKeyFrameOnDiscontinuity: true,
+      // --- BỔ SUNG ---
       enableSoftwareAES: true,
-      
+      progressive: true,           // Tăng tốc tải giảm độ trễ ban đầu
       xhrSetup: xhr => { 
         xhr.withCredentials = false;
-        xhr.timeout = 20000;
+        xhr.timeout = 15000;
       }
     });
     
@@ -265,31 +267,56 @@ function playSo1(m3u8) {
       videoEl.play().catch(e => showToast('Bấm play để phát'));
     });
 
-    hls.on(Hls.Events.ERROR, (e, data) => {
+    hls.on(Hls.Events.ERROR, (event, data) => {
       if (data.fatal) {
         switch(data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
-            showToast('Lỗi mạng - đang thử kết nối lại...');
-            hls.startLoad();
+            // CHỐNG LOAD VÒNG VÒNG: Chỉ cho phép thử lại tối đa 2 lần
+            if (hlsRetryCount < 2) {
+              hlsRetryCount++;
+              showToast(`Mất kết nối, đang reconnect (${hlsRetryCount}/2)...`);
+              hls.startLoad();
+            } else {
+              // Nếu thử lại 2 lần vẫn lỗi -> Tự động chuyển sang SO2 (Embed)
+              showToast('Mạng quá yếu, tự động chuyển sang Server Backup...');
+              hls.destroy();
+              hls = null;
+              const ep = episodes[curEp];
+              if (ep && ep.link_so2) {
+                currentPlayMode = 'so2';
+                playSo2(ep.link_so2);
+                renderSourceModeBar(); // Cập nhật UI nút bấm
+              } else {
+                errorMsg.textContent = 'Mạng quá yếu, không tải được video. Hãy thử đổi Server.';
+                errorMsg.style.display = 'flex';
+                loading.style.display = 'none';
+              }
+            }
             break;
           case Hls.ErrorTypes.MEDIA_ERROR:
-            showToast('Lỗi media - đang khôi phục...');
+            showToast('Lỗi giải mã, đang khôi phục...');
             hls.recoverMediaError();
             break;
           default:
-            showToast('Lỗi phát - thử SO2 hoặc đổi server');
+            showToast('Lỗi không xác định, thử đổi Server');
+            hls.destroy();
+            hls = null;
+            errorMsg.textContent = 'Lỗi phát video';
+            errorMsg.style.display = 'flex';
+            loading.style.display = 'none';
             break;
         }
       }
     });
   } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+    // Dành cho Safari/iOS
     videoEl.src = m3u8;
     videoEl.addEventListener('loadedmetadata', () => {
       loading.style.display = 'none';
       videoEl.play().catch(() => {});
     });
   } else {
-    showToast('Trình duyệt không hỗ trợ SO1');
+    showToast('Trình duyệt quá cũ, không hỗ trợ m3u8');
     loading.style.display = 'none';
   }
 
@@ -314,7 +341,6 @@ function addAutoSkipLogic() {
     const d = videoEl.duration;
     if (!d || isNaN(d) || videoEl.seeking) return;
 
-    // Tua giữa phim ở phút 15
     if (!videoEl._hasSkippedMid && t >= midSkipPoint && t < midSkipPoint + 15) {
       const target = midSkipPoint + midSkipAmount;
       if (target < d) {
@@ -324,7 +350,6 @@ function addAutoSkipLogic() {
       }
     }
 
-    // Hiện popup gần hết phim
     if (!warned && d && t >= d - 120 && curEp < episodes.length - 1) {
       showEndPopup();
     }
@@ -338,7 +363,7 @@ function addAutoSkipLogic() {
 
 function seek(seconds) {
   if (videoEl.style.display === 'none' || isNaN(videoEl.duration)) {
-    showToast('Không thể tua (chưa phát hoặc đang dùng embed)');
+    showToast('Không thể tua (đang dùng chế độ Embed)');
     return;
   }
   
