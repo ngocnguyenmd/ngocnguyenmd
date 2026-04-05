@@ -30,16 +30,15 @@ let movie = '', poster = '', cdn = '', plot = '';
 let warned = false;
 let popupTimeout = null;
 let currentPlayMode = 'so1';
-let activeProxy = ''; // Biến lưu link proxy
+let activeProxy = '';
 
 function showToast(m) {
   toastEl.textContent = m;
   toastEl.classList.add('show');
   clearTimeout(toastEl.timeout);
-  toastEl.timeout = setTimeout(() => toastEl.classList.remove('show'), 2800);
+  toastEl.timeout = setTimeout(() => toastEl.classList.remove('show'), 3000);
 }
 
-// --- HÀM TẠO KHUNG NHẬP PROXY ---
 function createProxyUI() {
   const epGrid = document.getElementById('ep-grid');
   if (!epGrid) return;
@@ -47,7 +46,7 @@ function createProxyUI() {
   const box = document.createElement('div');
   box.id = 'proxy-box';
   box.innerHTML = `
-    <input type="text" id="proxy-input" placeholder="Nhập proxy (vd: http://123.30.154.171:7777)" />
+    <input type="text" id="proxy-input" placeholder="Nhập proxy HTTPS (vd: https://domain.com)" />
     <button id="proxy-on" class="btn proxy-btn active">Bật Proxy</button>
     <button id="proxy-off" class="btn proxy-btn" disabled>Tắt Proxy</button>
   `;
@@ -65,8 +64,15 @@ function createProxyUI() {
       return;
     }
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'http://' + url;
+      url = 'https://' + url; // Mặc định thêm https://
     }
+
+    // CHỐNG LỖI MIXED CONTENT: Cảnh báo nếu dùng HTTP trên web HTTPS
+    if (location.protocol === 'https:' && url.startsWith('http://')) {
+      showToast('⚠️ Lỗi: Web đang dùng HTTPS, không thể dùng Proxy HTTP!');
+      return;
+    }
+
     activeProxy = url;
     input.disabled = true;
     btnOn.disabled = true;
@@ -272,17 +278,16 @@ function resetPlayer() {
   clearTimeout(popupTimeout);
 }
 
-// --- HÀM PLAY SO1 ĐÃ SỬA LỖI DẤU / VÀ CHỐNG SPAM LỖI ---
+// --- HÀM PLAY SO1 ĐÃ SỬA LỖI GHÉP KÉP URL ---
 function playSo1(m3u8) {
   resetPlayer();
   videoEl.style.display = 'block';
 
-  // Xử lý dư dấu / ở cuối và chèn chính xác 1 dấu / giữa proxy và link
   const proxyPrefix = activeProxy ? activeProxy.replace(/\/+$/, '') : '';
   const targetM3u8 = proxyPrefix ? `${proxyPrefix}/${m3u8}` : m3u8;
 
   if (Hls.isSupported()) {
-    let retryCount = 0; // Biến đếm để chặn spam thông báo lỗi mạng
+    let retryCount = 0;
     
     hls = new Hls({
       enableWorker: true,
@@ -306,8 +311,9 @@ function playSo1(m3u8) {
       forceKeyFrameOnDiscontinuity: true,
       enableSoftwareAES: true,
       
+      // XỬ LÝ CHUẨN XÁC: CHỈ THÊM PROXY NẾU URL CHƯA CÓ
       xhrSetup: (xhr, url) => {
-        if (proxyPrefix) {
+        if (proxyPrefix && !url.startsWith(proxyPrefix)) {
           const finalUrl = `${proxyPrefix}/${url}`;
           xhr.open('GET', finalUrl, true);
         }
@@ -328,12 +334,12 @@ function playSo1(m3u8) {
       if (data.fatal) {
         switch(data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
-            if (retryCount < 3) {
+            if (retryCount < 2) {
               retryCount++;
-              showToast(`Lỗi mạng - đang thử lại (${retryCount}/3)...`);
+              showToast(`Mất kết nối - đang thử lại (${retryCount}/2)...`);
               hls.startLoad();
             } else {
-              showToast('Lỗi mạng liên tục. Hãy thử Tắt Proxy hoặc đổi Server');
+              showToast('Lỗi mạng. Proxy không phản hồi hoặc sai định dạng');
               hls.destroy();
             }
             break;
