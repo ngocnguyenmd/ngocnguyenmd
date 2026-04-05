@@ -1,5 +1,5 @@
 /* ===============================
-   RESET & BASE (Netflix Style)
+   RESET & BASE
    =============================== */
 *, *::before, *::after {
     margin: 0;
@@ -39,6 +39,8 @@ img {
 button {
     font-family: inherit;
     cursor: pointer;
+    border: none;
+    background: none;
 }
 
 :focus-visible {
@@ -56,7 +58,7 @@ button {
 }
 
 /* ===============================
-   NAVIGATION (Netflix Style)
+   NAVIGATION
    =============================== */
 .nav-wrapper {
     position: sticky;
@@ -87,7 +89,6 @@ button {
     cursor: pointer;
     transition: transform 0.2s ease;
     flex-shrink: 0;
-    font-family: 'Segoe UI', sans-serif;
 }
 
 .logo:hover {
@@ -104,7 +105,6 @@ button {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 4px;
-    padding: 0;
     transition: all 0.3s ease;
 }
 
@@ -132,27 +132,24 @@ button {
 
 .nav-search-btn {
     background: #e50914;
-    border: none;
     color: #fff;
     font-weight: 700;
     padding: 10px 24px;
     margin-right: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
     flex-shrink: 0;
     border-radius: 4px;
+    transition: all 0.2s ease;
 }
 
 .nav-search-btn:hover {
     background: #c40812;
-    transform: scale(1.02);
 }
 
 .nav-search-btn:active {
     transform: scale(0.98);
 }
 
-/* Menu */
+/* Menu Desktop */
 .nav-menu-wrapper {
     flex: 1;
     text-align: center;
@@ -192,24 +189,30 @@ button {
     width: 100%;
 }
 
-/* Hamburger */
+/* Nut 3 gach */
 .hamburger-menu {
     display: none;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     gap: 5px;
-    cursor: pointer;
     padding: 10px;
-    border-radius: 4px;
-    transition: background 0.2s ease;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    flex-shrink: 0;
+    transition: all 0.2s ease;
 }
 
-.hamburger-menu:hover {
-    background: rgba(255, 255, 255, 0.1);
+.hamburger-menu:hover,
+.hamburger-menu:active {
+    background: rgba(229, 9, 20, 0.3);
+    border-color: #e50914;
 }
 
 .hamburger {
-    width: 24px;
+    display: block;
+    width: 22px;
     height: 2px;
     background: #fff;
     border-radius: 2px;
@@ -217,7 +220,7 @@ button {
 }
 
 /* ===============================
-   MODAL (Netflix Style)
+   MODAL
    =============================== */
 .modal-backdrop {
     display: none;
@@ -227,22 +230,24 @@ button {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 1000;
-    justify-content: center;
-    align-items: center;
     opacity: 0;
     transition: opacity 0.25s ease;
+    padding: 1rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modal-backdrop.show {
-    display: flex;
+    display: block;
     opacity: 1;
 }
 
 .modal-box {
     position: relative;
-    width: 90%;
+    width: 100%;
     max-width: 900px;
-    max-height: 85vh;
+    max-height: 90vh;
+    max-height: 90dvh;
     background: #141414;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
@@ -252,6 +257,7 @@ button {
     transform: scale(0.95);
     transition: transform 0.25s ease;
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+    margin: auto;
 }
 
 .modal-backdrop.show .modal-box {
@@ -263,7 +269,7 @@ button {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem;
+    padding: 1.2rem 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(0, 0, 0, 0.5);
 }
@@ -276,14 +282,14 @@ button {
 
 .modal-close {
     cursor: pointer;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.1);
-    border: none;
+    flex-shrink: 0;
     transition: all 0.2s ease;
 }
 
@@ -293,8 +299,8 @@ button {
 }
 
 .modal-close svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     fill: #fff;
 }
 
@@ -303,24 +309,12 @@ button {
     overflow-y: auto;
     padding: 0;
     overscroll-behavior: contain;
+    min-height: 0;
 }
 
-.modal-body::-webkit-scrollbar {
-    width: 8px;
-}
-
-.modal-body::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-}
-
-.modal-body::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
+.modal-body::-webkit-scrollbar { width: 6px; }
+.modal-body::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+.modal-body::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
 
 .modal-grid {
     display: grid;
@@ -328,7 +322,7 @@ button {
 }
 
 .modal-item {
-    padding: 1rem;
+    padding: 1rem 0.5rem;
     color: rgba(255, 255, 255, 0.75);
     font-size: 0.9rem;
     cursor: pointer;
@@ -337,6 +331,8 @@ button {
     border-right: 1px solid rgba(255, 255, 255, 0.05);
     text-align: center;
     font-weight: 500;
+    white-space: normal;
+    word-break: break-word;
 }
 
 .modal-item:nth-child(4n) {
@@ -355,7 +351,7 @@ button {
 }
 
 /* ===============================
-   SECTION (Netflix Style)
+   SECTION
    =============================== */
 .section {
     padding: 3rem 0;
@@ -387,7 +383,7 @@ button {
 }
 
 /* ===============================
-   MOVIE GRID (Netflix Style)
+   MOVIE GRID
    =============================== */
 .movie-grid {
     display: grid;
@@ -401,14 +397,14 @@ button {
     overflow: hidden;
     background: #1a1a1a;
     cursor: pointer;
-    transform: translateZ(0);
-    will-change: transform;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.movie-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+}
 
-
-/* Image Container */
 .movie-img-container {
     position: relative;
     width: 100%;
@@ -423,7 +419,7 @@ button {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    background: linear-gradient(135deg, #000000 0%, #000000 100%);
+    background: linear-gradient(135deg, #000 0%, #000 100%);
     transition: opacity 0.3s ease;
 }
 
@@ -446,7 +442,6 @@ button {
     transform: scale(1.05);
 }
 
-/* Tags Base Style */
 .movie-ep-tag,
 .movie-lang-tag,
 .movie-year-tag,
@@ -466,22 +461,19 @@ button {
 }
 
 .movie-ep-tag {
-    top: 8px;
-    left: 8px;
+    top: 8px; left: 8px;
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(4px);
 }
 
 .movie-year-tag {
-    top: 8px;
-    right: 8px;
+    top: 8px; right: 8px;
     background: rgba(229, 9, 20, 0.9);
 }
 
 .movie-top-right {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 8px; right: 8px;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -499,23 +491,19 @@ button {
 }
 
 .movie-source-tag {
-    top: 32px;
-    left: 8px;
+    top: 32px; left: 8px;
     background: rgba(0, 0, 0, 0.85);
     font-size: 0.6rem;
 }
 
 .movie-lang-tag {
-    bottom: 36px;
-    left: 8px;
+    bottom: 36px; left: 8px;
     background: rgba(229, 9, 20, 0.9);
 }
 
 .movie-title {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0; left: 0; right: 0;
     padding: 24px 12px 12px;
     font-size: 0.8rem;
     font-weight: 600;
@@ -523,7 +511,7 @@ button {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.8) 50%, transparent 100%);
+    background: linear-gradient(to top, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.8) 50%, transparent 100%);
     z-index: 4;
 }
 
@@ -532,9 +520,7 @@ button {
    =============================== */
 .progress-container {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 3px;
     background: rgba(255, 255, 255, 0.1);
     overflow: hidden;
@@ -543,9 +529,7 @@ button {
     transition: opacity 0.4s ease 0.2s;
 }
 
-.progress-container.done {
-    opacity: 0;
-}
+.progress-container.done { opacity: 0; }
 
 .progress-bar {
     height: 100%;
@@ -625,23 +609,18 @@ button {
 }
 
 .loading-spinner {
-    width: 50px;
-    height: 50px;
+    width: 50px; height: 50px;
     border: 4px solid rgba(255, 255, 255, 0.1);
     border-top-color: #e50914;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* Toast Notifications */
 .toast {
     position: fixed;
-    bottom: 24px;
-    left: 50%;
+    bottom: 24px; left: 50%;
     transform: translateX(-50%) translateY(100px);
     padding: 14px 28px;
     background: #222;
@@ -655,25 +634,11 @@ button {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
 }
 
-.toast.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast.error { background: #e50914; }
+.toast.success { background: #00aa00; }
+.toast.info { background: #1a1a1a; border: 1px solid #e50914; }
 
-.toast.error {
-    background: #e50914;
-}
-
-.toast.success {
-    background: #00aa00;
-}
-
-.toast.info {
-    background: #1a1a1a;
-    border: 1px solid #e50914;
-}
-
-/* Loading & Status Text */
 .loading-text,
 .no-results,
 .error-text {
@@ -688,8 +653,7 @@ button {
 .loading-text::before {
     content: '';
     display: block;
-    width: 40px;
-    height: 40px;
+    width: 40px; height: 40px;
     margin: 0 auto 1rem;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top-color: #e50914;
@@ -697,11 +661,8 @@ button {
     animation: spin 0.8s linear infinite;
 }
 
-.error-text {
-    color: #e50914;
-}
+.error-text { color: #e50914; }
 
-/* Skeleton Loading */
 .skeleton {
     background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
     background-size: 200% 100%;
@@ -727,191 +688,219 @@ footer {
     margin-top: 4rem;
 }
 
-footer a {
-    color: #e50914;
-    transition: color 0.2s ease;
-}
+footer a { color: #e50914; transition: color 0.2s ease; }
+footer a:hover { color: #ff4444; }
 
-footer a:hover {
-    color: #ff4444;
-}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #0f0f0f; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
 
-/* ===============================
-   SCROLLBAR
-   =============================== */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #0f0f0f;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
 
 /* ===============================
    RESPONSIVE - DESKTOP LARGE
    =============================== */
 @media (min-width: 1600px) {
-    .container {
-        max-width: 1600px;
-    }
-    
-    .movie-grid {
-        grid-template-columns: repeat(7, 1fr);
-        gap: 1rem;
-    }
+    .container { max-width: 1600px; }
+    .movie-grid { grid-template-columns: repeat(7, 1fr); gap: 1rem; }
 }
 
 /* ===============================
    RESPONSIVE - LAPTOP
    =============================== */
 @media (max-width: 1200px) {
-    .movie-grid {
-        grid-template-columns: repeat(5, 1fr);
-    }
-    
-    .modal-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
+    .movie-grid { grid-template-columns: repeat(5, 1fr); }
+    .modal-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
 /* ===============================
    RESPONSIVE - TABLET
    =============================== */
 @media (max-width: 992px) {
-    .nav-menu-wrapper {
-        display: none;
-    }
-    
-    .hamburger-menu {
-        display: flex;
-    }
-    
-    .nav-search {
-        max-width: none;
-        flex: 1;
-        margin-left: 1rem;
-    }
-    
-    .movie-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .modal-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
+    .nav-menu-wrapper { display: none !important; }
+    .hamburger-menu { display: flex !important; }
+    .nav-search { max-width: none; flex: 1; margin-left: 1rem; }
+    .movie-grid { grid-template-columns: repeat(4, 1fr); }
+    .modal-grid { grid-template-columns: repeat(3, 1fr); }
+    .modal-item:nth-child(3n) { border-right: none; }
+    .modal-item:nth-child(4n) { border-right: 1px solid rgba(255, 255, 255, 0.05); }
 }
 
 /* ===============================
    RESPONSIVE - TABLET SMALL
    =============================== */
 @media (max-width: 768px) {
-    .container {
-        padding: 0 1.5rem;
-    }
-    
-    .nav {
-        height: 64px;
-        gap: 1rem;
-    }
-    
-    .logo {
-        font-size: 2rem;
-    }
-    
-    .nav-search {
-        margin-left: 1rem;
-        max-width: 300px;
-    }
-    
-    .nav-search-btn {
-        padding: 8px 16px;
-        font-size: 0.85rem;
-    }
-    
-    .nav-menu {
-        gap: 1.5rem;
-    }
-    
-    .movie-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.6rem;
-    }
-    
-    .section-header {
-        font-size: 1.2rem;
-    }
-    
-    .modal-box {
-        width: 95%;
-        max-height: 80vh;
-    }
-    
-    .modal-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .container { padding: 0 1.5rem; }
+    .nav { height: 64px; gap: 1rem; }
+    .logo { font-size: 2rem; }
+    .nav-search { margin-left: 1rem; max-width: 300px; }
+    .nav-search-btn { padding: 8px 16px; font-size: 0.85rem; }
+    .movie-grid { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+    .section-header { font-size: 1.2rem; }
+    .modal-grid { grid-template-columns: repeat(2, 1fr); }
+    .modal-item:nth-child(2n) { border-right: none; }
+    .modal-item:nth-child(3n) { border-right: 1px solid rgba(255, 255, 255, 0.05); }
+    .modal-item:nth-child(4n) { border-right: 1px solid rgba(255, 255, 255, 0.05); }
 }
 
-/* ===============================
-   RESPONSIVE - MOBILE
-   =============================== */
+
+/* ==================================================================
+   RESPONSIVE - MOBILE (VŨ KHÍ HẠT NHÂN: TÀN PHÁ MỌI CLASS CỦA JS)
+   ================================================================== */
 @media (max-width: 600px) {
-    .container {
-        padding: 0 1rem;
-    }
+    .container { padding: 0 0.75rem; }
     
     .nav {
         height: 56px;
-        gap: 0.75rem;
+        gap: 0.5rem;
     }
     
     .logo {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+        letter-spacing: -1px;
+        flex-shrink: 0;
     }
     
+    /* --- THANH TÌM KIẾM --- */
     .nav-search {
-        margin-left: 0.5rem;
+        margin-left: 0;
         max-width: 100%;
         flex: 1;
+        min-width: 0;
     }
     
     .nav-search-input {
-        padding: 8px 10px;
-        font-size: 0.9rem;
+        padding: 10px 8px;
+        font-size: 16px !important;
     }
     
     .nav-search-btn {
-        padding: 6px 12px;
-        font-size: 0.8rem;
+        padding: 0 10px;
+        font-size: 0.75rem;
+        min-height: 44px;
+        min-width: 44px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* ==================================================================
+       VŨ KHÍ HẠT NHÂN: 
+       BẤT KỂ APP.JS ĐỔI CLASS THÀNH GÌ, CHỈ CẦN LÀ THẺ <div> HOẶC <ul> 
+       NẰM TRỰC TIẾP TRONG .nav MÀ KHÔNG PHẢI SEARCH/HAMBURGER -> BỊ BẮT ĐÀY
+       ================================================================== */
+    .nav > div:not(.nav-search):not(.hamburger-menu),
+    .nav > ul {
+        display: none !important;
+        visibility: hidden !important;
+        position: absolute !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* ÉP HIỆN 3 GÁCH BẰNG MỌI GIÁ */
+    .hamburger-menu {
+        display: flex !important;
+        visibility: visible !important;
+        position: relative !important;
+        width: 44px !important;
+        height: 44px !important;
+        padding: 10px !important;
+        border-radius: 6px !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        flex-shrink: 0 !important;
+        z-index: 200 !important;
+    }
+
+    /* ÉP VẼ LẠI 3 ĐƯỜNG GẠCH NẾU JS LÀM HỎNG CLASS .hamburger */
+    .hamburger-menu span {
+        display: block !important;
+        width: 20px !important;
+        height: 2px !important;
+        background: #fff !important;
+        border-radius: 2px !important;
+    }
+
+    /* --- FIX HIỆU NĂNG GPU TRÊN A04 --- */
+    .modal-backdrop {
+        padding: 0.5rem;
+        background: rgba(0, 0, 0, 0.97) !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+
+    #loading-overlay {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+
+    .movie-item {
+        transform: none !important;
+        transition: box-shadow 0.2s ease !important;
     }
     
+    .movie-item:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+    
+    .movie-item:hover .movie-img-real {
+        transform: scale(1) !important;
+    }
+
+    .movie-ep-tag {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: rgba(0, 0, 0, 0.95) !important;
+    }
+
+    /* --- GIAO DIỆN MÀN HÌNH NHỎ --- */
     .movie-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 0.5rem;
     }
     
-    .section {
-        padding: 2rem 0;
+    .movie-title {
+        font-size: 0.85rem;
+        padding: 20px 8px 8px;
     }
     
-    .section-header {
-        font-size: 1rem;
+    .movie-ep-tag, .movie-quality-tag, .movie-year-tag, .movie-source-tag {
+        font-size: 0.6rem;
+        padding: 2px 5px;
     }
     
-    .pagination {
-        margin-top: 2rem;
+    .section { padding: 1.5rem 0; }
+    .section-header { font-size: 1rem; margin-bottom: 1rem; }
+    .pagination { margin-top: 2rem; }
+    .page-btn { min-width: 40px; padding: 8px 12px; }
+    footer { padding: 2rem 0; }
+
+    /* --- FIX MODAL TRÀN MÀN HÌNH --- */
+    .modal-box {
+        width: 100%;
+        max-height: 95vh;
+        max-height: 95dvh;
+        border-radius: 12px;
     }
+
+    .modal-header { padding: 1rem; }
+    .modal-title { font-size: 1.1rem; }
     
-    footer {
-        padding: 2rem 0;
+    .modal-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0;
     }
+
+    .modal-item {
+        padding: 0.8rem 0.5rem;
+        font-size: 0.85rem;
+        line-height: 1.3;
+    }
+
+    .modal-item:nth-child(4n) { border-right: 1px solid rgba(255, 255, 255, 0.05); }
+    .modal-item:nth-child(2n) { border-right: none; }
 }
