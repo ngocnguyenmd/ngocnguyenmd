@@ -52,7 +52,7 @@ const API_SOURCES = {
 
 const API_CACHE = {}; 
 
-let ITEMS_PER_PAGE = 12;
+let ITEMS_PER_PAGE = 10;
 let currentMode = 'default';
 let currentFilter = null;
 let currentPage = 1;
@@ -113,8 +113,6 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
       if (genre && !base.includes('/the-loai/')) params.append('genre', genre);
       if (country && !base.includes('/quoc-gia/')) params.append('country', country);
       if (year && !base.includes('/nam-phat-hanh/')) params.append('year', year);
-      
-      // FIX NETLIFY: Chuẩn hóa nối ? và &
       url = base + (base.includes('?') ? '&' : '?') + params.toString();
     } else if (src.code === 'bx') {
       base = 'https://phimapi.com/danh-sach/phim-moi-cap-nhat-v1';
@@ -144,7 +142,12 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
     const cdn = typeof src.getCdn === 'function' ? src.getCdn(d) : src.getCdn();
 
     const result = items.map(it => {
-      let thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
+      // ĐÃ KHÔI PHỤC: Tách riêng logic lấy ảnh chuẩn xác cho từng Source
+      let thumb = '';
+      if (src.code === 'ax') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
+      if (src.code === 'bx') thumb = it.poster_url || it.thumb_url || it.poster || it.thumb || '';
+      if (src.code === 'cx') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
+
       if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//') && cdn) thumb = cdn + thumb.replace(/^\/+/, '');
       return {
         name: it.name || it.origin_name || it.title || 'Không rõ',
@@ -274,15 +277,15 @@ const createCard = (m) => {
 
   const imgReal = document.createElement('img');
   imgReal.className = 'movie-img-real';
-  // TỐI ƯU A04: Không dùng new Image() tạo 2 lần, gán sự kiện trực tiếp
+  imgReal.loading = 'lazy';
   imgReal.onload = function() { 
       this.style.opacity = '1'; 
       this.parentElement.classList.add('loaded');
   };
   imgReal.onerror = function() { updateProg(this.dataset.prog); };
-  imgReal.dataset.prog = ''; // Sẽ gán sau
+  imgReal.dataset.prog = '';
 
-  // FIX NETLIFY: Không gọi file ngoài abc.jpg, dùng CSS background sẵn có
+  // Không gọi file ngoài abc.jpg, dùng CSS div sẵn có làm nền mờ
   const imgPlaceholder = document.createElement('div');
   imgPlaceholder.className = 'movie-img-placeholder';
 
@@ -300,7 +303,6 @@ const renderFinal = async (movies, container, id) => {
   total = disp.length;
   loaded = 0;
 
-  // TỐI ƯU A04: Dùng DocumentFragment giảm tải reflow cho CPU
   const fragment = document.createDocumentFragment();
   const cards = disp.map(m => createCard(m));
   
@@ -310,7 +312,6 @@ const renderFinal = async (movies, container, id) => {
   });
   container.appendChild(fragment);
 
-  // Tải ảnh
   cards.forEach(o => {
     if (!o.url) {
       updateProg(id);
@@ -445,7 +446,6 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
 
 const loadTxt = async () => {
   try {
-    // FIX NETLIFY: Dùng đường dẫn tương đối an toàn
     const r = await fetch('./trangchu.txt?t=' + Date.now());
     if (!r.ok) throw 1;
     const txt = await r.text();
