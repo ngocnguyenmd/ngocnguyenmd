@@ -32,9 +32,13 @@ let popupTimeout = null;
 let currentPlayMode = 'so1';
 let activeProxy = '';
 
-// --- BIẾN MỚI CHO DANH SÁCH PROXY ---
+// --- CẤU HÌNH MỚI ---
+// Định dạng URL Proxy: {proxy} sẽ thay bằng IP, {url} sẽ thay bằng link video
+// Mặc định dùng ?url= (chuẩn web proxy). Nếu proxy của bạn dạng khác, sửa dòng này.
+const PROXY_FORMAT = '{proxy}?url={url}';
+
 let proxyList = [];
-let activeProxyIndex = -1; // -1 nghĩa là Tắt Proxy
+let activeProxyIndex = -1; // -1 là Tắt
 
 function showToast(m) {
   toastEl.textContent = m;
@@ -43,129 +47,104 @@ function showToast(m) {
   toastEl.timeout = setTimeout(() => toastEl.classList.remove('show'), 3000);
 }
 
-// --- HÀM TẠO UI NÚT BẮM TỪ DANH SÁCH ---
+// --- UI: CHỈ 1 NÚT ĐỂ CHUYỂN ĐỔI (CYCLE) ---
 function createProxyUI() {
   const epGrid = document.getElementById('ep-grid');
   if (!epGrid) return;
 
-  // Tạo container chứa các nút
   const box = document.createElement('div');
   box.id = 'proxy-container';
   box.style.marginBottom = '15px';
-  box.innerHTML = '<div id="proxy-status" style="font-size:12px; color:#aaa; margin-bottom:5px;">Đang tải danh sách Proxy...</div>';
   
-  // Chèn vào trước danh sách tập
+  // Tạo 1 nút duy nhất
+  const btn = document.createElement('button');
+  btn.id = 'proxy-cycle-btn';
+  btn.className = 'btn';
+  btn.textContent = 'Proxy: Đang tải...';
+  btn.onclick = cycleProxy;
+  
+  box.appendChild(btn);
   epGrid.parentNode.insertBefore(box, epGrid);
 }
 
-// --- HÀM TẢI VÀ XỬ LÝ DANH SÁCH PROXY ---
+// --- HÀM TẢI DANH SÁCH (ẨN) ---
 async function loadProxyList() {
-  const statusDiv = document.getElementById('proxy-status');
-  const container = document.getElementById('proxy-container');
-  
-  if (!container) return;
-
   try {
     const response = await fetch('proxy.txt');
-    if (!response.ok) throw new Error('Không tìm thấy proxy.txt');
+    if (!response.ok) throw new Error('Lỗi file');
     
     const text = await response.text();
-    
-    // Tách từng dòng, loại bỏ dòng trống
+    // Tách list và lọc trống
     proxyList = text.split('\n')
                     .map(line => line.trim())
                     .filter(line => line.length > 0);
-
-    renderProxyButtons();
     
+    updateProxyBtnText();
   } catch (e) {
-    console.error(e);
-    if (statusDiv) statusDiv.innerHTML = `<span style="color:#ff5555">Lỗi: Không tải được proxy.txt (Chạy local hoặc lỗi file)</span>`;
-    // Vẫn tạo nút mặc định
-    renderProxyButtons(); 
+    console.error("Không tải được proxy.txt", e);
+    proxyList = [];
+    updateProxyBtnText();
   }
 }
 
-// --- HÀM RENDER CÁC NÚT PROXY ---
-function renderProxyButtons() {
-  const container = document.getElementById('proxy-container');
-  if (!container) return;
+// --- HÀM CẬP NHẬT CHỮ TRÊN NÚT ---
+function updateProxyBtnText() {
+  const btn = document.getElementById('proxy-cycle-btn');
+  if (!btn) return;
 
-  // Giữ lại dòng trạng thái, xóa nút cũ (nếu có)
-  const statusDiv = document.getElementById('proxy-status');
-  container.innerHTML = ''; 
-  if (statusDiv) container.appendChild(statusDiv);
+  if (proxyList.length === 0) {
+    btn.textContent = 'Proxy: Không có danh sách';
+    btn.disabled = true;
+    return;
+  }
 
-  // 1. Nút TẮT PROXY (Mặc định)
-  const btnOff = createProxyButton('Tắt Proxy (Mặc định)', -1);
-  container.appendChild(btnOff);
-
-  // 2. Các nút từ danh sách
-  if (proxyList.length > 0) {
-    proxyList.forEach((url, index) => {
-      // Lấy tên hiển thị gọn gàng (ví dụ: 123.30.154.171)
-      let displayName = url;
-      try {
-        const urlObj = new URL(url);
-        displayName = urlObj.hostname;
-      } catch (e) {}
-      
-      const btn = createProxyButton(`Proxy ${index + 1}: ${displayName}`, index);
-      container.appendChild(btn);
-    });
+  if (activeProxyIndex === -1) {
+    btn.textContent = `Proxy: TẮT`;
+    btn.classList.remove('active');
   } else {
-    const warn = document.createElement('div');
-    warn.style.color = '#777';
-    warn.style.fontSize = '12px';
-    warn.textContent = 'Không có proxy nào trong file.';
-    container.appendChild(warn);
-  }
-}
-
-// --- HÀM TẠO NÚT (Helper) ---
-function createProxyButton(text, index) {
-  const btn = document.createElement('button');
-  btn.className = 'btn proxy-btn';
-  btn.style.marginRight = '5px';
-  btn.style.marginBottom = '5px';
-  btn.style.fontSize = '12px';
-  btn.textContent = text;
-
-  if (activeProxyIndex === index) {
+    const currentProxyName = proxyList[activeProxyIndex];
+    // Tên ngắn gọn
+    let shortName = currentProxyName;
+    try {
+        shortName = new URL(currentProxyName).hostname;
+    } catch(e){}
+    
+    btn.textContent = `Proxy: ${shortName} (${activeProxyIndex + 1}/${proxyList.length})`;
     btn.classList.add('active');
   }
-
-  btn.onclick = () => selectProxy(index);
-  return btn;
 }
 
-// --- HÀM CHỌN PROXY ---
-function selectProxy(index) {
-  activeProxyIndex = index;
-  
-  if (index === -1) {
+// --- HÀM CHUYỂN ĐỔI (BẤM VÀO NÚT) ---
+function cycleProxy() {
+  if (proxyList.length === 0) {
+    showToast('Chưa có dữ liệu proxy!');
+    return;
+  }
+
+  // Tăng index: Tắt (-1) -> 0 -> 1 -> ... -> Cuối -> Tắt (-1)
+  activeProxyIndex++;
+  if (activeProxyIndex >= proxyList.length) {
+    activeProxyIndex = -1; // Quay về tắt
+  }
+
+  // Cập nhật biến activeProxy
+  if (activeProxyIndex === -1) {
     activeProxy = '';
     showToast('Đã tắt Proxy');
   } else {
-    activeProxy = proxyList[index].replace(/\/+$/, '');
-    
-    // Cảnh báo Mixed Content
-    if (location.protocol === 'https:' && activeProxy.startsWith('http://')) {
-      showToast(`Đã chọn Proxy ${index + 1} (Cảnh báo: HTTP trên HTTPS)`);
-    } else {
-      showToast(`Đã chọn Proxy ${index + 1}`);
-    }
+    activeProxy = proxyList[activeProxyIndex].replace(/\/+$/, ''); // Bỏ / cuối
+    showToast(`Đã chuyển sang Proxy ${activeProxyIndex + 1}`);
   }
 
-  // Cập nhật lại giao diện nút bấm
-  renderProxyButtons();
+  updateProxyBtnText();
 
-  // Nếu đang xem phim thì tải lại để áp dụng proxy mới
+  // Tải lại video để áp dụng
   if (episodes.length > 0) {
     play(curEp);
   }
 }
 
+// --- CÁC HÀM PHÁT VIDEO CŨ (ĐÃ SỬA LOGIC XHR) ---
 function showEndPopup() {
   if (warned || curEp >= episodes.length - 1) return;
   warned = true;
@@ -343,14 +322,20 @@ function resetPlayer() {
   clearTimeout(popupTimeout);
 }
 
+// --- HÀM PLAY SO1 (ĐÃ SỬA FORMAT URL) ---
 function playSo1(m3u8) {
   resetPlayer();
   videoEl.style.display = 'block';
 
-  const proxyPrefix = activeProxy ? activeProxy.replace(/\/+$/, '') : '';
+  // URL gốc
   let targetM3u8 = m3u8;
-  if (proxyPrefix) {
-    targetM3u8 = `${proxyPrefix}/${m3u8}`;
+  
+  // Nếu có Proxy, sử dụng FORMAT để thay thế
+  if (activeProxy) {
+    // Thay {proxy} và {url} bằng giá trị thực
+    targetM3u8 = PROXY_FORMAT
+      .replace('{proxy}', activeProxy)
+      .replace('{url}', m3u8);
   }
 
   if (Hls.isSupported()) {
@@ -366,12 +351,18 @@ function playSo1(m3u8) {
       fragLoadingTimeOut: 30000,
       
       xhrSetup: (xhr, url) => {
-        if (proxyPrefix && !url.startsWith(proxyPrefix) && !url.startsWith('blob:')) {
-          const finalUrl = `${proxyPrefix}/${url}`;
+        // "Ép cả trang": Tất cả request (m3u8 và ts) đều đi qua đây
+        if (activeProxy) {
+          const finalUrl = PROXY_FORMAT
+            .replace('{proxy}', activeProxy)
+            .replace('{url}', url);
+          
           xhr.open('GET', finalUrl, true);
+          console.log('Proxied Request:', finalUrl);
         } else {
           if (!xhr.readyState) xhr.open('GET', url, true);
         }
+        
         xhr.withCredentials = false;
         xhr.timeout = 35000;
       }
@@ -392,14 +383,14 @@ function playSo1(m3u8) {
             console.error('HLS Network Error:', data);
             if (retryCount < 3) {
               retryCount++;
-              showToast(`Mất kết nối - đang thử lại (${retryCount}/3)...`);
+              showToast(`Lỗi mạng - thử lại (${retryCount}/3)...`);
               hls.startLoad();
             } else {
-              showToast('Lỗi mạng. Thử chuyển Proxy khác.');
+              showToast('Lỗi mạng. Bấm nút Proxy để thử IP khác.');
             }
             break;
           case Hls.ErrorTypes.MEDIA_ERROR:
-            showToast('Lỗi định dạng - đang khôi phục...');
+            showToast('Lỗi video - đang khôi phục...');
             hls.recoverMediaError();
             break;
           default:
@@ -461,7 +452,7 @@ function addAutoSkipLogic() {
 
 function seek(seconds) {
   if (videoEl.style.display === 'none' || isNaN(videoEl.duration)) {
-    showToast('Không thể tua (chưa phát hoặc đang dùng embed)');
+    showToast('Không thể tua');
     return;
   }
   const newTime = videoEl.currentTime + seconds;
@@ -491,7 +482,7 @@ function play(i) {
   } else if (link_so2) {
     playSo2(link_so2);
   } else {
-    errorMsg.textContent = 'Không có link phát cho tập này';
+    errorMsg.textContent = 'Không có link phát';
     errorMsg.style.display = 'flex';
     loading.style.display = 'none';
   }
@@ -534,10 +525,10 @@ async function init() {
   
   createProxyUI();
   
-  // 1. Tải danh sách proxy trước
+  // 1. Tải list proxy (ẩn)
   await loadProxyList();
   
-  // 2. Ti tục tải phim
+  // 2. Tải phim
   curEp = epFromUrl();
   loading.style.display = 'flex';
   if (await loadMovie() && servers.length > 0) {
