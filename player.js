@@ -215,7 +215,7 @@ function renderSourceModeBar() {
     proxyDiv.className = 'source-btn';
     
     // Định dạng text hiển thị trên nút chính
-    let btnText = 'Proxy OFF';
+    let btnText = 'Đổi mạng';
     let btnStyle = 'background: #555;'; // Xám mặc định
     if (selectedProxyIndex !== -1) {
       // Lấy ngắn gọn IP (Ví dụ: http://188.239.43.6:80 -> 188.239...:80)
@@ -225,7 +225,7 @@ function renderSourceModeBar() {
     }
 
     // Tạo HTML cho danh sách thả xuống
-    let dropdownHtml = `<button onclick="selectProxy(-1)">🔴 Tắt Proxy</button>`;
+    let dropdownHtml = `<button onclick="selectProxy(-1)">🔴 Tắt mạng</button>`;
     proxyList.forEach((ip, i) => {
       const shortIp = ip.replace('http://', '');
       dropdownHtml += `<button onclick="selectProxy(${i})">🟢 Proxy ${i + 1} (${shortIp})</button>`;
