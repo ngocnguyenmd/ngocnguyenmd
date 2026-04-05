@@ -30,12 +30,73 @@ let movie = '', poster = '', cdn = '', plot = '';
 let warned = false;
 let popupTimeout = null;
 let currentPlayMode = 'so1';
+let activeProxy = ''; // Biến lưu link proxy
 
 function showToast(m) {
   toastEl.textContent = m;
   toastEl.classList.add('show');
   clearTimeout(toastEl.timeout);
   toastEl.timeout = setTimeout(() => toastEl.classList.remove('show'), 2800);
+}
+
+// --- HÀM TẠO KHUNG NHẬP PROXY ---
+function createProxyUI() {
+  const epGrid = document.getElementById('ep-grid');
+  if (!epGrid) return;
+
+  const box = document.createElement('div');
+  box.id = 'proxy-box';
+  box.innerHTML = `
+    <input type="text" id="proxy-input" placeholder="Nhập proxy (vd: http://123.30.154.171:7777)" />
+    <button id="proxy-on" class="btn proxy-btn active">Bật Proxy</button>
+    <button id="proxy-off" class="btn proxy-btn" disabled>Tắt Proxy</button>
+  `;
+  
+  // Chèn ngay trên ep-grid
+  epGrid.parentNode.insertBefore(box, epGrid);
+
+  const input = document.getElementById('proxy-input');
+  const btnOn = document.getElementById('proxy-on');
+  const btnOff = document.getElementById('proxy-off');
+
+  btnOn.onclick = () => {
+    let url = input.value.trim();
+    if (!url) {
+      showToast('Vui lòng nhập địa chỉ proxy');
+      return;
+    }
+    // Tự động thêm http:// nếu người dùng quên nhập
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'http://' + url;
+    }
+    activeProxy = url;
+    input.disabled = true;
+    btnOn.disabled = true;
+    btnOff.disabled = false;
+    btnOn.classList.remove('active');
+    btnOff.classList.add('active');
+    showToast('Đã bật Proxy: ' + activeProxy);
+    
+    // Tự động tải lại tập đang xem để áp dụng proxy
+    if (episodes.length > 0 && currentPlayMode === 'so1') {
+      play(curEp);
+    }
+  };
+
+  btnOff.onclick = () => {
+    activeProxy = '';
+    input.disabled = false;
+    btnOn.disabled = false;
+    btnOff.disabled = true;
+    btnOff.classList.remove('active');
+    btnOn.classList.add('active');
+    showToast('Đã tắt Proxy, về mạng thường');
+    
+    // Tự động tải lại tập đang xem để bỏ proxy
+    if (episodes.length > 0 && currentPlayMode === 'so1') {
+      play(curEp);
+    }
+  };
 }
 
 function showEndPopup() {
@@ -215,49 +276,47 @@ function resetPlayer() {
   clearTimeout(popupTimeout);
 }
 
+// --- HÀM PLAY SO1 ĐÃ SỬA ĐỂ HỖ TRỢ PROXY ---
 function playSo1(m3u8) {
   resetPlayer();
   videoEl.style.display = 'block';
 
+  // Gắn prefix proxy vào link m3u8 chính
+  const targetM3u8 = activeProxy ? activeProxy + m3u8 : m3u8;
+
   if (Hls.isSupported()) {
     hls = new Hls({
-      // Tối ưu cho mạng yếu
-       enableWorker: true,
-       autoStartLoad: true,
-       startLevel: 0,
-      
-      // Giảm buffer để tránh lag trên mạng yếu
+      enableWorker: true,
+      autoStartLoad: true,
+      startLevel: 0,
       maxBufferLength: 20,
       maxMaxBufferLength: 40,
       maxBufferSize: 60 * 1000 * 1000,
       maxBufferHole: 1.5,
-      
-      // Tự động điều chỉnh chất lượng theo bandwidth
       capLevelToPlayerSize: true,
       abrEwmaDefaultEstimate: 1000000,
       abrBandWidthFactor: 0.85,
       abrBandWidthUpFactor: 0.6,
-      
-      // Giảm retry để tránh treo
       manifestLoadingTimeOut: 15000,
       manifestLoadingMaxRetry: 4,
       levelLoadingTimeOut: 15000,
       levelLoadingMaxRetry: 4,
       fragLoadingTimeOut: 30000,
       fragLoadingMaxRetry: 6,
-      
-      // Tối ưu audio sync
       maxAudioFramesDrift: 10,
       forceKeyFrameOnDiscontinuity: true,
       enableSoftwareAES: true,
-      
-      xhrSetup: xhr => { 
+      // Xử lý proxy cho các file .ts bên trong m3u8
+      xhrSetup: (xhr, url) => {
+        if (activeProxy) {
+          xhr.open('GET', activeProxy + url, true);
+        }
         xhr.withCredentials = false;
-        xhr.timeout = 20000;
+        xhr.timeout = 30000; // Tăng timeout lên 30s khi dùng proxy
       }
     });
     
-    hls.loadSource(m3u8);
+    hls.loadSource(targetM3u8);
     hls.attachMedia(videoEl);
 
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -278,12 +337,13 @@ function playSo1(m3u8) {
             break;
           default:
             showToast('Lỗi phát - thử SO2 hoặc đổi server');
+            hls.destroy();
             break;
         }
       }
     });
   } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
-    videoEl.src = m3u8;
+    videoEl.src = targetM3u8;
     videoEl.addEventListener('loadedmetadata', () => {
       loading.style.display = 'none';
       videoEl.play().catch(() => {});
@@ -305,8 +365,7 @@ function playSo2(embedUrl) {
 
 function addAutoSkipLogic() {
   videoEl._hasSkippedMid = false;
-
-  const midSkipPoint = 900;    // 15:00
+  const midSkipPoint = 900;    
   const midSkipAmount = 38;
 
   const timeUpdate = () => {
@@ -314,7 +373,6 @@ function addAutoSkipLogic() {
     const d = videoEl.duration;
     if (!d || isNaN(d) || videoEl.seeking) return;
 
-    // Tua giữa phim ở phút 15
     if (!videoEl._hasSkippedMid && t >= midSkipPoint && t < midSkipPoint + 15) {
       const target = midSkipPoint + midSkipAmount;
       if (target < d) {
@@ -324,7 +382,6 @@ function addAutoSkipLogic() {
       }
     }
 
-    // Hiện popup gần hết phim
     if (!warned && d && t >= d - 120 && curEp < episodes.length - 1) {
       showEndPopup();
     }
@@ -341,10 +398,8 @@ function seek(seconds) {
     showToast('Không thể tua (chưa phát hoặc đang dùng embed)');
     return;
   }
-  
   const newTime = videoEl.currentTime + seconds;
   videoEl.currentTime = Math.max(0, Math.min(newTime, videoEl.duration));
-  
   showToast(seconds > 0 ? `+${seconds}s` : `${seconds}s`);
 }
 
@@ -410,6 +465,10 @@ async function init() {
     errorMsg.style.display = 'flex';
     return;
   }
+  
+  // Khởi tạo giao diện Proxy trước
+  createProxyUI();
+  
   curEp = epFromUrl();
   loading.style.display = 'flex';
   if (await loadMovie() && servers.length > 0) {
