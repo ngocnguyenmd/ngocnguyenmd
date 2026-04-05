@@ -30,7 +30,29 @@ let movie = '', poster = '', cdn = '', plot = '';
 let warned = false;
 let popupTimeout = null;
 let currentPlayMode = 'so1';
-let hlsRetryCount = 0; // Biến đếm lỗi mạng để chống load vô hạn
+let hlsRetryCount = 0; 
+
+// ================= CẤU HÌNH PROXY TỰ ĐỘNG =================
+let proxyUrl = '';
+let isProxyEnabled = false; // Trạng thái nút (Mặc định TẮT)
+
+// Hàm đọc file proxy.txt từ cùng thư mục
+async function loadProxyConfig() {
+  try {
+    const r = await fetch('./proxy.txt?t=' + Date.now());
+    if (r.ok) {
+      const txt = await r.text();
+      // Lấy dòng đầu tiên chứa http(s)://
+      const match = txt.match(/https?:\/\/[^\s]+/);
+      if (match) {
+        proxyUrl = match[0].replace(/\/+$/, ''); // Xóa dấu / thừa ở cuối
+        console.log('Đã tải Proxy:', proxyUrl);
+      }
+    }
+  } catch (e) {
+    console.log('Không tìm thấy file proxy.txt, dùng mạng trực tiếp.');
+  }
+}
 
 function showToast(m) {
   toastEl.textContent = m;
@@ -161,8 +183,8 @@ function renderSourceModeBar() {
     const btn = document.createElement('button');
     btn.className = 'btn';
     btn.textContent = 'Mượt 1';
-    if (currentPlayMode === 'so1') btn.classList.add('active');
-    btn.onclick = () => { currentPlayMode = 'so1'; hlsRetryCount = 0; play(curEp); };
+    if (currentPlayMode === 'so1' && !isProxyEnabled) btn.classList.add('active');
+    btn.onclick = () => { currentPlayMode = 'so1'; isProxyEnabled = false; hlsRetryCount = 0; play(curEp); renderSourceModeBar(); };
     sourceModeBar.appendChild(btn);
   }
 
@@ -171,7 +193,46 @@ function renderSourceModeBar() {
     btn.className = 'btn';
     btn.textContent = 'Mượt 2';
     if (currentPlayMode === 'so2') btn.classList.add('active');
-    btn.onclick = () => { currentPlayMode = 'so2'; play(curEp); };
+    btn.onclick = () => { currentPlayMode = 'so2'; play(curEp); renderSourceModeBar(); };
+    sourceModeBar.appendChild(btn);
+  }
+
+  // ==================================================================
+  // NÚT BẬT/TẮT PROXY
+  // ==================================================================
+  if (hasSo1) {
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.id = 'proxy-toggle-btn';
+    
+    // Nếu đang bật, đổi màu và chữ
+    if (isProxyEnabled) {
+      btn.classList.add('active');
+      btn.style.background = '#27ae60'; // Màu xanh lá khi BẬT
+      btn.textContent = 'Proxy ON';
+    } else {
+      btn.style.background = '#555'; // Màu xám khi TẮT
+      btn.textContent = proxyUrl ? 'Proxy OFF' : 'No Proxy';
+    }
+
+    btn.onclick = () => {
+      if (!proxyUrl) {
+        showToast('Không tìm thấy cấu hình Proxy trong file proxy.txt');
+        return;
+      }
+      // Đảo trạng thái
+      isProxyEnabled = !isProxyEnabled; 
+      currentPlayMode = 'so1';
+      hlsRetryCount = 0;
+      
+      // Cập nhật lại giao diện các nút
+      renderSourceModeBar();
+      
+      // Chơi lại tập hiện tại để áp dụng Proxy mới
+      play(curEp);
+      
+      showToast(isProxyEnabled ? `Đã bật Proxy: ${proxyUrl}` : 'Đã tắt Proxy (Mạng trực tiếp)');
+    };
     sourceModeBar.appendChild(btn);
   }
 }
@@ -216,46 +277,53 @@ function resetPlayer() {
   clearTimeout(popupTimeout);
 }
 
-// ================= CORE PLAYER (TỐI ƯU MƯỢT MÀ CHO MẠNG YẾU & A04) =================
+// ================= CORE PLAYER (TÍCH HỢP LOGIC PROXY VÀO XHR) =================
 function playSo1(m3u8) {
   resetPlayer();
-  hlsRetryCount = 0; // Reset đếm lỗi khi chuyển tập
+  hlsRetryCount = 0; 
   videoEl.style.display = 'block';
 
   if (Hls.isSupported()) {
     hls = new Hls({
       enableWorker: true,
-      lowLatencyMode: false, // BẮT BUỘC TẮT: Chế độ này vắt kiệt CPU máy yếu
-      
-      // --- QUẢN LÝ BỘ NHỚ (RAM) ---
-      // Giảm buffer từ 60MB xuống 15MB để A04 không bị tràn RAM gây giật lag
-      maxBufferLength: 10,        // Chỉ tải trước 10 giây
-      maxMaxBufferLength: 20,     // Tối đa 20 giây
-      maxBufferSize: 15 * 1000 * 1000, // Chỉ dùng tối đa 15MB RAM (Trước đây là 60MB)
-      maxBufferHole: 0.5,         // Cho phép lỗ buffer nhỏ để không bị đơ
-      
-      // --- ĐIỀU CHỈNH CHẤT LƯỢNG TỰ ĐỘNG ---
-      capLevelToPlayerSize: true, // Không tải chất lượng quá cao so với màn hình
-      startLevel: -1,             // Để HLS tự chọn, nhưng sẽ bị bóp bởi cấu hình bên dưới
-      abrEwmaDefaultEstimate: 500000, // Đo mạng là 0.5Mbps đầu tiên (ép chất lượng thấp ngay lập tức)
-      abrBandWidthFactor: 0.8,    // Lùi lại 20% băng thông để tránh tải vượt quá khả năng mạng
-      abrBandWidthUpFactor: 0.5,  // Tăng chất lượng RẤT chậm để không bị dật khi mạng oscillate
-      
-      // --- THỜI GIAN TIMEOUT & RETRY ---
-      // Chống load vòng vòng vô định
+      lowLatencyMode: false,
+      maxBufferLength: 10,
+      maxMaxBufferLength: 20,
+      maxBufferSize: 15 * 1000 * 1000,
+      maxBufferHole: 0.5,
+      capLevelToPlayerSize: true,
+      startLevel: -1,
+      abrEwmaDefaultEstimate: 500000,
+      abrBandWidthFactor: 0.8,
+      abrBandWidthUpFactor: 0.5,
       manifestLoadingTimeOut: 10000, 
       manifestLoadingMaxRetry: 2,
       levelLoadingTimeOut: 10000,
       levelLoadingMaxRetry: 2,
-      fragLoadingTimeOut: 15000,   // Tối đa 15s cho 1 mảnh video
+      fragLoadingTimeOut: 15000,
       fragLoadingMaxRetry: 3,
-      
-      // --- BỔ SUNG ---
       enableSoftwareAES: true,
-      progressive: true,           // Tăng tốc tải giảm độ trễ ban đầu
-      xhrSetup: xhr => { 
+      progressive: true,
+      
+      // =======================================================
+      // VÙNG CHẠN REQUEST: BẮT LINK M3U8 GÁN THÊM PROXY VÀO
+      // =======================================================
+      xhrSetup: (xhr, url) => {
+        let finalUrl = url;
+        
+        // Nếu nút Proxy đang ON và có cấu hình IP
+        if (isProxyEnabled && proxyUrl) {
+          // Cấu trúc chuyển đổi: http://188.239.43.6:80/https://link-m3u8-goc.com/file.m3u8
+          // Nếu proxy của bạn cần mã hóa (encode), hãy đổi thành: proxyUrl + '/' + encodeURIComponent(url)
+          finalUrl = `${proxyUrl}/${url}`;
+        }
+
+        // Mở request bằng URL cuối cùng
+        xhr.open('GET', finalUrl, true);
         xhr.withCredentials = false;
-        xhr.timeout = 15000;
+        
+        // Nếu dùng Proxy, tăng timeout lên vì mạng đi vòng có thể chậm hơn
+        xhr.timeout = isProxyEnabled ? 25000 : 15000;
       }
     });
     
@@ -271,23 +339,25 @@ function playSo1(m3u8) {
       if (data.fatal) {
         switch(data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
-            // CHỐNG LOAD VÒNG VÒNG: Chỉ cho phép thử lại tối đa 2 lần
             if (hlsRetryCount < 2) {
               hlsRetryCount++;
-              showToast(`Mất kết nối, đang reconnect (${hlsRetryCount}/2)...`);
+              showToast(isProxyEnabled ? `Proxy lag, thử lại (${hlsRetryCount}/2)...` : `Mất kết nối (${hlsRetryCount}/2)...`);
               hls.startLoad();
             } else {
-              // Nếu thử lại 2 lần vẫn lỗi -> Tự động chuyển sang SO2 (Embed)
-              showToast('Mạng quá yếu, tự động chuyển sang Server Backup...');
-              hls.destroy();
-              hls = null;
+              showToast('Lỗi mạng liên tục, thử chế độ khác...');
+              hls.destroy(); hls = null;
               const ep = episodes[curEp];
-              if (ep && ep.link_so2) {
+              if (isProxyEnabled) {
+                // Nếu đang dùng Proxy mà lỗi -> Tự động tắt Proxy và chạy trực tiếp
+                isProxyEnabled = false;
+                renderSourceModeBar();
+                play(curEp);
+              } else if (ep && ep.link_so2) {
                 currentPlayMode = 'so2';
                 playSo2(ep.link_so2);
-                renderSourceModeBar(); // Cập nhật UI nút bấm
+                renderSourceModeBar(); 
               } else {
-                errorMsg.textContent = 'Mạng quá yếu, không tải được video. Hãy thử đổi Server.';
+                errorMsg.textContent = 'Mạng quá yếu. Hãy bật Proxy hoặc đổi Server.';
                 errorMsg.style.display = 'flex';
                 loading.style.display = 'none';
               }
@@ -298,9 +368,8 @@ function playSo1(m3u8) {
             hls.recoverMediaError();
             break;
           default:
-            showToast('Lỗi không xác định, thử đổi Server');
-            hls.destroy();
-            hls = null;
+            showToast('Lỗi không xác định');
+            hls.destroy(); hls = null;
             errorMsg.textContent = 'Lỗi phát video';
             errorMsg.style.display = 'flex';
             loading.style.display = 'none';
@@ -309,14 +378,13 @@ function playSo1(m3u8) {
       }
     });
   } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
-    // Dành cho Safari/iOS
     videoEl.src = m3u8;
     videoEl.addEventListener('loadedmetadata', () => {
       loading.style.display = 'none';
       videoEl.play().catch(() => {});
     });
   } else {
-    showToast('Trình duyệt quá cũ, không hỗ trợ m3u8');
+    showToast('Trình duyệt quá cũ');
     loading.style.display = 'none';
   }
 
@@ -333,7 +401,7 @@ function playSo2(embedUrl) {
 function addAutoSkipLogic() {
   videoEl._hasSkippedMid = false;
 
-  const midSkipPoint = 900;    // 15:00
+  const midSkipPoint = 900;    
   const midSkipAmount = 38;
 
   const timeUpdate = () => {
@@ -435,8 +503,13 @@ async function init() {
     errorMsg.style.display = 'flex';
     return;
   }
-  curEp = epFromUrl();
+  
   loading.style.display = 'flex';
+  
+  // 1. Tải cấu hình Proxy trước
+  await loadProxyConfig();
+  
+  // 2. Sau đó mới tải dữ liệu phim và khởi tạo
   if (await loadMovie() && servers.length > 0) {
     switchServer(0);
   }
