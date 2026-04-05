@@ -18,7 +18,6 @@ const API_SOURCES = {
     keywordParser: d => d?.data?.items || [],
     getCdn: () => "https://img.ophim.live/uploads/movies/"
   }, 
-
   Phimapi: { 
     name: 'Phimapi', code: 'bx',
     defaultUrl: p => `https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=${p}`,
@@ -34,7 +33,6 @@ const API_SOURCES = {
     keywordParser: d => d?.data?.items || [],
     getCdn: d => (d?.data?.APP_DOMAIN_CDN_IMAGE || 'https://phimimg.com/').replace(/\/+$/, '') + '/'
   }, 
-
   Nguonc: { 
     name: 'Nguonc', code: 'cx',
     defaultUrl: p => `https://phim.nguonc.com/api/films/phim-moi-cap-nhat?page=${p}`,
@@ -52,10 +50,9 @@ const API_SOURCES = {
   }
 };
 
-// === TỐI ƯU: CACHE ĐỂ TĂNG TỐC ĐỘ TẢI LẠI ===
 const API_CACHE = {}; 
 
-let ITEMS_PER_PAGE = 16;
+let ITEMS_PER_PAGE = 12;
 let currentMode = 'default';
 let currentFilter = null;
 let currentPage = 1;
@@ -65,10 +62,6 @@ let currentCountry = null;
 let currentYear = null;
 let combinedFilterMode = false;
 
-// Dùng base64 để tránh load file ngoài, giảm request HTTP
-const PLACEHOLDER_LOW = 'abc.jpg';
-
-// ==================== LƯU / KHÔI PHỤC TRẠNG THÁI ====================
 const STATE_KEY = 'phim_state';
 const saveState = () => localStorage.setItem(STATE_KEY, JSON.stringify({mode:currentMode,filter:currentFilter,page:currentPage,search:currentSearchQuery,genre:currentGenre,country:currentCountry,year:currentYear,combined:combinedFilterMode}));
 const loadState = () => { 
@@ -83,7 +76,6 @@ const loadState = () => {
 };
 const clearState = () => localStorage.removeItem(STATE_KEY);
 
-// ==================== EPISODE DISPLAY ====================
 const getEpisodeDisplay = i => {
   if (!i) return '';
   const m = i.movie || i;
@@ -101,53 +93,47 @@ const getEpisodeDisplay = i => {
   return disp;
 };
 
-// ==================== FETCH DỮ LIỆU (ĐÃ TỐI ƯU) ====================
 const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null, isS=false, isK=false) => {
-  // 1. Tạo Cache Key dựa trên tham số
   const cacheKey = `${src.code}-${m}-${f}-${p}-${genre}-${country}-${year}-${isS}-${isK}`;
-  if (API_CACHE[cacheKey]) {
-    return API_CACHE[cacheKey]; // Trả về ngay nếu có cache
-  }
+  if (API_CACHE[cacheKey]) return API_CACHE[cacheKey];
 
   let url = '';
   
-  // Logic tạo URL
   if (isK) url = src.keywordSearchUrl(f, p);
   else if (isS) url = src.searchUrl(f);
   else if (m === 'combined') {
+    let base = '';
     if (src.code === 'ax') {
-      let base = 'https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat';
       if (genre) base = `https://ophim1.com/v1/api/the-loai/${genre}`;
       else if (country) base = `https://ophim1.com/v1/api/quoc-gia/${country}`;
       else if (year) base = `https://ophim1.com/v1/api/nam-phat-hanh/${year}`;
+      else base = 'https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat';
+      
       const params = new URLSearchParams({ page: p });
+      if (genre && !base.includes('/the-loai/')) params.append('genre', genre);
       if (country && !base.includes('/quoc-gia/')) params.append('country', country);
       if (year && !base.includes('/nam-phat-hanh/')) params.append('year', year);
-      url = base + '?' + params.toString();
+      
+      // FIX NETLIFY: Chuẩn hóa nối ? và &
+      url = base + (base.includes('?') ? '&' : '?') + params.toString();
     } else if (src.code === 'bx') {
-      let base = 'https://phimapi.com/danh-sach/phim-moi-cap-nhat-v1';
+      base = 'https://phimapi.com/danh-sach/phim-moi-cap-nhat-v1';
       if (genre) base = `https://phimapi.com/v1/api/the-loai/${genre}`;
       const params = new URLSearchParams({ page: p });
       if (country) params.append('country', country);
       if (year) params.append('year', year);
-      url = base + '?' + params.toString();
-    } else if (src.code === 'cx') {
+      url = base + (base.includes('?') ? '&' : '?') + params.toString();
+    } else {
       if (genre) url = src.genreUrl(genre, p);
       else if (country) url = src.countryUrl(country, p);
       else if (year) url = src.yearUrl(year, p);
       else url = src.defaultUrl(p);
     }
-  } else if (m === 'genre') {
-    url = src.genreUrl(genre, p);
-  } else if (m === 'country') {
-    url = src.countryUrl(country, p);
-  } else if (m === 'year') {
-    url = src.yearUrl(year, p);
-  } else if (m === 'type' || m === 'cutee') {
-    url = (src.cuteeUrl || src.typeUrl)(f, p);
-  } else {
-    url = src.defaultUrl(p);
-  }
+  } else if (m === 'genre') url = src.genreUrl(genre, p);
+  else if (m === 'country') url = src.countryUrl(country, p);
+  else if (m === 'year') url = src.yearUrl(year, p);
+  else if (m === 'type' || m === 'cutee') url = (src.cuteeUrl || src.typeUrl)(f, p);
+  else url = src.defaultUrl(p);
 
   try {
     const r = await fetch(url);
@@ -158,11 +144,7 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
     const cdn = typeof src.getCdn === 'function' ? src.getCdn(d) : src.getCdn();
 
     const result = items.map(it => {
-      let thumb = '';
-      if (src.code === 'ax') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
-      if (src.code === 'bx') thumb = it.poster_url || it.thumb_url || it.poster || it.thumb || '';
-      if (src.code === 'cx') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
-
+      let thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
       if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//') && cdn) thumb = cdn + thumb.replace(/^\/+/, '');
       return {
         name: it.name || it.origin_name || it.title || 'Không rõ',
@@ -177,29 +159,24 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
       };
     }).filter(x => x.slug && x.thumb_url);
 
-    // Lưu vào cache
     API_CACHE[cacheKey] = result;
     return result;
   } catch (e) { console.error('FETCH ERR:', src.name, e); return []; }
 };
 
-// ==================== GỘP DỮ LIỆU ====================
 const interleaveFull = async (mode, filter, page, genre=null, country=null, year=null, isSearch=false, isKeyword=false) => {
   let sources = Object.values(API_SOURCES);
-  // Logic lọc kết hợp
   if (combinedFilterMode && (mode === 'combined' || mode === 'genre' || mode === 'country' || mode === 'year')) {
     sources = sources.filter(s => s.code !== 'cx');
   }
   
-  // Tải song song tất cả nguồn
   const results = await Promise.all(sources.map(src => fetchFromSource(src, page, mode, filter, genre, country, year, isSearch, isKeyword)));
   
   const all = [];
   const seen = new Set();
   let idx = new Array(sources.length).fill(0);
 
-  // Logic xen kẽ kết quả
-  while (all.length < ITEMS_PER_PAGE * 1) {
+  while (all.length < ITEMS_PER_PAGE) {
     let added = false;
     for (let i = 0; i < sources.length; i++) {
       if (idx[i] < results[i].length) {
@@ -217,15 +194,12 @@ const interleaveFull = async (mode, filter, page, genre=null, country=null, year
   return all.slice(0, ITEMS_PER_PAGE);
 };
 
-// ==================== TÌM KIẾM (TỐI ƯU) ====================
 const search = async (q = null, p = 1) => {
   const raw = (q || document.getElementById('nav-search-input')?.value || '').trim();
   if (!raw) return load('default');
   currentSearchQuery = raw;
   currentPage = p;
-  currentGenre = null;
-  currentCountry = null;
-  currentYear = null;
+  currentGenre = null; currentCountry = null; currentYear = null;
 
   const sid = 'search-sec';
   let sec = document.getElementById(sid);
@@ -236,7 +210,6 @@ const search = async (q = null, p = 1) => {
   const grid = document.getElementById(`${sid}-grid`);
   grid.innerHTML = '';
 
-  // Tải song song tìm kiếm theo slug và từ khóa
   const [slugMovies, keyMovies] = await Promise.all([
     interleaveFull(null, raw, p, null, null, null, true, false),
     interleaveFull(null, raw, p, null, null, null, false, true)
@@ -301,18 +274,24 @@ const createCard = (m) => {
 
   const imgReal = document.createElement('img');
   imgReal.className = 'movie-img-real';
-  imgReal.loading = 'lazy';
+  // TỐI ƯU A04: Không dùng new Image() tạo 2 lần, gán sự kiện trực tiếp
+  imgReal.onload = function() { 
+      this.style.opacity = '1'; 
+      this.parentElement.classList.add('loaded');
+  };
+  imgReal.onerror = function() { updateProg(this.dataset.prog); };
+  imgReal.dataset.prog = ''; // Sẽ gán sau
 
-  const imgPlaceholder = document.createElement('img');
+  // FIX NETLIFY: Không gọi file ngoài abc.jpg, dùng CSS background sẵn có
+  const imgPlaceholder = document.createElement('div');
   imgPlaceholder.className = 'movie-img-placeholder';
-  imgPlaceholder.src = PLACEHOLDER_LOW; // Dùng base64
 
   const imgContainer = document.createElement('div');
   imgContainer.className = 'movie-img-container';
   imgContainer.append(imgReal, imgPlaceholder, epTag, topRight, langTag, yearTag, titleTag);
   c.appendChild(imgContainer);
 
-  return { card: c, imgReal, imgPlaceholder, url: m.thumb_url };
+  return { card: c, imgReal, url: m.thumb_url };
 };
 
 const renderFinal = async (movies, container, id) => {
@@ -321,27 +300,23 @@ const renderFinal = async (movies, container, id) => {
   total = disp.length;
   loaded = 0;
 
+  // TỐI ƯU A04: Dùng DocumentFragment giảm tải reflow cho CPU
+  const fragment = document.createDocumentFragment();
   const cards = disp.map(m => createCard(m));
-  cards.forEach(o => container.appendChild(o.card));
+  
+  cards.forEach(o => {
+      o.imgReal.dataset.prog = id;
+      fragment.appendChild(o.card);
+  });
+  container.appendChild(fragment);
 
+  // Tải ảnh
   cards.forEach(o => {
     if (!o.url) {
-      o.imgPlaceholder.style.opacity = '1';
       updateProg(id);
       return;
     }
-    const img = new Image();
-    img.onload = () => {
-      o.imgReal.src = o.url;
-      o.imgReal.style.opacity = '1';
-      o.imgPlaceholder.style.opacity = '0';
-      updateProg(id);
-    };
-    img.onerror = () => {
-      o.imgPlaceholder.style.opacity = '1';
-      updateProg(id);
-    };
-    img.src = o.url;
+    o.imgReal.src = o.url;
   });
 
   if (total === 0) {
@@ -412,7 +387,7 @@ const renderPag = (p, sid, more) => {
 };
 
 const getTitle = (m, f, g, c, y) => {
-  if (m === 'default') return 'PHIM MỚI NHÀ BÁNH MÌ';
+  if (m === 'default') return 'PHIM MỚI CẬP NHẬT';
   if (m === 'combined') {
     const parts = [];
     if (g) parts.push(`THỂ LOẠI: ${Object.keys(GENRE_SLUG_MAP).find(k => GENRE_SLUG_MAP[k] === g)?.toUpperCase() || g.toUpperCase()}`);
@@ -439,17 +414,11 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   currentFilter = f;
   currentPage = p;
   
-  if (m === 'genre') {
-    currentGenre = f; currentCountry = c; currentYear = y;
-  } else if (m === 'country') {
-    currentGenre = null; currentCountry = f; currentYear = y;
-  } else if (m === 'year') {
-    currentGenre = null; currentCountry = null; currentYear = f;
-  } else if (m === 'combined') {
-    currentGenre = g; currentCountry = c; currentYear = y;
-  } else {
-    currentGenre = null; currentCountry = null; currentYear = null;
-  }
+  if (m === 'genre') { currentGenre = f; currentCountry = c; currentYear = y; }
+  else if (m === 'country') { currentGenre = null; currentCountry = f; currentYear = y; }
+  else if (m === 'year') { currentGenre = null; currentCountry = null; currentYear = f; }
+  else if (m === 'combined') { currentGenre = g; currentCountry = c; currentYear = y; }
+  else { currentGenre = null; currentCountry = null; currentYear = null; }
 
   if (m === 'default') {
     document.querySelectorAll('#main-content > .section').forEach(x => x.remove());
@@ -474,15 +443,14 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   saveState();
 };
 
-// ==================== LOAD CUSTOM MENU (TỐI ƯU TỐC ĐỘ) ====================
 const loadTxt = async () => {
   try {
-    const r = await fetch('trangchu.txt?t=' + Date.now());
+    // FIX NETLIFY: Dùng đường dẫn tương đối an toàn
+    const r = await fetch('./trangchu.txt?t=' + Date.now());
     if (!r.ok) throw 1;
     const txt = await r.text();
     if (!txt.trim()) throw 1;
     const groups = parseTxt(txt);
-    // Load song song các group
     const promises = Object.entries(groups).map(([name, items]) => {
       if (items.length) return loadGroup(name, items);
       return Promise.resolve();
@@ -528,7 +496,6 @@ const loadGroup = async (name, items) => {
   const grid = document.getElementById(`${sid}-grid`);
   grid.innerHTML = '';
 
-  // === TỐI ƯU QUAN TRỌNG: Dùng Promise.all để tải song song các phim trong group ===
   const fetchPromises = items.map(i => {
     const src = Object.values(API_SOURCES).find(s => s.name.toLowerCase() === i.source);
     if (!src) return Promise.resolve([]);
@@ -592,22 +559,17 @@ document.addEventListener('DOMContentLoaded', () => {
         'MENU',
         ['Trang chủ', 'Thể Loại', 'Quốc Gia', 'Năm', 'Khác', 'Phim Bộ', 'Phim Lẻ', 'Cinemax'],
         v => {
-          if (v === 'Trang chủ') {
-            clearState();
-            location.reload();
-            return;
-          }
-
+          if (v === 'Trang chủ') { clearState(); location.reload(); return; }
           if (v === 'Thể Loại') {
             openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), genreName => {
               const genreSlug = GENRE_SLUG_MAP[genreName];
-              openModal('LỌC KẾT HỢP', ['Bật (ax+bx)', 'Tắt (ax+bx+cx)', 'Chỉ lọc thể loại'], choice => {
+              openModal('LỌC KẾT HỢP', ['Bật (Tốc độ cao)', 'Tắt (Nhiều kết quả)', 'Chỉ lọc thể loại'], choice => {
                 if (choice === 'Chỉ lọc thể loại') {
                   combinedFilterMode = false;
                   load('genre', genreSlug, 1);
                   closeModal();
                 } else {
-                  combinedFilterMode = choice === 'Bật (ax+bx)';
+                  combinedFilterMode = choice === 'Bật (Tốc độ cao)';
                   openModal('QUỐC GIA', ['Tất cả', ...Object.keys(COUNTRY_SLUG_MAP)], countryName => {
                     const countrySlug = countryName === 'Tất cả' ? null : COUNTRY_SLUG_MAP[countryName];
                     openModal('NĂM', ['Tất cả', ...Array.from({ length: 25 }, (_, i) => 2026 - i)], yearStr => {
@@ -621,42 +583,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             return;
           }
-
-          if (v === 'Quốc Gia') {
-            openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1));
-            return;
-          }
-
-          if (v === 'Năm') {
-            openModal('NĂM', Array.from({ length: 25 }, (_, i) => 2026 - i), x => load('year', x, 1));
-            return;
-          }
-
-          if (v === 'Khác') {
-            openModal('KHÁC', Object.keys(CUTEE_MENU), x => {
-              const c = CUTEE_MENU[x];
-              load(c.mode, c.slug || c.filter, 1);
-            });
-            return;
-          }
-
-          if (v === 'Phim Bộ') {
-            load('type', 'phim-bo', 1);
-            closeModal();
-            return;
-          }
-
-          if (v === 'Phim Lẻ') {
-            load('type', 'phim-le', 1);
-            closeModal();
-            return;
-          }
-
-          if (v === 'Cinemax') {
-            load('cutee', 'phim-chieu-rap', 1);
-            closeModal();
-            return;
-          }
+          if (v === 'Quốc Gia') { openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1)); return; }
+          if (v === 'Năm') { openModal('NĂM', Array.from({ length: 25 }, (_, i) => 2026 - i), x => load('year', x, 1)); return; }
+          if (v === 'Khác') { openModal('KHÁC', Object.keys(CUTEE_MENU), x => { const c = CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); }); return; }
+          if (v === 'Phim Bộ') { load('type', 'phim-bo', 1); closeModal(); return; }
+          if (v === 'Phim Lẻ') { load('type', 'phim-le', 1); closeModal(); return; }
+          if (v === 'Cinemax') { load('cutee', 'phim-chieu-rap', 1); closeModal(); return; }
         }
       );
   }
@@ -665,17 +597,13 @@ document.addEventListener('DOMContentLoaded', () => {
     el.onclick = e => {
       e.preventDefault();
       const t = el.dataset.target;
-
       if (t === 'genre') {
         openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), genreName => {
           const genreSlug = GENRE_SLUG_MAP[genreName];
-          openModal('LỌC KẾT HỢP', ['Bật (ax+bx)', 'Tắt (ax+bx+cx)', 'Chỉ lọc thể loại'], choice => {
-            if (choice === 'Chỉ lọc thể loại') {
-              combinedFilterMode = false;
-              load('genre', genreSlug, 1);
-              closeModal();
-            } else {
-              combinedFilterMode = choice === 'Bật (ax+bx)';
+          openModal('LỌC KẾT HỢP', ['Bật (Tốc độ cao)', 'Tắt (Nhiều kết quả)', 'Chỉ lọc thể loại'], choice => {
+            if (choice === 'Chỉ lọc thể loại') { combinedFilterMode = false; load('genre', genreSlug, 1); closeModal(); }
+            else {
+              combinedFilterMode = choice === 'Bật (Tốc độ cao)';
               openModal('QUỐC GIA', ['Tất cả', ...Object.keys(COUNTRY_SLUG_MAP)], countryName => {
                 const countrySlug = countryName === 'Tất cả' ? null : COUNTRY_SLUG_MAP[countryName];
                 openModal('NĂM', ['Tất cả', ...Array.from({ length: 25 }, (_, i) => 2026 - i)], yearStr => {
@@ -688,47 +616,17 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         });
       }
-
-      if (t === 'country') {
-        openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1));
-      }
-
-      if (t === 'year') {
-        openModal('NĂM', Array.from({ length: 25 }, (_, i) => 2026 - i), x => load('year', x, 1));
-      }
-
-      if (t === 'cutee') {
-        openModal('KHÁC', Object.keys(CUTEE_MENU), x => {
-          const c = CUTEE_MENU[x];
-          load(c.mode, c.slug || c.filter, 1);
-        });
-      }
+      if (t === 'country') openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1));
+      if (t === 'year') openModal('NĂM', Array.from({ length: 25 }, (_, i) => 2026 - i), x => load('year', x, 1));
+      if (t === 'cutee') openModal('KHÁC', Object.keys(CUTEE_MENU), x => { const c = CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); });
     };
   });
 
-  document.getElementById('home-link')?.addEventListener('click', e => {
-    e.preventDefault();
-    clearState();
-    location.reload();
-  });
-
-  document.getElementById('phim-bo')?.addEventListener('click', e => {
-    e.preventDefault();
-    load('type', 'phim-bo', 1);
-  });
-
-  document.getElementById('phim-le')?.addEventListener('click', e => {
-    e.preventDefault();
-    load('type', 'phim-le', 1);
-  });
-
-  document.getElementById('phim-chieu-rap')?.addEventListener('click', e => {
-    e.preventDefault();
-    load('cutee', 'phim-chieu-rap', 1);
-  });
-
+  document.getElementById('home-link')?.addEventListener('click', e => { e.preventDefault(); clearState(); location.reload(); });
+  document.getElementById('phim-bo')?.addEventListener('click', e => { e.preventDefault(); load('type', 'phim-bo', 1); });
+  document.getElementById('phim-le')?.addEventListener('click', e => { e.preventDefault(); load('type', 'phim-le', 1); });
+  document.getElementById('phim-chieu-rap')?.addEventListener('click', e => { e.preventDefault(); load('cutee', 'phim-chieu-rap', 1); });
+  
   document.getElementById('nav-search-btn')?.addEventListener('click', () => search());
-  document.getElementById('nav-search-input')?.addEventListener('keypress', e => {
-    if (e.key === 'Enter') search();
-  });
+  document.getElementById('nav-search-input')?.addEventListener('keypress', e => { if (e.key === 'Enter') search(); });
 });
