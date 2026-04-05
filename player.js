@@ -43,12 +43,18 @@ function createProxyUI() {
   const epGrid = document.getElementById('ep-grid');
   if (!epGrid) return;
 
+  // Kiểm tra xem đã tạo chưa để tránh trùng lặp nếu gọi lại
+  if (document.getElementById('proxy-box')) return;
+
   const box = document.createElement('div');
   box.id = 'proxy-box';
   box.innerHTML = `
-    <input type="text" id="proxy-input" placeholder="Nhập proxy HTTPS (vd: https://domain.com)" />
-    <button id="proxy-on" class="btn proxy-btn active">Bật Proxy</button>
-    <button id="proxy-off" class="btn proxy-btn" disabled>Tắt Proxy</button>
+    <div style="display:flex; gap:5px; width:100%; margin-bottom:10px;">
+      <input type="text" id="proxy-input" placeholder="Proxy IP (vd: 111.227.254.12:22222)" style="flex:1; padding:8px; border:1px solid #444; background:#222; color:#fff; border-radius:4px;" />
+      <button id="proxy-on" class="btn proxy-btn active">Bật</button>
+      <button id="proxy-off" class="btn proxy-btn" disabled>Tắt</button>
+    </div>
+    <div id="proxy-status" style="font-size:12px; color:#aaa; margin-bottom:10px; min-height:18px;"></div>
   `;
   
   epGrid.parentNode.insertBefore(box, epGrid);
@@ -56,6 +62,7 @@ function createProxyUI() {
   const input = document.getElementById('proxy-input');
   const btnOn = document.getElementById('proxy-on');
   const btnOff = document.getElementById('proxy-off');
+  const statusDiv = document.getElementById('proxy-status');
 
   btnOn.onclick = () => {
     let url = input.value.trim();
@@ -63,17 +70,21 @@ function createProxyUI() {
       showToast('Vui lòng nhập địa chỉ proxy');
       return;
     }
+    
+    // SỬA Ở ĐÂY: Mặc định thêm http:// nếu thiếu (thích hợp cho IP:Port)
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'https://' + url; // Mặc định thêm https://
+      url = 'http://' + url; 
     }
 
-    // CHỐNG LỖI MIXED CONTENT: Cảnh báo nếu dùng HTTP trên web HTTPS
+    // Cảnh báo Mixed Content nhưng KHÔNG CHẶN (Để chạy được trên HTTP/Local)
     if (location.protocol === 'https:' && url.startsWith('http://')) {
-      showToast('⚠️ Lỗi: Web đang dùng HTTPS, không thể dùng Proxy HTTP!');
-      return;
+      statusDiv.innerHTML = '<span style="color:#ffaa00">⚠️ Cảnh báo: Web HTTPS đang dùng Proxy HTTP. Có thể bị chặn bởi trình duyệt (Mixed Content). Nếu lỗi, hãy chạy file này dưới local hoặc dùng HTTP.</span>';
+      // Không return nữa, cho phép thử
+    } else {
+      statusDiv.textContent = '';
     }
 
-    activeProxy = url;
+    activeProxy = url.replace(/\/+$/, ''); // Bỏ dấu / ở cuối
     input.disabled = true;
     btnOn.disabled = true;
     btnOff.disabled = false;
@@ -93,7 +104,8 @@ function createProxyUI() {
     btnOff.disabled = true;
     btnOff.classList.remove('active');
     btnOn.classList.add('active');
-    showToast('Đã tắt Proxy, về mạng thường');
+    statusDiv.textContent = '';
+    showToast('Đã tắt Proxy');
     
     if (episodes.length > 0 && currentPlayMode === 'so1') {
       play(curEp);
@@ -278,13 +290,18 @@ function resetPlayer() {
   clearTimeout(popupTimeout);
 }
 
-// --- HÀM PLAY SO1 ĐÃ SỬA LỖI GHÉP KÉP URL ---
+// --- HÀM PLAY SO1 ĐÃ TỐI ƯU CHO PROXY ---
 function playSo1(m3u8) {
   resetPlayer();
   videoEl.style.display = 'block';
 
   const proxyPrefix = activeProxy ? activeProxy.replace(/\/+$/, '') : '';
-  const targetM3u8 = proxyPrefix ? `${proxyPrefix}/${m3u8}` : m3u8;
+  
+  // Xử lý URL: Nếu có proxy thì ghép tiền tố. Đảm bảo không bị // dư thừa
+  let targetM3u8 = m3u8;
+  if (proxyPrefix) {
+    targetM3u8 = `${proxyPrefix}/${m3u8}`;
+  }
 
   if (Hls.isSupported()) {
     let retryCount = 0;
@@ -292,33 +309,28 @@ function playSo1(m3u8) {
     hls = new Hls({
       enableWorker: true,
       autoStartLoad: true,
-      startLevel: 0,
-      maxBufferLength: 20,
-      maxMaxBufferLength: 40,
-      maxBufferSize: 60 * 1000 * 1000,
-      maxBufferHole: 1.5,
-      capLevelToPlayerSize: true,
-      abrEwmaDefaultEstimate: 1000000,
-      abrBandWidthFactor: 0.85,
-      abrBandWidthUpFactor: 0.6,
-      manifestLoadingTimeOut: 15000,
-      manifestLoadingMaxRetry: 4,
-      levelLoadingTimeOut: 15000,
-      levelLoadingMaxRetry: 4,
+      maxBufferLength: 30, // Tăng buffer để mượt hơn với proxy lag
+      maxMaxBufferLength: 60,
+      manifestLoadingTimeOut: 20000, // Tăng timeout cho proxy
+      levelLoadingTimeOut: 20000,
       fragLoadingTimeOut: 30000,
-      fragLoadingMaxRetry: 6,
-      maxAudioFramesDrift: 10,
-      forceKeyFrameOnDiscontinuity: true,
-      enableSoftwareAES: true,
       
-      // XỬ LÝ CHUẨN XÁC: CHỈ THÊM PROXY NẾU URL CHƯA CÓ
       xhrSetup: (xhr, url) => {
-        if (proxyPrefix && !url.startsWith(proxyPrefix)) {
+        // Logic quan trọng:
+        // 1. Nếu đã bật Proxy và URL đang tải chưa có prefix proxy -> Thêm vào.
+        // 2. Nếu URL đang tải là URL gốc (không phải blob) -> Ghép proxy.
+        
+        if (proxyPrefix && !url.startsWith(proxyPrefix) && !url.startsWith('blob:')) {
+          // Tránh việc ghép đúp nếu HLS tự tạo URL từ base
           const finalUrl = `${proxyPrefix}/${url}`;
           xhr.open('GET', finalUrl, true);
+        } else {
+          // Mặc định (trường hợp blob hoặc đã có proxy)
+          if (!xhr.readyState) xhr.open('GET', url, true);
         }
+        
         xhr.withCredentials = false;
-        xhr.timeout = 30000;
+        xhr.timeout = 35000; // Tăng timeout request
       }
     });
     
@@ -334,34 +346,37 @@ function playSo1(m3u8) {
       if (data.fatal) {
         switch(data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
-            if (retryCount < 2) {
+            console.error('HLS Network Error:', data);
+            if (retryCount < 3) { // Tăng số lần retry
               retryCount++;
-              showToast(`Mất kết nối - đang thử lại (${retryCount}/2)...`);
+              showToast(`Mất kết nối - đang thử lại (${retryCount}/3)...`);
               hls.startLoad();
             } else {
-              showToast('Lỗi mạng. Proxy không phản hồi hoặc sai định dạng');
-              hls.destroy();
+              showToast('Lỗi mạng. Kiểm tra lại Proxy hoặc đổi Server.');
+              // hls.destroy(); // Không destroy ngay để có thể retry thủ công
             }
             break;
           case Hls.ErrorTypes.MEDIA_ERROR:
-            showToast('Lỗi định dạng - đang khôi phục...');
+            console.error('HLS Media Error:', data);
+            showToast('Lỗi định dạng video - đang khôi phục...');
             hls.recoverMediaError();
             break;
           default:
-            showToast('Lỗi phát - thử SO2 hoặc đổi server');
+            console.error('HLS Fatal Error:', data);
             hls.destroy();
             break;
         }
       }
     });
   } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+    // Safari
     videoEl.src = targetM3u8;
     videoEl.addEventListener('loadedmetadata', () => {
       loading.style.display = 'none';
       videoEl.play().catch(() => {});
     });
   } else {
-    showToast('Trình duyệt không hỗ trợ SO1');
+    showToast('Trình duyệt không hỗ trợ HLS');
     loading.style.display = 'none';
   }
 
