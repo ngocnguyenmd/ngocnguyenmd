@@ -52,7 +52,6 @@ function createProxyUI() {
     <button id="proxy-off" class="btn proxy-btn" disabled>Tắt Proxy</button>
   `;
   
-  // Chèn ngay trên ep-grid
   epGrid.parentNode.insertBefore(box, epGrid);
 
   const input = document.getElementById('proxy-input');
@@ -65,7 +64,6 @@ function createProxyUI() {
       showToast('Vui lòng nhập địa chỉ proxy');
       return;
     }
-    // Tự động thêm http:// nếu người dùng quên nhập
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       url = 'http://' + url;
     }
@@ -77,7 +75,6 @@ function createProxyUI() {
     btnOff.classList.add('active');
     showToast('Đã bật Proxy: ' + activeProxy);
     
-    // Tự động tải lại tập đang xem để áp dụng proxy
     if (episodes.length > 0 && currentPlayMode === 'so1') {
       play(curEp);
     }
@@ -92,7 +89,6 @@ function createProxyUI() {
     btnOn.classList.add('active');
     showToast('Đã tắt Proxy, về mạng thường');
     
-    // Tự động tải lại tập đang xem để bỏ proxy
     if (episodes.length > 0 && currentPlayMode === 'so1') {
       play(curEp);
     }
@@ -276,15 +272,18 @@ function resetPlayer() {
   clearTimeout(popupTimeout);
 }
 
-// --- HÀM PLAY SO1 ĐÃ SỬA ĐỂ HỖ TRỢ PROXY ---
+// --- HÀM PLAY SO1 ĐÃ SỬA LỖI DẤU / VÀ CHỐNG SPAM LỖI ---
 function playSo1(m3u8) {
   resetPlayer();
   videoEl.style.display = 'block';
 
-  // Gắn prefix proxy vào link m3u8 chính
-  const targetM3u8 = activeProxy ? activeProxy + m3u8 : m3u8;
+  // Xử lý dư dấu / ở cuối và chèn chính xác 1 dấu / giữa proxy và link
+  const proxyPrefix = activeProxy ? activeProxy.replace(/\/+$/, '') : '';
+  const targetM3u8 = proxyPrefix ? `${proxyPrefix}/${m3u8}` : m3u8;
 
   if (Hls.isSupported()) {
+    let retryCount = 0; // Biến đếm để chặn spam thông báo lỗi mạng
+    
     hls = new Hls({
       enableWorker: true,
       autoStartLoad: true,
@@ -306,13 +305,14 @@ function playSo1(m3u8) {
       maxAudioFramesDrift: 10,
       forceKeyFrameOnDiscontinuity: true,
       enableSoftwareAES: true,
-      // Xử lý proxy cho các file .ts bên trong m3u8
+      
       xhrSetup: (xhr, url) => {
-        if (activeProxy) {
-          xhr.open('GET', activeProxy + url, true);
+        if (proxyPrefix) {
+          const finalUrl = `${proxyPrefix}/${url}`;
+          xhr.open('GET', finalUrl, true);
         }
         xhr.withCredentials = false;
-        xhr.timeout = 30000; // Tăng timeout lên 30s khi dùng proxy
+        xhr.timeout = 30000;
       }
     });
     
@@ -328,11 +328,17 @@ function playSo1(m3u8) {
       if (data.fatal) {
         switch(data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
-            showToast('Lỗi mạng - đang thử kết nối lại...');
-            hls.startLoad();
+            if (retryCount < 3) {
+              retryCount++;
+              showToast(`Lỗi mạng - đang thử lại (${retryCount}/3)...`);
+              hls.startLoad();
+            } else {
+              showToast('Lỗi mạng liên tục. Hãy thử Tắt Proxy hoặc đổi Server');
+              hls.destroy();
+            }
             break;
           case Hls.ErrorTypes.MEDIA_ERROR:
-            showToast('Lỗi media - đang khôi phục...');
+            showToast('Lỗi định dạng - đang khôi phục...');
             hls.recoverMediaError();
             break;
           default:
@@ -466,7 +472,6 @@ async function init() {
     return;
   }
   
-  // Khởi tạo giao diện Proxy trước
   createProxyUI();
   
   curEp = epFromUrl();
