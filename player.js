@@ -227,8 +227,8 @@ function playSo1(m3u8) {
        startLevel: 0,
       
       // Giảm buffer để tránh lag trên mạng yếu
-      maxBufferLength: 10,
-      maxMaxBufferLength: 20,
+      maxBufferLength: 20,
+      maxMaxBufferLength: 40,
       maxBufferSize: 60 * 1000 * 1000,
       maxBufferHole: 1.5,
       
