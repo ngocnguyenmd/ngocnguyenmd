@@ -27,7 +27,8 @@ function getPoster(movie, cdn = "") {
   if (url && cdn && !url.startsWith("http"))
     url = cdn + "/" + url.replace(/^\//, "");
 
-  return url || "https://via.placeholder.com/220x330/111/fff?text=No+Image";
+  // ✅ Bỏ placeholder.com (chậm/bị chặn) → dùng data URI inline
+  return url || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='330'%3E%3Crect fill='%23111'/%3E%3Ctext x='50%25' y='50%25' fill='%23555' font-size='14' text-anchor='middle' dy='.3em'%3ENo Image%3C/text%3E%3C/svg%3E";
 }
 
 // ================= LOAD DETAIL =================
@@ -59,45 +60,29 @@ async function loadDetail() {
     const poster = getPoster(movie, cdn);
 
     // ===== SET DATA =====
-    document.getElementById("poster").src = poster;
-    bg.style.backgroundImage = `url(${poster})`;
+    const posterEl = document.getElementById("poster");
+    posterEl.loading = "lazy"; // ✅ lazy load ảnh
+    posterEl.decoding = "async"; // ✅ không block render
+    posterEl.src = poster;
+
+    // ✅ Dùng CSS background thay vì JS style để tránh reflow
+    bg.style.cssText += `background-image:url(${poster})`;
 
     document.getElementById("title").textContent = movie.name || "Không rõ";
-    document.getElementById("original-title").textContent =
-      movie.origin_name || "";
+    document.getElementById("original-title").textContent = movie.origin_name || "";
 
-    const descEl = document.getElementById("desc");
-    const toggleBtn = document.getElementById("toggle-desc");
-
-    const fullDesc = (movie.content || movie.description || "Không có mô tả")
-      .replace(/<[^>]+>/g, "")
-      .trim();
-
-    descEl.textContent = fullDesc;
-
-    if (fullDesc.length > 200) {
-      toggleBtn.style.display = "inline-block";
-      toggleBtn.onclick = () => {
-        descEl.classList.toggle("expanded");
-        toggleBtn.textContent = descEl.classList.contains("expanded")
-          ? "Thu gọn"
-          : "Xem thêm";
-      };
-    } else toggleBtn.style.display = "none";
+    // ✅ Bỏ hoàn toàn phần desc/toggle-desc
 
     // ===== WATCH BUTTON =====
-    const encodedSource = Object.keys(sourceMap).find(
-      (k) => sourceMap[k] === source
-    );
-    document.getElementById(
-      "watch-btn"
-    ).href = `watch.html?slug=${slug}&source=${encodedSource}&e=1`;
+    const encodedSource = Object.keys(sourceMap).find((k) => sourceMap[k] === source);
+    document.getElementById("watch-btn").href =
+      `watch.html?slug=${slug}&source=${encodedSource}&e=1`;
 
     // ===== SEO =====
     document.title = `${movie.name} - Phim Nhà Bánh Mì`;
     document.getElementById("og-title").content = movie.name;
-    document.getElementById("og-desc").content =
-      fullDesc.substring(0, 160) + "...";
+    document.getElementById("og-desc").content = (movie.content || movie.description || "")
+      .replace(/<[^>]+>/g, "").trim().substring(0, 160);
     document.getElementById("og-image").content = poster;
     document.getElementById("og-url").content = location.href;
 
@@ -111,16 +96,7 @@ async function loadDetail() {
   }
 }
 
-// ================= LIGHT HOVER (KHÔNG NẶNG) =================
-const tiltCard = document.getElementById("tiltCard");
-if (tiltCard && !("ontouchstart" in window)) {
-  tiltCard.addEventListener("mouseenter", () => {
-    tiltCard.style.transform = "scale(1.03)";
-  });
-  tiltCard.addEventListener("mouseleave", () => {
-    tiltCard.style.transform = "scale(1)";
-  });
-}
+// ✅ Bỏ hoàn toàn tiltCard mouseenter/mouseleave
 
 // ================= INIT =================
 document.addEventListener("DOMContentLoaded", loadDetail);
