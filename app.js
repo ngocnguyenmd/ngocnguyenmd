@@ -1,48 +1,87 @@
-const GENRE_SLUG_MAP = { 'Hành Động': 'hanh-dong','Phiêu Lưu': 'phieu-luu','Hoạt Hình': 'hoat-hinh','Hài': 'phim-hai','Hài Hước': 'hai-huoc','Hình Sự': 'hinh-su','Tài Liệu': 'tai-lieu','Chính Kịch': 'chinh-kich','Gia Đình': 'gia-dinh','Giả Tưởng': 'gia-tuong','Lịch Sử': 'lich-su','Kinh Dị': 'kinh-di','Nhạc': 'am-nhac','Âm Nhạc': 'am-nhac','Bí Ẩn': 'bi-an','Lãng Mạn': 'lang-man','Tình Cảm': 'tinh-cam','Khoa Học Viễn Tưởng': 'khoa-hoc-vien-tuong','Gây Cấn': 'gay-can','Chiến Tranh': 'chien-tranh','Tâm Lý': 'tam-ly','Cổ Trang': 'co-trang','Miền Tây': 'mien-tay','Phim 18': 'phim-18','Thể Thao': 'the-thao','Võ Thuật': 'vo-thuat','Viễn Tưởng': 'vien-tuong','Khoa Học': 'khoa-hoc','Thần Thoại': 'than-thoai','Học Đường': 'hoc-duong','Kinh Điển': 'kinh-dien' };
-const COUNTRY_SLUG_MAP = { 'Âu Mỹ': 'au-my','Hàn Quốc': 'han-quoc','Trung Quốc': 'trung-quoc','Nhật Bản': 'nhat-ban','Thái Lan': 'thai-lan','Hồng Kông': 'hong-kong','Ấn Độ': 'an-do','Anh': 'anh','Pháp': 'phap','Canada': 'canada','Đức': 'duc','Tây Ban Nha': 'tay-ban-nha','Úc': 'uc','Ý': 'y','Hà Lan': 'ha-lan','Indonesia': 'indonesia','Nga': 'nga','Mexico': 'mexico','Ba Lan': 'ba-lan','Malaysia': 'malaysia','Bồ Đào Nha': 'bo-dao-nha','Thụy Điển': 'thuy-dien','Philippines': 'philippines','Đan Mạch': 'dan-mach','Thụy Sĩ': 'thuy-si','Ukraina': 'ukraina','UAE': 'uae','Ả Rập Xê Út': 'a-rap-xe-ut','Thổ Nhĩ Kỳ': 'tho-nhi-ky','Brazil': 'brazil','Na Uy': 'na-uy','Nam Phi': 'nam-phi','Việt Nam': 'viet-nam','Đài Loan': 'dai-loan','Châu Phi': 'chau-phi','Bỉ': 'bi','Ireland': 'ireland','Colombia': 'colombia','Phần Lan': 'phan-lan','Chile': 'chile','Hy Lạp': 'hy-lap','Nigeria': 'nigeria','Argentina': 'argentina','Singapore': 'singapore','Quốc Gia Khác': 'quoc-gia-khac' };
-const CUTEE_MENU = { 'Phim mới': { mode: 'default' },'Phim bộ': { mode: 'type', filter: 'phim-bo' },'Phim lẻ': { mode: 'type', filter: 'phim-le' },'Shows': { mode: 'cutee', slug: 'tv-shows' },'Hoạt hình': { mode: 'cutee', slug: 'hoat-hinh' },'Phim vietsub': { mode: 'cutee', slug: 'vietsub' },'Phim thuyết minh': { mode: 'cutee', slug: 'thuyet-minh' },'Phim lồng tiếng': { mode: 'cutee', slug: 'long-tieng' },'Phim bộ đang chiếu': { mode: 'cutee', slug: 'phim-dang-chieu' },'Phim bộ đã hoàn thành': { mode: 'cutee', slug: 'hoan-tat' },'Phim sắp chiếu': { mode: 'cutee', slug: 'phim-sap-chieu' },'Subteam': { mode: 'cutee', slug: 'subteam' },'Phim chiếu rạp': { mode: 'cutee', slug: 'phim-chieu-rap' } };
+// ==================== BẢNG ĐỒ SLUG ====================
+const GENRE_SLUG_MAP = {
+  'Hành Động': 'hanh-dong','Phiêu Lưu': 'phieu-luu','Hoạt Hình': 'hoat-hinh','Hài': 'phim-hai',
+  'Hài Hước': 'hai-huoc','Hình Sự': 'hinh-su','Tài Liệu': 'tai-lieu','Chính Kịch': 'chinh-kich',
+  'Gia Đình': 'gia-dinh','Giả Tưởng': 'gia-tuong','Lịch Sử': 'lich-su','Kinh Dị': 'kinh-di',
+  'Nhạc': 'am-nhac','Âm Nhạc': 'am-nhac','Bí Ẩn': 'bi-an','Lãng Mạn': 'lang-man',
+  'Tình Cảm': 'tinh-cam','Khoa Học Viễn Tưởng': 'khoa-hoc-vien-tuong','Gây Cấn': 'gay-can',
+  'Chiến Tranh': 'chien-tranh','Tâm Lý': 'tam-ly','Cổ Trang': 'co-trang','Miền Tây': 'mien-tay',
+  'Phim 18': 'phim-18','Thể Thao': 'the-thao','Võ Thuật': 'vo-thuat','Viễn Tưởng': 'vien-tuong',
+  'Khoa Học': 'khoa-hoc','Thần Thoại': 'than-thoai','Học Đường': 'hoc-duong','Kinh Điển': 'kinh-dien'
+};
 
-const API_SOURCES = { 
-  Ophim: { 
+const COUNTRY_SLUG_MAP = {
+  'Âu Mỹ': 'au-my','Hàn Quốc': 'han-quoc','Trung Quốc': 'trung-quoc','Nhật Bản': 'nhat-ban',
+  'Thái Lan': 'thai-lan','Hồng Kông': 'hong-kong','Ấn Độ': 'an-do','Anh': 'anh','Pháp': 'phap',
+  'Canada': 'canada','Đức': 'duc','Tây Ban Nha': 'tay-ban-nha','Úc': 'uc','Ý': 'y','Hà Lan': 'ha-lan',
+  'Indonesia': 'indonesia','Nga': 'nga','Mexico': 'mexico','Ba Lan': 'ba-lan','Malaysia': 'malaysia',
+  'Bồ Đào Nha': 'bo-dao-nha','Thụy Điển': 'thuy-dien','Philippines': 'philippines','Đan Mạch': 'dan-mach',
+  'Thụy Sĩ': 'thuy-si','Ukraina': 'ukraina','UAE': 'uae','Ả Rập Xê Út': 'a-rap-xe-ut',
+  'Thổ Nhĩ Kỳ': 'tho-nhi-ky','Brazil': 'brazil','Na Uy': 'na-uy','Nam Phi': 'nam-phi',
+  'Việt Nam': 'viet-nam','Đài Loan': 'dai-loan','Châu Phi': 'chau-phi','Bỉ': 'bi',
+  'Ireland': 'ireland','Colombia': 'colombia','Phần Lan': 'phan-lan','Chile': 'chile',
+  'Hy Lạp': 'hy-lap','Nigeria': 'nigeria','Argentina': 'argentina','Singapore': 'singapore',
+  'Quốc Gia Khác': 'quoc-gia-khac'
+};
+
+const CUTEE_MENU = {
+  'Phim mới': { mode: 'default' },
+  'Phim bộ': { mode: 'type', filter: 'phim-bo' },
+  'Phim lẻ': { mode: 'type', filter: 'phim-le' },
+  'Shows': { mode: 'cutee', slug: 'tv-shows' },
+  'Hoạt hình': { mode: 'cutee', slug: 'hoat-hinh' },
+  'Phim vietsub': { mode: 'cutee', slug: 'vietsub' },
+  'Phim thuyết minh': { mode: 'cutee', slug: 'thuyet-minh' },
+  'Phim lồng tiếng': { mode: 'cutee', slug: 'long-tieng' },
+  'Phim bộ đang chiếu': { mode: 'cutee', slug: 'phim-dang-chieu' },
+  'Phim bộ đã hoàn thành': { mode: 'cutee', slug: 'hoan-tat' },
+  'Phim sắp chiếu': { mode: 'cutee', slug: 'phim-sap-chieu' },
+  'Subteam': { mode: 'cutee', slug: 'subteam' },
+  'Phim chiếu rạp': { mode: 'cutee', slug: 'phim-chieu-rap' }
+};
+
+// ==================== API SOURCES ====================
+const API_SOURCES = {
+  Ophim: {
     name: 'Ophim', code: 'ax',
     defaultUrl: p => `https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat?page=${p}`,
-    genreUrl: (s,p) => `https://ophim1.com/v1/api/the-loai/${s}?page=${p}`,
-    countryUrl: (s,p) => `https://ophim1.com/v1/api/quoc-gia/${s}?page=${p}`,
-    yearUrl: (y,p) => `https://ophim1.com/v1/api/nam-phat-hanh/${y}?page=${p}`,
-    typeUrl: (t,p) => `https://ophim1.com/v1/api/danh-sach/${t}?page=${p}`,
-    cuteeUrl: (s,p) => `https://ophim1.com/v1/api/danh-sach/${s}?page=${p}`,
+    genreUrl: (s, p) => `https://ophim1.com/v1/api/the-loai/${s}?page=${p}`,
+    countryUrl: (s, p) => `https://ophim1.com/v1/api/quoc-gia/${s}?page=${p}`,
+    yearUrl: (y, p) => `https://ophim1.com/v1/api/nam-phat-hanh/${y}?page=${p}`,
+    typeUrl: (t, p) => `https://ophim1.com/v1/api/danh-sach/${t}?page=${p}`,
+    cuteeUrl: (s, p) => `https://ophim1.com/v1/api/danh-sach/${s}?page=${p}`,
     searchUrl: s => `https://ophim1.com/v1/api/phim/${s}`,
-    keywordSearchUrl: (k,p=1) => `https://ophim1.com/v1/api/tim-kiem?keyword=${encodeURIComponent(k)}&page=${p}`,
+    keywordSearchUrl: (k, p = 1) => `https://ophim1.com/v1/api/tim-kiem?keyword=${encodeURIComponent(k)}&page=${p}`,
     parser: d => d?.data?.items || [],
     searchParser: d => d?.data?.item ? [d.data.item] : [],
     keywordParser: d => d?.data?.items || [],
     getCdn: () => "https://img.ophim.live/uploads/movies/"
-  }, 
-  Phimapi: { 
+  },
+  Phimapi: {
     name: 'Phimapi', code: 'bx',
     defaultUrl: p => `https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3?page=${p}`,
-    genreUrl: (s,p) => `https://phimapi.com/v1/api/the-loai/${s}?page=${p}`,
-    countryUrl: (s,p) => `https://phimapi.com/v1/api/quoc-gia/${s}?page=${p}`,
-    yearUrl: (y,p) => `https://phimapi.com/v1/api/nam/${y}?page=${p}`,
-    typeUrl: (t,p) => `https://phimapi.com/v1/api/danh-sach/${t}?page=${p}`,
-    cuteeUrl: (s,p) => `https://phimapi.com/v1/api/danh-sach/${s}?page=${p}`,
+    genreUrl: (s, p) => `https://phimapi.com/v1/api/the-loai/${s}?page=${p}`,
+    countryUrl: (s, p) => `https://phimapi.com/v1/api/quoc-gia/${s}?page=${p}`,
+    yearUrl: (y, p) => `https://phimapi.com/v1/api/nam/${y}?page=${p}`,
+    typeUrl: (t, p) => `https://phimapi.com/v1/api/danh-sach/${t}?page=${p}`,
+    cuteeUrl: (s, p) => `https://phimapi.com/v1/api/danh-sach/${s}?page=${p}`,
     searchUrl: s => `https://phimapi.com/phim/${s}`,
-    keywordSearchUrl: (k,p=1) => `https://phimapi.com/v1/api/tim-kiem?keyword=${encodeURIComponent(k)}&page=${p}`,
+    keywordSearchUrl: (k, p = 1) => `https://phimapi.com/v1/api/tim-kiem?keyword=${encodeURIComponent(k)}&page=${p}`,
     parser: d => d?.data?.items || d?.items || [],
     searchParser: d => d?.movie ? [d.movie] : [],
     keywordParser: d => d?.data?.items || [],
     getCdn: d => (d?.data?.APP_DOMAIN_CDN_IMAGE || 'https://phimimg.com/').replace(/\/+$/, '') + '/'
-  }, 
-  Nguonc: { 
+  },
+  Nguonc: {
     name: 'Nguonc', code: 'cx',
     defaultUrl: p => `https://phim.nguonc.com/api/films/phim-moi-cap-nhat?page=${p}`,
-    genreUrl: (s,p) => `https://phim.nguonc.com/api/films/danh-sach/${s}?page=${p}`,
-    countryUrl: (s,p) => `https://phim.nguonc.com/api/films/quoc-gia/${s}?page=${p}`,
-    yearUrl: (y,p) => `https://phim.nguonc.com/api/films/nam-phat-hanh/${y}?page=${p}`,
-    typeUrl: (t,p) => `https://phim.nguonc.com/api/films/danh-sach/${t}?page=${p}`,
-    cuteeUrl: (s,p) => `https://phim.nguonc.com/api/films/danh-sach/${s}?page=${p}`,
+    genreUrl: (s, p) => `https://phim.nguonc.com/api/films/danh-sach/${s}?page=${p}`,
+    countryUrl: (s, p) => `https://phim.nguonc.com/api/films/quoc-gia/${s}?page=${p}`,
+    yearUrl: (y, p) => `https://phim.nguonc.com/api/films/nam-phat-hanh/${y}?page=${p}`,
+    typeUrl: (t, p) => `https://phim.nguonc.com/api/films/danh-sach/${t}?page=${p}`,
+    cuteeUrl: (s, p) => `https://phim.nguonc.com/api/films/danh-sach/${s}?page=${p}`,
     searchUrl: s => `https://phim.nguonc.com/api/film/${s}`,
-    keywordSearchUrl: (k,p=1) => `https://phim.nguonc.com/api/films/search?keyword=${encodeURIComponent(k)}&page=${p}`,
+    keywordSearchUrl: (k, p = 1) => `https://phim.nguonc.com/api/films/search?keyword=${encodeURIComponent(k)}&page=${p}`,
     parser: d => d?.items || [],
     searchParser: d => d?.movie ? [d.movie] : [],
     keywordParser: d => d?.items || [],
@@ -50,7 +89,44 @@ const API_SOURCES = {
   }
 };
 
-const API_CACHE = {}; 
+// ==================== CORS PROXY - TỰ ĐỘNG FALLBACK ====================
+const CORS_PROXIES = [
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+];
+
+const fetchWithProxy = async (url, timeoutMs = 8000) => {
+  // Ưu tiên gọi trực tiếp trước (nhanh nhất, không qua trung gian)
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    const r = await fetch(url, { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (r.ok) return await r.json();
+  } catch (e) {
+    // Lỗi CORS / 502 / Timeout → rơi xuống proxy
+  }
+
+  // Thử từng proxy lần lượt
+  for (const proxyFn of CORS_PROXIES) {
+    try {
+      const proxyUrl = proxyFn(url);
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+      const r = await fetch(proxyUrl, { signal: ctrl.signal });
+      clearTimeout(timer);
+      if (r.ok) return await r.json();
+    } catch (e) {
+      continue; // Proxy này fail → thử cái tiếp
+    }
+  }
+
+  return null; // Tất cả đều fail
+};
+
+// ==================== CACHE & STATE ====================
+const API_CACHE = {};
 
 let ITEMS_PER_PAGE = 10;
 let currentMode = 'default';
@@ -63,24 +139,30 @@ let currentYear = null;
 let combinedFilterMode = false;
 
 const STATE_KEY = 'phim_state';
-const saveState = () => localStorage.setItem(STATE_KEY, JSON.stringify({mode:currentMode,filter:currentFilter,page:currentPage,search:currentSearchQuery,genre:currentGenre,country:currentCountry,year:currentYear,combined:combinedFilterMode}));
-const loadState = () => { 
-  try{ 
-    const s = JSON.parse(localStorage.getItem(STATE_KEY)||'{}'); 
-    if(s.mode){ 
-      currentMode=s.mode; currentFilter=s.filter; currentPage=s.page||1; currentSearchQuery=s.search||''; 
-      currentGenre=s.genre||null; currentCountry=s.country||null; currentYear=s.year||null;
-      combinedFilterMode=s.combined===true;
+const saveState = () => localStorage.setItem(STATE_KEY, JSON.stringify({
+  mode: currentMode, filter: currentFilter, page: currentPage, search: currentSearchQuery,
+  genre: currentGenre, country: currentCountry, year: currentYear, combined: combinedFilterMode
+}));
+const loadState = () => {
+  try {
+    const s = JSON.parse(localStorage.getItem(STATE_KEY) || '{}');
+    if (s.mode) {
+      currentMode = s.mode; currentFilter = s.filter; currentPage = s.page || 1;
+      currentSearchQuery = s.search || ''; currentGenre = s.genre || null;
+      currentCountry = s.country || null; currentYear = s.year || null;
+      combinedFilterMode = s.combined === true;
     }
-  }catch{} 
+  } catch {}
 };
 const clearState = () => localStorage.removeItem(STATE_KEY);
 
+// ==================== HELPERS ====================
 const getEpisodeDisplay = i => {
   if (!i) return '';
   const m = i.movie || i;
   const e = i.episodes || m.episodes || [];
-  if (!m.episode_current && !m.current_episode && !m.episode_total && !m.total_episodes && !Array.isArray(e)) return (m.type || m.tmdb?.type) === 'tv' ? 'Phim bộ' : 'Phim lẻ';
+  if (!m.episode_current && !m.current_episode && !m.episode_total && !m.total_episodes && !Array.isArray(e))
+    return (m.type || m.tmdb?.type) === 'tv' ? 'Phim bộ' : 'Phim lẻ';
   let c = '', t = '', l = 0;
   const cur = m.episode_current || m.current_episode || '';
   const tot = m.episode_total || m.total_episodes || '';
@@ -93,12 +175,13 @@ const getEpisodeDisplay = i => {
   return disp;
 };
 
-const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null, isS=false, isK=false) => {
+// ==================== FETCH TỪ SOURCE (DÙNG PROXY) ====================
+const fetchFromSource = async (src, p, m, f, genre = null, country = null, year = null, isS = false, isK = false) => {
   const cacheKey = `${src.code}-${m}-${f}-${p}-${genre}-${country}-${year}-${isS}-${isK}`;
   if (API_CACHE[cacheKey]) return API_CACHE[cacheKey];
 
   let url = '';
-  
+
   if (isK) url = src.keywordSearchUrl(f, p);
   else if (isS) url = src.searchUrl(f);
   else if (m === 'combined') {
@@ -108,7 +191,6 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
       else if (country) base = `https://ophim1.com/v1/api/quoc-gia/${country}`;
       else if (year) base = `https://ophim1.com/v1/api/nam-phat-hanh/${year}`;
       else base = 'https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat';
-      
       const params = new URLSearchParams({ page: p });
       if (genre && !base.includes('/the-loai/')) params.append('genre', genre);
       if (country && !base.includes('/quoc-gia/')) params.append('country', country);
@@ -134,21 +216,23 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
   else url = src.defaultUrl(p);
 
   try {
-    const r = await fetch(url);
-    if (!r.ok) return [];
-    const d = await r.json();
+    // ===== DÙNG fetchWithProxy - TỰ ĐỘNG FALLBACK =====
+    const d = await fetchWithProxy(url);
+    if (!d) return [];
+
     const parser = isK ? src.keywordParser : isS ? src.searchParser : src.parser;
     let items = parser(d) || [];
     const cdn = typeof src.getCdn === 'function' ? src.getCdn(d) : src.getCdn();
 
     const result = items.map(it => {
-      // ĐÃ KHÔI PHỤC: Tách riêng logic lấy ảnh chuẩn xác cho từng Source
       let thumb = '';
       if (src.code === 'ax') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
       if (src.code === 'bx') thumb = it.poster_url || it.thumb_url || it.poster || it.thumb || '';
       if (src.code === 'cx') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
 
-      if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//') && cdn) thumb = cdn + thumb.replace(/^\/+/, '');
+      if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//') && cdn)
+        thumb = cdn + thumb.replace(/^\/+/, '');
+
       return {
         name: it.name || it.origin_name || it.title || 'Không rõ',
         thumb_url: thumb,
@@ -164,17 +248,23 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
 
     API_CACHE[cacheKey] = result;
     return result;
-  } catch (e) { console.error('FETCH ERR:', src.name, e); return []; }
+  } catch (e) {
+    console.error('FETCH ERR:', src.name, e);
+    return [];
+  }
 };
 
-const interleaveFull = async (mode, filter, page, genre=null, country=null, year=null, isSearch=false, isKeyword=false) => {
+// ==================== INTERLEAVE KẾT QUẢ TỪ NHIỀU SOURCE ====================
+const interleaveFull = async (mode, filter, page, genre = null, country = null, year = null, isSearch = false, isKeyword = false) => {
   let sources = Object.values(API_SOURCES);
   if (combinedFilterMode && (mode === 'combined' || mode === 'genre' || mode === 'country' || mode === 'year')) {
     sources = sources.filter(s => s.code !== 'cx');
   }
-  
-  const results = await Promise.all(sources.map(src => fetchFromSource(src, page, mode, filter, genre, country, year, isSearch, isKeyword)));
-  
+
+  const results = await Promise.all(sources.map(src =>
+    fetchFromSource(src, page, mode, filter, genre, country, year, isSearch, isKeyword)
+  ));
+
   const all = [];
   const seen = new Set();
   let idx = new Array(sources.length).fill(0);
@@ -197,6 +287,7 @@ const interleaveFull = async (mode, filter, page, genre=null, country=null, year
   return all.slice(0, ITEMS_PER_PAGE);
 };
 
+// ==================== TÌM KIẾM ====================
 const search = async (q = null, p = 1) => {
   const raw = (q || document.getElementById('nav-search-input')?.value || '').trim();
   if (!raw) return load('default');
@@ -224,10 +315,11 @@ const search = async (q = null, p = 1) => {
 
   await renderFinal(fin, grid, `${sid}-progress`);
   renderPag(p, sid, fin.length >= ITEMS_PER_PAGE);
-  sec.scrollIntoView({behavior:'smooth'});
+  sec.scrollIntoView({ behavior: 'smooth' });
   saveState();
 };
 
+// ==================== PROGRESS BAR ====================
 let loaded = 0, total = 0;
 const updateProg = id => {
   loaded++;
@@ -236,6 +328,7 @@ const updateProg = id => {
   if (loaded === total) document.getElementById(id + '-cont')?.classList.add('done');
 };
 
+// ==================== TẠO CARD ====================
 const createCard = (m) => {
   const c = document.createElement('div');
   c.className = 'movie-item';
@@ -278,14 +371,13 @@ const createCard = (m) => {
   const imgReal = document.createElement('img');
   imgReal.className = 'movie-img-real';
   imgReal.loading = 'lazy';
-  imgReal.onload = function() { 
-      this.style.opacity = '1'; 
-      this.parentElement.classList.add('loaded');
+  imgReal.onload = function () {
+    this.style.opacity = '1';
+    this.parentElement.classList.add('loaded');
   };
-  imgReal.onerror = function() { updateProg(this.dataset.prog); };
+  imgReal.onerror = function () { updateProg(this.dataset.prog); };
   imgReal.dataset.prog = '';
 
-  // Không gọi file ngoài abc.jpg, dùng CSS div sẵn có làm nền mờ
   const imgPlaceholder = document.createElement('div');
   imgPlaceholder.className = 'movie-img-placeholder';
 
@@ -297,6 +389,7 @@ const createCard = (m) => {
   return { card: c, imgReal, url: m.thumb_url };
 };
 
+// ==================== RENDER FINAL ====================
 const renderFinal = async (movies, container, id) => {
   container.innerHTML = '';
   const disp = movies.slice(0, ITEMS_PER_PAGE);
@@ -305,18 +398,15 @@ const renderFinal = async (movies, container, id) => {
 
   const fragment = document.createDocumentFragment();
   const cards = disp.map(m => createCard(m));
-  
+
   cards.forEach(o => {
-      o.imgReal.dataset.prog = id;
-      fragment.appendChild(o.card);
+    o.imgReal.dataset.prog = id;
+    fragment.appendChild(o.card);
   });
   container.appendChild(fragment);
 
   cards.forEach(o => {
-    if (!o.url) {
-      updateProg(id);
-      return;
-    }
+    if (!o.url) { updateProg(id); return; }
     o.imgReal.src = o.url;
   });
 
@@ -325,6 +415,7 @@ const renderFinal = async (movies, container, id) => {
   }
 };
 
+// ==================== SECTION & PAGINATION ====================
 const createSec = (id, title) => {
   const s = document.createElement('div');
   s.className = 'section';
@@ -337,13 +428,8 @@ const showSec = sec => {
   document.querySelectorAll('#main-content > .section').forEach(x => x.style.display = 'none');
   const c = document.getElementById('main-content');
   const ex = document.getElementById(sec.id);
-  if (ex) {
-    ex.style.display = 'block';
-    c.insertBefore(ex, c.firstChild);
-  } else {
-    c.insertBefore(sec, c.firstChild);
-    sec.style.display = 'block';
-  }
+  if (ex) { ex.style.display = 'block'; c.insertBefore(ex, c.firstChild); }
+  else { c.insertBefore(sec, c.firstChild); sec.style.display = 'block'; }
 };
 
 const renderPag = (p, sid, more) => {
@@ -387,6 +473,7 @@ const renderPag = (p, sid, more) => {
   el.appendChild(next);
 };
 
+// ==================== GET TITLE ====================
 const getTitle = (m, f, g, c, y) => {
   if (m === 'default') return 'PHIM MỚI CẬP NHẬT';
   if (m === 'combined') {
@@ -407,6 +494,7 @@ const getTitle = (m, f, g, c, y) => {
   return f?.toUpperCase() || 'PHIM';
 };
 
+// ==================== LOAD ====================
 const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   currentSearchQuery = '';
   if (document.getElementById('nav-search-input')) document.getElementById('nav-search-input').value = '';
@@ -414,7 +502,7 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   currentMode = m;
   currentFilter = f;
   currentPage = p;
-  
+
   if (m === 'genre') { currentGenre = f; currentCountry = c; currentYear = y; }
   else if (m === 'country') { currentGenre = null; currentCountry = f; currentYear = y; }
   else if (m === 'year') { currentGenre = null; currentCountry = null; currentYear = f; }
@@ -444,6 +532,7 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   saveState();
 };
 
+// ==================== LOAD TXT (TRANG CHỦ) ====================
 const loadTxt = async () => {
   try {
     const r = await fetch('./trangchu.txt?t=' + Date.now());
@@ -626,7 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('phim-bo')?.addEventListener('click', e => { e.preventDefault(); load('type', 'phim-bo', 1); });
   document.getElementById('phim-le')?.addEventListener('click', e => { e.preventDefault(); load('type', 'phim-le', 1); });
   document.getElementById('phim-chieu-rap')?.addEventListener('click', e => { e.preventDefault(); load('cutee', 'phim-chieu-rap', 1); });
-  
+
   document.getElementById('nav-search-btn')?.addEventListener('click', () => search());
   document.getElementById('nav-search-input')?.addEventListener('keypress', e => { if (e.key === 'Enter') search(); });
 });
