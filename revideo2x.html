@@ -55,7 +55,7 @@ h1{text-align:center;font-size:24px;color:#fafafa;margin-bottom:6px}
 <body>
 <div class="wrap">
     <h1>✂️ Cắt Video Offline</h1>
-    <p class="sub">Kéo thả file MP4 vào → Kéo marker Xanh/Đỏ → Nhấn Thêm → Xuất (Không cần server)</p>
+    <p class="sub">Kéo thả file MP4 vào → Kéo marker Xanh/Đỏ → Nhấn Thêm → Xuất</p>
 
     <div id="dropZone" onclick="document.getElementById('fIn').click()">
         <p class="icon">📁</p>
@@ -104,69 +104,49 @@ h1{text-align:center;font-size:24px;color:#fafafa;margin-bottom:6px}
 </div>
 
 <script>
-/* 
-  KHÔNG SỬ DÙNG <script src="..."> TỪ BÊN NGOÀI.
-  Toàn bộ logic FFmpeg được nhúng thẳng vào đây.
-  Không gọi ra ngoài -> Không bao giờ bị CORS.
-*/
-var FFmpegWASM = (function() {
-    var ffmpegInstance = null;
-    var isLoaded = false;
+var FF = (function() {
+    var _ffmpeg = null;
+    var _loaded = false;
 
-    function createFFmpeg(opts) {
-        // Tạo object giả giữ chỗ cho đến khi WASM load xong
-        return {
-            _loaded: false,
-            FS: function() { return { writeFile: function(f, d) {}, readFile: function() { return {buffer: new ArrayBuffer(0)}; }, unlink: function() {} }; },
-            run: function() { return Promise.resolve(); },
-            load: function() { return Promise.resolve(); }
-        };
-    }
+    async function load() {
+        if (_loaded && _ffmpeg) return _ffmpeg;
 
-    // Hàm load thật sự (chỉ chạy 1 lần)
-    async function loadCore() {
-        if (isLoaded) return;
-        
-        // Tải file JS Core (Tạm thời dùng UMD, nếu lỗi sẽ dùng ESM fallback)
-        if (typeof FFmpeg === 'undefined') {
-            await new Promise((resolve, reject) => {
-                var s = document.createElement('script');
-                s.src = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
-                s.onload = resolve;
-                s.onerror = function() {
-                    // Fallback: Dùng ESM nếu UMD bị chặn
-                    var s2 = document.createElement('script');
-                    s2.type = 'module';
-                    s2.innerHTML = `
-                        import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js').then(m => {
-                            window.FFmpeg = m.FFmpeg;
-                            window.createFFmpeg = m.createFFmpeg;
-                            resolve();
-                        }).catch(reject);
-                    `;
-                    document.head.appendChild(s2);
-                };
-                document.head.appendChild(s);
-            });
+        // Tải script bằng tag, không bị CORS, không bị lỗi scope
+        await new Promise((resolve, reject) => {
+            var s = document.createElement('script');
+            s.src = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
+            s.onload = resolve;
+            s.onerror = () => reject(new Error('Không tải được FFmpeg'));
+            document.head.appendChild(s);
+        });
+
+        // Chờ script thực thi xong
+        await new Promise(r => setTimeout(r, 100));
+
+        // Lấy hàm từ global scope
+        if (typeof createFFmpeg !== 'function') {
+            // UMD chưa expose, chờ thêm chút
+            await new Promise(r => setTimeout(r, 500));
         }
 
-        // Khởi tạo instance thật
-        ffmpegInstance = window.createFFmpeg({ log: false });
-        
-        await ffmpegInstance.load();
-        isLoaded = true;
-        return ffmpegInstance;
+        // Tạo instance
+        _ffmpeg = createFFmpeg({ log: false });
+        await _ffmpeg.load();
+        _loaded = true;
+        return _ffmpeg;
     }
 
-    // Hàm đọc file (Tự viết, không phụ thuộc thư viện)
-    async function fetchFile(file) {
-        const buf = await file.arrayBuffer();
-        return new Uint8Array(buf);
+    function fetchFile(file) {
+        return new Promise((resolve, reject) => {
+            var reader = new FileReader();
+            reader.onload = () => resolve(new Uint8Array(reader.result));
+            reader.onerror = reject;
+            reader.readAsArrayBuffer(file);
+        });
     }
 
-    return { createFFmpeg: createFFmpeg, load: loadCore, fetchFile: fetchFile, get loaded() { return isLoaded; }, get instance() { return ffmpegInstance; } };
+    return { load: load, fetchFile: fetchFile };
 })();
-
 
 document.addEventListener('DOMContentLoaded', function() {
     const vid = document.getElementById('vid');
@@ -246,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Segments ---
     function addSeg() {
-        if(!vid.duration||pStart<0||pEnd<0||pEnd<=pStart) return alert('Kéo marker Xanh và Đỏ cho đúng khoảng thời gian!');
+        if(!vid.duration||pStart<0||pEnd<0||pEnd<=pStart) return alert('Kéo marker Xanh và Đỏ cho đúng khoảng!');
         segs.push({s:pStart, e:pEnd}); pStart=-1; pEnd=-1; updUI(); renderSegs();
     }
     function removeSeg(i) { segs.splice(i,1); renderSegs(); }
@@ -273,19 +253,17 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('btnExport').addEventListener('click', async function() {
         if(!segs.length || !curFile) return;
         const btn = document.getElementById('btnExport');
-        btn.disabled = true; btn.innerText = "⏳ Đang tải FFmpeg...";
+        btn.disabled = true; btn.innerText = "⏳ Đang tải FFmpeg (lần đầu 10-20s)...";
         let sb = document.getElementById('statBox'); sb.style.display='block';
         document.getElementById('progBar').style.width='0%';
-        document.getElementById('statTxt').innerText='Đang nạp FFmpeg (lần đầu 10-20s)...';
+        document.getElementById('statTxt').innerText='Đang nạp FFmpeg...';
 
         try {
-            if (!FFmpegWASM.loaded) await FFmpegWASM.load();
-            
-            var ff = FFmpegWASM.instance;
+            var ff = await FF.load();
 
             document.getElementById('statTxt').innerText='Đang đọc file...';
             document.getElementById('progBar').style.width='10%';
-            ff.FS('writeFile', 'input.mp4', await FFmpegWASM.fetchFile(curFile));
+            ff.FS('writeFile', 'input.mp4', await FF.fetchFile(curFile));
 
             for (let i = 0; i < segs.length; i++) {
                 let s = segs[i];
