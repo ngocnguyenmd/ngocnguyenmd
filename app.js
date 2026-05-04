@@ -89,46 +89,50 @@ const API_SOURCES = {
   }
 };
 
-// ==================== CORS PROXY - TỰ ĐỘNG FALLBACK ====================
-const CORS_PROXIES = [
-  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
-];
+// ==================== GIỚI HẠN SỐ LƯỢNG ====================
+const SOURCE_LIMITS = {
+  'ax': 5, // Ophim
+  'bx': 5, // Phimapi
+  'cx': 10 // Nguonc
+};
 
-const fetchWithProxy = async (url, timeoutMs = 8000) => {
-  // Ưu tiên gọi trực tiếp trước (nhanh nhất, không qua trung gian)
+// ==================== FETCH LOGIC (PROXY CHỈ CHO NGUONC) ====================
+const fetchDirect = async (url, sourceCode = '') => {
+  // 1. Thử gọi trực tiếp
   try {
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    const timer = setTimeout(() => ctrl.abort(), 6000); 
     const r = await fetch(url, { signal: ctrl.signal });
     clearTimeout(timer);
     if (r.ok) return await r.json();
   } catch (e) {
-    // Lỗi CORS / 502 / Timeout → rơi xuống proxy
-  }
+    if (e.name !== 'AbortError') {
+        console.warn(`[Fetch Error] ${sourceCode} (Direct):`, e);
+    }
 
-  // Thử từng proxy lần lượt
-  for (const proxyFn of CORS_PROXIES) {
-    try {
-      const proxyUrl = proxyFn(url);
-      const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-      const r = await fetch(proxyUrl, { signal: ctrl.signal });
-      clearTimeout(timer);
-      if (r.ok) return await r.json();
-    } catch (e) {
-      continue; // Proxy này fail → thử cái tiếp
+    // CHỈ ÁP DỤNG PROXY CHO NGUONC (CX)
+    if (sourceCode === 'cx') {
+      try {
+        const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`;
+        console.log(`[Proxy] Trying for ${sourceCode}:`, proxyUrl);
+        
+        const r = await fetch(proxyUrl);
+        if (r.ok) {
+            const data = await r.json();
+            console.log(`[Proxy] Success for ${sourceCode}`);
+            return data;
+        }
+      } catch (proxyErr) {
+        console.error(`[Proxy Error] ${sourceCode}:`, proxyErr);
+      }
     }
   }
-
-  return null; // Tất cả đều fail
+  return null;
 };
 
 // ==================== CACHE & STATE ====================
 const API_CACHE = {};
-
-let ITEMS_PER_PAGE = 10;
+let ITEMS_PER_PAGE = 20; 
 let currentMode = 'default';
 let currentFilter = null;
 let currentPage = 1;
@@ -175,7 +179,7 @@ const getEpisodeDisplay = i => {
   return disp;
 };
 
-// ==================== FETCH TỪ SOURCE (DÙNG PROXY) ====================
+// ==================== FETCH & PARSE DATA ====================
 const fetchFromSource = async (src, p, m, f, genre = null, country = null, year = null, isS = false, isK = false) => {
   const cacheKey = `${src.code}-${m}-${f}-${p}-${genre}-${country}-${year}-${isS}-${isK}`;
   if (API_CACHE[cacheKey]) return API_CACHE[cacheKey];
@@ -204,6 +208,8 @@ const fetchFromSource = async (src, p, m, f, genre = null, country = null, year 
       if (year) params.append('year', year);
       url = base + (base.includes('?') ? '&' : '?') + params.toString();
     } else {
+      // NGUONC LOGIC: Không hỗ trợ query param nhiều filter cùng lúc
+      // Ưu tiên: Genre > Country > Year
       if (genre) url = src.genreUrl(genre, p);
       else if (country) url = src.countryUrl(country, p);
       else if (year) url = src.yearUrl(year, p);
@@ -215,121 +221,66 @@ const fetchFromSource = async (src, p, m, f, genre = null, country = null, year 
   else if (m === 'type' || m === 'cutee') url = (src.cuteeUrl || src.typeUrl)(f, p);
   else url = src.defaultUrl(p);
 
-  try {
-    // ===== DÙNG fetchWithProxy - TỰ ĐỘNG FALLBACK =====
-    const d = await fetchWithProxy(url);
-    if (!d) return [];
+  const d = await fetchDirect(url, src.code);
+  if (!d) return [];
 
-    const parser = isK ? src.keywordParser : isS ? src.searchParser : src.parser;
-    let items = parser(d) || [];
-    const cdn = typeof src.getCdn === 'function' ? src.getCdn(d) : src.getCdn();
+  const parser = isK ? src.keywordParser : isS ? src.searchParser : src.parser;
+  let items = parser(d) || [];
+  const cdn = typeof src.getCdn === 'function' ? src.getCdn(d) : src.getCdn();
 
-    const result = items.map(it => {
-      let thumb = '';
-      if (src.code === 'ax') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
-      if (src.code === 'bx') thumb = it.poster_url || it.thumb_url || it.poster || it.thumb || '';
-      if (src.code === 'cx') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
+  const result = items.map(it => {
+    let thumb = '';
+    if (src.code === 'ax') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
+    if (src.code === 'bx') thumb = it.poster_url || it.thumb_url || it.poster || it.thumb || '';
+    if (src.code === 'cx') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
 
-      if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//') && cdn)
-        thumb = cdn + thumb.replace(/^\/+/, '');
+    if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//') && cdn)
+      thumb = cdn + thumb.replace(/^\/+/, '');
 
-      return {
-        name: it.name || it.origin_name || it.title || 'Không rõ',
-        thumb_url: thumb,
-        episodeDisplay: getEpisodeDisplay(it),
-        slug: it.slug || it._id || '',
-        sourceCode: src.code,
-        sourceName: src.name,
-        year: (it.year || '').toString(),
-        lang: (it.lang || '').toUpperCase(),
-        quality: it.quality || ''
-      };
-    }).filter(x => x.slug && x.thumb_url);
+    return {
+      name: it.name || it.origin_name || it.title || 'Không rõ',
+      thumb_url: thumb,
+      episodeDisplay: getEpisodeDisplay(it),
+      slug: it.slug || it._id || '',
+      sourceCode: src.code,
+      sourceName: src.name,
+      year: (it.year || '').toString(),
+      lang: (it.lang || '').toUpperCase(),
+      quality: it.quality || ''
+    };
+  }).filter(x => x.slug && x.thumb_url);
 
-    API_CACHE[cacheKey] = result;
-    return result;
-  } catch (e) {
-    console.error('FETCH ERR:', src.name, e);
-    return [];
-  }
+  API_CACHE[cacheKey] = result;
+  return result;
 };
 
-// ==================== INTERLEAVE KẾT QUẢ TỪ NHIỀU SOURCE ====================
-const interleaveFull = async (mode, filter, page, genre = null, country = null, year = null, isSearch = false, isKeyword = false) => {
-  let sources = Object.values(API_SOURCES);
-  if (combinedFilterMode && (mode === 'combined' || mode === 'genre' || mode === 'country' || mode === 'year')) {
-    sources = sources.filter(s => s.code !== 'cx');
-  }
+// ==================== UI LOGIC ====================
+let streamState = { loaded: 0, total: 0 };
 
-  const results = await Promise.all(sources.map(src =>
-    fetchFromSource(src, page, mode, filter, genre, country, year, isSearch, isKeyword)
-  ));
-
-  const all = [];
-  const seen = new Set();
-  let idx = new Array(sources.length).fill(0);
-
-  while (all.length < ITEMS_PER_PAGE) {
-    let added = false;
-    for (let i = 0; i < sources.length; i++) {
-      if (idx[i] < results[i].length) {
-        const m = results[i][idx[i]];
-        if (!seen.has(m.slug + m.sourceCode)) {
-          seen.add(m.slug + m.sourceCode);
-          all.push(m);
-          added = true;
-        }
-        idx[i]++;
-      }
-    }
-    if (!added) break;
-  }
-  return all.slice(0, ITEMS_PER_PAGE);
-};
-
-// ==================== TÌM KIẾM ====================
-const search = async (q = null, p = 1) => {
-  const raw = (q || document.getElementById('nav-search-input')?.value || '').trim();
-  if (!raw) return load('default');
-  currentSearchQuery = raw;
-  currentPage = p;
-  currentGenre = null; currentCountry = null; currentYear = null;
-
-  const sid = 'search-sec';
-  let sec = document.getElementById(sid);
-  if (!sec) sec = createSec(sid, `TÌM: "${raw}"`);
-  else sec.querySelector('.section-header').textContent = `TÌM: "${raw}"`;
-
-  showSec(sec);
-  const grid = document.getElementById(`${sid}-grid`);
-  grid.innerHTML = '';
-
-  const [slugMovies, keyMovies] = await Promise.all([
-    interleaveFull(null, raw, p, null, null, null, true, false),
-    interleaveFull(null, raw, p, null, null, null, false, true)
-  ]);
-
-  const all = [...slugMovies, ...keyMovies];
-  const seen = new Set();
-  const fin = all.filter(m => !seen.has(m.slug + m.sourceCode) && seen.add(m.slug + m.sourceCode));
-
-  await renderFinal(fin, grid, `${sid}-progress`);
-  renderPag(p, sid, fin.length >= ITEMS_PER_PAGE);
-  sec.scrollIntoView({ behavior: 'smooth' });
-  saveState();
-};
-
-// ==================== PROGRESS BAR ====================
-let loaded = 0, total = 0;
 const updateProg = id => {
-  loaded++;
+  streamState.loaded++;
   const bar = document.getElementById(id);
-  if (bar) bar.style.width = (loaded / total * 100) + '%';
-  if (loaded === total) document.getElementById(id + '-cont')?.classList.add('done');
+  if (bar && streamState.total > 0) {
+    const pct = (streamState.loaded / streamState.total * 100);
+    bar.style.width = pct + '%';
+  }
 };
 
-// ==================== TẠO CARD ====================
-const createCard = (m) => {
+const updateTotalUI = (id) => {
+  streamState.total++;
+  const bar = document.getElementById(id);
+  if (bar && streamState.total > 0) {
+    const pct = (streamState.loaded / streamState.total * 100);
+    bar.style.width = pct + '%';
+  }
+};
+
+const appendItem = (m, container, id, seenSet) => {
+  if (seenSet.has(m.slug)) return false; 
+
+  seenSet.add(m.slug); 
+  updateTotalUI(id); 
+
   const c = document.createElement('div');
   c.className = 'movie-item';
   c.dataset.slug = m.slug;
@@ -374,9 +325,9 @@ const createCard = (m) => {
   imgReal.onload = function () {
     this.style.opacity = '1';
     this.parentElement.classList.add('loaded');
+    updateProg(id); 
   };
-  imgReal.onerror = function () { updateProg(this.dataset.prog); };
-  imgReal.dataset.prog = '';
+  imgReal.onerror = function () { updateProg(id); };
 
   const imgPlaceholder = document.createElement('div');
   imgPlaceholder.className = 'movie-img-placeholder';
@@ -386,33 +337,51 @@ const createCard = (m) => {
   imgContainer.append(imgReal, imgPlaceholder, epTag, topRight, langTag, yearTag, titleTag);
   c.appendChild(imgContainer);
 
-  return { card: c, imgReal, url: m.thumb_url };
+  container.appendChild(c);
+
+  if (m.thumb_url) imgReal.src = m.thumb_url;
+  else updateProg(id);
+
+  return true; 
 };
 
-// ==================== RENDER FINAL ====================
-const renderFinal = async (movies, container, id) => {
+// ==================== CORE LOAD LOGIC ====================
+const processStream = async (container, sources, p, mode, filter, genre, country, year, isSearch, isKeyword, sid) => {
   container.innerHTML = '';
-  const disp = movies.slice(0, ITEMS_PER_PAGE);
-  total = disp.length;
-  loaded = 0;
+  streamState = { loaded: 0, total: 0 };
+  const progId = `${sid}-progress`;
+  
+  const seenSlugs = new Set();
+  const sourceCounts = { ax: 0, bx: 0, cx: 0 };
 
-  const fragment = document.createDocumentFragment();
-  const cards = disp.map(m => createCard(m));
+  const handleSource = async (src) => {
+    try {
+      const items = await fetchFromSource(src, p, mode, filter, genre, country, year, isSearch, isKeyword);
+      const limit = SOURCE_LIMITS[src.code] || 5; 
+      
+      for (const m of items) {
+        if (sourceCounts[src.code] >= limit) break;
+        
+        const added = appendItem(m, container, progId, seenSlugs);
+        if (added) sourceCounts[src.code]++;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
-  cards.forEach(o => {
-    o.imgReal.dataset.prog = id;
-    fragment.appendChild(o.card);
-  });
-  container.appendChild(fragment);
+  const promises = sources.map(src => handleSource(src));
+  await Promise.all(promises);
 
-  cards.forEach(o => {
-    if (!o.url) { updateProg(id); return; }
-    o.imgReal.src = o.url;
-  });
+  setTimeout(() => {
+    document.getElementById(`${progId}-cont`)?.classList.add('done');
+    const totalRendered = sourceCounts.ax + sourceCounts.bx + sourceCounts.cx;
+    if (totalRendered === 0) {
+      container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:100px;color:#aaa;">Không tìm thấy kết quả hoặc API chậm.</div>';
+    }
+  }, 500);
 
-  if (total === 0) {
-    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:100px;color:#aaa;">Không tìm thấy kết quả hoặc không hỗ trợ lọc này.<br>Hãy thử tìm bằng từ khóa khác.</div>';
-  }
+  return sourceCounts.ax + sourceCounts.bx + sourceCounts.cx;
 };
 
 // ==================== SECTION & PAGINATION ====================
@@ -494,7 +463,7 @@ const getTitle = (m, f, g, c, y) => {
   return f?.toUpperCase() || 'PHIM';
 };
 
-// ==================== LOAD ====================
+// ==================== LOAD (KHÔNG LOẠI BỎ NGUONC) ====================
 const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   currentSearchQuery = '';
   if (document.getElementById('nav-search-input')) document.getElementById('nav-search-input').value = '';
@@ -523,17 +492,89 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
 
   showSec(sec);
   const grid = document.getElementById(`${sid}-grid`);
-  grid.innerHTML = '';
+  
+  let sources = Object.values(API_SOURCES);
+  // SỬA LỖI: XÓA BỎ ĐOẠN NÀY ĐỂ NGUONC HOẠT ĐỘNG TRONG LỌC KẾT HỢP
+  // if (combinedFilterMode && (m === 'combined' || m === 'genre' || m === 'country' || m === 'year')) {
+  //   sources = sources.filter(s => s.code !== 'cx');
+  // }
 
-  const movies = await interleaveFull(m, f, p, currentGenre, currentCountry, currentYear);
-  await renderFinal(movies, grid, `${sid}-progress`);
-  renderPag(p, sid, movies.length >= ITEMS_PER_PAGE);
+  const finalCount = await processStream(grid, sources, p, m, f, currentGenre, currentCountry, currentYear, false, false, sid);
+  
+  renderPag(p, sid, finalCount >= ITEMS_PER_PAGE);
   sec.scrollIntoView({ behavior: 'smooth' });
   saveState();
 };
 
-// ==================== LOAD TXT (TRANG CHỦ) ====================
+// ==================== TÌM KIẾM ====================
+const search = async (q = null, p = 1) => {
+  const raw = (q || document.getElementById('nav-search-input')?.value || '').trim();
+  if (!raw) return load('default');
+  currentSearchQuery = raw;
+  currentPage = p;
+  currentGenre = null; currentCountry = null; currentYear = null;
+
+  const sid = 'search-sec';
+  let sec = document.getElementById(sid);
+  if (!sec) sec = createSec(sid, `TÌM: "${raw}"`);
+  else sec.querySelector('.section-header').textContent = `TÌM: "${raw}"`;
+
+  showSec(sec);
+  const grid = document.getElementById(`${sid}-grid`);
+
+  const processSearchStream = async (container, sources, p, keyword, sid) => {
+    container.innerHTML = '';
+    streamState = { loaded: 0, total: 0 };
+    const progId = `${sid}-progress`;
+    const seenSlugs = new Set();
+    const sourceCounts = { ax: 0, bx: 0, cx: 0 };
+
+    const handleSource = async (src) => {
+      try {
+        const [slugItems, keyItems] = await Promise.all([
+          fetchFromSource(src, p, null, keyword, null, null, null, true, false),
+          fetchFromSource(src, p, null, keyword, null, null, null, false, true)
+        ]);
+        const all = [...slugItems, ...keyItems];
+        const limit = SOURCE_LIMITS[src.code] || 5;
+
+        for (const m of all) {
+          if (sourceCounts[src.code] >= limit) break;
+          const added = appendItem(m, container, progId, seenSlugs);
+          if (added) sourceCounts[src.code]++;
+        }
+      } catch (e) {}
+    };
+
+    await Promise.all(sources.map(src => handleSource(src)));
+    
+    setTimeout(() => {
+      document.getElementById(`${progId}-cont`)?.classList.add('done');
+      const totalRendered = sourceCounts.ax + sourceCounts.bx + sourceCounts.cx;
+      if (totalRendered === 0) {
+        container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:100px;color:#aaa;">Không tìm thấy kết quả.</div>';
+      }
+    }, 500);
+
+    return sourceCounts.ax + sourceCounts.bx + sourceCounts.cx;
+  };
+
+  const finalCount = await processSearchStream(grid, Object.values(API_SOURCES), p, raw, sid);
+  renderPag(p, sid, finalCount >= ITEMS_PER_PAGE);
+  sec.scrollIntoView({ behavior: 'smooth' });
+  saveState();
+};
+
+// ==================== LOAD TXT (XỬ LÝ LỖI FILE LOCAL) ====================
 const loadTxt = async () => {
+  // XỬ LÝ LỖI CORS KHI CHẠY LOCAL
+  if (window.location.protocol === 'file:') {
+    // Nếu đang chạy dạng file://, bỏ qua bước load text để tránh lỗi console
+    console.warn("Chạy trên local file://, bỏ qua load trangchu.txt");
+    // Không hiển thị lỗi để UI sạch sẽ
+    return;
+  }
+
   try {
     const r = await fetch('./trangchu.txt?t=' + Date.now());
     if (!r.ok) throw 1;
@@ -546,7 +587,7 @@ const loadTxt = async () => {
     });
     await Promise.all(promises);
   } catch {
-    document.getElementById('main-content').innerHTML = '<div class="container"><h2 style="text-align:center;padding:100px;color:#aaa;">Chưa có dữ liệu trangchu.txt</h2></div>';
+    document.getElementById('main-content').innerHTML = '<div class="container"><h2 style="text-align:center;padding:100px;color:#aaa;">Chưa có dữ liệu trangchu.txt (hoặc lỗi khi tải).</h2></div>';
   }
   saveState();
 };
@@ -583,21 +624,19 @@ const loadGroup = async (name, items) => {
   if (!document.getElementById(sid)) cont.appendChild(sec);
   sec.style.display = 'block';
   const grid = document.getElementById(`${sid}-grid`);
+
+  const handleTxtItem = async (item) => {
+    const src = Object.values(API_SOURCES).find(s => s.name.toLowerCase() === item.source);
+    if (!src) return;
+    const m = (await fetchFromSource(src, null, null, item.slug, null, null, null, true, false))[0];
+    if (m) appendItem(m, grid, `${sid}-progress`, new Set()); 
+  };
+
   grid.innerHTML = '';
-
-  const fetchPromises = items.map(i => {
-    const src = Object.values(API_SOURCES).find(s => s.name.toLowerCase() === i.source);
-    if (!src) return Promise.resolve([]);
-    return fetchFromSource(src, null, null, i.slug, null, null, null, true, false).catch(() => []);
-  });
-
-  const results = await Promise.all(fetchPromises);
-  const all = results.flat();
-
-  const seen = new Set();
-  const fin = all.filter(m => !seen.has(m.slug + m.sourceCode) && seen.add(m.slug + m.sourceCode));
-  await renderFinal(fin, grid, `${sid}-progress`);
+  streamState = { loaded: 0, total: 0 };
+  await Promise.all(items.map(handleTxtItem));
   document.getElementById(`${sid}-pagination`).style.display = 'none';
+  setTimeout(() => document.getElementById(`${sid}-progress-cont`)?.classList.add('done'), 500);
 };
 
 // ==================== KHỞI TẠO ====================
