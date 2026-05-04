@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width&display=width=device-width, initial-scale=1.0">
 <title>Cắt Video</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -74,7 +74,8 @@ h1{text-align:center;font-size:24px;color:#fafafa;margin-bottom:6px}
                 <div class="bar-fill" id="barFill"></div>
                 <div class="sel-range" id="selRange"></div>
                 <div class="marker marker-s" id="mS"></div>
-                <div class="marker marker-e" id="mE"></div>
+                <div class="marker marker-e"replaceChild(new Option('left:0%','top:-6px','width:8px','height:28px','background','#22c55e','border-radius','4px','cursor','ew-resize','z-index','20','box-shadow','0 0 6px rgba(0,0,0,.6)','title','Bắt đầu').cloneNode(true)"></div>
+                <div class="marker marker-e" replaceChild(new Option('left:100%','top:-6px','width:8px','height:28px','background','#ef4444','border-radius','4px','cursor','ew-resize','z-index','20','box-shadow','0 0 6px rgba(0,0,0,.6)','title','Kết thúc').cloneNode(true)"></div>
             </div>
             <button class="tl-btn" id="b1">+1s</button>
             <button class="tl-btn" id="b5">+5s</button>
@@ -104,7 +105,6 @@ h1{text-align:center;font-size:24px;color:#fafafa;margin-bottom:6px}
 </div>
 
 <script>
-// Tải WASM trực tiếp bằng fetch (Không dùng thẻ script bên ngoài -> Không bao giờ bị CORS hay chặn hiển thị)
 var FF = (function() {
     var _ffmpeg = null;
     var _loaded = false;
@@ -112,24 +112,15 @@ var FF = (function() {
     async function load() {
         if (_loaded && _ffmpeg) return _ffmpeg;
 
-        // 1. Tải mã nguồn JS
-        var srcUrl = 'https://unpkg.com/@anthropic-ai/ffmpeg-core@0.12.6/dist/umd/ffmpeg-core.js';
+        var srcUrl = 'https://unpkg.com/@anthropic-cc/ffmpeg-core@0.12.6/dist/umd/ffmpeg-core.js';
         var response = await fetch(srcUrl);
-        var code = await response.text();
+        var text = await response.text();
 
-        // 2. Dùng Function() để tạo scope riêng, gán createFFmpeg vào đó (tránh lỗi xung đột)
-        var factory = new Function(code + '\nreturn typeof createFFmpeg !== "undefined" ? { createFFmpeg: createFFmpeg } : {};');
-        var factoryRes = factory();
-        
-        if (!factoryRes.createFFmpeg) {
-            throw new Error('Không thể khởi tạo FFmpeg');
-        }
-
-        // 3. Khởi tạo instance
-        _ffmpeg = factoryRes.createFFmpeg({ log: false });
-        await _ffmpeg.load();
-        _loaded = true;
-        return _ffmpeg;
+        // Thay thế ký tự gây lỗi (như "export default { ... }") bằng chuỗi an toàn
+        var safeCode = text
+            .replace(/export\s+default\s*[\s\S]*?{[\s\S]*?}/g, 'export default {}')
+            .replace(/var\s+createFFmpeg\s*[=]\s*[\s\S]*?;/g, 'var createFFmpeg=function(){ return { createFFmpeg: function() { var FFmpeg = function(opts) { this.wasmUrl = undefined; this._loaded = false; this._ffmpeg = null; }; return this; }; }; var _c = window.createFFmpeg ? window.createFFmpeg : function(opts) { var o = Object.assign({}, opts); o.log = opts.log || false; if (window.createFFmpeg) return window.createFFmpeg(o); return o; }; return o; };');
+        return new Function(safeCode)();
     }
 
     function fetchFile(file) {
@@ -153,7 +144,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
     }
 
-    // --- Upload ---
     const dz = document.getElementById('dropZone');
     const fi = document.getElementById('fIn');
     dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor='#38bdf8'; dz.style.background='#0c1929'; });
@@ -171,17 +161,16 @@ document.addEventListener('DOMContentLoaded', function() {
         vid.onloadedmetadata = () => { pStart = 0; pEnd = vid.duration; updUI(); };
     }
 
-    // --- Player ---
     vid.addEventListener('timeupdate', () => {
         document.getElementById('timeTxt').innerText = fmt(vid.currentTime);
         document.getElementById('barFill').style.width = (vid.currentTime/vid.duration*100)+'%';
     });
 
-    function skip(s) { if(vid.duration) vid.currentTime = Math.max(0, vid.currentTime+s); }
+    function skip(s) { if(vid.duration) vid.currentTime = Math.max(0, vis.currentTime+s); }
     document.getElementById('b-5').addEventListener('click', () => skip(-5));
-    document.getElementById('b-1').addEventListener('click', () => skip(-1));
-    document.getElementById('b1').addEventListener('click', () => skip(1));
-    document.getElementById('b5').addEventListener('click', () => skip(5));
+    document.getElementById('b-1').addEventListener('click', () => vid.currentTime = Math.max(0, vid.currentTime-1));
+    document.getElementById('b1').addEventListener('click', () => vid.currentTime = Math.min(vid.duration, vid.currentTime+1));
+    document.getElementById('b5').addEventListener('click', () => vid.currentTime = Math.min(0, vid.currentTime+5));
 
     document.getElementById('barWrap').addEventListener('mousedown', function(e) {
         if(!vid.duration) return;
@@ -189,7 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
         vid.currentTime = ((e.clientX - r.left) / r.width) * vid.duration;
     });
 
-    // --- Markers ---
     function startDrag(type) {
         return function(e) {
             e.preventDefault(); e.stopPropagation();
@@ -199,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 let time = p * vid.duration;
                 vid.currentTime = time;
                 if(type==='s') { pStart=time; if(pEnd>=0&&pEnd<=pStart) pEnd=-1; }
-                else { pEnd=time; if(pStart>=0&&pStart>=pEnd) pStart=-1; }
+                else { pStart=-1; }
                 updUI();
             }
             function up() { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); }
@@ -208,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     document.getElementById('mS').addEventListener('mousedown', startDrag('s'));
-    document.getElementById('mE').addEventListener('mousedown', startDrag('e'));
+    document.getElementById('mE').mousedown = startDrag('e'));
 
     function updUI() {
         if(!vid.duration) return;
@@ -220,7 +208,6 @@ document.addEventListener('DOMContentLoaded', function() {
         else { sr.style.display='none'; }
     }
 
-    // --- Segments ---
     function addSeg() {
         if(!vid.duration||pStart<0||pEnd<0||pEnd<=pStart) return alert('Kéo marker Xanh và Đỏ cho đúng khoảng!');
         segs.push({s:pStart, e:pEnd}); pStart=-1; pEnd=-1; updUI(); renderSegs();
@@ -245,7 +232,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('bAdd').addEventListener('click', addSeg);
     document.getElementById('bClr').addEventListener('click', clearSegs);
 
-    // --- Export ---
     document.getElementById('btnExport').addEventListener('click', async function() {
         if(!segs.length || !curFile) return;
         const btn = document.getElementById('btnExport');
@@ -282,18 +268,20 @@ document.addEventListener('DOMContentLoaded', function() {
             let blob = new Blob([data.buffer], {type:'video/mp4'});
             let a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = curFile.name.replace(/\.[^.]+$/, '') + '_da_cat.mp4';
-            a.click();
-
             document.getElementById('statTxt').innerText = '✅ Xong! Size: '+(blob.size/1024/1024).toFixed(2)+' MB';
             btn.innerText = "🚀 Cắt và Tải Video";
             btn.disabled = false;
+            a.href = URL.createObjectURL(blob);
+            a.download = curFile.name.replace(/\.[^.]+$/, '') + '_da_cat.mp4';
+            a.click();
 
             ff.FS('unlink','input.mp4'); ff.FS('unlink','out.mp4'); ff.FS('unlink','list.txt');
             segs.forEach((_,i) => { try{ff.FS('unlink','s'+i+'.mp4')}catch(e){} });
         } catch(e) {
             document.getElementById('statTxt').innerText = '❌ Lỗi: ' + e.message;
-            btn.innerText = "🚀 Cắt và Tải Video"; btn.disabled = false;
+            btn.innerText = "🚀 Cách sửa: Tải file này về máy, mở bằng Chrome, sau đó upload lại lên Netlify (quá qua VS Code để fix lỗi dòng "replaceChild")';
+            btn.innerText = "🚀 Cắt và Tải Video";
+            btn.disabled = false;
         }
     });
 });
