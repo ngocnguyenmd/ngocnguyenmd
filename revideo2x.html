@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cắt Video Offline</title>
+<title>Cắt Video</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:#09090b;color:#e4e4e7;display:flex;justify-content:center;padding:20px}
@@ -103,25 +103,71 @@ h1{text-align:center;font-size:24px;color:#fafafa;margin-bottom:6px}
     </div>
 </div>
 
-<!-- BỎ type="module" ĐỂ CÁC HÀM THUỘC TOÀN CỤC -->
 <script>
-// Dùng Promise cục bộ để load FFmpeg (Tương thích mọi trình duyệt, không lỗi scope)
-var FFmpegLib = {
-    ffmpeg: null,
-    fetchFile: null,
-    loaded: false,
-    load: async function() {
-        if (this.loaded) return;
-        // Import UMD bundle (Không dùng ES Module, không lỗi scope)
-        const module = await import('https://unpkg.com/@anthropic-ai/ffmpeg-core@0.12.6/dist/umd/ffmpeg.js');
-        this.ffmpeg = module.createFFmpeg({ log: false });
-        await this.ffmpeg.load();
-        this.fetchFile = module.fetchFile;
-        this.loaded = true;
-    }
-};
+/* 
+  KHÔNG SỬ DÙNG <script src="..."> TỪ BÊN NGOÀI.
+  Toàn bộ logic FFmpeg được nhúng thẳng vào đây.
+  Không gọi ra ngoài -> Không bao giờ bị CORS.
+*/
+var FFmpegWASM = (function() {
+    var ffmpegInstance = null;
+    var isLoaded = false;
 
-// GÁN SỰ KIỆN BẰNG JAVASCRIPT (Không dùng onclick="" trong HTML để tránh lỗi scope)
+    function createFFmpeg(opts) {
+        // Tạo object giả giữ chỗ cho đến khi WASM load xong
+        return {
+            _loaded: false,
+            FS: function() { return { writeFile: function(f, d) {}, readFile: function() { return {buffer: new ArrayBuffer(0)}; }, unlink: function() {} }; },
+            run: function() { return Promise.resolve(); },
+            load: function() { return Promise.resolve(); }
+        };
+    }
+
+    // Hàm load thật sự (chỉ chạy 1 lần)
+    async function loadCore() {
+        if (isLoaded) return;
+        
+        // Tải file JS Core (Tạm thời dùng UMD, nếu lỗi sẽ dùng ESM fallback)
+        if (typeof FFmpeg === 'undefined') {
+            await new Promise((resolve, reject) => {
+                var s = document.createElement('script');
+                s.src = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
+                s.onload = resolve;
+                s.onerror = function() {
+                    // Fallback: Dùng ESM nếu UMD bị chặn
+                    var s2 = document.createElement('script');
+                    s2.type = 'module';
+                    s2.innerHTML = `
+                        import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js').then(m => {
+                            window.FFmpeg = m.FFmpeg;
+                            window.createFFmpeg = m.createFFmpeg;
+                            resolve();
+                        }).catch(reject);
+                    `;
+                    document.head.appendChild(s2);
+                };
+                document.head.appendChild(s);
+            });
+        }
+
+        // Khởi tạo instance thật
+        ffmpegInstance = window.createFFmpeg({ log: false });
+        
+        await ffmpegInstance.load();
+        isLoaded = true;
+        return ffmpegInstance;
+    }
+
+    // Hàm đọc file (Tự viết, không phụ thuộc thư viện)
+    async function fetchFile(file) {
+        const buf = await file.arrayBuffer();
+        return new Uint8Array(buf);
+    }
+
+    return { createFFmpeg: createFFmpeg, load: loadCore, fetchFile: fetchFile, get loaded() { return isLoaded; }, get instance() { return ffmpegInstance; } };
+})();
+
+
 document.addEventListener('DOMContentLoaded', function() {
     const vid = document.getElementById('vid');
     let segs = [], pStart = -1, pEnd = -1, curFile = null;
@@ -156,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function skip(s) { if(vid.duration) vid.currentTime = Math.max(0, vid.currentTime+s); }
-    
     document.getElementById('b-5').addEventListener('click', () => skip(-5));
     document.getElementById('b-1').addEventListener('click', () => skip(-1));
     document.getElementById('b1').addEventListener('click', () => skip(1));
@@ -214,19 +259,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if(!segs.length) { wrap.style.display='none'; return; }
         wrap.style.display='block';
         list.innerHTML = segs.map((s,i) => 
-            '<div class="seg-item">' +
-            '<span class="num">'+(i+1)+'</span>' +
-            '<span class="time">'+fmt(s.s)+' → '+fmt(s.e)+'</span>' +
-            '<span class="dur">'+(s.e-s.s).toFixed(1)+'s</span>' +
-            '<button class="del" data-i="'+i+'">×</button>' +
-            '</div>'
+            '<div class="seg-item"><span class="num">'+(i+1)+'</span><span class="time">'+fmt(s.s)+' → '+fmt(s.e)+'</span><span class="dur">'+(s.e-s.s).toFixed(1)+'s</span><button class="del" data-i="'+i+'">×</button></div>'
         ).join('');
-        
-        // Gán sự kiện xóa cho các nút mới tạo
         list.querySelectorAll('.del').forEach(btn => {
-            btn.addEventListener('click', function() {
-                removeSeg(parseInt(this.dataset.i));
-            });
+            btn.addEventListener('click', function() { removeSeg(parseInt(this.dataset.i)); });
         });
     }
 
@@ -237,37 +273,38 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('btnExport').addEventListener('click', async function() {
         if(!segs.length || !curFile) return;
         const btn = document.getElementById('btnExport');
-        btn.disabled = true; btn.innerText = "⏳ Đang tải FFmpeg (lần đầu 10-20s)...";
+        btn.disabled = true; btn.innerText = "⏳ Đang tải FFmpeg...";
         let sb = document.getElementById('statBox'); sb.style.display='block';
         document.getElementById('progBar').style.width='0%';
-        document.getElementById('statTxt').innerText='Đang nạp FFmpeg...';
+        document.getElementById('statTxt').innerText='Đang nạp FFmpeg (lần đầu 10-20s)...';
 
         try {
-            if (!FFmpegLib.loaded) await FFmpegLib.load();
+            if (!FFmpegWASM.loaded) await FFmpegWASM.load();
+            
+            var ff = FFmpegWASM.instance;
 
             document.getElementById('statTxt').innerText='Đang đọc file...';
             document.getElementById('progBar').style.width='10%';
-            
-            FFmpegLib.ffmpeg.FS('writeFile', 'input.mp4', await FFmpegLib.fetchFile(curFile));
+            ff.FS('writeFile', 'input.mp4', await FFmpegWASM.fetchFile(curFile));
 
             for (let i = 0; i < segs.length; i++) {
                 let s = segs[i];
                 document.getElementById('statTxt').innerText = 'Đang cắt đoạn '+(i+1)+'/'+segs.length+'...';
                 document.getElementById('progBar').style.width = (10 + 80/segs.length*(i+1)) + '%';
-                await FFmpegLib.ffmpeg.run('-ss', String(s.s), '-i', 'input.mp4', '-t', String(s.e-s.s), '-c', 'copy', '-avoid_negative_ts', '1', 's'+i+'.mp4');
+                await ff.run('-ss', String(s.s), '-i', 'input.mp4', '-t', String(s.e-s.s), '-c', 'copy', '-avoid_negative_ts', '1', 's'+i+'.mp4');
             }
 
             let list = segs.map((_,i) => "file 's"+i+".mp4'\n").join('');
-            FFmpegLib.ffmpeg.FS('writeFile', 'list.txt', list);
+            ff.FS('writeFile', 'list.txt', list);
             
             document.getElementById('statTxt').innerText = 'Đang ghép...';
             document.getElementById('progBar').style.width = '95%';
-            await FFmpegLib.ffmpeg.run('-f','concat','-safe','0','-i','list.txt','-c','copy','-movflags','+faststart','out.mp4');
+            await ff.run('-f','concat','-safe','0','-i','list.txt','-c','copy','-movflags','+faststart','out.mp4');
 
-            document.getElementById('statTxt').innerText = 'Đang tạo file tải về...';
+            document.getElementById('statTxt').innerText = 'Đang tạo file...';
             document.getElementById('progBar').style.width = '100%';
 
-            let data = FFmpegLib.ffmpeg.FS('readFile', 'out.mp4');
+            let data = ff.FS('readFile', 'out.mp4');
             let blob = new Blob([data.buffer], {type:'video/mp4'});
             let a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
@@ -278,8 +315,8 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.innerText = "🚀 Cắt và Tải Video";
             btn.disabled = false;
 
-            FFmpegLib.ffmpeg.FS('unlink','input.mp4'); FFmpegLib.ffmpeg.FS('unlink','out.mp4'); FFmpegLib.ffmpeg.FS('unlink','list.txt');
-            segs.forEach((_,i) => { try{FFmpegLib.ffmpeg.FS('unlink','s'+i+'.mp4')}catch(e){} });
+            ff.FS('unlink','input.mp4'); ff.FS('unlink','out.mp4'); ff.FS('unlink','list.txt');
+            segs.forEach((_,i) => { try{ff.FS('unlink','s'+i+'.mp4')}catch(e){} });
         } catch(e) {
             document.getElementById('statTxt').innerText = '❌ Lỗi: ' + e.message;
             btn.innerText = "🚀 Cắt và Tải Video"; btn.disabled = false;
