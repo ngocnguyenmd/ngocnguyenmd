@@ -1,3 +1,7 @@
+// ==================== CẤU HÌNH TMDB (TỰ ĐỘNG POSTER) ====================
+const TMDB_API_KEY = 'c1ba4826351c415243b3d8ea82a77cd7';
+const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w300'; // w300 cân bằng giữa nét và tải nhanh
+
 // ==================== BẢNG ĐỒ SLUG ====================
 const GENRE_SLUG_MAP = {
   'Hành Động': 'hanh-dong','Phiêu Lưu': 'phieu-luu','Hoạt Hình': 'hoat-hinh','Hài': 'phim-hai',
@@ -96,9 +100,8 @@ const SOURCE_LIMITS = {
   'cx': 10 // Nguonc
 };
 
-// ==================== FETCH LOGIC (PROXY CHỈ CHO NGUONC) ====================
+// ==================== FETCH LOGIC (PROXY CHO NGUONC) ====================
 const fetchDirect = async (url, sourceCode = '') => {
-  // 1. Thử gọi trực tiếp
   try {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 6000); 
@@ -208,8 +211,6 @@ const fetchFromSource = async (src, p, m, f, genre = null, country = null, year 
       if (year) params.append('year', year);
       url = base + (base.includes('?') ? '&' : '?') + params.toString();
     } else {
-      // NGUONC LOGIC: Không hỗ trợ query param nhiều filter cùng lúc
-      // Ưu tiên: Genre > Country > Year
       if (genre) url = src.genreUrl(genre, p);
       else if (country) url = src.countryUrl(country, p);
       else if (year) url = src.yearUrl(year, p);
@@ -239,7 +240,7 @@ const fetchFromSource = async (src, p, m, f, genre = null, country = null, year 
 
     return {
       name: it.name || it.origin_name || it.title || 'Không rõ',
-      thumb_url: thumb,
+      thumb_url: thumb, // Ảnh gốc giữ làm dự phòng
       episodeDisplay: getEpisodeDisplay(it),
       slug: it.slug || it._id || '',
       sourceCode: src.code,
@@ -252,6 +253,28 @@ const fetchFromSource = async (src, p, m, f, genre = null, country = null, year 
 
   API_CACHE[cacheKey] = result;
   return result;
+};
+
+// ==================== FETCH ẢNH TỪ TMDB ====================
+const fetchTmdbImage = async (movieName, movieYear) => {
+  if (!movieName) return null;
+  
+  try {
+    const query = encodeURIComponent(movieName);
+    const url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&language=vi-VN&query=${query}&year=${movieYear}`;
+    
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    
+    const data = await res.json();
+    if (data.results && data.results.length > 0) {
+      const posterPath = data.results[0].poster_path;
+      if (posterPath) return posterPath;
+    }
+  } catch (e) {
+    console.error("Lỗi TMDB:", e);
+  }
+  return null;
 };
 
 // ==================== UI LOGIC ====================
@@ -284,7 +307,7 @@ const appendItem = (m, container, id, seenSet) => {
   const c = document.createElement('div');
   c.className = 'movie-item';
   c.dataset.slug = m.slug;
-  c.dataset.source = m.sourceCode;
+  c.dataset.source = m.sourceCode; 
   c.onclick = () => { saveState(); location.href = `detail.html?slug=${m.slug}&source=${m.sourceCode}`; };
 
   const epTag = document.createElement('div');
@@ -322,12 +345,19 @@ const appendItem = (m, container, id, seenSet) => {
   const imgReal = document.createElement('img');
   imgReal.className = 'movie-img-real';
   imgReal.loading = 'lazy';
-  imgReal.onload = function () {
-    this.style.opacity = '1';
-    this.parentElement.classList.add('loaded');
+  
+  const finishLoading = () => {
+    imgReal.style.opacity = '1';
+    imgReal.parentElement.classList.add('loaded');
     updateProg(id); 
   };
-  imgReal.onerror = function () { updateProg(id); };
+
+  const handleLoadError = () => {
+    updateProg(id);
+  };
+
+  imgReal.onload = finishLoading;
+  imgReal.onerror = handleLoadError;
 
   const imgPlaceholder = document.createElement('div');
   imgPlaceholder.className = 'movie-img-placeholder';
@@ -339,8 +369,34 @@ const appendItem = (m, container, id, seenSet) => {
 
   container.appendChild(c);
 
-  if (m.thumb_url) imgReal.src = m.thumb_url;
-  else updateProg(id);
+  // ==================== LOGIC LOAD ẢNH (TMDB CHO AX, BX) ====================
+  (async () => {
+    let finalImageSrc = '';
+
+    // CHỈ TÌM TMDB CHO VÀNG NGUỒN AX VÀ BX (Yêu cầu của bạn)
+    if (m.sourceCode === 'ax' || m.sourceCode === 'bx') {
+      const tmdbPath = await fetchTmdbImage(m.name, m.year);
+      
+      if (tmdbPath) {
+        finalImageSrc = TMDB_IMAGE_BASE + tmdbPath;
+        // Nếu dùng ảnh TMDB, đổi tag nguồn thành TMDB để phân biệt
+        sourceTag.textContent = 'TMDB';
+        sourceTag.style.color = '#ffcc00'; // Tô màu vàng cho TMDB
+      } else {
+        // Nếu TMDB không có ảnh, dùng lại ảnh nguồn (Fallback)
+        finalImageSrc = m.thumb_url || '';
+      }
+    } else {
+      // Cx (Nguonc) hoặc các nguồn khác: Dùng ảnh nguồn trực tiếp
+      finalImageSrc = m.thumb_url || '';
+    }
+
+    if (finalImageSrc) {
+      imgReal.src = finalImageSrc;
+    } else {
+      handleLoadError();
+    }
+  })();
 
   return true; 
 };
@@ -463,7 +519,7 @@ const getTitle = (m, f, g, c, y) => {
   return f?.toUpperCase() || 'PHIM';
 };
 
-// ==================== LOAD (KHÔNG LOẠI BỎ NGUONC) ====================
+// ==================== LOAD ====================
 const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   currentSearchQuery = '';
   if (document.getElementById('nav-search-input')) document.getElementById('nav-search-input').value = '';
@@ -494,10 +550,6 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   const grid = document.getElementById(`${sid}-grid`);
   
   let sources = Object.values(API_SOURCES);
-  // SỬA LỖI: XÓA BỎ ĐOẠN NÀY ĐỂ NGUONC HOẠT ĐỘNG TRONG LỌC KẾT HỢP
-  // if (combinedFilterMode && (m === 'combined' || m === 'genre' || m === 'country' || m === 'year')) {
-  //   sources = sources.filter(s => s.code !== 'cx');
-  // }
 
   const finalCount = await processStream(grid, sources, p, m, f, currentGenre, currentCountry, currentYear, false, false, sid);
   
@@ -565,13 +617,11 @@ const search = async (q = null, p = 1) => {
   saveState();
 };
 
-// ==================== LOAD TXT (XỬ LÝ LỖI FILE LOCAL) ====================
+// ==================== LOAD TXT (XỬ LÝ FILE LOCAL) ====================
 const loadTxt = async () => {
   // XỬ LÝ LỖI CORS KHI CHẠY LOCAL
   if (window.location.protocol === 'file:') {
-    // Nếu đang chạy dạng file://, bỏ qua bước load text để tránh lỗi console
     console.warn("Chạy trên local file://, bỏ qua load trangchu.txt");
-    // Không hiển thị lỗi để UI sạch sẽ
     return;
   }
 
