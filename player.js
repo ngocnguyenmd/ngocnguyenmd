@@ -36,7 +36,7 @@ let currentTimeUpdateHandler = null;
 let currentEndedHandler = null;
 
 // ==========================================
-// TẢI BẮT BUỘC CẢ 2 LINK HLS.JS NẾU CHƯA CÓ
+// TẢI BẮT BUỘC CẢ 2 LINK HLS.JS
 // ==========================================
 function loadHlsScripts() {
   return new Promise((resolve, reject) => {
@@ -47,7 +47,7 @@ function loadHlsScripts() {
 
     const urls = [
       'https://cdn.jsdelivr.net/npm/hls.js@latest?ver=7.0',
-      'https://cdnjs.cloudflare.com/ajax/libs/hls.js/0.5.14/hls.js'
+      'https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.6.13/hls.min.js'
     ];
 
     let resolved = false;
@@ -272,7 +272,7 @@ function resetPlayer() {
 }
 
 // ==========================================
-// HÀM PHÁT HLS - ÉP HIỆN THANH TUA & FIX ÂM THANH
+// HÀM PHÁT HLS - FIX LỖI ÂM THANH & BUFFER SEEK OVER HOLE
 // ==========================================
 function playSo1(m3u8) {
   resetPlayer();
@@ -288,7 +288,11 @@ function playSo1(m3u8) {
       enableSoftwareAES: true,
       stretchShortVideoThreshold: 0.5,    
       maxAudioFramesDrift: 10,            
+      
+      // ======== FIX LỖI BUFFER SEEK OVER HOLE (GIẬT THANH TUA) ========
       maxBufferHole: 0.5,                 
+      nudgeOffset: 0.1,                   // Đẩy nhẹ thời gian để vượt khoảng trống mà không bị giật
+      nudgeMaxRetry: 5,                   // Giới hạn số lần đẩy
       forceKeyFrameOnDiscontinuity: true, 
       
       // ======== BUFFER & MẠNG ========
@@ -319,7 +323,6 @@ function playSo1(m3u8) {
 
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       loading.style.display = 'none';
-      // Đảm bảo thanh điều khiển đã được bật trước khi phát
       videoEl.controls = true;
       videoEl.play().catch(e => showToast('Bấm play để phát'));
     });
