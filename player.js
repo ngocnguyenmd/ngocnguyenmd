@@ -32,24 +32,48 @@ let popupTimeout = null;
 let currentPlayMode = 'so1';
 let hlsRetryCount = 0;
 
-// Handler lưu trữ
 let currentTimeUpdateHandler = null;
 let currentEndedHandler = null;
 
 // ==========================================
-// TỰ ĐỘNG TẢI CDN HLS.JS 1.6.13 NẾU CHƯA CÓ
+// TẢI BẮT BUỘC CẢ 2 LINK HLS.JS NẾU CHƯA CÓ
 // ==========================================
-function loadHlsScript(url) {
+function loadHlsScripts() {
   return new Promise((resolve, reject) => {
     if (window.Hls && window.Hls.version) {
       resolve();
       return;
     }
-    const script = document.createElement('script');
-    script.src = url;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Không thể tải HLS.js'));
-    document.head.appendChild(script);
+
+    const urls = [
+      'https://cdn.jsdelivr.net/npm/hls.js@latest?ver=7.0',
+      'https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.6.13/hls.min.js'
+    ];
+
+    let resolved = false;
+    let rejectedCount = 0;
+
+    urls.forEach(url => {
+      const script = document.createElement('script');
+      script.src = url;
+      script.async = true;
+      
+      script.onload = () => {
+        if (!resolved) {
+          resolved = true;
+          resolve();
+        }
+      };
+      
+      script.onerror = () => {
+        rejectedCount++;
+        if (rejectedCount === urls.length && !resolved) {
+          reject(new Error('Không thể tải thư viện HLS.js từ cả 2 nguồn'));
+        }
+      };
+      
+      document.head.appendChild(script);
+    });
   });
 }
 
@@ -130,7 +154,7 @@ async function loadMovie() {
     })).filter(s => s.data.length > 0);
 
     if (servers.length === 0) {
-      errorMsg.textContent = 'Không có tập nào';
+      errorMsg.querySelector('span').textContent = 'Không có tập nào';
       errorMsg.style.display = 'flex';
       loading.style.display = 'none';
       return false;
@@ -142,7 +166,7 @@ async function loadMovie() {
     return true;
   } catch (e) {
     console.error(e);
-    errorMsg.textContent = 'Lỗi tải dữ liệu phim';
+    errorMsg.querySelector('span').textContent = 'Lỗi tải dữ liệu phim';
     errorMsg.style.display = 'flex';
     loading.style.display = 'none';
     return false;
@@ -248,21 +272,24 @@ function resetPlayer() {
 }
 
 // ==========================================
-// HÀM PHÁT HLS - FIX DỨT ĐIỂM LỖI ROBOT/RÈ
+// HÀM PHÁT HLS - ÉP HIỆN THANH TUA & FIX ÂM THANH
 // ==========================================
 function playSo1(m3u8) {
   resetPlayer();
+  
+  // ÉP BUỘC HIỆN THANH ĐIỀU KHIỂN CỦA TRÌNH DUYỆT
+  videoEl.controls = true; 
   videoEl.style.display = 'block';
 
   if (Hls.isSupported()) {
     hls = new Hls({
-      // ======== PHẦN FIX ÂM THANH ROBOT ========
-      enableWorker: true,                 // BẮT BUỘC TRUE: Tách luồng để không làm nghẽn UI gây trôi đồng hồ âm thanh
+      // ======== FIX ÂM THANH ROBOT ========
+      enableWorker: true,                 
       enableSoftwareAES: true,
-      stretchShortVideoThreshold: 0.5,    // Giúp căn chỉnh đồng bộ âm thanh tốt hơn mà không bị nén
-      maxAudioFramesDrift: 10,            // PHẢI ĐỂ 10 (hoặc xóa đi): Đặt thành 1 như cũ sẽ ép hls.js bù trừ liên tục gây tiếng robot
-      maxBufferHole: 0.5,                 // Đặt 0.5 để ổn định timeline
-      forceKeyFrameOnDiscontinuity: true, // Fix nhiễu khung hình khi đổi server/source
+      stretchShortVideoThreshold: 0.5,    
+      maxAudioFramesDrift: 10,            
+      maxBufferHole: 0.5,                 
+      forceKeyFrameOnDiscontinuity: true, 
       
       // ======== BUFFER & MẠNG ========
       maxBufferLength: 30,
@@ -284,14 +311,7 @@ function playSo1(m3u8) {
       levelLoadingTimeOut: 15000,
       levelLoadingMaxRetry: 3,
       fragLoadingTimeOut: 25000,
-      fragLoadingMaxRetry: 5,
-      
-      // ======== XHR SETUP ========
-      xhrSetup: function(xhr, url) {
-        xhr.open('GET', url, true);
-        xhr.withCredentials = false;
-        xhr.timeout = 25000;
-      }
+      fragLoadingMaxRetry: 5
     });
     
     hls.loadSource(m3u8);
@@ -299,6 +319,8 @@ function playSo1(m3u8) {
 
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       loading.style.display = 'none';
+      // Đảm bảo thanh điều khiển đã được bật trước khi phát
+      videoEl.controls = true;
       videoEl.play().catch(e => showToast('Bấm play để phát'));
     });
 
@@ -320,7 +342,7 @@ function playSo1(m3u8) {
                 currentPlayMode = 'so2';
                 playSo2(ep.link_so2);
               } else {
-                errorMsg.textContent = 'Phim lỗi. Đổi Server?';
+                errorMsg.querySelector('span').textContent = 'Phim lỗi. Đổi Server?';
                 errorMsg.style.display = 'flex';
                 loading.style.display = 'none';
               }
@@ -340,6 +362,8 @@ function playSo1(m3u8) {
     });
     
   } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+    // Dành cho Safari iOS
+    videoEl.controls = true;
     videoEl.src = m3u8;
     videoEl.addEventListener('loadedmetadata', () => {
       loading.style.display = 'none';
@@ -425,7 +449,7 @@ function play(i) {
   } else if (link_so2) {
     playSo2(link_so2);
   } else {
-    errorMsg.textContent = 'Không có link phát cho tập này';
+    errorMsg.querySelector('span').textContent = 'Không có link phát cho tập này';
     errorMsg.style.display = 'flex';
     loading.style.display = 'none';
   }
@@ -461,7 +485,7 @@ window.changeSource = async function(code) {
 
 async function init() {
   if (!slug) {
-    errorMsg.textContent = 'Thiếu thông tin phim';
+    errorMsg.querySelector('span').textContent = 'Thiếu thông tin phim';
     errorMsg.style.display = 'flex';
     return;
   }
@@ -469,13 +493,13 @@ async function init() {
   loading.style.display = 'flex';
   
   try {
-    // Chờ tải xong thư viện HLS.js 1.6.13
-    await loadHlsScript('https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.6.13/hls.min.js');
+    // Đợi tải xong ít nhất 1 trong 2 link HLS.js
+    await loadHlsScripts();
     if (await loadMovie() && servers.length > 0) {
       switchServer(0);
     }
   } catch (err) {
-    errorMsg.textContent = 'Lỗi tải thư viện phát video!';
+    errorMsg.querySelector('span').textContent = 'Lỗi tải thư viện phát video!';
     errorMsg.style.display = 'flex';
     loading.style.display = 'none';
   }
