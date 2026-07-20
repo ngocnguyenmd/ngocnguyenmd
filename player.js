@@ -36,6 +36,23 @@ let hlsRetryCount = 0;
 let currentTimeUpdateHandler = null;
 let currentEndedHandler = null;
 
+// ==========================================
+// TỰ ĐỘNG TẢI CDN HLS.JS 1.6.13 NẾU CHƯA CÓ
+// ==========================================
+function loadHlsScript(url) {
+  return new Promise((resolve, reject) => {
+    if (window.Hls && window.Hls.version) {
+      resolve();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = url;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Không thể tải HLS.js'));
+    document.head.appendChild(script);
+  });
+}
+
 function showToast(m) {
   toastEl.textContent = m;
   toastEl.classList.add('show');
@@ -212,7 +229,6 @@ function markEp(i) {
 }
 
 function resetPlayer() {
-  // Xóa event cũ
   if (currentTimeUpdateHandler) { videoEl.removeEventListener('timeupdate', currentTimeUpdateHandler); currentTimeUpdateHandler = null; }
   if (currentEndedHandler) { videoEl.removeEventListener('ended', currentEndedHandler); currentEndedHandler = null; }
   
@@ -232,7 +248,7 @@ function resetPlayer() {
 }
 
 // ==========================================
-// HÀM PHÁT HLS - SỬA TOÀN BỘ LỖI ÂM THANH
+// HÀM PHÁT HLS - FIX DỨT ĐIỂM LỖI ROBOT/RÈ
 // ==========================================
 function playSo1(m3u8) {
   resetPlayer();
@@ -240,22 +256,21 @@ function playSo1(m3u8) {
 
   if (Hls.isSupported()) {
     hls = new Hls({
-      // ======== PHẦN 1: KHỬ TIẾNG ROBOT / RÈ ========
-      enableWorker: false,
+      // ======== PHẦN FIX ÂM THANH ROBOT ========
+      enableWorker: true,                 // BẮT BUỘC TRUE: Tách luồng để không làm nghẽn UI gây trôi đồng hồ âm thanh
       enableSoftwareAES: true,
+      stretchShortVideoThreshold: 0.5,    // Giúp căn chỉnh đồng bộ âm thanh tốt hơn mà không bị nén
+      maxAudioFramesDrift: 10,            // PHẢI ĐỂ 10 (hoặc xóa đi): Đặt thành 1 như cũ sẽ ép hls.js bù trừ liên tục gây tiếng robot
+      maxBufferHole: 0.5,                 // Đặt 0.5 để ổn định timeline
+      forceKeyFrameOnDiscontinuity: true, // Fix nhiễu khung hình khi đổi server/source
       
-      // ======== PHẦN 2: ĐỒNG BỘ ÂM THANH CHẶT CHẼ ========
-      maxAudioFramesDrift: 1,        // <--- SỬA: Giảm từ 10 xuống 1 (QUAN TRỌNG NHẤT!)
-      maxFragLookUpTolerance: 0.3,   // <--- THÊM: Khoảng cách timestamp cho phép
-      maxBufferHole: 0.3,            // <--- SỬA: Giảm từ 0.5 xuống 0.3
-      
-      // ======== PHẦN 3: BUFFER TỐI ƯU CHO MẠNG YẾU ========
+      // ======== BUFFER & MẠNG ========
       maxBufferLength: 30,
       maxMaxBufferLength: 60,
       maxBufferSize: 60 * 1000 * 1000,
-      backBufferLength: 90,          // <--- THÊM: Giới hạn bộ đệm cũ, tránh tràn nhớ
+      backBufferLength: 90,
       
-      // ======== PHẦN 4: CHẤT LƯỢNG & ABR ========
+      // ======== CHẤT LƯỢNG & ABR ========
       autoStartLoad: true,
       startLevel: -1,
       capLevelToPlayerSize: true,
@@ -263,7 +278,7 @@ function playSo1(m3u8) {
       abrBandWidthFactor: 0.85,
       abrBandWidthUpFactor: 0.7,
       
-      // ======== PHẦN 5: TIMEOUT & RETRY ========
+      // ======== TIMEOUT & RETRY ========
       manifestLoadingTimeOut: 15000,
       manifestLoadingMaxRetry: 3,
       levelLoadingTimeOut: 15000,
@@ -271,13 +286,9 @@ function playSo1(m3u8) {
       fragLoadingTimeOut: 25000,
       fragLoadingMaxRetry: 5,
       
-      // ======== PHẦN 6: KHÁC ========
-      forceKeyFrameOnDiscontinuity: true,
-      progressive: false,
-      
-      // ======== PHẦN 7: XHR SETUP ĐÚNG CÁCH ========
-      xhrSetup: function(xhr, url) {   // <--- SỬA: Thêm tham số url
-        xhr.open('GET', url, true);     // <--- SỬA: Mở request với url đầy đủ
+      // ======== XHR SETUP ========
+      xhrSetup: function(xhr, url) {
+        xhr.open('GET', url, true);
         xhr.withCredentials = false;
         xhr.timeout = 25000;
       }
@@ -291,7 +302,6 @@ function playSo1(m3u8) {
       videoEl.play().catch(e => showToast('Bấm play để phát'));
     });
 
-    // Xử lý lỗi có giới hạn retry
     hls.on(Hls.Events.ERROR, (e, data) => {
       console.log('[HLS]', data.type, data.details, data.fatal);
       
@@ -303,9 +313,8 @@ function playSo1(m3u8) {
               showToast(`Mất kết nối... thử lại (${hlsRetryCount}/3)`);
               hls.startLoad();
             } else {
-              showToast('Lỗi mạng liên tục');
+              showToast('Lỗi mạng liên tục, thử đổi nguồn!');
               hls.destroy(); hls = null;
-              // Chuyển sang Embed nếu được
               const ep = episodes[curEp];
               if (ep && ep.link_so2) {
                 currentPlayMode = 'so2';
@@ -319,7 +328,7 @@ function playSo1(m3u8) {
             break;
             
           case Hls.ErrorTypes.MEDIA_ERROR:
-            showToast('Lỗi giải mã...');
+            showToast('Lỗi giải mã, đang khôi phục...');
             hls.recoverMediaError();
             break;
             
@@ -359,7 +368,6 @@ function addAutoSkipLogic() {
     const d = videoEl.duration;
     if (!d || isNaN(d) || videoEl.seeking) return;
 
-    // Tua 15 phút -> 50 giây
     const midSkipPoint = 900;    
     const midSkipAmount = 56; 
 
@@ -367,7 +375,7 @@ function addAutoSkipLogic() {
       const target = midSkipPoint + midSkipAmount;
       if (target < d) {
         videoEl.currentTime = target;
-        showToast(`Bỏ ${midSkipAmount}s`);
+        showToast(`Bỏ ${midSkipAmount}s quảng cáo`);
         videoEl._hasSkippedMid = true;
       }
     }
@@ -459,8 +467,17 @@ async function init() {
   }
   curEp = epFromUrl();
   loading.style.display = 'flex';
-  if (await loadMovie() && servers.length > 0) {
-    switchServer(0);
+  
+  try {
+    // Chờ tải xong thư viện HLS.js 1.6.13
+    await loadHlsScript('https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.6.13/hls.min.js');
+    if (await loadMovie() && servers.length > 0) {
+      switchServer(0);
+    }
+  } catch (err) {
+    errorMsg.textContent = 'Lỗi tải thư viện phát video!';
+    errorMsg.style.display = 'flex';
+    loading.style.display = 'none';
   }
 }
 
