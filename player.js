@@ -47,7 +47,7 @@ function loadHlsScripts() {
 
     const urls = [
       'https://cdn.jsdelivr.net/npm/hls.js@latest?ver=7.0',
-      'https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.6.13/hls.min.js'
+      'https://cdnjs.cloudflare.com/ajax/libs/hls.js/0.5.14/hls.js'
     ];
 
     let resolved = false;
