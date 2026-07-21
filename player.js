@@ -388,8 +388,8 @@ function addAutoSkipLogic() {
     const d = plyrPlayer ? plyrPlayer.duration : videoEl.duration;
     if (!d || isNaN(d) || (plyrPlayer && plyrPlayer.seeking)) return;
 
-    const midSkipPoint = 900;    
-    const midSkipAmount = 56; 
+    const midSkipPoint = 890;    
+    const midSkipAmount = 100; 
 
     if (!videoEl._hasSkippedMid && t >= midSkipPoint && t < midSkipPoint + 15) {
       const target = midSkipPoint + midSkipAmount;
