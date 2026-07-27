@@ -25,7 +25,7 @@ const plotText = document.getElementById('plot-text');
 const sourceModeBar = document.getElementById('source-mode-bar');
 
 let hls = null;
-let plyrPlayer = null; // Biến quản lý giao diện xanh
+let plyrPlayer = null;
 let servers = [], episodes = [], curSrv = 0, curEp = 0;
 let movie = '', poster = '', cdn = '', plot = '';
 let warned = false;
@@ -264,6 +264,10 @@ function resetPlayer() {
   if (hls) { hls.destroy(); hls = null; }
   if (plyrPlayer) { plyrPlayer.destroy(); plyrPlayer = null; }
   
+  // XÓA THẺ DIV BỌC PLYR ĐÃ TẠO RA TRƯỚC ĐÓ ĐỂ TRÁNH LỖI GIAO DIỆN
+  const oldWrapper = document.getElementById('plyr-wrapper');
+  if (oldWrapper) oldWrapper.remove();
+
   videoEl.removeAttribute('src');
   videoEl.load();
   videoEl.style.display = 'none';
@@ -278,10 +282,22 @@ function resetPlayer() {
 }
 
 // ==========================================
-// HÀM PHÁT HLS KẾT HỢP PLYR (KHÔNG DÙNG CONTROLS CỦA TRÌNH DUYỆT)
+// HÀM PHÁT HLS KẾT HỢP PLYR
 // ==========================================
 function playSo1(m3u8) {
   resetPlayer();
+
+  // TẠO MỘT THẺ DIV MỚI ĐỂ CHỨA VIDEO, KHÔNG ĐỂ PLYR TỰ ĐỘNG BỌC LẤY VIDEO GỐC
+  const wrapper = document.createElement('div');
+  wrapper.id = 'plyr-wrapper';
+  wrapper.style.position = 'relative';
+  wrapper.style.width = '100%';
+  wrapper.style.height = '100%';
+  
+  // Chèn thẻ video vào trong div mới
+  wrapper.appendChild(videoEl);
+  playerArea.insertBefore(wrapper, loading);
+  
   videoEl.style.display = 'block';
 
   if (Hls.isSupported()) {
@@ -315,11 +331,12 @@ function playSo1(m3u8) {
     hls.loadSource(m3u8);
     hls.attachMedia(videoEl);
 
-    // KHỞI TẠO GIAO DIỆN PLYR MÀU XANH
+    // KHỞI TẠO GIAO DIỆN PLYR VỚI TÙY CHỌN 'WRAPPER' ĐỂ KHÔNG LÀM HỎNG VIDEO GỐC
     plyrPlayer = new Plyr(videoEl, {
       controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'],
       autoplay: true,
-      ratio: '16:9'
+      ratio: '16:9',
+      _allowMultipleInstances: true // Tránh cảnh báo nếu chưa kịp xóa hết instance cũ
     });
 
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -360,7 +377,12 @@ function playSo1(m3u8) {
     
   } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
     videoEl.src = m3u8;
-    plyrPlayer = new Plyr(videoEl, { controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'], autoplay: true, ratio: '16:9' });
+    plyrPlayer = new Plyr(videoEl, { 
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'], 
+        autoplay: true, 
+        ratio: '16:9',
+        _allowMultipleInstances: true 
+    });
     videoEl.addEventListener('loadedmetadata', () => {
       loading.style.display = 'none';
       plyrPlayer.play().catch(() => {});
