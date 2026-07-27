@@ -25,11 +25,62 @@ const plotText = document.getElementById('plot-text');
 const sourceModeBar = document.getElementById('source-mode-bar');
 
 let hls = null;
+let plyrPlayer = null;
 let servers = [], episodes = [], curSrv = 0, curEp = 0;
 let movie = '', poster = '', cdn = '', plot = '';
 let warned = false;
 let popupTimeout = null;
 let currentPlayMode = 'so1';
+let hlsRetryCount = 0;
+
+let currentTimeUpdateHandler = null;
+let currentEndedHandler = null;
+
+// ==========================================
+// TẢI BẮT BUỘC CẢ 2 LINK HLS.JS VÀ PLYR.JS
+// ==========================================
+function loadScripts() {
+  return new Promise((resolve, reject) => {
+    const scriptsToLoad = [
+      'https://cdn.jsdelivr.net/npm/hls.js@latest?ver=7.0',
+      'https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.6.13/hls.min.js',
+      'https://cdn.plyr.io/3.7.8/plyr.js'
+    ];
+
+    let hasHls = !!(window.Hls && window.Hls.version);
+    let hasPlyr = !!window.Plyr;
+
+    if (hasHls && hasPlyr) {
+      resolve();
+      return;
+    }
+
+    let rejectedCount = 0;
+
+    scriptsToLoad.forEach(url => {
+      if ((url.includes('hls.js') && hasHls) || (url.includes('plyr.js') && hasPlyr)) return;
+
+      const script = document.createElement('script');
+      script.src = url;
+      script.async = true;
+      
+      script.onload = () => {
+        if (url.includes('hls.js')) hasHls = true;
+        if (url.includes('plyr.js')) hasPlyr = true;
+        if (hasHls && hasPlyr) resolve();
+      };
+      
+      script.onerror = () => {
+        rejectedCount++;
+        if (rejectedCount === scriptsToLoad.length) {
+          reject(new Error('Lỗi tải thư viện'));
+        }
+      };
+      
+      document.head.appendChild(script);
+    });
+  });
+}
 
 function showToast(m) {
   toastEl.textContent = m;
@@ -108,7 +159,7 @@ async function loadMovie() {
     })).filter(s => s.data.length > 0);
 
     if (servers.length === 0) {
-      errorMsg.textContent = 'Không có tập nào';
+      errorMsg.querySelector('span').textContent = 'Không có tập nào';
       errorMsg.style.display = 'flex';
       loading.style.display = 'none';
       return false;
@@ -120,7 +171,7 @@ async function loadMovie() {
     return true;
   } catch (e) {
     console.error(e);
-    errorMsg.textContent = 'Lỗi tải dữ liệu phim';
+    errorMsg.querySelector('span').textContent = 'Lỗi tải dữ liệu phim';
     errorMsg.style.display = 'flex';
     loading.style.display = 'none';
     return false;
@@ -132,9 +183,10 @@ function loadPoster(url) {
   img.onload = () => {
     bgBlur.style.backgroundImage = `url(${url})`;
     bgBlur.classList.add('loaded');
-    document.querySelector('.overlay').style.display = 'block';
+    const overlay = document.querySelector('.overlay');
+    if(overlay) overlay.style.display = 'block';
   };
-  img.onerror = () => { bgBlur.style.display = 'none'; };
+  img.onerror = () => { if(bgBlur) bgBlur.style.display = 'none'; };
   img.src = url;
 }
 
@@ -206,87 +258,134 @@ function markEp(i) {
 }
 
 function resetPlayer() {
+  if (currentTimeUpdateHandler && plyrPlayer) { plyrPlayer.off('timeupdate', currentTimeUpdateHandler); currentTimeUpdateHandler = null; }
+  if (currentEndedHandler && plyrPlayer) { plyrPlayer.off('ended', currentEndedHandler); currentEndedHandler = null; }
+  
   if (hls) { hls.destroy(); hls = null; }
-  videoEl.pause(); videoEl.src = ''; videoEl.style.display = 'none';
-  embedFrame.src = ''; embedFrame.style.display = 'none';
+  if (plyrPlayer) { plyrPlayer.destroy(); plyrPlayer = null; }
+  
+  // XÓA THẺ DIV BỌC PLYR ĐÃ TẠO RA TRƯỚC ĐÓ ĐỂ TRÁNH LỖI GIAO DIỆN
+  const oldWrapper = document.getElementById('plyr-wrapper');
+  if (oldWrapper) oldWrapper.remove();
+
+  videoEl.removeAttribute('src');
+  videoEl.load();
+  videoEl.style.display = 'none';
+  
+  embedFrame.src = ''; 
+  embedFrame.style.display = 'none';
   loading.style.display = 'flex';
   errorMsg.style.display = 'none';
   warned = false;
   clearTimeout(popupTimeout);
+  hlsRetryCount = 0;
 }
 
+// ==========================================
+// HÀM PHÁT HLS KẾT HỢP PLYR
+// ==========================================
 function playSo1(m3u8) {
   resetPlayer();
+
+  // TẠO MỘT THẺ DIV MỚI ĐỂ CHỨA VIDEO, KHÔNG ĐỂ PLYR TỰ ĐỘNG BỌC LẤY VIDEO GỐC
+  const wrapper = document.createElement('div');
+  wrapper.id = 'plyr-wrapper';
+  wrapper.style.position = 'relative';
+  wrapper.style.width = '100%';
+  wrapper.style.height = '100%';
+  
+  // Chèn thẻ video vào trong div mới
+  wrapper.appendChild(videoEl);
+  playerArea.insertBefore(wrapper, loading);
+  
   videoEl.style.display = 'block';
 
   if (Hls.isSupported()) {
     hls = new Hls({
-      // Tối ưu cho mạng yếu
-       enableWorker: true,
-       autoStartLoad: true,
-       startLevel: 0,
-      
-      // Giảm buffer để tránh lag trên mạng yếu
-      maxBufferLength: 20,
-      maxMaxBufferLength: 40,
-      maxBufferSize: 60 * 1000 * 1000,
-      maxBufferHole: 1.5,
-      
-      // Tự động điều chỉnh chất lượng theo bandwidth
-      capLevelToPlayerSize: true,
-      abrEwmaDefaultEstimate: 1000000,
-      abrBandWidthFactor: 0.85,
-      abrBandWidthUpFactor: 0.6,
-      
-      // Giảm retry để tránh treo
-      manifestLoadingTimeOut: 15000,
-      manifestLoadingMaxRetry: 4,
-      levelLoadingTimeOut: 15000,
-      levelLoadingMaxRetry: 4,
-      fragLoadingTimeOut: 30000,
-      fragLoadingMaxRetry: 6,
-      
-      // Tối ưu audio sync
-      maxAudioFramesDrift: 10,
-      forceKeyFrameOnDiscontinuity: true,
+      enableWorker: true,                 
       enableSoftwareAES: true,
-      
-      xhrSetup: xhr => { 
-        xhr.withCredentials = false;
-        xhr.timeout = 20000;
-      }
+      stretchShortVideoThreshold: 0.5,    
+      maxAudioFramesDrift: 10,            
+      maxBufferHole: 0.5,                 
+      nudgeOffset: 0.1,                   
+      nudgeMaxRetry: 5,                   
+      forceKeyFrameOnDiscontinuity: true, 
+      maxBufferLength: 30,
+      maxMaxBufferLength: 60,
+      maxBufferSize: 60 * 1000 * 1000,
+      backBufferLength: 90,
+      autoStartLoad: true,
+      startLevel: -1,
+      capLevelToPlayerSize: true,
+      abrEwmaDefaultEstimate: 500000,
+      abrBandWidthFactor: 0.85,
+      abrBandWidthUpFactor: 0.7,
+      manifestLoadingTimeOut: 15000,
+      manifestLoadingMaxRetry: 3,
+      levelLoadingTimeOut: 15000,
+      levelLoadingMaxRetry: 3,
+      fragLoadingTimeOut: 25000,
+      fragLoadingMaxRetry: 5
     });
     
     hls.loadSource(m3u8);
     hls.attachMedia(videoEl);
 
+    // KHỞI TẠO GIAO DIỆN PLYR VỚI TÙY CHỌN 'WRAPPER' ĐỂ KHÔNG LÀM HỎNG VIDEO GỐC
+    plyrPlayer = new Plyr(videoEl, {
+      controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'],
+      autoplay: true,
+      ratio: '16:9',
+      _allowMultipleInstances: true // Tránh cảnh báo nếu chưa kịp xóa hết instance cũ
+    });
+
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       loading.style.display = 'none';
-      videoEl.play().catch(e => showToast('Bấm play để phát'));
+      plyrPlayer.play().catch(e => showToast('Bấm play để phát'));
     });
 
     hls.on(Hls.Events.ERROR, (e, data) => {
       if (data.fatal) {
         switch(data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
-            showToast('Lỗi mạng - đang thử kết nối lại...');
-            hls.startLoad();
+            if (hlsRetryCount < 3) {
+              hlsRetryCount++;
+              showToast(`Mất kết nối... thử lại (${hlsRetryCount}/3)`);
+              hls.startLoad();
+            } else {
+              showToast('Lỗi mạng liên tục, thử đổi nguồn!');
+              hls.destroy(); hls = null;
+              const ep = episodes[curEp];
+              if (ep && ep.link_so2) {
+                currentPlayMode = 'so2';
+                playSo2(ep.link_so2);
+              } else {
+                errorMsg.querySelector('span').textContent = 'Phim lỗi. Đổi Server?';
+                errorMsg.style.display = 'flex';
+                loading.style.display = 'none';
+              }
+            }
             break;
+            
           case Hls.ErrorTypes.MEDIA_ERROR:
-            showToast('Lỗi media - đang khôi phục...');
+            showToast('Lỗi giải mã, đang khôi phục...');
             hls.recoverMediaError();
-            break;
-          default:
-            showToast('Lỗi phát - thử SO2 hoặc đổi server');
             break;
         }
       }
     });
+    
   } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
     videoEl.src = m3u8;
+    plyrPlayer = new Plyr(videoEl, { 
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'], 
+        autoplay: true, 
+        ratio: '16:9',
+        _allowMultipleInstances: true 
+    });
     videoEl.addEventListener('loadedmetadata', () => {
       loading.style.display = 'none';
-      videoEl.play().catch(() => {});
+      plyrPlayer.play().catch(() => {});
     });
   } else {
     showToast('Trình duyệt không hỗ trợ SO1');
@@ -306,45 +405,49 @@ function playSo2(embedUrl) {
 function addAutoSkipLogic() {
   videoEl._hasSkippedMid = false;
 
-  const midSkipPoint = 900;    // 15:00
-  const midSkipAmount = 38;
+  currentTimeUpdateHandler = function() {
+    const t = plyrPlayer ? plyrPlayer.currentTime : videoEl.currentTime;
+    const d = plyrPlayer ? plyrPlayer.duration : videoEl.duration;
+    if (!d || isNaN(d) || (plyrPlayer && plyrPlayer.seeking)) return;
 
-  const timeUpdate = () => {
-    const t = videoEl.currentTime;
-    const d = videoEl.duration;
-    if (!d || isNaN(d) || videoEl.seeking) return;
+    const midSkipPoint = 890;    
+    const midSkipAmount = 100; 
 
-    // Tua giữa phim ở phút 15
     if (!videoEl._hasSkippedMid && t >= midSkipPoint && t < midSkipPoint + 15) {
       const target = midSkipPoint + midSkipAmount;
       if (target < d) {
-        videoEl.currentTime = target;
-        showToast('Bỏ 38s');
+        if (plyrPlayer) plyrPlayer.currentTime = target;
+        else videoEl.currentTime = target;
+        showToast(`Bỏ ${midSkipAmount}s quảng cáo`);
         videoEl._hasSkippedMid = true;
       }
     }
 
-    // Hiện popup gần hết phim
     if (!warned && d && t >= d - 120 && curEp < episodes.length - 1) {
       showEndPopup();
     }
   };
 
-  videoEl.addEventListener('timeupdate', timeUpdate);
-  videoEl.addEventListener('ended', () => {
+  currentEndedHandler = function() {
     if (curEp < episodes.length - 1 && !warned) nextEp();
-  });
+  };
+
+  if (plyrPlayer) {
+    plyrPlayer.on('timeupdate', currentTimeUpdateHandler);
+    plyrPlayer.on('ended', currentEndedHandler);
+  } else {
+    videoEl.addEventListener('timeupdate', currentTimeUpdateHandler);
+    videoEl.addEventListener('ended', currentEndedHandler);
+  }
 }
 
 function seek(seconds) {
-  if (videoEl.style.display === 'none' || isNaN(videoEl.duration)) {
-    showToast('Không thể tua (chưa phát hoặc đang dùng embed)');
+  if (!plyrPlayer || isNaN(plyrPlayer.duration)) {
+    showToast('Không thể tua');
     return;
   }
-  
-  const newTime = videoEl.currentTime + seconds;
-  videoEl.currentTime = Math.max(0, Math.min(newTime, videoEl.duration));
-  
+  const newTime = plyrPlayer.currentTime + seconds;
+  plyrPlayer.currentTime = Math.max(0, Math.min(newTime, plyrPlayer.duration));
   showToast(seconds > 0 ? `+${seconds}s` : `${seconds}s`);
 }
 
@@ -370,7 +473,7 @@ function play(i) {
   } else if (link_so2) {
     playSo2(link_so2);
   } else {
-    errorMsg.textContent = 'Không có link phát cho tập này';
+    errorMsg.querySelector('span').textContent = 'Không có link phát cho tập này';
     errorMsg.style.display = 'flex';
     loading.style.display = 'none';
   }
@@ -406,14 +509,22 @@ window.changeSource = async function(code) {
 
 async function init() {
   if (!slug) {
-    errorMsg.textContent = 'Thiếu thông tin phim';
+    errorMsg.querySelector('span').textContent = 'Thiếu thông tin phim';
     errorMsg.style.display = 'flex';
     return;
   }
   curEp = epFromUrl();
   loading.style.display = 'flex';
-  if (await loadMovie() && servers.length > 0) {
-    switchServer(0);
+  
+  try {
+    await loadScripts();
+    if (await loadMovie() && servers.length > 0) {
+      switchServer(0);
+    }
+  } catch (err) {
+    errorMsg.querySelector('span').textContent = 'Lỗi tải thư viện phát video!';
+    errorMsg.style.display = 'flex';
+    loading.style.display = 'none';
   }
 }
 
