@@ -108,285 +108,251 @@ input{font-family:inherit}img{display:block}
 <audio id="au" preload="auto"></audio>
 
 <script>
-/*
-==========================================================
-  JSONP PROXY — KHÔNG CẦN SERVER, KHÔNG CẦN NETLIFY FUNCTIONS
-==========================================================
-  API NCT không cho CORS với fetch().
-  Nhưng ta có thể tạo 1 iframe ẩn mở URL API trực tiếp,
-  đọc nội dung response qua postMessage.
-  
-  Hoặc đơn giản hơn: dùng Service Worker chặn request
-  và thêm header Access-Control-Allow-Origin.
-  
-  Cách DỄ NHẤT không cần gì thêm:
-  - Mở API trong iframe ẩn
-  - Nếu cùng origin → đọc trực tiếp
-  - Nếu khác origin → dùng tricks
-  
-  Thực tế cách CHẮC CHẮN nhất: EMBED API response
-  vào 1 service worker làm proxy nội bộ.
-==========================================================
-*/
-
-// === SERVICE WORKER PROXY (tự tạo, không cần file ngoài) ===
-// Đăng ký 1 Service Worker được tạo từ Blob URL
-// Service Worker sẽ chặn mọi request tới API NCT,
-// fetch từ server-side (không bị CORS), rồi trả về cho trang
-
-const SW_CODE = `
-// Service Worker — CORS Proxy nội bộ
-self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
-  // Chỉ can thiệp request tới API NCT
-  if (url.hostname === 'graph.nhaccuatui.com') {
-    event.respondWith(
-      fetch(event.request, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-          'Referer': 'https://www.nhaccuatui.com/',
-          'Accept': 'application/json',
-        }
-      }).then(response => {
-        // Thêm CORS headers vào response
-        const headers = new Headers(response.headers);
-        headers.set('Access-Control-Allow-Origin', '*');
-        headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-        headers.set('Access-Control-Allow-Headers', 'Content-Type');
-        return new Response(response.body, {
-          status: response.status,
-          statusText: response.statusText,
-          headers: headers,
-        });
-      }).catch(err => {
-        return new Response(JSON.stringify({error: err.message}), {
-          status: 500,
-          headers: {'Content-Type':'application/json','Access-Control-Allow-Origin':'*'}
-        });
-      })
-    );
-    return;
-  }
-  // Các request khác thì bỏ qua
-  event.respondWith(fetch(event.request));
-});
-`;
-
-// Đăng ký Service Worker từ Blob
-let swReady = false;
-async function initSW() {
-  try {
-    if ('serviceWorker' in navigator) {
-      const blob = new Blob([SW_CODE], { type: 'application/javascript' });
-      const swURL = URL.createObjectURL(blob);
-      const reg = await navigator.serviceWorker.register(swURL, { scope: '/' });
-      // Chờ SW activated
-      if (reg.active) {
-        swReady = true;
-      } else {
-        await new Promise(resolve => {
-          reg.addEventListener('activate', () => { swReady = true; resolve(); }, { once: true });
-        });
-      }
-      URL.revokeObjectURL(swURL);
-      console.log('Service Worker proxy ready');
-      return true;
+// === ĐĂNG KÝ SERVICE WORKER ===
+// sw.js nằm cùng thư mục — SW sẽ chặn request API và thêm CORS header
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+    // Chờ SW activate xong mới cho tìm kiếm
+    if (reg.active) {
+      swReady();
+    } else {
+      reg.addEventListener('activate', swReady, { once: true });
     }
-  } catch (e) {
-    console.warn('SW failed:', e.message);
-    // Fallback: thử fetch trực tiếp (có thể được nếu API cho phép)
-    swReady = false;
-    return false;
-  }
-  return false;
+  }).catch(err => {
+    console.warn('SW register failed:', err);
+    toast('er', 'Loi khoi tao. Reload trang lan nua.');
+  });
 }
 
-// === GỌI API (fetch trực tiếp, SW sẽ xử lý CORS) ===
+function swReady() {
+  toast('ok', 'Proxy san sang! Hay tim kiem.');
+  document.getElementById('si').removeAttribute('disabled');
+}
+
+// Vô hiệu hóa input cho đến khi SW sẵn sàng
+document.getElementById('si').setAttribute('disabled', '');
+document.getElementById('si').placeholder = 'Dang khoi tao proxy...';
+
+// === GỌI API TRỰC TIẾP (SW xử lý CORS) ===
 async function apiFetch(url) {
-  // Thử fetch trực tiếp (SW sẽ chặn và thêm CORS header)
   const r = await fetch(url);
   if (!r.ok) throw new Error(r.status);
   return r.json();
 }
 
 // === STATE ===
-const S={songs:[],artists:[],albums:[],ci:-1,playing:false,repeat:0,vol:.8,dlQ:[],hist:JSON.parse(localStorage.getItem('sw_h')||'[]'),tab:'songs',seeking:false};
-const au=document.getElementById('au'); au.volume=S.vol;
+const S = { songs:[], artists:[], albums:[], ci:-1, playing:false, repeat:0, vol:.8, dlQ:[], hist:JSON.parse(localStorage.getItem('sw_h')||'[]'), tab:'songs', seeking:false };
+const au = document.getElementById('au');
+au.volume = S.vol;
 
 // === API ===
-const AS='https://graph.nhaccuatui.com/api/v3/search/all';
-const AG='https://graph.nhaccuatui.com/api/v3/song/';
+const AS = 'https://graph.nhaccuatui.com/api/v3/search/all';
+const AG = 'https://graph.nhaccuatui.com/api/v3/song/';
 
 let _dt;
-function doSearch(){
-  const kw=document.getElementById('si').value.trim();
-  if(!kw)return;
+function doSearch() {
+  const kw = document.getElementById('si').value.trim();
+  if (!kw) return;
   addH(kw);
-  document.getElementById('ld').style.display='block';
-  document.getElementById('em').style.display='none';
-  document.getElementById('rs').innerHTML='';
-  document.getElementById('ra').innerHTML='';
-  document.getElementById('rb').innerHTML='';
+  document.getElementById('ld').style.display = 'block';
+  document.getElementById('em').style.display = 'none';
+  document.getElementById('rs').innerHTML = '';
+  document.getElementById('ra').innerHTML = '';
+  document.getElementById('rb').innerHTML = '';
   clearTimeout(_dt);
-  _dt=setTimeout(()=>runSearch(kw),200);
+  _dt = setTimeout(() => runSearch(kw), 200);
 }
-async function runSearch(kw){
-  try{
-    const d=await apiFetch(AS+'?keyword='+encodeURIComponent(kw)+'&correct=true&timestamp='+Date.now());
-    if(d&&d.data){S.songs=d.data.songs||[];S.artists=d.data.artists||[];S.albums=d.data.albums||[];toast('ok','Tim thay '+S.songs.length+' bai hat');}
-    else throw 0;
-  }catch(e){S.songs=[];S.artists=[];S.albums=[];toast('er','Loi API. Reload trang va thu lai?');}
-  document.getElementById('ld').style.display='none';
-  if(!S.songs.length&&!S.artists.length&&!S.albums.length){document.getElementById('em').style.display='block';document.getElementById('em').querySelector('p').textContent='Khong tim thay ket qua';}
-  else document.getElementById('em').style.display='none';
+
+async function runSearch(kw) {
+  try {
+    const d = await apiFetch(AS + '?keyword=' + encodeURIComponent(kw) + '&correct=true&timestamp=' + Date.now());
+    if (d && d.data) {
+      S.songs = d.data.songs || [];
+      S.artists = d.data.artists || [];
+      S.albums = d.data.albums || [];
+      toast('ok', 'Tim thay ' + S.songs.length + ' bai hat');
+    } else throw 0;
+  } catch(e) {
+    S.songs = []; S.artists = []; S.albums = [];
+    toast('er', 'Loi API. Reload trang va thu lai.');
+  }
+  document.getElementById('ld').style.display = 'none';
+  if (!S.songs.length && !S.artists.length && !S.albums.length) {
+    document.getElementById('em').style.display = 'block';
+    document.getElementById('em').querySelector('p').textContent = 'Khong tim thay ket qua';
+  } else {
+    document.getElementById('em').style.display = 'none';
+  }
   render();
 }
 
 // === RENDER ===
-function render(){
-  let h='';
-  S.songs.forEach((s,i)=>{
-    h+='<div onclick="play('+i+')" style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;cursor:pointer;'+(S.ci===i?'background:rgba(232,93,58,.1)':'')+'">'
-      +'<div style="width:24px;text-align:center;font-size:12px;color:#6b6b78;flex-shrink:0">'+(i+1)+'</div>'
-      +'<img src="'+(s.image||'')+'" style="width:42px;height:42px;border-radius:6px;object-fit:cover;flex-shrink:0;background:#222228" loading="lazy">'
-      +'<div style="flex:1;min-width:0">'
-      +'<div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(s.name)+'</div>'
-      +'<div style="font-size:11px;color:#6b6b78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px">'+esc(s.artistName||'')+(s.genreName?' · '+esc(s.genreName):'')+'</div>'
-      +'</div>'
-      +'<div style="font-size:11px;color:#6b6b78;flex-shrink:0">'+fmtT(s.duration)+'</div>'
-      +'<button onclick="event.stopPropagation();dlS('+i+')" style="width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,.05);color:#6b6b78;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0" title="Tai"><i class="fas fa-download"></i></button>'
-      +'</div>';
+function render() {
+  let h = '';
+  S.songs.forEach((s, i) => {
+    h += '<div onclick="play('+i+')" style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;cursor:pointer;'+(S.ci===i?'background:rgba(232,93,58,.1)':'')+'">'
+      + '<div style="width:24px;text-align:center;font-size:12px;color:#6b6b78;flex-shrink:0">'+(i+1)+'</div>'
+      + '<img src="'+(s.image||'')+'" style="width:42px;height:42px;border-radius:6px;object-fit:cover;flex-shrink:0;background:#222228" loading="lazy">'
+      + '<div style="flex:1;min-width:0">'
+      + '<div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(s.name)+'</div>'
+      + '<div style="font-size:11px;color:#6b6b78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px">'+esc(s.artistName||'')+(s.genreName?' · '+esc(s.genreName):'')+'</div>'
+      + '</div>'
+      + '<div style="font-size:11px;color:#6b6b78;flex-shrink:0">'+fmtT(s.duration)+'</div>'
+      + '<button onclick="event.stopPropagation();dlS('+i+')" style="width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,.05);color:#6b6b78;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0" title="Tai"><i class="fas fa-download"></i></button>'
+      + '</div>';
   });
-  document.getElementById('rs').innerHTML=h;
+  document.getElementById('rs').innerHTML = h;
 
-  let ah='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px">';
-  S.artists.forEach(a=>{
-    ah+='<div onclick="sArt(\''+esc(a.name).replace(/'/g,"\\'")+'\')" style="text-align:center;cursor:pointer">'
-      +'<img src="'+(a.image||'')+'" style="width:72px;height:72px;border-radius:50%;object-fit:cover;margin:0 auto 6px;display:block;background:#222228" loading="lazy">'
-      +'<div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(a.name)+'</div>'
-      +'<div style="font-size:10px;color:#6b6b78;margin-top:2px">'+fmtN(a.totalFollow)+'</div></div>';
+  let ah = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px">';
+  S.artists.forEach(a => {
+    ah += '<div onclick="sArt(\''+esc(a.name).replace(/'/g,"\\'")+'\')" style="text-align:center;cursor:pointer">'
+      + '<img src="'+(a.image||'')+'" style="width:72px;height:72px;border-radius:50%;object-fit:cover;margin:0 auto 6px;display:block;background:#222228" loading="lazy">'
+      + '<div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(a.name)+'</div>'
+      + '<div style="font-size:10px;color:#6b6b78;margin-top:2px">'+fmtN(a.totalFollow)+'</div></div>';
   });
-  document.getElementById('ra').innerHTML=ah+'</div>';
+  document.getElementById('ra').innerHTML = ah + '</div>';
 
-  let bh='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px">';
-  S.albums.forEach(a=>{
-    bh+='<div>'
-      +'<img src="'+(a.image||'')+'" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;margin-bottom:6px;background:#222228" loading="lazy">'
-      +'<div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(a.name)+'</div>'
-      +'<div style="font-size:11px;color:#6b6b78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px">'+esc(a.artistName||'')+'</div></div>';
+  let bh = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px">';
+  S.albums.forEach(a => {
+    bh += '<div>'
+      + '<img src="'+(a.image||'')+'" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;margin-bottom:6px;background:#222228" loading="lazy">'
+      + '<div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(a.name)+'</div>'
+      + '<div style="font-size:11px;color:#6b6b78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px">'+esc(a.artistName||'')+'</div></div>';
   });
-  document.getElementById('rb').innerHTML=bh+'</div>';
+  document.getElementById('rb').innerHTML = bh + '</div>';
 }
 
 // === PHÁT NHẠC ===
-async function play(i){
-  if(i<0||i>=S.songs.length)return;
-  S.ci=i;const s=S.songs[i];
-  document.getElementById('pb').style.transform='translateY(0)';
-  document.getElementById('pn').textContent=s.name;
-  document.getElementById('pa').textContent=s.artistName||'';
-  document.getElementById('pi').src=s.image||'';
-  S.dlQ=s.qualityDownload||[];
+async function play(i) {
+  if (i < 0 || i >= S.songs.length) return;
+  S.ci = i;
+  const s = S.songs[i];
+  document.getElementById('pb').style.transform = 'translateY(0)';
+  document.getElementById('pn').textContent = s.name;
+  document.getElementById('pa').textContent = s.artistName || '';
+  document.getElementById('pi').src = s.image || '';
+  S.dlQ = s.qualityDownload || [];
 
-  let url=getURL(s);
-  if(!url&&s.key){
-    toast('in','Dang lay link stream...');
-    try{
-      const d=await apiFetch(AG+s.key);
-      if(d&&d.data){
-        if(d.data.streamURL){S.songs[i].streamURL=d.data.streamURL;url=getURL(S.songs[i]);}
-        if(d.data.qualityDownload)S.dlQ=d.data.qualityDownload;
+  let url = getURL(s);
+  if (!url && s.key) {
+    toast('in', 'Dang lay link stream...');
+    try {
+      const d = await apiFetch(AG + s.key);
+      if (d && d.data) {
+        if (d.data.streamURL) { S.songs[i].streamURL = d.data.streamURL; url = getURL(S.songs[i]); }
+        if (d.data.qualityDownload) S.dlQ = d.data.qualityDownload;
       }
-    }catch(e){toast('er','Khong lay duoc link stream');}
+    } catch(e) { toast('er', 'Khong lay duoc link stream'); }
   }
-  if(url){au.src=url;au.load();try{await au.play();S.playing=true;upBP();}catch(e){toast('er','Khong the phat');}}
-  else toast('er','Khong co link stream');
+  if (url) {
+    au.src = url; au.load();
+    try { await au.play(); S.playing = true; upBP(); }
+    catch(e) { toast('er', 'Khong the phat'); }
+  } else toast('er', 'Khong co link stream');
   render();
 }
-function getURL(s){
-  if(!s.streamURL||!s.streamURL.length)return '';
-  const h=s.streamURL.find(u=>u.type==='320'&&!u.onlyVIP&&u.status===1);
-  const l=s.streamURL.find(u=>u.type==='128'&&!u.onlyVIP&&u.status===1);
-  const a=s.streamURL.find(u=>!u.onlyVIP&&u.status===1);
-  return(h||l||a||s.streamURL[0]).stream||'';
+
+function getURL(s) {
+  if (!s.streamURL || !s.streamURL.length) return '';
+  const h = s.streamURL.find(u => u.type==='320' && !u.onlyVIP && u.status===1);
+  const l = s.streamURL.find(u => u.type==='128' && !u.onlyVIP && u.status===1);
+  const a = s.streamURL.find(u => !u.onlyVIP && u.status===1);
+  return (h || l || a || s.streamURL[0]).stream || '';
 }
-function tp(){
-  if(S.ci===-1){if(S.songs.length)play(0);return;}
-  if(S.playing){au.pause();S.playing=false;}else{au.play().catch(()=>{});S.playing=true;}
-  upBP();render();
+
+function tp() {
+  if (S.ci === -1) { if (S.songs.length) play(0); return; }
+  if (S.playing) { au.pause(); S.playing = false; }
+  else { au.play().catch(()=>{}); S.playing = true; }
+  upBP(); render();
 }
-function next(){if(!S.songs.length)return;play((S.ci+1)%S.songs.length);}
-function prev(){if(!S.songs.length)return;play((S.ci-1+S.songs.length)%S.songs.length);}
-function upBP(){document.getElementById('bp').innerHTML=S.playing?'<i class="fas fa-pause"></i>':'<i class="fas fa-play" style="margin-left:2px"></i>';}
+function next() { if (!S.songs.length) return; play((S.ci+1) % S.songs.length); }
+function prev() { if (!S.songs.length) return; play((S.ci-1+S.songs.length) % S.songs.length); }
+function upBP() { document.getElementById('bp').innerHTML = S.playing ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play" style="margin-left:2px"></i>'; }
 
 // === TIẾN ĐỘ ===
-function skS(e){S.seeking=true;doSk(e.clientX);document.onmousemove=ev=>{if(S.seeking)doSk(ev.clientX);};document.onmouseup=()=>{S.seeking=false;document.onmousemove=null;document.onmouseup=null;};}
-function skT(e){S.seeking=true;doSk(e.touches[0].clientX);}
-document.getElementById('pw').ontouchmove=e=>{if(S.seeking)doSk(e.touches[0].clientX);};
-document.getElementById('pw').ontouchend=()=>{S.seeking=false;};
-function doSk(x){if(!au.duration)return;const r=document.getElementById('pw').getBoundingClientRect();au.currentTime=Math.max(0,Math.min(1,(x-r.left)/r.width))*au.duration;}
+function skS(e) { S.seeking=true; doSk(e.clientX); document.onmousemove=ev=>{if(S.seeking)doSk(ev.clientX);}; document.onmouseup=()=>{S.seeking=false;document.onmousemove=null;document.onmouseup=null;}; }
+function skT(e) { S.seeking=true; doSk(e.touches[0].clientX); }
+document.getElementById('pw').ontouchmove = e => { if(S.seeking) doSk(e.touches[0].clientX); };
+document.getElementById('pw').ontouchend = () => { S.seeking=false; };
+function doSk(x) { if(!au.duration) return; const r=document.getElementById('pw').getBoundingClientRect(); au.currentTime=Math.max(0,Math.min(1,(x-r.left)/r.width))*au.duration; }
 
-au.ontimeupdate=()=>{if(S.seeking||!au.duration)return;document.getElementById('pbr').style.width=(au.currentTime/au.duration*100)+'%';document.getElementById('td').textContent=fmtT(au.currentTime)+'/'+fmtT(au.duration);};
-au.onended=()=>{if(S.repeat===2){au.currentTime=0;au.play();}else if(S.repeat===1||S.ci<S.songs.length-1)next();else{S.playing=false;upBP();render();}};
-au.onerror=()=>toast('er','Loi audio');
+au.ontimeupdate = () => {
+  if(S.seeking||!au.duration) return;
+  document.getElementById('pbr').style.width = (au.currentTime/au.duration*100)+'%';
+  document.getElementById('td').textContent = fmtT(au.currentTime)+'/'+fmtT(au.duration);
+};
+au.onended = () => {
+  if(S.repeat===2) { au.currentTime=0; au.play(); }
+  else if(S.repeat===1||S.ci<S.songs.length-1) next();
+  else { S.playing=false; upBP(); render(); }
+};
+au.onerror = () => toast('er', 'Loi audio');
 
 // === TẢI NHẠC ===
-function dlOpen(){if(S.ci===-1){toast('er','Chua chon bai hat');return;}dlS(S.ci);}
-function dlS(i){
-  const s=S.songs[i];const q=s.qualityDownload||S.dlQ||[];
+function dlOpen() { if(S.ci===-1){toast('er','Chua chon bai hat');return;} dlS(S.ci); }
+function dlS(i) {
+  const s=S.songs[i]; const q=s.qualityDownload||S.dlQ||[];
   if(!q.length){toast('er','Khong co thong tin tai');return;}
   let h='';
-  q.forEach(x=>{
-    const v=x.onlyVIP;const sz=x.fileSize?fmtSz(x.fileSize):'';
-    h+='<div onclick="'+(v?'':'doDl('+i+',\''+x.key+'\')')+'" style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:8px;cursor:'+(v?'not-allowed;opacity:.4':'pointer')+';border:1px solid transparent">'
-      +'<div><div style="font-size:13px;font-weight:600">'+x.name+'</div><div style="font-size:11px;color:#6b6b78;margin-top:2px">'+sz+(v?' · VIP':' · Mien phi')+'</div></div>'
-      +'<i class="fas '+(v?'fa-lock':'fa-download')+'" style="color:'+(v?'#6b6b78':'#e85d3a')+';font-size:13px"></i></div>';
+  q.forEach(x => {
+    const v=x.onlyVIP; const sz=x.fileSize?fmtSz(x.fileSize):'';
+    h += '<div onclick="'+(v?'':'doDl('+i+',\''+x.key+'\')')+'" style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:8px;cursor:'+(v?'not-allowed;opacity:.4':'pointer')+';border:1px solid transparent">'
+      + '<div><div style="font-size:13px;font-weight:600">'+x.name+'</div><div style="font-size:11px;color:#6b6b78;margin-top:2px">'+sz+(v?' · VIP':' · Mien phi')+'</div></div>'
+      + '<i class="fas '+(v?'fa-lock':'fa-download')+'" style="color:'+(v?'#6b6b78':'#e85d3a')+';font-size:13px"></i></div>';
   });
-  document.getElementById('ql').innerHTML=h;
-  document.getElementById('qm').style.display='flex';
+  document.getElementById('ql').innerHTML = h;
+  document.getElementById('qm').style.display = 'flex';
 }
-function doDl(i,qk){
-  const s=S.songs[i];let url='';
-  if(s.streamURL){const m=s.streamURL.find(u=>u.type===qk&&u.download);if(m)url=m.download;else{const st=s.streamURL.find(u=>u.type===qk);if(st)url=st.stream+(st.stream.includes('?')?'&download=true':'?download=true');}}
-  if(url){const a=document.createElement('a');a.href=url;a.download=s.name+' - '+s.artistName+'.mp3';a.target='_blank';document.body.appendChild(a);a.click();a.remove();toast('ok','Dang tai "'+s.name+'"');}
+function doDl(i, qk) {
+  const s=S.songs[i]; let url='';
+  if(s.streamURL) {
+    const m=s.streamURL.find(u=>u.type===qk&&u.download);
+    if(m) url=m.download;
+    else { const st=s.streamURL.find(u=>u.type===qk); if(st) url=st.stream+(st.stream.includes('?')?'&download=true':'?download=true'); }
+  }
+  if(url) { const a=document.createElement('a'); a.href=url; a.download=s.name+' - '+s.artistName+'.mp3'; a.target='_blank'; document.body.appendChild(a); a.click(); a.remove(); toast('ok','Dang tai "'+s.name+'"'); }
   else toast('er','Khong co link tai');
-  document.getElementById('qm').style.display='none';
+  document.getElementById('qm').style.display = 'none';
 }
-document.getElementById('qm').onclick=function(e){if(e.target===this)this.style.display='none';};
+document.getElementById('qm').onclick = function(e) { if(e.target===this) this.style.display='none'; };
 
 // === TABS ===
-function stab(t){
-  S.tab=t;
-  document.querySelectorAll('.tb').forEach(b=>{b.style.background=b.dataset.t===t?'#e85d3a':'transparent';b.style.color=b.dataset.t===t?'#fff':'#6b6b78';});
-  document.getElementById('rs').style.display=t==='songs'?'block':'none';
-  document.getElementById('ra').style.display=t==='artists'?'block':'none';
-  document.getElementById('rb').style.display=t==='albums'?'block':'none';
+function stab(t) {
+  S.tab = t;
+  document.querySelectorAll('.tb').forEach(b => { b.style.background=b.dataset.t===t?'#e85d3a':'transparent'; b.style.color=b.dataset.t===t?'#fff':'#6b6b78'; });
+  document.getElementById('rs').style.display = t==='songs'?'block':'none';
+  document.getElementById('ra').style.display = t==='artists'?'block':'none';
+  document.getElementById('rb').style.display = t==='albums'?'block':'none';
 }
 
 // === LỊCH SỬ ===
-function addH(kw){S.hist=S.hist.filter(h=>h!==kw);S.hist.unshift(kw);if(S.hist.length>8)S.hist.pop();localStorage.setItem('sw_h',JSON.stringify(S.hist));renH();}
-function renH(){
-  const p=document.getElementById('hp'),c=document.getElementById('ht');
+function addH(kw) { S.hist=S.hist.filter(h=>h!==kw); S.hist.unshift(kw); if(S.hist.length>8)S.hist.pop(); localStorage.setItem('sw_h',JSON.stringify(S.hist)); renH(); }
+function renH() {
+  const p=document.getElementById('hp'), c=document.getElementById('ht');
   if(!S.hist.length){p.style.display='none';return;}
   p.style.display='block';
-  c.innerHTML=S.hist.map(h=>'<button onclick="fromH(\''+esc(h).replace(/'/g,"\\'")+'\')" style="padding:5px 12px;border-radius:14px;background:#222228;color:#6b6b78;font-size:11px">'+esc(h)+'</button>').join('');
+  c.innerHTML = S.hist.map(h => '<button onclick="fromH(\''+esc(h).replace(/'/g,"\\'")+'\')" style="padding:5px 12px;border-radius:14px;background:#222228;color:#6b6b78;font-size:11px">'+esc(h)+'</button>').join('');
 }
-function fromH(kw){document.getElementById('si').value=kw;doSearch();}
-function clrH(){S.hist=[];localStorage.removeItem('sw_h');renH();}
-function sArt(n){document.getElementById('si').value=n;stab('songs');doSearch();}
+function fromH(kw) { document.getElementById('si').value=kw; doSearch(); }
+function clrH() { S.hist=[]; localStorage.removeItem('sw_h'); renH(); }
+function sArt(n) { document.getElementById('si').value=n; stab('songs'); doSearch(); }
 
 // === SEARCH INPUT ===
-const siEl=document.getElementById('si');
-siEl.oninput=()=>{document.getElementById('clr').style.display=siEl.value?'block':'none';if(!siEl.value){S.songs=[];S.artists=[];S.albums=[];render();document.getElementById('em').style.display='block';document.getElementById('em').querySelector('p').textContent='Nhap tu khoa de tim kiem';}};
-function clearS(){siEl.value='';document.getElementById('clr').style.display='none';siEl.focus();S.songs=[];S.artists=[];S.albums=[];render();document.getElementById('em').style.display='block';document.getElementById('em').querySelector('p').textContent='Nhap tu khoa de tim kiem';}
+const siEl = document.getElementById('si');
+siEl.oninput = () => {
+  document.getElementById('clr').style.display = siEl.value ? 'block' : 'none';
+  if(!siEl.value) { S.songs=[]; S.artists=[]; S.albums=[]; render(); document.getElementById('em').style.display='block'; document.getElementById('em').querySelector('p').textContent='Nhap tu khoa de tim kiem'; }
+};
+function clearS() { siEl.value=''; document.getElementById('clr').style.display='none'; siEl.focus(); S.songs=[]; S.artists=[]; S.albums=[]; render(); document.getElementById('em').style.display='block'; document.getElementById('em').querySelector('p').textContent='Nhap tu khoa de tim kiem'; }
 
 // === TOAST ===
-function toast(type,msg){
+function toast(type, msg) {
   const d=document.createElement('div');
   const cl={ok:'#4ade80',er:'#f87171','in':'#60a5fa'};
   const ic={ok:'fa-circle-check',er:'fa-circle-xmark','in':'fa-circle-info'};
-  d.style.cssText='padding:8px 14px;border-radius:8px;background:#18181c;border:1px solid #28282f;font-size:12px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.5)';
-  d.innerHTML='<i class="fas '+ic[type]+'" style="color:'+cl[type]+';font-size:13px"></i><span>'+esc(msg)+'</span>';
+  d.style.cssText = 'padding:8px 14px;border-radius:8px;background:#18181c;border:1px solid #28282f;font-size:12px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.5)';
+  d.innerHTML = '<i class="fas '+ic[type]+'" style="color:'+cl[type]+';font-size:13px"></i><span>'+esc(msg)+'</span>';
   document.getElementById('toast').appendChild(d);
   setTimeout(()=>{d.style.opacity='0';d.style.transition='opacity .2s';setTimeout(()=>d.remove(),200);},2500);
 }
@@ -398,21 +364,17 @@ function fmtSz(b){if(!b)return'';if(b>=1048576)return(b/1048576).toFixed(1)+' MB
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 
 // === PHÍM TẮT ===
-document.onkeydown=e=>{if(e.target.tagName==='INPUT')return;if(e.code==='Space'){e.preventDefault();tp();}else if(e.code==='ArrowRight'&&au.duration)au.currentTime=Math.min(au.duration,au.currentTime+5);else if(e.code==='ArrowLeft')au.currentTime=Math.max(0,au.currentTime-5);else if(e.code==='KeyN')next();else if(e.code==='KeyP')prev();};
+document.onkeydown = e => {
+  if(e.target.tagName==='INPUT') return;
+  if(e.code==='Space'){e.preventDefault();tp();}
+  else if(e.code==='ArrowRight'&&au.duration) au.currentTime=Math.min(au.duration,au.currentTime+5);
+  else if(e.code==='ArrowLeft') au.currentTime=Math.max(0,au.currentTime-5);
+  else if(e.code==='KeyN') next();
+  else if(e.code==='KeyP') prev();
+};
 
-if(window.innerWidth>=640)document.getElementById('logo').style.display='block';
-renH();siEl.focus();
-
-// === KHỞI CHẠY SERVICE WORKER PROXY ===
-initSW().then(ok => {
-  if (!ok) {
-    // Service Worker thất bại (ví dụ không phải HTTPS)
-    // Thử fetch trực tiếp xem API có cho CORS không
-    toast('in', 'Dang khoi tao proxy...');
-  } else {
-    toast('ok', 'Proxy san sang! Hay tim kiem bai hat.');
-  }
-});
+if(window.innerWidth>=640) document.getElementById('logo').style.display='block';
+renH();
 </script>
 </body>
 </html>
