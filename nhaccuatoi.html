@@ -40,7 +40,7 @@ input{font-family:inherit}img{display:block}
       </div>
       <div style="flex:1;position:relative">
         <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#6b6b78;font-size:12px"></i>
-        <input id="si" type="text" placeholder="Tim kiem bai hat..." style="width:100%;background:#18181c;border:1px solid #28282f;border-radius:20px;padding:8px 36px 8px 34px;font-size:13px;color:#eeeef0;outline:none" onkeydown="if(event.key==='Enter')doSearch()">
+        <input id="si" type="text" placeholder="Loc bai hat..." style="width:100%;background:#18181c;border:1px solid #28282f;border-radius:20px;padding:8px 36px 8px 34px;font-size:13px;color:#eeeef0;outline:none" oninput="filterSongs()">
         <button id="clr" onclick="clearS()" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#6b6b78;font-size:12px"><i class="fas fa-xmark"></i></button>
       </div>
     </div>
@@ -48,7 +48,7 @@ input{font-family:inherit}img{display:block}
 
   <main style="flex:1;max-width:640px;margin:0 auto;width:100%;padding:16px 16px 180px">
     <div style="display:flex;gap:6px;margin-bottom:14px">
-      <button class="tb on" data-t="songs" onclick="stab('songs')" style="padding:6px 14px;border-radius:16px;font-size:12px;font-weight:600;background:#e85d3a;color:#fff"><i class="fas fa-music" style="margin-right:5px;font-size:10px"></i>Bai hat</button>
+      <button class="tb on" data-t="songs" onclick="stab('songs')" style="padding:6px 14px;border-radius:16px;font-size:12px;font-weight:600;background:#e85d3a;color:#fff"><i class="fas fa-music" style="margin-right:5px;font-size:10px"></i>Bai hat <span id="sc" style="margin-left:4px;opacity:.7"></span></button>
       <button class="tb" data-t="artists" onclick="stab('artists')" style="padding:6px 14px;border-radius:16px;font-size:12px;font-weight:600;background:transparent;color:#6b6b78"><i class="fas fa-microphone" style="margin-right:5px;font-size:10px"></i>Nghe si</button>
       <button class="tb" data-t="albums" onclick="stab('albums')" style="padding:6px 14px;border-radius:16px;font-size:12px;font-weight:600;background:transparent;color:#6b6b78"><i class="fas fa-compact-disc" style="margin-right:5px;font-size:10px"></i>Album</button>
     </div>
@@ -57,24 +57,14 @@ input{font-family:inherit}img{display:block}
     <div id="ra" style="display:none"></div>
     <div id="rb" style="display:none"></div>
 
-    <div id="ld" style="display:none">
-      <div style="background:#18181c;height:52px;border-radius:8px;margin-bottom:6px"></div>
-      <div style="background:#18181c;height:52px;border-radius:8px;margin-bottom:6px"></div>
-      <div style="background:#18181c;height:52px;border-radius:8px;margin-bottom:6px"></div>
-      <div style="background:#18181c;height:52px;border-radius:8px"></div>
+    <div id="ld" style="text-align:center;padding:60px 0">
+      <div style="width:40px;height:40px;border:3px solid #28282f;border-top-color:#e85d3a;border-radius:50%;margin:0 auto 12px"></div>
+      <p style="color:#6b6b78;font-size:13px">Dang tai du lieu...</p>
     </div>
 
-    <div id="em" style="text-align:center;padding:60px 0">
-      <div style="width:56px;height:56px;border-radius:50%;background:#18181c;margin:0 auto 12px;display:flex;align-items:center;justify-content:center"><i class="fas fa-headphones" style="font-size:20px;color:#6b6b78"></i></div>
-      <p style="color:#6b6b78;font-size:14px">Nhap tu khoa de tim kiem</p>
-    </div>
-
-    <div id="hp" style="display:none;margin-top:16px;padding:12px;background:#18181c;border-radius:10px;border:1px solid #28282f">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <span style="font-size:11px;font-weight:600;color:#6b6b78;text-transform:uppercase;letter-spacing:1px">Gan day</span>
-        <button onclick="clrH()" style="font-size:11px;color:#e85d3a">Xoa</button>
-      </div>
-      <div id="ht" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    <div id="em" style="display:none;text-align:center;padding:60px 0">
+      <div style="width:56px;height:56px;border-radius:50%;background:#18181c;margin:0 auto 12px;display:flex;align-items:center;justify-content:center"><i class="fas fa-filter" style="font-size:20px;color:#6b6b78"></i></div>
+      <p style="color:#6b6b78;font-size:14px">Khong co bai hat phu hop</p>
     </div>
   </main>
 </div>
@@ -108,89 +98,64 @@ input{font-family:inherit}img{display:block}
 <audio id="au" preload="auto"></audio>
 
 <script>
-// === ĐĂNG KÝ SERVICE WORKER ===
-// sw.js nằm cùng thư mục — SW sẽ chặn request API và thêm CORS header
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').then(reg => {
-    // Chờ SW activate xong mới cho tìm kiếm
-    if (reg.active) {
-      swReady();
-    } else {
-      reg.addEventListener('activate', swReady, { once: true });
-    }
-  }).catch(err => {
-    console.warn('SW register failed:', err);
-    toast('er', 'Loi khoi tao. Reload trang lan nua.');
+// === DỮ LIỆU ===
+let ALL_SONGS = [], ALL_ARTISTS = [], ALL_ALBUMS = [];
+let filtered = [];
+
+// === LOAD DATA.JSON (cùng origin, không CORS) ===
+fetch('./data.json')
+  .then(r => r.json())
+  .then(data => {
+    ALL_SONGS = data.songs || [];
+    ALL_ARTISTS = data.artists || [];
+    ALL_ALBUMS = data.albums || [];
+    filtered = ALL_SONGS.slice();
+    document.getElementById('ld').style.display = 'none';
+    document.getElementById('sc').textContent = '(' + ALL_SONGS.length + ')';
+    render();
+    toast('ok', 'Da tai ' + ALL_SONGS.length + ' bai hat');
+  })
+  .catch(e => {
+    document.getElementById('ld').style.display = 'none';
+    toast('er', 'Khong tai duoc data.json. Kiem tra file?');
   });
-}
 
-function swReady() {
-  toast('ok', 'Proxy san sang! Hay tim kiem.');
-  document.getElementById('si').removeAttribute('disabled');
-}
-
-// Vô hiệu hóa input cho đến khi SW sẵn sàng
-document.getElementById('si').setAttribute('disabled', '');
-document.getElementById('si').placeholder = 'Dang khoi tao proxy...';
-
-// === GỌI API TRỰC TIẾP (SW xử lý CORS) ===
-async function apiFetch(url) {
-  const r = await fetch(url);
-  if (!r.ok) throw new Error(r.status);
-  return r.json();
-}
-
-// === STATE ===
-const S = { songs:[], artists:[], albums:[], ci:-1, playing:false, repeat:0, vol:.8, dlQ:[], hist:JSON.parse(localStorage.getItem('sw_h')||'[]'), tab:'songs', seeking:false };
-const au = document.getElementById('au');
-au.volume = S.vol;
-
-// === API ===
-const AS = 'https://graph.nhaccuatui.com/api/v3/search/all';
-const AG = 'https://graph.nhaccuatui.com/api/v3/song/';
-
-let _dt;
-function doSearch() {
-  const kw = document.getElementById('si').value.trim();
-  if (!kw) return;
-  addH(kw);
-  document.getElementById('ld').style.display = 'block';
-  document.getElementById('em').style.display = 'none';
-  document.getElementById('rs').innerHTML = '';
-  document.getElementById('ra').innerHTML = '';
-  document.getElementById('rb').innerHTML = '';
-  clearTimeout(_dt);
-  _dt = setTimeout(() => runSearch(kw), 200);
-}
-
-async function runSearch(kw) {
-  try {
-    const d = await apiFetch(AS + '?keyword=' + encodeURIComponent(kw) + '&correct=true&timestamp=' + Date.now());
-    if (d && d.data) {
-      S.songs = d.data.songs || [];
-      S.artists = d.data.artists || [];
-      S.albums = d.data.albums || [];
-      toast('ok', 'Tim thay ' + S.songs.length + ' bai hat');
-    } else throw 0;
-  } catch(e) {
-    S.songs = []; S.artists = []; S.albums = [];
-    toast('er', 'Loi API. Reload trang va thu lai.');
-  }
-  document.getElementById('ld').style.display = 'none';
-  if (!S.songs.length && !S.artists.length && !S.albums.length) {
-    document.getElementById('em').style.display = 'block';
-    document.getElementById('em').querySelector('p').textContent = 'Khong tim thay ket qua';
+// === LỌC BÀI HÁT (không cần API, lọc trên data đã có) ===
+function filterSongs() {
+  const kw = document.getElementById('si').value.trim().toLowerCase();
+  document.getElementById('clr').style.display = kw ? 'block' : 'none';
+  if (!kw) {
+    filtered = ALL_SONGS.slice();
   } else {
-    document.getElementById('em').style.display = 'none';
+    filtered = ALL_SONGS.filter(s =>
+      s.name.toLowerCase().includes(kw) ||
+      (s.artistName || '').toLowerCase().includes(kw) ||
+      (s.genreName || '').toLowerCase().includes(kw)
+    );
   }
-  render();
+  document.getElementById('sc').textContent = '(' + filtered.length + ')';
+  document.getElementById('em').style.display = filtered.length ? 'none' : 'block';
+  renderSongs();
+}
+
+function clearS() {
+  document.getElementById('si').value = '';
+  document.getElementById('clr').style.display = 'none';
+  filtered = ALL_SONGS.slice();
+  document.getElementById('sc').textContent = '(' + filtered.length + ')';
+  document.getElementById('em').style.display = 'none';
+  renderSongs();
 }
 
 // === RENDER ===
-function render() {
+function render() { renderSongs(); renderArtists(); renderAlbums(); }
+
+function renderSongs() {
   let h = '';
-  S.songs.forEach((s, i) => {
-    h += '<div onclick="play('+i+')" style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;cursor:pointer;'+(S.ci===i?'background:rgba(232,93,58,.1)':'')+'">'
+  filtered.forEach((s, i) => {
+    // Tìm index trong ALL_SONGS để play đúng
+    const realI = ALL_SONGS.indexOf(s);
+    h += '<div onclick="play('+realI+')" style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;cursor:pointer;'+(S.ci===realI?'background:rgba(232,93,58,.1)':'')+'">'
       + '<div style="width:24px;text-align:center;font-size:12px;color:#6b6b78;flex-shrink:0">'+(i+1)+'</div>'
       + '<img src="'+(s.image||'')+'" style="width:42px;height:42px;border-radius:6px;object-fit:cover;flex-shrink:0;background:#222228" loading="lazy">'
       + '<div style="flex:1;min-width:0">'
@@ -198,76 +163,72 @@ function render() {
       + '<div style="font-size:11px;color:#6b6b78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px">'+esc(s.artistName||'')+(s.genreName?' · '+esc(s.genreName):'')+'</div>'
       + '</div>'
       + '<div style="font-size:11px;color:#6b6b78;flex-shrink:0">'+fmtT(s.duration)+'</div>'
-      + '<button onclick="event.stopPropagation();dlS('+i+')" style="width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,.05);color:#6b6b78;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0" title="Tai"><i class="fas fa-download"></i></button>'
+      + '<button onclick="event.stopPropagation();dlS('+realI+')" style="width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,.05);color:#6b6b78;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0" title="Tai"><i class="fas fa-download"></i></button>'
       + '</div>';
   });
   document.getElementById('rs').innerHTML = h;
+}
 
-  let ah = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px">';
-  S.artists.forEach(a => {
-    ah += '<div onclick="sArt(\''+esc(a.name).replace(/'/g,"\\'")+'\')" style="text-align:center;cursor:pointer">'
+function renderArtists() {
+  let h = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px">';
+  ALL_ARTISTS.forEach(a => {
+    h += '<div onclick="searchArt(\''+esc(a.name).replace(/'/g,"\\'")+'\')" style="text-align:center;cursor:pointer">'
       + '<img src="'+(a.image||'')+'" style="width:72px;height:72px;border-radius:50%;object-fit:cover;margin:0 auto 6px;display:block;background:#222228" loading="lazy">'
       + '<div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(a.name)+'</div>'
       + '<div style="font-size:10px;color:#6b6b78;margin-top:2px">'+fmtN(a.totalFollow)+'</div></div>';
   });
-  document.getElementById('ra').innerHTML = ah + '</div>';
+  document.getElementById('ra').innerHTML = h + '</div>';
+}
 
-  let bh = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px">';
-  S.albums.forEach(a => {
-    bh += '<div>'
+function renderAlbums() {
+  let h = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px">';
+  ALL_ALBUMS.forEach(a => {
+    h += '<div>'
       + '<img src="'+(a.image||'')+'" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;margin-bottom:6px;background:#222228" loading="lazy">'
       + '<div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(a.name)+'</div>'
       + '<div style="font-size:11px;color:#6b6b78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px">'+esc(a.artistName||'')+'</div></div>';
   });
-  document.getElementById('rb').innerHTML = bh + '</div>';
+  document.getElementById('rb').innerHTML = h + '</div>';
 }
 
+// === STATE ===
+const S = { ci:-1, playing:false, repeat:0, vol:.8, dlQ:[], seeking:false };
+const au = document.getElementById('au');
+au.volume = S.vol;
+
 // === PHÁT NHẠC ===
-async function play(i) {
-  if (i < 0 || i >= S.songs.length) return;
+function play(i) {
+  if (i < 0 || i >= ALL_SONGS.length) return;
   S.ci = i;
-  const s = S.songs[i];
+  const s = ALL_SONGS[i];
   document.getElementById('pb').style.transform = 'translateY(0)';
   document.getElementById('pn').textContent = s.name;
   document.getElementById('pa').textContent = s.artistName || '';
   document.getElementById('pi').src = s.image || '';
   S.dlQ = s.qualityDownload || [];
 
-  let url = getURL(s);
-  if (!url && s.key) {
-    toast('in', 'Dang lay link stream...');
-    try {
-      const d = await apiFetch(AG + s.key);
-      if (d && d.data) {
-        if (d.data.streamURL) { S.songs[i].streamURL = d.data.streamURL; url = getURL(S.songs[i]); }
-        if (d.data.qualityDownload) S.dlQ = d.data.qualityDownload;
-      }
-    } catch(e) { toast('er', 'Khong lay duoc link stream'); }
-  }
+  const url = getURL(s);
   if (url) {
     au.src = url; au.load();
-    try { await au.play(); S.playing = true; upBP(); }
-    catch(e) { toast('er', 'Khong the phat'); }
+    au.play().then(() => { S.playing = true; upBP(); renderSongs(); }).catch(() => toast('er', 'Khong the phat'));
   } else toast('er', 'Khong co link stream');
-  render();
 }
 
 function getURL(s) {
   if (!s.streamURL || !s.streamURL.length) return '';
-  const h = s.streamURL.find(u => u.type==='320' && !u.onlyVIP && u.status===1);
-  const l = s.streamURL.find(u => u.type==='128' && !u.onlyVIP && u.status===1);
-  const a = s.streamURL.find(u => !u.onlyVIP && u.status===1);
-  return (h || l || a || s.streamURL[0]).stream || '';
+  const h = s.streamURL.find(u => u.type==='320' && !u.onlyVIP);
+  const l = s.streamURL.find(u => u.type==='128' && !u.onlyVIP);
+  return (h || l || s.streamURL[0]).stream || '';
 }
 
 function tp() {
-  if (S.ci === -1) { if (S.songs.length) play(0); return; }
+  if (S.ci === -1) { if (ALL_SONGS.length) play(0); return; }
   if (S.playing) { au.pause(); S.playing = false; }
   else { au.play().catch(()=>{}); S.playing = true; }
-  upBP(); render();
+  upBP(); renderSongs();
 }
-function next() { if (!S.songs.length) return; play((S.ci+1) % S.songs.length); }
-function prev() { if (!S.songs.length) return; play((S.ci-1+S.songs.length) % S.songs.length); }
+function next() { if (!ALL_SONGS.length) return; play((S.ci+1) % ALL_SONGS.length); }
+function prev() { if (!ALL_SONGS.length) return; play((S.ci-1+ALL_SONGS.length) % ALL_SONGS.length); }
 function upBP() { document.getElementById('bp').innerHTML = S.playing ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play" style="margin-left:2px"></i>'; }
 
 // === TIẾN ĐỘ ===
@@ -284,15 +245,15 @@ au.ontimeupdate = () => {
 };
 au.onended = () => {
   if(S.repeat===2) { au.currentTime=0; au.play(); }
-  else if(S.repeat===1||S.ci<S.songs.length-1) next();
-  else { S.playing=false; upBP(); render(); }
+  else if(S.repeat===1||S.ci<ALL_SONGS.length-1) next();
+  else { S.playing=false; upBP(); renderSongs(); }
 };
-au.onerror = () => toast('er', 'Loi audio');
+au.onerror = () => toast('er', 'Loi audio. Link het han?');
 
 // === TẢI NHẠC ===
 function dlOpen() { if(S.ci===-1){toast('er','Chua chon bai hat');return;} dlS(S.ci); }
 function dlS(i) {
-  const s=S.songs[i]; const q=s.qualityDownload||S.dlQ||[];
+  const s=ALL_SONGS[i]; const q=s.qualityDownload||[];
   if(!q.length){toast('er','Khong co thong tin tai');return;}
   let h='';
   q.forEach(x => {
@@ -305,7 +266,7 @@ function dlS(i) {
   document.getElementById('qm').style.display = 'flex';
 }
 function doDl(i, qk) {
-  const s=S.songs[i]; let url='';
+  const s=ALL_SONGS[i]; let url='';
   if(s.streamURL) {
     const m=s.streamURL.find(u=>u.type===qk&&u.download);
     if(m) url=m.download;
@@ -319,40 +280,22 @@ document.getElementById('qm').onclick = function(e) { if(e.target===this) this.s
 
 // === TABS ===
 function stab(t) {
-  S.tab = t;
   document.querySelectorAll('.tb').forEach(b => { b.style.background=b.dataset.t===t?'#e85d3a':'transparent'; b.style.color=b.dataset.t===t?'#fff':'#6b6b78'; });
   document.getElementById('rs').style.display = t==='songs'?'block':'none';
   document.getElementById('ra').style.display = t==='artists'?'block':'none';
   document.getElementById('rb').style.display = t==='albums'?'block':'none';
 }
 
-// === LỊCH SỬ ===
-function addH(kw) { S.hist=S.hist.filter(h=>h!==kw); S.hist.unshift(kw); if(S.hist.length>8)S.hist.pop(); localStorage.setItem('sw_h',JSON.stringify(S.hist)); renH(); }
-function renH() {
-  const p=document.getElementById('hp'), c=document.getElementById('ht');
-  if(!S.hist.length){p.style.display='none';return;}
-  p.style.display='block';
-  c.innerHTML = S.hist.map(h => '<button onclick="fromH(\''+esc(h).replace(/'/g,"\\'")+'\')" style="padding:5px 12px;border-radius:14px;background:#222228;color:#6b6b78;font-size:11px">'+esc(h)+'</button>').join('');
-}
-function fromH(kw) { document.getElementById('si').value=kw; doSearch(); }
-function clrH() { S.hist=[]; localStorage.removeItem('sw_h'); renH(); }
-function sArt(n) { document.getElementById('si').value=n; stab('songs'); doSearch(); }
-
-// === SEARCH INPUT ===
-const siEl = document.getElementById('si');
-siEl.oninput = () => {
-  document.getElementById('clr').style.display = siEl.value ? 'block' : 'none';
-  if(!siEl.value) { S.songs=[]; S.artists=[]; S.albums=[]; render(); document.getElementById('em').style.display='block'; document.getElementById('em').querySelector('p').textContent='Nhap tu khoa de tim kiem'; }
-};
-function clearS() { siEl.value=''; document.getElementById('clr').style.display='none'; siEl.focus(); S.songs=[]; S.artists=[]; S.albums=[]; render(); document.getElementById('em').style.display='block'; document.getElementById('em').querySelector('p').textContent='Nhap tu khoa de tim kiem'; }
+// === TÌM KIẾM TỪ ARTIST ===
+function searchArt(n) { document.getElementById('si').value=n; stab('songs'); filterSongs(); }
 
 // === TOAST ===
 function toast(type, msg) {
   const d=document.createElement('div');
   const cl={ok:'#4ade80',er:'#f87171','in':'#60a5fa'};
   const ic={ok:'fa-circle-check',er:'fa-circle-xmark','in':'fa-circle-info'};
-  d.style.cssText = 'padding:8px 14px;border-radius:8px;background:#18181c;border:1px solid #28282f;font-size:12px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.5)';
-  d.innerHTML = '<i class="fas '+ic[type]+'" style="color:'+cl[type]+';font-size:13px"></i><span>'+esc(msg)+'</span>';
+  d.style.cssText='padding:8px 14px;border-radius:8px;background:#18181c;border:1px solid #28282f;font-size:12px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.5)';
+  d.innerHTML='<i class="fas '+ic[type]+'" style="color:'+cl[type]+';font-size:13px"></i><span>'+esc(msg)+'</span>';
   document.getElementById('toast').appendChild(d);
   setTimeout(()=>{d.style.opacity='0';d.style.transition='opacity .2s';setTimeout(()=>d.remove(),200);},2500);
 }
@@ -374,7 +317,6 @@ document.onkeydown = e => {
 };
 
 if(window.innerWidth>=640) document.getElementById('logo').style.display='block';
-renH();
 </script>
 </body>
 </html>

@@ -1,0 +1,121 @@
+{
+  "songs": [
+    {
+      "key": "m4OopfbooS9C",
+      "name": "Tìm Em",
+      "image": "https://image-cdn.nct.vn/song/2026/06/17/y/y/x/r/1781672442646_300.jpg",
+      "artistName": "Hngle, Bảo Anh",
+      "duration": 274,
+      "genreName": "Nhạc Trẻ",
+      "totalLiked": 151623,
+      "streamURL": [
+        {"stream": "https://a01.nct.vn/resa/2606/6b/f5/sqdkzo8iv3.mp3?st=3y17TDom5w30Dm_5tXWAaw&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8", "download": "https://a01.nct.vn/resa/2606/6b/f5/sqdkzo8iv3.mp3?st=3y17TDom5w30Dm_5tXWAaw&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8&download=true", "type": "128", "onlyVIP": false},
+        {"stream": "https://stream.nct.vn/resa/2606/6b/f5/sqdkzo8iv3_hq.mp3?st=UVVuHxFiirs5cWjwzw-tIA&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8", "download": "https://stream.nct.vn/resa/2606/6b/f5/sqdkzo8iv3_hq.mp3?st=UVVuHxFiirs5cWjwzw-tIA&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8&download=true", "type": "320", "onlyVIP": false}
+      ],
+      "qualityDownload": [
+        {"key": "128", "name": "128 kbps", "onlyVIP": false, "fileSize": 4489216},
+        {"key": "320", "name": "320 kbps", "onlyVIP": false, "fileSize": 11223040}
+      ]
+    },
+    {
+      "key": "pUy85hF684AY",
+      "name": "Tìm Em (Remix)",
+      "image": "https://image-cdn.nct.vn/song/2024/02/23/9/a/8/4/1708679529084_300.jpg",
+      "artistName": "VinZ, Exclusive Music, Hồ Quang Hiếu",
+      "duration": 281,
+      "genreName": "Remix Việt",
+      "totalLiked": 9928,
+      "streamURL": [
+        {"stream": "https://stream.nct.vn/NCTSong/2402/e2/d7/txkl14a7u9.mp3?st=tllzm0Q9vgkKOIWlRYYMRw&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8", "download": "https://stream.nct.vn/NCTSong/2402/e2/d7/txkl14a7u9.mp3?st=tllzm0Q9vgkKOIWlRYYMRw&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8&download=true", "type": "128", "onlyVIP": false},
+        {"stream": "https://a01.nct.vn/NCTSong/2402/e2/d7/txkl14a7u9_hq.mp3?st=tq1W01-kFcHA3AeZH0dNMg&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8", "download": "https://a01.nct.vn/NCTSong/2402/e2/d7/txkl14a7u9_hq.mp3?st=tq1W01-kFcHA3AeZH0dNMg&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8&download=true", "type": "320", "onlyVIP": false}
+      ],
+      "qualityDownload": [
+        {"key": "128", "name": "128 kbps", "onlyVIP": false, "fileSize": 4603904},
+        {"key": "320", "name": "320 kbps", "onlyVIP": false, "fileSize": 11509760}
+      ]
+    },
+    {
+      "key": "o8YHFAcNO4uP",
+      "name": "Tìm Em",
+      "image": "https://image-cdn.nct.vn/song/2018/10/03/c/c/1/9/1538549680324_300.jpg",
+      "artistName": "Hồ Quang Hiếu",
+      "duration": 270,
+      "genreName": "Nhạc Trẻ",
+      "totalLiked": 43400,
+      "streamURL": [
+        {"stream": "https://a01.nct.vn/NhacCuaTui853/TimEm-HoQuangHieu-2997217.mp3?st=pySwj1pcV6vpGE0aZ8HSXQ&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8", "download": "https://a01.nct.vn/NhacCuaTui853/TimEm-HoQuangHieu-2997217.mp3?st=pySwj1pcV6vpGE0aZ8HSXQ&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8&download=true", "type": "128", "onlyVIP": false},
+        {"stream": "https://stream.nct.vn/NhacCuaTui853/TimEm-HoQuangHieu-2997217_hq.mp3?st=aw8B3ljcOFXc2RZCE75NSQ&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8", "download": "https://stream.nct.vn/NhacCuaTui853/TimEm-HoQuangHieu-2997217_hq.mp3?st=aw8B3ljcOFXc2RZCE75NSQ&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8&download=true", "type": "320", "onlyVIP": false}
+      ],
+      "qualityDownload": [
+        {"key": "128", "name": "128 kbps", "onlyVIP": false, "fileSize": 4423680},
+        {"key": "320", "name": "320 kbps", "onlyVIP": false, "fileSize": 11059200}
+      ]
+    },
+    {
+      "key": "weDm7qjyMXY4",
+      "name": "Tìm Em (Remix House)",
+      "image": "https://image-cdn.nct.vn/song/2024/06/06/4/6/6/2/1717661860382_300.jpg",
+      "artistName": "H2O Houselak, Hồ Quang Hiếu",
+      "duration": 239,
+      "genreName": "Remix Việt",
+      "totalLiked": 532,
+      "streamURL": [
+        {"stream": "https://stream.nct.vn/NCTSong/2406/22/54/ufsmogptjp.mp3?st=73KSdOsJtha_sSd0NGZr6g&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8", "download": "https://stream.nct.vn/NCTSong/2406/22/54/ufsmogptjp.mp3?st=73KSdOsJtha_sSd0NGZr6g&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8&download=true", "type": "128", "onlyVIP": false},
+        {"stream": "https://a01.nct.vn/NCTSong/2406/22/54/ufsmogptjp_hq.mp3?st=qDzxxYfiPzM_d_5JkcTiwA&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8", "download": "https://a01.nct.vn/NCTSong/2406/22/54/ufsmogptjp_hq.mp3?st=qDzxxYfiPzM_d_5JkcTiwA&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8&download=true", "type": "320", "onlyVIP": false}
+      ],
+      "qualityDownload": [
+        {"key": "128", "name": "128 kbps", "onlyVIP": false, "fileSize": 3915776},
+        {"key": "320", "name": "320 kbps", "onlyVIP": false, "fileSize": 9789440}
+      ]
+    },
+    {
+      "key": "kphchWueCyVz",
+      "name": "Tìm Em",
+      "image": "https://image-cdn.nct.vn/song/2024/07/02/3/c/c/f/1719908046135_300.jpg",
+      "artistName": "Noo Phước Thịnh",
+      "duration": 251,
+      "genreName": "Nhạc Trẻ",
+      "totalLiked": 4706,
+      "streamURL": [
+        {"stream": "https://stream.nct.vn/Sony_Audio153/TimEm-NooPhuocThinh-15221317.mp3?st=9KX-pGp8NlCrqN8L0QVldA&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8", "download": "https://stream.nct.vn/Sony_Audio153/TimEm-NooPhuocThinh-15221317.mp3?st=9KX-pGp8NlCrqN8L0QVldA&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8&download=true", "type": "128", "onlyVIP": false},
+        {"stream": "https://stream.nct.vn/Sony_Audio153/TimEm-NooPhuocThinh-15221317_hq.mp3?st=9T0CQ48BTr4klZTMyEXf4g&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8", "download": "https://stream.nct.vn/Sony_Audio153/TimEm-NooPhuocThinh-15221317_hq.mp3?st=9T0CQ48BTr4klZTMyEXf4g&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8&download=true", "type": "320", "onlyVIP": false}
+      ],
+      "qualityDownload": [
+        {"key": "128", "name": "128 kbps", "onlyVIP": false, "fileSize": 4112384},
+        {"key": "320", "name": "320 kbps", "onlyVIP": false, "fileSize": 10280960}
+      ]
+    },
+    {
+      "key": "uA8BiwIyz5WB",
+      "name": "Tìm Em",
+      "image": "https://image-cdn.nct.vn/song/2024/12/07/8/d/f/c/1733506662910_300.jpg",
+      "artistName": "Trịnh Đình Quang",
+      "duration": 222,
+      "genreName": "Nhạc Trẻ",
+      "totalLiked": 2112,
+      "streamURL": [
+        {"stream": "https://a01.nct.vn/Sony_Audio166/TimEm-TrinhDinhQuang-17008389.mp3?st=4DlZXOGKH5F6A5-QXRJB6g&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8", "download": "https://a01.nct.vn/Sony_Audio166/TimEm-TrinhDinhQuang-17008389.mp3?st=4DlZXOGKH5F6A5-QXRJB6g&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8&download=true", "type": "128", "onlyVIP": false},
+        {"stream": "https://a01.nct.vn/Sony_Audio166/TimEm-TrinhDinhQuang-17008389_hq.mp3?st=1hkC26sgIXWmIdjanUeMUg&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8", "download": "https://a01.nct.vn/Sony_Audio166/TimEm-TrinhDinhQuang-17008389_hq.mp3?st=1hkC26sgIXWmIdjanUeMUg&e=1785821820&a=1&p=0&r=d44aa9e591c5b64d3b21a239763953d8&download=true", "type": "320", "onlyVIP": false}
+      ],
+      "qualityDownload": [
+        {"key": "128", "name": "128 kbps", "onlyVIP": false, "fileSize": 3637248},
+        {"key": "320", "name": "320 kbps", "onlyVIP": false, "fileSize": 9093120}
+      ]
+    }
+  ],
+  "artists": [
+    {"key":"469884","name":"Hngle","image":"https://image-cdn.nct.vn/singer/avatar/2026/06/24/s/o/2/g/1782286765650_300.jpeg","totalFollow":5926},
+    {"key":"12516","name":"Bảo Anh","image":"https://image-cdn.nct.vn/singer/avatar/2026/06/29/6/n/a/Z/1782722434354_300.jpg","totalFollow":14822},
+    {"key":"2139408","name":"EM XINH SAY HI","image":"https://image-cdn.nct.vn/singer/avatar/2025/05/30/6/N/6/H/1748595068171_300.jpg","totalFollow":20185},
+    {"key":"7572","name":"Tim","image":"https://image-cdn.nct.vn/singer/avatar/2017/11/01/a/9/f/c/1509509988627_300.jpg","totalFollow":1236},
+    {"key":"2200773","name":"Em Bé Mê Bolero","image":"","totalFollow":121},
+    {"key":"202366","name":"Nam Em","image":"https://image-cdn.nct.vn/singer/avatar/2018/03/14/2/f/2/4/1520993269790_300.jpg","totalFollow":3435}
+  ],
+  "albums": [
+    {"key":"5QAvpwwkgxro","name":"Tìm Em","image":"https://image-cdn.nct.vn/playlist/2026/06/17/O/k/k/n/1781672445430.jpg","artistName":"Hngle, Bảo Anh","totalSongs":1},
+    {"key":"HlSlcl689Yw2","name":"Tìm Em (Remix)","image":"https://image-cdn.nct.vn/playlist/2024/02/23/0/b/b/7/1708679531644.jpg","artistName":"VinZ, Exclusive Music, Hồ Quang Hiếu","totalSongs":1},
+    {"key":"spRA1ydiIeFq","name":"Tìm Em (Remix House)","image":"https://image-cdn.nct.vn/playlist/2025/01/15/c/f/1/e/1736894823453.jpg","artistName":"H2O Houselak, Hồ Quang Hiếu","totalSongs":1},
+    {"key":"LtKh9diaBqIl","name":"Trai Tim Em Cung Biet Dau","image":"https://image-cdn.nct.vn/playlist/2026/05/09/y/Z/L/B/1778317029435.jpg","artistName":"Bảo Anh","totalSongs":1},
+    {"key":"xHPxP7qreCba","name":"Tìm Em Câu Ví Sông Lam","image":"https://image-cdn.nct.vn/playlist/2025/10/28/p/S/3/2/1761587069228.jpg","artistName":"Nguyễn Thành Viên, A Páo","totalSongs":1}
+  ]
+}
