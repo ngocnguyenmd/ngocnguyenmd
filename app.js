@@ -109,7 +109,6 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
       else if (country) base = `https://ophim1.com/v1/api/quoc-gia/${country}`;
       else if (year) base = `https://ophim1.com/v1/api/nam-phat-hanh/${year}`;
       else base = 'https://ophim1.com/v1/api/danh-sach/phim-moi-cap-nhat';
-      
       const params = new URLSearchParams({ page: p });
       if (genre && !base.includes('/the-loai/')) params.append('genre', genre);
       if (country && !base.includes('/quoc-gia/')) params.append('country', country);
@@ -147,7 +146,6 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
       if (src.code === 'ax') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
       if (src.code === 'bx') thumb = it.poster_url || it.thumb_url || it.poster || it.thumb || '';
       if (src.code === 'cx') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
-
       if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//') && cdn) thumb = cdn + thumb.replace(/^\/+/, '');
       return {
         name: it.name || it.origin_name || it.title || 'Không rõ',
@@ -172,23 +170,16 @@ const interleaveFull = async (mode, filter, page, genre=null, country=null, year
   if (combinedFilterMode && (mode === 'combined' || mode === 'genre' || mode === 'country' || mode === 'year')) {
     sources = sources.filter(s => s.code !== 'cx');
   }
-  
   const results = await Promise.all(sources.map(src => fetchFromSource(src, page, mode, filter, genre, country, year, isSearch, isKeyword)));
-  
   const all = [];
   const seen = new Set();
   let idx = new Array(sources.length).fill(0);
-
   while (all.length < ITEMS_PER_PAGE) {
     let added = false;
     for (let i = 0; i < sources.length; i++) {
       if (idx[i] < results[i].length) {
         const m = results[i][idx[i]];
-        if (!seen.has(m.slug + m.sourceCode)) {
-          seen.add(m.slug + m.sourceCode);
-          all.push(m);
-          added = true;
-        }
+        if (!seen.has(m.slug + m.sourceCode)) { seen.add(m.slug + m.sourceCode); all.push(m); added = true; }
         idx[i]++;
       }
     }
@@ -203,25 +194,20 @@ const search = async (q = null, p = 1) => {
   currentSearchQuery = raw;
   currentPage = p;
   currentGenre = null; currentCountry = null; currentYear = null;
-
   const sid = 'search-sec';
   let sec = document.getElementById(sid);
   if (!sec) sec = createSec(sid, `TÌM: "${raw}"`);
   else sec.querySelector('.section-header').textContent = `TÌM: "${raw}"`;
-
   showSec(sec);
   const grid = document.getElementById(`${sid}-grid`);
   grid.innerHTML = '';
-
   const [slugMovies, keyMovies] = await Promise.all([
     interleaveFull(null, raw, p, null, null, null, true, false),
     interleaveFull(null, raw, p, null, null, null, false, true)
   ]);
-
   const all = [...slugMovies, ...keyMovies];
   const seen = new Set();
   const fin = all.filter(m => !seen.has(m.slug + m.sourceCode) && seen.add(m.slug + m.sourceCode));
-
   await renderFinal(fin, grid, `${sid}-progress`);
   renderPag(p, sid, fin.length >= ITEMS_PER_PAGE);
   sec.scrollIntoView({behavior:'smooth'});
@@ -242,57 +228,42 @@ const createCard = (m) => {
   c.dataset.slug = m.slug;
   c.dataset.source = m.sourceCode;
   c.onclick = () => { saveState(); location.href = `detail.html?slug=${m.slug}&source=${m.sourceCode}`; };
-
   const epTag = document.createElement('div');
   epTag.className = 'movie-ep-tag';
   epTag.textContent = m.episodeDisplay || '';
   if (!epTag.textContent) epTag.style.display = 'none';
-
   const topRight = document.createElement('div');
   topRight.className = 'movie-top-right';
-
   const qualityTag = document.createElement('div');
   qualityTag.className = 'movie-quality-tag';
   qualityTag.textContent = m.quality || '';
   if (!qualityTag.textContent) qualityTag.style.display = 'none';
-
   const sourceTag = document.createElement('div');
   sourceTag.className = 'movie-source-tag';
   sourceTag.textContent = m.sourceCode || '';
-
   topRight.append(qualityTag, sourceTag);
-
   const langTag = document.createElement('div');
   langTag.className = 'movie-lang-tag';
   langTag.textContent = m.lang || "Vietsub";
-
   const yearTag = document.createElement('div');
   yearTag.className = 'movie-year-tag';
   yearTag.textContent = m.year || '';
   if (!yearTag.textContent) yearTag.style.display = 'none';
-
   const titleTag = document.createElement('div');
   titleTag.className = 'movie-title';
   titleTag.textContent = m.name;
-
   const imgReal = document.createElement('img');
   imgReal.className = 'movie-img-real';
   imgReal.loading = 'lazy';
-  imgReal.onload = function() { 
-      this.style.opacity = '1'; 
-      this.parentElement.classList.add('loaded');
-  };
+  imgReal.onload = function() { this.style.opacity = '1'; this.parentElement.classList.add('loaded'); };
   imgReal.onerror = function() { updateProg(this.dataset.prog); };
   imgReal.dataset.prog = '';
-
   const imgPlaceholder = document.createElement('div');
   imgPlaceholder.className = 'movie-img-placeholder';
-
   const imgContainer = document.createElement('div');
   imgContainer.className = 'movie-img-container';
   imgContainer.append(imgReal, imgPlaceholder, epTag, topRight, langTag, yearTag, titleTag);
   c.appendChild(imgContainer);
-
   return { card: c, imgReal, url: m.thumb_url };
 };
 
@@ -301,24 +272,11 @@ const renderFinal = async (movies, container, id) => {
   const disp = movies.slice(0, ITEMS_PER_PAGE);
   total = disp.length;
   loaded = 0;
-
   const fragment = document.createDocumentFragment();
   const cards = disp.map(m => createCard(m));
-  
-  cards.forEach(o => {
-      o.imgReal.dataset.prog = id;
-      fragment.appendChild(o.card);
-  });
+  cards.forEach(o => { o.imgReal.dataset.prog = id; fragment.appendChild(o.card); });
   container.appendChild(fragment);
-
-  cards.forEach(o => {
-    if (!o.url) {
-      updateProg(id);
-      return;
-    }
-    o.imgReal.src = o.url;
-  });
-
+  cards.forEach(o => { if (!o.url) { updateProg(id); return; } o.imgReal.src = o.url; });
   if (total === 0) {
     container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:100px;color:#aaa;">Không tìm thấy kết quả hoặc không hỗ trợ lọc này.<br>Hãy thử tìm bằng từ khóa khác.</div>';
   }
@@ -328,7 +286,7 @@ const createSec = (id, title) => {
   const s = document.createElement('div');
   s.className = 'section';
   s.id = id;
-  s.innerHTML = `<div class="progress-container" id="${id}-progress-cont"><div class="progress-bar" id="${id}-progress"></div></div><div class="container"><div class="section-header">${title}</div><div class="movie-grid" id="${id}-grid"></div><div class="pagination" id="${id}-pagination"></div></div>`;
+  s.innerHTML = '<div class="progress-container" id="' + id + '-progress-cont"><div class="progress-bar" id="' + id + '-progress"></div></div><div class="container"><div class="section-header">' + title + '</div><div class="movie-grid" id="' + id + '-grid"></div><div class="pagination" id="' + id + '-pagination"></div></div>';
   return s;
 };
 
@@ -336,53 +294,33 @@ const showSec = sec => {
   document.querySelectorAll('#main-content > .section').forEach(x => x.style.display = 'none');
   const c = document.getElementById('main-content');
   const ex = document.getElementById(sec.id);
-  if (ex) {
-    ex.style.display = 'block';
-    c.insertBefore(ex, c.firstChild);
-  } else {
-    c.insertBefore(sec, c.firstChild);
-    sec.style.display = 'block';
-  }
+  if (ex) { ex.style.display = 'block'; c.insertBefore(ex, c.firstChild); }
+  else { c.insertBefore(sec, c.firstChild); sec.style.display = 'block'; }
 };
 
 const renderPag = (p, sid, more) => {
-  const el = document.getElementById(`${sid}-pagination`);
+  const el = document.getElementById(sid + '-pagination');
   if (!el) return;
   el.innerHTML = '';
-
   const prev = document.createElement('button');
   prev.className = 'page-btn';
-  prev.textContent = '‹';
+  prev.textContent = '\u2039';
   prev.disabled = p === 1;
-  prev.onclick = () => {
-    currentPage = p - 1;
-    if (currentSearchQuery) search(currentSearchQuery, currentPage);
-    else load(currentMode, currentFilter, currentPage, currentGenre, currentCountry, currentYear);
-  };
+  prev.onclick = () => { currentPage = p - 1; if (currentSearchQuery) search(currentSearchQuery, currentPage); else load(currentMode, currentFilter, currentPage, currentGenre, currentCountry, currentYear); };
   el.appendChild(prev);
-
   for (let i = Math.max(1, p - 3); i <= p + 4; i++) {
     const b = document.createElement('button');
     b.className = 'page-btn';
     if (i === p) b.classList.add('active');
     b.textContent = i;
-    b.onclick = () => {
-      currentPage = i;
-      if (currentSearchQuery) search(currentSearchQuery, currentPage);
-      else load(currentMode, currentFilter, currentPage, currentGenre, currentCountry, currentYear);
-    };
+    b.onclick = () => { currentPage = i; if (currentSearchQuery) search(currentSearchQuery, currentPage); else load(currentMode, currentFilter, currentPage, currentGenre, currentCountry, currentYear); };
     el.appendChild(b);
   }
-
   const next = document.createElement('button');
   next.className = 'page-btn';
-  next.textContent = '›';
+  next.textContent = '\u203a';
   next.disabled = !more;
-  next.onclick = () => {
-    currentPage = p + 1;
-    if (currentSearchQuery) search(currentSearchQuery, currentPage);
-    else load(currentMode, currentFilter, currentPage, currentGenre, currentCountry, currentYear);
-  };
+  next.onclick = () => { currentPage = p + 1; if (currentSearchQuery) search(currentSearchQuery, currentPage); else load(currentMode, currentFilter, currentPage, currentGenre, currentCountry, currentYear); };
   el.appendChild(next);
 };
 
@@ -390,54 +328,48 @@ const getTitle = (m, f, g, c, y) => {
   if (m === 'default') return 'PHIM MỚI CẬP NHẬT';
   if (m === 'combined') {
     const parts = [];
-    if (g) parts.push(`THỂ LOẠI: ${Object.keys(GENRE_SLUG_MAP).find(k => GENRE_SLUG_MAP[k] === g)?.toUpperCase() || g.toUpperCase()}`);
-    if (c) parts.push(`QUỐC GIA: ${Object.keys(COUNTRY_SLUG_MAP).find(k => COUNTRY_SLUG_MAP[k] === c)?.toUpperCase() || c.toUpperCase()}`);
-    if (y) parts.push(`NĂM: ${y}`);
-    return parts.length ? parts.join(' • ') : 'PHIM';
+    if (g) parts.push('THỂ LOẠI: ' + (Object.keys(GENRE_SLUG_MAP).find(k => GENRE_SLUG_MAP[k] === g) || g).toUpperCase());
+    if (c) parts.push('QUỐC GIA: ' + (Object.keys(COUNTRY_SLUG_MAP).find(k => COUNTRY_SLUG_MAP[k] === c) || c).toUpperCase());
+    if (y) parts.push('NĂM: ' + y);
+    return parts.length ? parts.join(' \u2022 ') : 'PHIM';
   }
-  if (m === 'genre') return `THỂ LOẠI: ${Object.keys(GENRE_SLUG_MAP).find(k => GENRE_SLUG_MAP[k] === f)?.toUpperCase() || f.toUpperCase()}`;
-  if (m === 'country') return `QUỐC GIA: ${Object.keys(COUNTRY_SLUG_MAP).find(k => COUNTRY_SLUG_MAP[k] === f)?.toUpperCase() || f.toUpperCase()}`;
-  if (m === 'year') return `NĂM: ${f}`;
+  if (m === 'genre') return 'THỂ LOẠI: ' + (Object.keys(GENRE_SLUG_MAP).find(k => GENRE_SLUG_MAP[k] === f) || f).toUpperCase();
+  if (m === 'country') return 'QUỐC GIA: ' + (Object.keys(COUNTRY_SLUG_MAP).find(k => COUNTRY_SLUG_MAP[k] === f) || f).toUpperCase();
+  if (m === 'year') return 'NĂM: ' + f;
   if (m === 'type') return { 'phim-bo': 'PHIM BỘ', 'phim-le': 'PHIM LẺ' }[f] || f.toUpperCase();
   if (m === 'cutee') {
     const l = Object.keys(CUTEE_MENU).find(k => CUTEE_MENU[k].slug === f || CUTEE_MENU[k].filter === f);
-    return l?.toUpperCase() || f.toUpperCase().replace(/-/g, ' ');
+    return l ? l.toUpperCase() : f.toUpperCase().replace(/-/g, ' ');
   }
-  return f?.toUpperCase() || 'PHIM';
+  return f ? f.toUpperCase() : 'PHIM';
 };
 
 const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   currentSearchQuery = '';
   if (document.getElementById('nav-search-input')) document.getElementById('nav-search-input').value = '';
-
   currentMode = m;
   currentFilter = f;
   currentPage = p;
-  
   if (m === 'genre') { currentGenre = f; currentCountry = c; currentYear = y; }
   else if (m === 'country') { currentGenre = null; currentCountry = f; currentYear = y; }
   else if (m === 'year') { currentGenre = null; currentCountry = null; currentYear = f; }
   else if (m === 'combined') { currentGenre = g; currentCountry = c; currentYear = y; }
   else { currentGenre = null; currentCountry = null; currentYear = null; }
-
   if (m === 'default') {
     document.querySelectorAll('#main-content > .section').forEach(x => x.remove());
     loadTxt();
     saveState();
     return;
   }
-
   const title = getTitle(m, f, currentGenre, currentCountry, currentYear);
-  const sid = `${m}-${f || ''}-${currentGenre || ''}-${currentCountry || ''}-${currentYear || ''}-sec`.replace(/--+/g, '-');
+  const sid = (m + '-' + (f || '') + '-' + (currentGenre || '') + '-' + (currentCountry || '') + '-' + (currentYear || '') + '-sec').replace(/--+/g, '-');
   let sec = document.getElementById(sid);
   if (!sec) sec = createSec(sid, title);
-
   showSec(sec);
-  const grid = document.getElementById(`${sid}-grid`);
+  const grid = document.getElementById(sid + '-grid');
   grid.innerHTML = '';
-
   const movies = await interleaveFull(m, f, p, currentGenre, currentCountry, currentYear);
-  await renderFinal(movies, grid, `${sid}-progress`);
+  await renderFinal(movies, grid, sid + '-progress');
   renderPag(p, sid, movies.length >= ITEMS_PER_PAGE);
   sec.scrollIntoView({ behavior: 'smooth' });
   saveState();
@@ -445,19 +377,19 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
 
 const removeDiacritics = str => {
   const map = {
-    'A':'A','À':'A','Á':'A','Ả':'A','Ã':'A','Ạ':'A','Ă':'A','Ằ':'A','Ắ':'A','Ẳ':'A','Ẵ':'A','Ặ':'A','Â':'A','Ầ':'A','Ấ':'A','Ẩ':'A','Ẫ':'A','Ậ':'A',
-    'a':'a','à':'a','á':'a','ả':'a','ã':'a','ạ':'a','ă':'a','ằ':'a','ắ':'a','ẳ':'a','ẵ':'a','ặ':'a','â':'a','ầ':'a','ấ':'a','ẩ':'a','ẫ':'a','ậ':'a',
-    'D':'D','Đ':'D','d':'d','đ':'d',
-    'E':'E','È':'E','É':'E','Ẻ':'E','Ẽ':'E','Ẹ':'E','Ê':'E','Ề':'E','Ế':'E','Ể':'E','Ễ':'E','Ệ':'E',
-    'e':'e','è':'e','é':'e','ẻ':'e','ẽ':'e','ẹ':'e','ê':'e','ề':'e','ế':'e','ể':'e','ễ':'e','ệ':'e',
-    'I':'I','Ì':'I','Í':'I','Ỉ':'I','Ĩ':'I','Ị':'I',
-    'i':'i','ì':'i','í':'i','ỉ':'i','ĩ':'i','ị':'i',
-    'O':'O','Ò':'O','Ó':'O','Ỏ':'O','Õ':'O','Ọ':'O','Ô':'O','Ồ':'O','Ố':'O','Ổ':'O','Ỗ':'O','Ộ':'O','Ơ':'O','Ờ':'O','Ớ':'O','Ở':'O','Ỡ':'O','Ợ':'O',
-    'o':'o','ò':'o','ó':'o','ỏ':'o','õ':'o','ọ':'o','ô':'o','ồ':'o','ố':'o','ổ':'o','ỗ':'o','ộ':'o','ơ':'o','ờ':'o','ớ':'o','ở':'o','ỡ':'o','ợ':'o',
-    'U':'U','Ù':'U','Ú':'U','Ủ':'U','Ũ':'U','Ụ':'U','Ư':'U','Ừ':'U','Ứ':'U','Ử':'U','Ữ':'U','Ự':'U',
-    'u':'u','ù':'u','ú':'u','ủ':'u','ũ':'u','ụ':'u','ư':'u','ừ':'u','ứ':'u','ử':'u','ữ':'u','ự':'u',
-    'Y':'Y','Ỳ':'Y','Ý':'Y','Ỷ':'Y','Ỹ':'Y','Ỵ':'Y',
-    'y':'y','ỳ':'y','ý':'y','ỷ':'y','ỹ':'y','ỵ':'y'
+    'A':'A','\u00C0':'A','\u00C1':'A','\u1EA2':'A','\u00C3':'A','\u1EA0':'A','\u0102':'A','\u1EB0':'A','\u1EB2':'A','\u1EB4':'A','\u1EB6':'A','\u00C2':'A','\u1EA4':'A','\u1EA6':'A','\u1EA8':'A','\u1EAA':'A','\u1EAC':'A',
+    'a':'a','\u00E0':'a','\u00E1':'a','\u1EA3':'a','\u00E3':'a','\u1EA1':'a','\u0103':'a','\u1EB1':'a','\u1EB3':'a','\u1EB5':'a','\u1EB7':'a','\u00E2':'a','\u1EA7':'a','\u1EA9':'a','\u1EBB':'a','\u1EBD':'a','\u1EBF':'a',
+    'D':'D','\u0110':'D','d':'d','\u0111':'d',
+    'E':'E','\u00C8':'E','\u00C9':'E','\u1EBA':'E','\u1EBC':'E','\u1EB8':'E','\u00CA':'E','\u1EC0':'E','\u1EC2':'E','\u1EC4':'E','\u1EC6':'E',
+    'e':'e','\u00E8':'e','\u00E9':'e','\u1EBB':'e','\u1EBD':'e','\u1EB9':'e','\u00EA':'e','\u1EC1':'e','\u1EC3':'e','\u1EC5':'e','\u1EC7':'e',
+    'I':'I','\u00CC':'I','\u00CD':'I','\u1EC8':'I','\u0128':'I','\u1ECA':'I',
+    'i':'i','\u00EC':'i','\u00ED':'i','\u1EC9':'i','\u0129':'i','\u1ECB':'i',
+    'O':'O','\u00D2':'O','\u00D3':'O','\u1ED2':'O','\u00D5':'O','\u1ED0':'O','\u00D4':'O','\u1ED4':'O','\u1ED6':'O','\u1ED8':'O','\u1EDA':'O','\u01A0':'O','\u1EDC':'O','\u1EDE':'O','\u1EE0':'O','\u1EE2':'O',
+    'o':'o','\u00F2':'o','\u00F3':'o','\u1ED3':'o','\u00F5':'o','\u1ED1':'o','\u00F4':'o','\u1ED5':'o','\u1ED7':'o','\u1ED9':'o','\u1EDB':'o','\u01A1':'o','\u1EDD':'o','\u1EDF':'o','\u1EE1':'o','\u1EE3':'o',
+    'U':'U','\u00D9':'U','\u00DA':'U','\u1EE6':'U','\u0168':'U','\u1EE4':'U','\u01AF':'U','\u1EE8':'U','\u1EEA':'U','\u1EEC':'U','\u1EEE':'U',
+    'u':'u','\u00F9':'u','\u00FA':'u','\u1EE7':'u','\u0169':'u','\u1EE5':'u','\u01B0':'u','\u1EE9':'u','\u1EEB':'u','\u1EED':'u','\u1EEF':'u',
+    'Y':'Y','\u1EF2':'Y','\u00DD':'Y','\u1EF6':'Y','\u1EF8':'Y','\u1EF4':'Y',
+    'y':'y','\u1EF3':'y','\u00FD':'y','\u1EF7':'y','\u1EF9':'y','\u1EF5':'y'
   };
   return str.split('').map(c => map[c] || c).join('');
 };
@@ -484,172 +416,133 @@ const parseTxt = txt => {
   const lines = txt.split('\n');
   const g = {};
   let cur = null;
-
   lines.forEach(l => {
     l = l.trim();
     if (!l) return;
-    if (l.startsWith('#')) {
-      cur = l.substring(1).trim();
-      if (!g[cur]) g[cur] = [];
-      return;
-    }
+    if (l.startsWith('#')) { cur = l.substring(1).trim(); if (!g[cur]) g[cur] = []; return; }
     if (!cur) return;
     const p = l.split('|');
     if (p.length < 2) return;
-    
     const tenPhim = p[0].trim();
     const maNguon = p[1].trim().toLowerCase();
     const linkAnh = (p[2] || '').trim();
-
-    const slug = removeDiacritics(tenPhim)
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-+|-+$/g, '');
-
-    g[cur].push({ 
-      slug: slug, 
-      source: maNguon,
-      image: linkAnh,
-      displayName: tenPhim
-    });
+    const slug = removeDiacritics(tenPhim).toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-+|-+$/g, '');
+    g[cur].push({ slug: slug, source: maNguon, image: linkAnh, displayName: tenPhim });
   });
-
   return g;
 };
 
 const loadGroup = async (name, items) => {
-  const sid = `txt-${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+  const sid = 'txt-' + name.toLowerCase().replace(/[^a-z0-9]/g, '-');
   let sec = document.getElementById(sid);
   if (!sec) sec = createSec(sid, name);
   const cont = document.getElementById('main-content');
   if (!document.getElementById(sid)) cont.appendChild(sec);
   sec.style.display = 'block';
-  const grid = document.getElementById(`${sid}-grid`);
+  const grid = document.getElementById(sid + '-grid');
   grid.innerHTML = '';
-
   const fetchPromises = items.map(async (item) => {
     const src = Object.values(API_SOURCES).find(s => s.code === item.source);
-    if (!src) {
-      console.warn('Nguon khong hop le:', item.source);
-      return null;
-    }
-
+    if (!src) return null;
     try {
       const results = await fetchFromSource(src, null, null, item.slug, null, null, null, true, false);
       if (results && results.length > 0) {
         const movie = results[0];
-        if (item.image) {
-          movie.thumb_url = item.image;
-        } else {
-          movie.thumb_url = '';
-        }
+        movie.thumb_url = item.image || '';
         return movie;
       }
-    } catch (e) {
-      console.error('Loi load phim:', item.slug, e);
-    }
+    } catch (e) { console.error('Loi load phim:', item.slug, e); }
     return null;
   });
-
   const results = await Promise.all(fetchPromises);
   const fin = results.filter(m => m !== null);
-  
-  await renderFinal(fin, grid, `${sid}-progress`);
-  document.getElementById(`${sid}-pagination`).style.display = 'none';
+  await renderFinal(fin, grid, sid + '-progress');
+  document.getElementById(sid + '-pagination').style.display = 'none';
 };
 
 // ==================== AI SELECTION ====================
 
 async function aiCallGroq(prompt, maxTokens) {
-  const key = localStorage.getItem('groq_key') || '';
-  if (!key || key.length < 5) throw new Error('Chua co Groq API Key');
-  
+  var key = localStorage.getItem('groq_key') || '';
+  if (!key || key.length < 5) throw new Error('Chua co Groq API Key. Nhan nut AI lan nua de nhap key.');
   if (aiAbortCtrl) { try { aiAbortCtrl.abort(); } catch(e){} }
   aiAbortCtrl = new AbortController();
-
-  const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  var r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-    body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: maxTokens || 2000,
-      temperature: 0.7
-    }),
+    body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: maxTokens || 2000, temperature: 0.7 }),
     signal: aiAbortCtrl.signal
   });
-
   if (!r.ok) {
-    const err = await r.json().catch(() => ({}));
-    throw new Error(err.error?.message || 'API loi ' + r.status);
+    var err = await r.json().catch(function(){ return {}; });
+    throw new Error((err.error && err.error.message) || 'API loi ' + r.status);
   }
-  const d = await r.json();
-  return d.choices?.[0]?.message?.content || '';
+  var d = await r.json();
+  return (d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content) || '';
 }
 
 function aiParseResponse(content) {
-  const groups = {};
-  let cur = null;
-  content.split('\n').forEach(l => {
+  var groups = {};
+  var cur = null;
+  content.split('\n').forEach(function(l) {
     l = l.trim();
     if (!l) return;
-    if (l.startsWith('#')) { cur = l.replace(/^#+\s*/, '').trim(); if (!groups[cur]) groups[cur] = []; return; }
+    if (l.indexOf('#') === 0) { cur = l.replace(/^#+\s*/, '').trim(); if (!groups[cur]) groups[cur] = []; return; }
     if (!cur) return;
-    const p = l.split('|');
+    var p = l.split('|');
     if (p.length < 2) return;
-    const name = p[0].trim();
-    const src = p[1].trim().toLowerCase();
-    const img = (p[2] || '').trim();
-    const slug = removeDiacritics(name).toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-+|-+$/g, '');
-    if (name && src && slug) groups[cur].push({ slug, source: src, image: img, displayName: name });
+    var name = p[0].trim();
+    var src = p[1].trim().toLowerCase();
+    var img = (p[2] || '').trim();
+    var slug = removeDiacritics(name).toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-+|-+$/g, '');
+    if (name && src && slug) groups[cur].push({ slug: slug, source: src, image: img, displayName: name });
   });
   return groups;
 }
 
 async function aiGenerateSelection() {
-  const key = localStorage.getItem('groq_key') || '';
+  var key = localStorage.getItem('groq_key') || '';
   if (!key || key.length < 5) {
-    const k = prompt('Nhap Groq API Key:');
-    if (!k) return;
-    localStorage.setItem('groq_key', k);
+    key = prompt('Nhap Groq API Key (lan sau se tu dong nho):');
+    if (!key || !key.trim()) return;
+    key = key.trim();
+    localStorage.setItem('groq_key', key);
   }
 
-  // Xoa section AI cu neu co
-  document.querySelectorAll('[id^="ai-"]').forEach(el => { if (el.id !== 'ai-loading-sec') el.remove(); });
+  // Xoa CAC section AI cu (truoc loading) - KHONG dung querySelector voi prefix vi se xoa luon loading
+  var oldAiSecs = document.querySelectorAll('.section[data-ai="1"]');
+  oldAiSecs.forEach(function(el) { el.remove(); });
 
-  const loadSec = createSec('ai-loading-sec', 'AI DANG PHAN TICH...');
+  // Tao section loading MOI
+  var loadSec = createSec('ai-loading-sec', 'AI DANG PHAN TICH...');
   showSec(loadSec);
-  const grid = document.getElementById('ai-loading-sec-grid');
+  var grid = document.getElementById('ai-loading-sec-grid');
+  if (!grid) return;
   grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:80px 20px;color:#e87ba5;font-size:13px;">AI dang chon phim phu hop cho ban...<br><br><span style="color:#555;font-size:11px;">Dung dong trang, qua trinh mat khoang 30-60 giay</span></div>';
-  document.getElementById('ai-loading-sec-pagination').style.display = 'none';
+  var pagEl = document.getElementById('ai-loading-sec-pagination');
+  if (pagEl) pagEl.style.display = 'none';
 
   try {
-    // Buoc 1: AI tao ten 6 nhom
-    const step1 = await aiCallGroq(
+    var step1 = await aiCallGroq(
       'Ban la chuyen gia dien anh. Dat ten 6 nhom phim HAY va BAT MAT cho trang web phim.\n\nQUY TAC:\n- Ten nhom phai ngan gon, hap dan, KHONG trung voi ten the loai thong thuong\n- Moi nhom phai co chu de ro rang, khac biet hoan toan\n- Vi du tot: "Dem Kinh Hoang Nhat Cuoc Doi", "Nguoi Han Gioi Nhat", "Xem Khoc Cuoi Cung Con"\n- Vi du xau: "Phim Hanh Dong", "Phim Hay", "Phim Han Quoc"\n\nCHI viet 6 dong, moi dong bat dau bang #, KHONG giai thich gi them:',
       200
     );
 
-    const groupNames = step1.split('\n').filter(l => l.trim().startsWith('#')).map(l => l.replace(/^#+\s*/, '').trim()).filter(Boolean);
+    var groupNames = step1.split('\n').filter(function(l) { return l.trim().indexOf('#') === 0; }).map(function(l) { return l.replace(/^#+\s*/, '').trim(); }).filter(Boolean);
     if (groupNames.length < 3) throw new Error('AI khong tao du nhom');
 
-    // Cap nhat trang thai
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#e87ba5;font-size:13px;">Da tao ' + groupNames.length + ' nhom<br><span style="color:#555;font-size:11px;">Dang chon phim cho tung nhom...</span></div>';
 
-    // Buoc 2: Goi AI cho tung nhom
-    const allGroups = {};
-    for (let i = 0; i < groupNames.length; i++) {
-      const gn = groupNames[i];
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;"><span style="color:#e87ba5;font-size:13px;">' + gn + '</span><br><span style="color:#555;font-size:11px;">Nhom ' + (i+1) + '/' + groupNames.length + '...</span></div>';
+    var allGroups = {};
+    for (var i = 0; i < groupNames.length; i++) {
+      var gn = groupNames[i];
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;"><span style="color:#e87ba5;font-size:13px;">' + gn + '</span><br><span style="color:#555;font-size:11px;">Nhom ' + (i + 1) + '/' + groupNames.length + '...</span></div>';
 
-      const prompt2 = 'Nhom phim: "' + gn + '"\n\nChon DUNG 8 phim thuoc nhom nay. Moi phim PHAI thuc su phu hop voi chu de "' + gn + '".\n\nFormat moi dong:\nTen phim co dau|ax\n\nQUY TAC:\n- KHONG random, moi phim phai thuc su thuoc nhom "' + gn + '"\n- Uu tien phim co tren ophim (slug tieng Viet khong dau, lowercase, gach ngang)\n- source dung ax\n- CHI viet 8 dong, KHONG so thu tu, KHONG giai thich';
+      var prompt2 = 'Nhom phim: "' + gn + '"\n\nChon DUNG 8 phim thuoc nhom nay. Moi phim PHAI thuc su phu hop voi chu de "' + gn + '".\n\nFormat moi dong:\nTen phim co dau|ax\n\nQUY TAC:\n- KHONG random, moi phim phai thuc su thuoc nhom "' + gn + '"\n- Uu tien phim co tren ophim (slug tieng Viet khong dau, lowercase, gach ngang)\n- source dung ax\n- CHI viet 8 dong, KHONG so thu tu, KHONG giai thich';
 
-      const result = await aiCallGroq(prompt2, 400);
-      const parsed = aiParseResponse(result);
-      
-      const firstKey = Object.keys(parsed)[0];
+      var result = await aiCallGroq(prompt2, 400);
+      var parsed = aiParseResponse(result);
+      var firstKey = Object.keys(parsed)[0];
       if (firstKey && parsed[firstKey].length > 0) {
         allGroups[gn] = parsed[firstKey];
       } else if (parsed[gn] && parsed[gn].length > 0) {
@@ -660,24 +553,37 @@ async function aiGenerateSelection() {
     // An loading
     loadSec.style.display = 'none';
 
-    // Hien thi cac nhom
-    const entries = Object.entries(allGroups).filter(([_, items]) => items.length > 0);
+    // Hien thi cac nhom - danh dau data-ai="1" de lan sau xoa dung
+    var entries = Object.entries(allGroups).filter(function(entry) { return entry[1].length > 0; });
     if (!entries.length) throw new Error('AI khong tim duoc phim nao');
 
-    for (const [name, items] of entries) {
+    for (var j = 0; j < entries.length; j++) {
+      var name = entries[j][0];
+      var items = entries[j][1];
+      var sid = 'txt-' + name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      var sec = document.getElementById(sid);
+      if (sec) {
+        // Danh dau la section AI de lan sau co the xoa
+        sec.setAttribute('data-ai', '1');
+      }
       await loadGroup(name, items);
+      // Danh dau sau khi loadGroup tao moi
+      sec = document.getElementById(sid);
+      if (sec) sec.setAttribute('data-ai', '1');
     }
 
-    document.getElementById('main-content')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('main-content').scrollIntoView({ behavior: 'smooth' });
 
   } catch (e) {
     if (e.name === 'AbortError') return;
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:80px 20px;"><span style="color:#f87171;font-size:13px;">Loi: ' + e.message + '</span><br><br><span style="color:#555;font-size:11px;">Nhan "AI De Xuat" trong menu de thu lai</span></div>';
+    if (grid) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:80px 20px;"><span style="color:#f87171;font-size:13px;">Loi: ' + e.message + '</span><br><br><span style="color:#555;font-size:11px;">Nhan "AI" trong menu de thu lai</span></div>';
+    }
   }
 }
 
 // ==================== KHOI TAO ====================
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
   loadState();
 
   if (currentSearchQuery) {
@@ -689,22 +595,22 @@ document.addEventListener('DOMContentLoaded', () => {
     loadTxt();
   }
 
-  const hamburger = document.getElementById('hamburger');
-  const modalBackdrop = document.getElementById('modalBackdrop');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalBody = document.getElementById('modalBody');
-  const modalClose = document.getElementById('modalClose');
+  var hamburger = document.getElementById('hamburger');
+  var modalBackdrop = document.getElementById('modalBackdrop');
+  var modalTitle = document.getElementById('modalTitle');
+  var modalBody = document.getElementById('modalBody');
+  var modalClose = document.getElementById('modalClose');
 
-  const openModal = (t, items, cb) => {
+  var openModal = function(t, items, cb) {
     modalTitle.textContent = t;
     modalBody.innerHTML = '';
-    document.querySelectorAll('.modal-item.active').forEach(x => x.classList.remove('active'));
-    items.forEach(it => {
-      const d = document.createElement('div');
+    document.querySelectorAll('.modal-item.active').forEach(function(x) { x.classList.remove('active'); });
+    items.forEach(function(it) {
+      var d = document.createElement('div');
       d.className = 'modal-item';
       d.textContent = it;
-      d.onclick = () => {
-        document.querySelectorAll('.modal-item.active').forEach(x => x.classList.remove('active'));
+      d.onclick = function() {
+        document.querySelectorAll('.modal-item.active').forEach(function(x) { x.classList.remove('active'); });
         d.classList.add('active');
         cb(it);
       };
@@ -713,67 +619,61 @@ document.addEventListener('DOMContentLoaded', () => {
     modalBackdrop.classList.add('show');
   };
 
-  const closeModal = () => modalBackdrop.classList.remove('show');
+  var closeModal = function() { modalBackdrop.classList.remove('show'); };
 
   if (modalClose) modalClose.onclick = closeModal;
-  if (modalBackdrop) modalBackdrop.onclick = e => { if (e.target === modalBackdrop) closeModal(); };
+  if (modalBackdrop) modalBackdrop.onclick = function(e) { if (e.target === modalBackdrop) closeModal(); };
 
   if (hamburger) {
-    hamburger.onclick = () =>
-      openModal(
-        'MENU',
-        ['Trang chu', 'The Loai', 'Quoc Gia', 'Nam', 'Khac', 'Phim Bo', 'Phim Le', 'Cinemax', 'AI De Xuat'],
-        v => {
-          if (v === 'Trang chu') { clearState(); location.reload(); return; }
-          if (v === 'The Loai') {
-            openModal('THE LOAI', Object.keys(GENRE_SLUG_MAP), genreName => {
-              const genreSlug = GENRE_SLUG_MAP[genreName];
-              openModal('LOC KET HOP', ['Bat (Toc do cao)', 'Tat (Nhieu ket qua)', 'Chi loc the loai'], choice => {
-                if (choice === 'Chi loc the loai') {
-                  combinedFilterMode = false;
-                  load('genre', genreSlug, 1);
-                  closeModal();
-                } else {
-                  combinedFilterMode = choice === 'Bat (Toc do cao)';
-                  openModal('QUOC GIA', ['Tat ca', ...Object.keys(COUNTRY_SLUG_MAP)], countryName => {
-                    const countrySlug = countryName === 'Tat ca' ? null : COUNTRY_SLUG_MAP[countryName];
-                    openModal('NAM', ['Tat ca', ...Array.from({ length: 25 }, (_, i) => 2026 - i)], yearStr => {
-                      const year = yearStr === 'Tat ca' ? null : yearStr;
-                      load('combined', null, 1, genreSlug, countrySlug, year);
-                      closeModal();
-                    });
+    hamburger.onclick = function() {
+      openModal('MENU', ['Trang chu', 'The Loai', 'Quoc Gia', 'Nam', 'Khac', 'Phim Bo', 'Phim Le', 'Cinemax', 'AI De Xuat'], function(v) {
+        if (v === 'Trang chu') { clearState(); location.reload(); return; }
+        if (v === 'The Loai') {
+          openModal('THE LOAI', Object.keys(GENRE_SLUG_MAP), function(genreName) {
+            var genreSlug = GENRE_SLUG_MAP[genreName];
+            openModal('LOC KET HOP', ['Bat (Toc do cao)', 'Tat (Nhieu ket qua)', 'Chi loc the loai'], function(choice) {
+              if (choice === 'Chi loc the loai') { combinedFilterMode = false; load('genre', genreSlug, 1); closeModal(); }
+              else {
+                combinedFilterMode = choice === 'Bat (Toc do cao)';
+                openModal('QUOC GIA', ['Tat ca'].concat(Object.keys(COUNTRY_SLUG_MAP)), function(countryName) {
+                  var countrySlug = countryName === 'Tat ca' ? null : COUNTRY_SLUG_MAP[countryName];
+                  openModal('NAM', ['Tat ca'].concat(Array.from({ length: 25 }, function(_, i) { return 2026 - i; })), function(yearStr) {
+                    var year = yearStr === 'Tat ca' ? null : yearStr;
+                    load('combined', null, 1, genreSlug, countrySlug, year);
+                    closeModal();
                   });
-                }
-              });
+                });
+              }
             });
-            return;
-          }
-          if (v === 'Quoc Gia') { openModal('QUOC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1)); return; }
-          if (v === 'Nam') { openModal('NAM', Array.from({ length: 25 }, (_, i) => 2026 - i), x => load('year', x, 1)); return; }
-          if (v === 'Khac') { openModal('KHAC', Object.keys(CUTEE_MENU), x => { const c = CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); }); return; }
-          if (v === 'Phim Bo') { load('type', 'phim-bo', 1); closeModal(); return; }
-          if (v === 'Phim Le') { load('type', 'phim-le', 1); closeModal(); return; }
-          if (v === 'Cinemax') { load('cutee', 'phim-chieu-rap', 1); closeModal(); return; }
-          if (v === 'AI De Xuat') { aiGenerateSelection(); closeModal(); return; }
+          });
+          return;
         }
-      );
+        if (v === 'Quoc Gia') { openModal('QUOC GIA', Object.keys(COUNTRY_SLUG_MAP), function(x) { load('country', COUNTRY_SLUG_MAP[x], 1); }); return; }
+        if (v === 'Nam') { openModal('NAM', Array.from({ length: 25 }, function(_, i) { return 2026 - i; }), function(x) { load('year', x, 1); }); return; }
+        if (v === 'Khac') { openModal('KHAC', Object.keys(CUTEE_MENU), function(x) { var c = CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); }); return; }
+        if (v === 'Phim Bo') { load('type', 'phim-bo', 1); closeModal(); return; }
+        if (v === 'Phim Le') { load('type', 'phim-le', 1); closeModal(); return; }
+        if (v === 'Cinemax') { load('cutee', 'phim-chieu-rap', 1); closeModal(); return; }
+        if (v === 'AI De Xuat') { aiGenerateSelection(); closeModal(); return; }
+      });
+    };
   }
 
-  document.querySelectorAll('.menu-trigger').forEach(el => {
-    el.onclick = e => {
+  document.querySelectorAll('.menu-trigger').forEach(function(el) {
+    el.onclick = function(e) {
       e.preventDefault();
-      const t = el.dataset.target;
+      var t = el.dataset.target;
       if (t === 'genre') {
-        openModal('THE LOAI', Object.keys(GENRE_SLUG_MAP), genreName => {
-          const genreSlug = GENRE_SLUG_MAP[genreName];
-          openModal('LOC KET HOP', ['Bat (Toc do cao)', 'Tat (Nhieu ket qua)', 'Chi loc the loai'], choice => {
+        openModal('THE LOAI', Object.keys(GENRE_SLUG_MAP), function(genreName) {
+          var genreSlug = GENRE_SLUG_MAP[genreName];
+          openModal('LOC KET HOP', ['Bat (Toc do cao)', 'Tat (Nhieu ket qua)', 'Chi loc the loai'], function(choice) {
             if (choice === 'Chi loc the loai') { combinedFilterMode = false; load('genre', genreSlug, 1); closeModal(); }
             else {
               combinedFilterMode = choice === 'Bat (Toc do cao)';
-              openModal('QUOC GIA', ['Tat ca', ...Object.keys(COUNTRY_SLUG_MAP)], countryName => {
-                const countrySlug = countryName === 'Tat ca' ? null : COUNTRY_SLUG_MAP[countryName];
-                openModal('NAM', ['Tat ca', ...Array.from({ length: 25 }, (_, i) => 2026 - i)], yearStr => {
-                  const year = yearStr === 'Tat ca' ? null : yearStr;
+              openModal('QUOC GIA', ['Tat ca'].concat(Object.keys(COUNTRY_SLUG_MAP)), function(countryName) {
+                var countrySlug = countryName === 'Tat ca' ? null : COUNTRY_SLUG_MAP[countryName];
+                openModal('NAM', ['Tat ca'].concat(Array.from({ length: 25 }, function(_, i) { return 2026 - i; })), function(yearStr) {
+                  var year = yearStr === 'Tat ca' ? null : yearStr;
                   load('combined', null, 1, genreSlug, countrySlug, year);
                   closeModal();
                 });
@@ -782,18 +682,18 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         });
       }
-      if (t === 'country') openModal('QUOC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1));
-      if (t === 'year') openModal('NAM', Array.from({ length: 25 }, (_, i) => 2026 - i), x => load('year', x, 1));
-      if (t === 'cutee') openModal('KHAC', Object.keys(CUTEE_MENU), x => { const c = CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); });
+      if (t === 'country') openModal('QUOC GIA', Object.keys(COUNTRY_SLUG_MAP), function(x) { load('country', COUNTRY_SLUG_MAP[x], 1); });
+      if (t === 'year') openModal('NAM', Array.from({ length: 25 }, function(_, i) { return 2026 - i; }), function(x) { load('year', x, 1); });
+      if (t === 'cutee') openModal('KHAC', Object.keys(CUTEE_MENU), function(x) { var c = CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); });
       if (t === 'ai') { aiGenerateSelection(); closeModal(); }
     };
   });
 
-  document.getElementById('home-link')?.addEventListener('click', e => { e.preventDefault(); clearState(); location.reload(); });
-  document.getElementById('phim-bo')?.addEventListener('click', e => { e.preventDefault(); load('type', 'phim-bo', 1); });
-  document.getElementById('phim-le')?.addEventListener('click', e => { e.preventDefault(); load('type', 'phim-le', 1); });
-  document.getElementById('phim-chieu-rap')?.addEventListener('click', e => { e.preventDefault(); load('cutee', 'phim-chieu-rap', 1); });
-  
-  document.getElementById('nav-search-btn')?.addEventListener('click', () => search());
-  document.getElementById('nav-search-input')?.addEventListener('keypress', e => { if (e.key === 'Enter') search(); });
+  document.getElementById('home-link')?.addEventListener('click', function(e) { e.preventDefault(); clearState(); location.reload(); });
+  document.getElementById('home-link-nav')?.addEventListener('click', function(e) { e.preventDefault(); clearState(); location.reload(); });
+  document.getElementById('phim-bo')?.addEventListener('click', function(e) { e.preventDefault(); load('type', 'phim-bo', 1); });
+  document.getElementById('phim-le')?.addEventListener('click', function(e) { e.preventDefault(); load('type', 'phim-le', 1); });
+  document.getElementById('phim-chieu-rap')?.addEventListener('click', function(e) { e.preventDefault(); load('cutee', 'phim-chieu-rap', 1); });
+  document.getElementById('nav-search-btn')?.addEventListener('click', function() { search(); });
+  document.getElementById('nav-search-input')?.addEventListener('keypress', function(e) { if (e.key === 'Enter') search(); });
 });
