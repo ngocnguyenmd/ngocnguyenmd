@@ -453,7 +453,7 @@ const removeDiacritics = str => {
     'I':'I','Ì':'I','Í':'I','Ỉ':'I','Ĩ':'I','Ị':'I',
     'i':'i','ì':'i','í':'i','ỉ':'i','ĩ':'i','ị':'i',
     'O':'O','Ò':'O','Ó':'O','Ỏ':'O','Õ':'O','Ọ':'O','Ô':'O','Ồ':'O','Ố':'O','Ổ':'O','Ỗ':'O','Ộ':'O','Ơ':'O','Ờ':'O','Ớ':'O','Ở':'O','Ỡ':'O','Ợ':'O',
-    'o':'o','ò':'o','ó':'o','ỏ':'o','õ':'o','ọ':'o','ô':'o','ồ':'o','ố':'o','ổ':'o','ỗ':'o','ộ':'o','ơ':'o','ờ':'o','ớ':'o','ở':'o':'ỡ':'o','ợ':'o',
+    'o':'o','ò':'o','ó':'o','ỏ':'o','õ':'o','ọ':'o','ô':'o','ồ':'o','ố':'o','ổ':'o','ỗ':'o','ộ':'o','ơ':'o','ờ':'o','ớ':'o','ở':'o','ỡ':'o','ợ':'o',
     'U':'U','Ù':'U','Ú':'U','Ủ':'U','Ũ':'U','Ụ':'U','Ư':'U','Ừ':'U','Ứ':'U','Ử':'U','Ữ':'U','Ự':'U',
     'u':'u','ù':'u','ú':'u','ủ':'u','ũ':'u','ụ':'u','ư':'u','ừ':'u','ứ':'u','ử':'u','ữ':'u','ự':'u',
     'Y':'Y','Ỳ':'Y','Ý':'Y','Ỷ':'Y','Ỹ':'Y','Ỵ':'Y',
@@ -532,7 +532,7 @@ const loadGroup = async (name, items) => {
   const fetchPromises = items.map(async (item) => {
     const src = Object.values(API_SOURCES).find(s => s.code === item.source);
     if (!src) {
-      console.warn(`Nguồn "${item.source}" không hợp lệ. Chỉ hỗ trợ: ax, bx, cx`);
+      console.warn('Nguon khong hop le:', item.source);
       return null;
     }
 
@@ -548,7 +548,7 @@ const loadGroup = async (name, items) => {
         return movie;
       }
     } catch (e) {
-      console.error(`Lỗi load phim "${item.slug}" từ ${item.source}:`, e);
+      console.error('Loi load phim:', item.slug, e);
     }
     return null;
   });
@@ -564,7 +564,7 @@ const loadGroup = async (name, items) => {
 
 async function aiCallGroq(prompt, maxTokens) {
   const key = localStorage.getItem('groq_key') || '';
-  if (!key || key.length < 5) throw new Error('Chưa có Groq API Key');
+  if (!key || key.length < 5) throw new Error('Chua co Groq API Key');
   
   if (aiAbortCtrl) { try { aiAbortCtrl.abort(); } catch(e){} }
   aiAbortCtrl = new AbortController();
@@ -583,7 +583,7 @@ async function aiCallGroq(prompt, maxTokens) {
 
   if (!r.ok) {
     const err = await r.json().catch(() => ({}));
-    throw new Error(err.error?.message || 'API lỗi ' + r.status);
+    throw new Error(err.error?.message || 'API loi ' + r.status);
   }
   const d = await r.json();
   return d.choices?.[0]?.message?.content || '';
@@ -611,45 +611,44 @@ function aiParseResponse(content) {
 async function aiGenerateSelection() {
   const key = localStorage.getItem('groq_key') || '';
   if (!key || key.length < 5) {
-    const k = prompt('Nhập Groq API Key:');
+    const k = prompt('Nhap Groq API Key:');
     if (!k) return;
     localStorage.setItem('groq_key', k);
   }
 
-  // Xóa section AI cũ nếu có
+  // Xoa section AI cu neu co
   document.querySelectorAll('[id^="ai-"]').forEach(el => { if (el.id !== 'ai-loading-sec') el.remove(); });
 
-  const loadSec = createSec('ai-loading-sec', 'AI ĐANG PHÂN TÍCH...');
+  const loadSec = createSec('ai-loading-sec', 'AI DANG PHAN TICH...');
   showSec(loadSec);
   const grid = document.getElementById('ai-loading-sec-grid');
-  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:80px 20px;color:#e87ba5;font-size:13px;">AI đang chọn phim phù hợp cho bạn...<br><br><span style="color:#555;font-size:11px;">Đừng đóng trang, quá trình mất khoảng 30-60 giây</span></div>';
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:80px 20px;color:#e87ba5;font-size:13px;">AI dang chon phim phu hop cho ban...<br><br><span style="color:#555;font-size:11px;">Dung dong trang, qua trinh mat khoang 30-60 giay</span></div>';
   document.getElementById('ai-loading-sec-pagination').style.display = 'none';
 
   try {
-    // Bước 1: AI tạo tên 6 nhóm
+    // Buoc 1: AI tao ten 6 nhom
     const step1 = await aiCallGroq(
-      `Bạn là chuyên gia điện ảnh. Đặt tên 6 nhóm phim HAY và BẮT MẮT cho trang web phim.\n\nQUY TẮC:\n- Tên nhóm phải ngắn gọn, hấp dẫn, KHÔNG trùng với tên thể loại thông thường\n- Mỗi nhóm phải có chủ đề rõ ràng, khác biệt hoàn toàn\n- Ví dụ tốt: "Đêm Kinh Hoàng Nhất Cuộc Đời", "Người Hàn Giỏi Nhất", "Xem Khóc Cười Cùng Con"\n- Ví dụ xấu: "Phim Hành Động", "Phim Hay", "Phim Hàn Quốc"\n\nCHỈ viết 6 dòng, mỗi dòng bắt đầu bằng #, KHÔNG giải thích gì thêm:`,
+      'Ban la chuyen gia dien anh. Dat ten 6 nhom phim HAY va BAT MAT cho trang web phim.\n\nQUY TAC:\n- Ten nhom phai ngan gon, hap dan, KHONG trung voi ten the loai thong thuong\n- Moi nhom phai co chu de ro rang, khac biet hoan toan\n- Vi du tot: "Dem Kinh Hoang Nhat Cuoc Doi", "Nguoi Han Gioi Nhat", "Xem Khoc Cuoi Cung Con"\n- Vi du xau: "Phim Hanh Dong", "Phim Hay", "Phim Han Quoc"\n\nCHI viet 6 dong, moi dong bat dau bang #, KHONG giai thich gi them:',
       200
     );
 
     const groupNames = step1.split('\n').filter(l => l.trim().startsWith('#')).map(l => l.replace(/^#+\s*/, '').trim()).filter(Boolean);
-    if (groupNames.length < 3) throw new Error('AI không tạo đủ nhóm');
+    if (groupNames.length < 3) throw new Error('AI khong tao du nhom');
 
-    // Cập nhật trạng thái
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#e87ba5;font-size:13px;">Đã tạo ' + groupNames.length + ' nhóm<br><span style="color:#555;font-size:11px;">Đang chọn phim cho từng nhóm...</span></div>';
+    // Cap nhat trang thai
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#e87ba5;font-size:13px;">Da tao ' + groupNames.length + ' nhom<br><span style="color:#555;font-size:11px;">Dang chon phim cho tung nhom...</span></div>';
 
-    // Bước 2: Gọi AI cho từng nhóm
+    // Buoc 2: Goi AI cho tung nhom
     const allGroups = {};
     for (let i = 0; i < groupNames.length; i++) {
       const gn = groupNames[i];
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;"><span style="color:#e87ba5;font-size:13px;">${gn}</span><br><span style="color:#555;font-size:11px;">Nhóm ${i+1}/${groupNames.length}...</span></div>`;
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;"><span style="color:#e87ba5;font-size:13px;">' + gn + '</span><br><span style="color:#555;font-size:11px;">Nhom ' + (i+1) + '/' + groupNames.length + '...</span></div>';
 
-      const prompt2 = `Nhóm phim: "${gn}"\n\nChọn ĐÚNG 8 phim thuộc nhóm này. Mỗi phim PHẢI thực sự phù hợp với chủ đề "${gn}".\n\nFormat mỗi dòng:\nTên phim có dấu|ax\n\nQUY TẮC:\n- KHÔNG random, mỗi phim phải thực sự thuộc nhóm "${gn}"\n- Ưu tiên phim có trên ophim (slug tiếng Việt không dấu, lowercase, gạch ngang)\n- source dùng ax\n- CHỈ viết 8 dòng, KHÔNG số thứ tự, KHÔNG giải thích`;
+      const prompt2 = 'Nhom phim: "' + gn + '"\n\nChon DUNG 8 phim thuoc nhom nay. Moi phim PHAI thuc su phu hop voi chu de "' + gn + '".\n\nFormat moi dong:\nTen phim co dau|ax\n\nQUY TAC:\n- KHONG random, moi phim phai thuc su thuoc nhom "' + gn + '"\n- Uu tien phim co tren ophim (slug tieng Viet khong dau, lowercase, gach ngang)\n- source dung ax\n- CHI viet 8 dong, KHONG so thu tu, KHONG giai thich';
 
       const result = await aiCallGroq(prompt2, 400);
       const parsed = aiParseResponse(result);
       
-      // Lấy nhóm đầu tiên AI trả về (có thể AI thêm # trong response)
       const firstKey = Object.keys(parsed)[0];
       if (firstKey && parsed[firstKey].length > 0) {
         allGroups[gn] = parsed[firstKey];
@@ -658,27 +657,26 @@ async function aiGenerateSelection() {
       }
     }
 
-    // Ẩn loading
+    // An loading
     loadSec.style.display = 'none';
 
-    // Hiển thị các nhóm
+    // Hien thi cac nhom
     const entries = Object.entries(allGroups).filter(([_, items]) => items.length > 0);
-    if (!entries.length) throw new Error('AI không tìm được phim nào');
+    if (!entries.length) throw new Error('AI khong tim duoc phim nao');
 
     for (const [name, items] of entries) {
       await loadGroup(name, items);
     }
 
-    // Cuộn lên đầu
     document.getElementById('main-content')?.scrollIntoView({ behavior: 'smooth' });
 
   } catch (e) {
     if (e.name === 'AbortError') return;
-    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:80px 20px;"><span style="color:#f87171;font-size:13px;">Lỗi: ${e.message}</span><br><br><span style="color:#555;font-size:11px;">Nhấn "AI Đề Xuất" trong menu để thử lại</span></div>`;
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:80px 20px;"><span style="color:#f87171;font-size:13px;">Loi: ' + e.message + '</span><br><br><span style="color:#555;font-size:11px;">Nhan "AI De Xuat" trong menu de thu lai</span></div>';
   }
 }
 
-// ==================== KHỞI TẠO ====================
+// ==================== KHOI TAO ====================
 document.addEventListener('DOMContentLoaded', () => {
   loadState();
 
@@ -724,23 +722,23 @@ document.addEventListener('DOMContentLoaded', () => {
     hamburger.onclick = () =>
       openModal(
         'MENU',
-        ['Trang chủ', 'Thể Loại', 'Quốc Gia', 'Năm', 'Khác', 'Phim Bộ', 'Phim Lẻ', 'Cinemax', 'AI Đề Xuất'],
+        ['Trang chu', 'The Loai', 'Quoc Gia', 'Nam', 'Khac', 'Phim Bo', 'Phim Le', 'Cinemax', 'AI De Xuat'],
         v => {
-          if (v === 'Trang chủ') { clearState(); location.reload(); return; }
-          if (v === 'Thể Loại') {
-            openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), genreName => {
+          if (v === 'Trang chu') { clearState(); location.reload(); return; }
+          if (v === 'The Loai') {
+            openModal('THE LOAI', Object.keys(GENRE_SLUG_MAP), genreName => {
               const genreSlug = GENRE_SLUG_MAP[genreName];
-              openModal('LỌC KẾT HỢP', ['Bật (Tốc độ cao)', 'Tắt (Nhiều kết quả)', 'Chỉ lọc thể loại'], choice => {
-                if (choice === 'Chỉ lọc thể loại') {
+              openModal('LOC KET HOP', ['Bat (Toc do cao)', 'Tat (Nhieu ket qua)', 'Chi loc the loai'], choice => {
+                if (choice === 'Chi loc the loai') {
                   combinedFilterMode = false;
                   load('genre', genreSlug, 1);
                   closeModal();
                 } else {
-                  combinedFilterMode = choice === 'Bật (Tốc độ cao)';
-                  openModal('QUỐC GIA', ['Tất cả', ...Object.keys(COUNTRY_SLUG_MAP)], countryName => {
-                    const countrySlug = countryName === 'Tất cả' ? null : COUNTRY_SLUG_MAP[countryName];
-                    openModal('NĂM', ['Tất cả', ...Array.from({ length: 25 }, (_, i) => 2026 - i)], yearStr => {
-                      const year = yearStr === 'Tất cả' ? null : yearStr;
+                  combinedFilterMode = choice === 'Bat (Toc do cao)';
+                  openModal('QUOC GIA', ['Tat ca', ...Object.keys(COUNTRY_SLUG_MAP)], countryName => {
+                    const countrySlug = countryName === 'Tat ca' ? null : COUNTRY_SLUG_MAP[countryName];
+                    openModal('NAM', ['Tat ca', ...Array.from({ length: 25 }, (_, i) => 2026 - i)], yearStr => {
+                      const year = yearStr === 'Tat ca' ? null : yearStr;
                       load('combined', null, 1, genreSlug, countrySlug, year);
                       closeModal();
                     });
@@ -750,13 +748,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             return;
           }
-          if (v === 'Quốc Gia') { openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1)); return; }
-          if (v === 'Năm') { openModal('NĂM', Array.from({ length: 25 }, (_, i) => 2026 - i), x => load('year', x, 1)); return; }
-          if (v === 'Khác') { openModal('KHÁC', Object.keys(CUTEE_MENU), x => { const c = CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); }); return; }
-          if (v === 'Phim Bộ') { load('type', 'phim-bo', 1); closeModal(); return; }
-          if (v === 'Phim Lẻ') { load('type', 'phim-le', 1); closeModal(); return; }
+          if (v === 'Quoc Gia') { openModal('QUOC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1)); return; }
+          if (v === 'Nam') { openModal('NAM', Array.from({ length: 25 }, (_, i) => 2026 - i), x => load('year', x, 1)); return; }
+          if (v === 'Khac') { openModal('KHAC', Object.keys(CUTEE_MENU), x => { const c = CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); }); return; }
+          if (v === 'Phim Bo') { load('type', 'phim-bo', 1); closeModal(); return; }
+          if (v === 'Phim Le') { load('type', 'phim-le', 1); closeModal(); return; }
           if (v === 'Cinemax') { load('cutee', 'phim-chieu-rap', 1); closeModal(); return; }
-          if (v === 'AI Đề Xuất') { aiGenerateSelection(); closeModal(); return; }
+          if (v === 'AI De Xuat') { aiGenerateSelection(); closeModal(); return; }
         }
       );
   }
@@ -766,16 +764,16 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const t = el.dataset.target;
       if (t === 'genre') {
-        openModal('THỂ LOẠI', Object.keys(GENRE_SLUG_MAP), genreName => {
+        openModal('THE LOAI', Object.keys(GENRE_SLUG_MAP), genreName => {
           const genreSlug = GENRE_SLUG_MAP[genreName];
-          openModal('LỌC KẾT HỢP', ['Bật (Tốc độ cao)', 'Tắt (Nhiều kết quả)', 'Chỉ lọc thể loại'], choice => {
-            if (choice === 'Chỉ lọc thể loại') { combinedFilterMode = false; load('genre', genreSlug, 1); closeModal(); }
+          openModal('LOC KET HOP', ['Bat (Toc do cao)', 'Tat (Nhieu ket qua)', 'Chi loc the loai'], choice => {
+            if (choice === 'Chi loc the loai') { combinedFilterMode = false; load('genre', genreSlug, 1); closeModal(); }
             else {
-              combinedFilterMode = choice === 'Bật (Tốc độ cao)';
-              openModal('QUỐC GIA', ['Tất cả', ...Object.keys(COUNTRY_SLUG_MAP)], countryName => {
-                const countrySlug = countryName === 'Tất cả' ? null : COUNTRY_SLUG_MAP[countryName];
-                openModal('NĂM', ['Tất cả', ...Array.from({ length: 25 }, (_, i) => 2026 - i)], yearStr => {
-                  const year = yearStr === 'Tất cả' ? null : yearStr;
+              combinedFilterMode = choice === 'Bat (Toc do cao)';
+              openModal('QUOC GIA', ['Tat ca', ...Object.keys(COUNTRY_SLUG_MAP)], countryName => {
+                const countrySlug = countryName === 'Tat ca' ? null : COUNTRY_SLUG_MAP[countryName];
+                openModal('NAM', ['Tat ca', ...Array.from({ length: 25 }, (_, i) => 2026 - i)], yearStr => {
+                  const year = yearStr === 'Tat ca' ? null : yearStr;
                   load('combined', null, 1, genreSlug, countrySlug, year);
                   closeModal();
                 });
@@ -784,9 +782,9 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         });
       }
-      if (t === 'country') openModal('QUỐC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1));
-      if (t === 'year') openModal('NĂM', Array.from({ length: 25 }, (_, i) => 2026 - i), x => load('year', x, 1));
-      if (t === 'cutee') openModal('KHÁC', Object.keys(CUTEE_MENU), x => { const c = CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); });
+      if (t === 'country') openModal('QUOC GIA', Object.keys(COUNTRY_SLUG_MAP), x => load('country', COUNTRY_SLUG_MAP[x], 1));
+      if (t === 'year') openModal('NAM', Array.from({ length: 25 }, (_, i) => 2026 - i), x => load('year', x, 1));
+      if (t === 'cutee') openModal('KHAC', Object.keys(CUTEE_MENU), x => { const c = CUTEE_MENU[x]; load(c.mode, c.slug || c.filter, 1); });
       if (t === 'ai') { aiGenerateSelection(); closeModal(); }
     };
   });
