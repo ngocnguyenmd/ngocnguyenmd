@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="description" content="Xem phim online miễn phí - MOEII">
 <title>Xem Phim Vui Vẻ - MOEII</title>
-
-<!-- ✅ CSS TRONG HEAD -->
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,7 +12,7 @@
 <header class="nav-wrapper">
   <div class="container">
     <nav class="nav" aria-label="Menu chính">
-      <a class="logo" href="/">* 👻 *</a>
+      <a class="logo" href="/" id="home-link">* 👻 *</a>
 
       <div class="nav-search" role="search">
         <input 
@@ -30,7 +28,7 @@
       </div>
 
       <ul class="nav-menu" id="nav-menu" role="menubar">
-        <li role="none"><a href="#" role="menuitem">Home</a></li>
+        <li role="none"><a href="#" role="menuitem" id="home-link-nav">Home</a></li>
         <li role="none"><a href="#" class="menu-trigger" data-target="genre" role="menuitem">Genre</a></li>
         <li role="none"><a href="#" class="menu-trigger" data-target="country" role="menuitem">Country</a></li>
         <li role="none"><a href="#" id="phim-bo" role="menuitem">Series</a></li>
@@ -38,9 +36,9 @@
         <li role="none"><a href="#" class="menu-trigger" data-target="year" role="menuitem">Year</a></li>
         <li role="none"><a href="#" class="menu-trigger" data-target="cutee" role="menuitem">Menu</a></li>
         <li role="none"><a href="#" id="phim-chieu-rap" role="menuitem">Cinemax</a></li>
+        <li role="none"><a href="#" class="menu-trigger" data-target="ai" role="menuitem">AI</a></li>
       </ul>
 
-      <!-- ✅ Hamburger đúng chuẩn -->
       <button 
         class="hamburger-menu" 
         id="hamburger"
@@ -57,7 +55,6 @@
   </div>
 </header>
 
-<!-- Modal -->
 <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
   <div class="modal-box">
     <div class="modal-header">
@@ -76,7 +73,6 @@
 
 <main id="main-content"></main>
 
-<!-- ✅ Script có defer, CUỐI body -->
-<script src="app.js" defer></script>
+<script src="app.js"></script>
 </body>
 </html>
