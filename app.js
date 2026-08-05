@@ -51,7 +51,6 @@ const API_SOURCES = {
 };
 
 const API_CACHE = {}; 
-
 let ITEMS_PER_PAGE = 16;
 let currentMode = 'default';
 let currentFilter = null;
@@ -76,6 +75,18 @@ const loadState = () => {
 };
 const clearState = () => localStorage.removeItem(STATE_KEY);
 
+// Tối ưu số cột grid tự động theo màn hình (A32, PC 1366...)
+const adjustGridForScreen = () => {
+  const w = window.innerWidth;
+  let cols = 6;
+  if (w <= 600) cols = 2;
+  else if (w <= 768) cols = 4;
+  else if (w <= 1366) cols = 5;
+  
+  document.documentElement.style.setProperty('--grid-cols', cols);
+  return cols;
+};
+
 const getEpisodeDisplay = i => {
   if (!i) return '';
   const m = i.movie || i;
@@ -91,6 +102,16 @@ const getEpisodeDisplay = i => {
   let disp = c && t ? `Tập ${c}/${t}` : c ? `Tập ${c}` : /full|hoàn tất|hoàn thành/i.test(cur) ? 'Hoàn tất' : 'Đang phát';
   if (l > 0) disp += ` (${l} link)`;
   return disp;
+};
+
+// Hàm kiểm tra link ảnh 404 (Async)
+const checkImageValid = (url) => {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = url;
+  });
 };
 
 const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null, isS=false, isK=false) => {
@@ -147,7 +168,15 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
       if (src.code === 'bx') thumb = it.poster_url || it.thumb_url || it.poster || it.thumb || '';
       if (src.code === 'cx') thumb = it.thumb_url || it.poster_url || it.poster || it.thumb || '';
 
-      if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//') && cdn) thumb = cdn + thumb.replace(/^\/+/, '');
+      if (thumb && !thumb.startsWith('http') && !thumb.startsWith('//') && cdn) {
+        thumb = cdn + thumb.replace(/^\/+/, '');
+      }
+      
+      // Sửa lỗi link Ophim bị lặp /uploads/movies/
+      if (src.code === 'ax' && thumb.includes('/uploads/movies/uploads/movies/')) {
+        thumb = thumb.replace('/uploads/movies/uploads/movies/', '/uploads/movies/');
+      }
+      
       return {
         name: it.name || it.origin_name || it.title || 'Không rõ',
         thumb_url: thumb,
@@ -210,7 +239,7 @@ const search = async (q = null, p = 1) => {
 
   showSec(sec);
   const grid = document.getElementById(`${sid}-grid`);
-  grid.innerHTML = '';
+  grid.innerHTML = '<div class="loading-text">ĐANG TÌM KIẾM...</div>';
 
   const [slugMovies, keyMovies] = await Promise.all([
     interleaveFull(null, raw, p, null, null, null, true, false),
@@ -231,96 +260,112 @@ let loaded = 0, total = 0;
 const updateProg = id => {
   loaded++;
   const bar = document.getElementById(id);
-  if (bar) bar.style.width = (loaded / total * 100) + '%';
-  if (loaded === total) document.getElementById(id + '-cont')?.classList.add('done');
+  if (bar) bar.style.width = Math.min(100, (loaded / total * 100)) + '%';
+  if (loaded >= total) {
+    const cont = document.getElementById(id + '-cont');
+    if (cont) cont.classList.add('done');
+  }
 };
 
-const createCard = (m) => {
-  const c = document.createElement('div');
-  c.className = 'movie-item';
-  c.dataset.slug = m.slug;
-  c.dataset.source = m.sourceCode;
-  c.onclick = () => { saveState(); location.href = `detail.html?slug=${m.slug}&source=${m.sourceCode}`; };
-
-  const epTag = document.createElement('div');
-  epTag.className = 'movie-ep-tag';
-  epTag.textContent = m.episodeDisplay || '';
-  if (!epTag.textContent) epTag.style.display = 'none';
-
-  const topRight = document.createElement('div');
-  topRight.className = 'movie-top-right';
-
-  const qualityTag = document.createElement('div');
-  qualityTag.className = 'movie-quality-tag';
-  qualityTag.textContent = m.quality || '';
-  if (!qualityTag.textContent) qualityTag.style.display = 'none';
-
-  const sourceTag = document.createElement('div');
-  sourceTag.className = 'movie-source-tag';
-  sourceTag.textContent = m.sourceCode || '';
-
-  topRight.append(qualityTag, sourceTag);
-
-  const langTag = document.createElement('div');
-  langTag.className = 'movie-lang-tag';
-  langTag.textContent = m.lang || "Vietsub";
-
-  const yearTag = document.createElement('div');
-  yearTag.className = 'movie-year-tag';
-  yearTag.textContent = m.year || '';
-  if (!yearTag.textContent) yearTag.style.display = 'none';
-
-  const titleTag = document.createElement('div');
-  titleTag.className = 'movie-title';
-  titleTag.textContent = m.name;
-
-  const imgReal = document.createElement('img');
-  imgReal.className = 'movie-img-real';
-  imgReal.loading = 'lazy';
-  imgReal.onload = function() { 
-      this.style.opacity = '1'; 
-      this.parentElement.classList.add('loaded');
-  };
-  imgReal.onerror = function() { updateProg(this.dataset.prog); };
-  imgReal.dataset.prog = '';
-
-  const imgPlaceholder = document.createElement('div');
-  imgPlaceholder.className = 'movie-img-placeholder';
-
-  const imgContainer = document.createElement('div');
-  imgContainer.className = 'movie-img-container';
-  imgContainer.append(imgReal, imgPlaceholder, epTag, topRight, langTag, yearTag, titleTag);
-  c.appendChild(imgContainer);
-
-  return { card: c, imgReal, url: m.thumb_url };
+const createCardHTML = (m, progId) => {
+  const epDisplay = m.episodeDisplay ? `<div class="movie-ep-tag">${m.episodeDisplay}</div>` : '';
+  const qualityTag = m.quality ? `<div class="movie-quality-tag">${m.quality}</div>` : '';
+  const sourceTag = `<div class="movie-source-tag">${m.sourceCode || ''}</div>`;
+  const topRight = `<div class="movie-top-right">${qualityTag}${sourceTag}</div>`;
+  const langTag = `<div class="movie-lang-tag">${m.lang || "Vietsub"}</div>`;
+  const yearTag = m.year ? `<div class="movie-year-tag">${m.year}</div>` : '';
+  const titleTag = `<div class="movie-title">${m.name}</div>`;
+  
+  const safeName = m.name.replace(/'/g, "\\'");
+  
+  // Luôn dùng thẻ img thật, vì ta đã lọc 404 từ trước
+  const imgReal = `<img class="movie-img-real" data-src="${m.thumb_url}" alt="${safeName}" data-prog="${progId}">`;
+  const imgPlaceholder = `<div class="movie-img-placeholder"></div>`;
+  
+  return `
+    <div class="movie-item" data-slug="${m.slug}" data-source="${m.sourceCode}">
+      <div class="movie-img-container">
+        ${imgPlaceholder}
+        ${imgReal}
+        ${epDisplay}
+        ${topRight}
+        ${langTag}
+        ${yearTag}
+        ${titleTag}
+      </div>
+    </div>
+  `;
 };
 
 const renderFinal = async (movies, container, id) => {
   container.innerHTML = '';
-  const disp = movies.slice(0, ITEMS_PER_PAGE);
+  
+  // Lấy danh sách phim có link ảnh
+  let disp = movies.filter(m => {
+      const url = m.thumb_url || '';
+      return url.trim() !== '' && (url.startsWith('http') || url.startsWith('//'));
+  }).slice(0, ITEMS_PER_PAGE);
+
+  // KIỂM TRA 404: Nếu ảnh hỏng -> LOẠI BỎ PHIM ĐÓ KHỎI MÀN HÌNH
+  disp = await Promise.all(disp.map(async m => {
+      const isValid = await checkImageValid(m.thumb_url);
+      return isValid ? m : null;
+  }));
+  disp = disp.filter(m => m !== null);
+
   total = disp.length;
   loaded = 0;
-
-  const fragment = document.createDocumentFragment();
-  const cards = disp.map(m => createCard(m));
   
-  cards.forEach(o => {
-      o.imgReal.dataset.prog = id;
-      fragment.appendChild(o.card);
-  });
+  const bar = document.getElementById(id);
+  if (bar) bar.style.width = '0%';
+  
+  if (total === 0) {
+    if (bar) bar.style.width = '100%';
+    document.getElementById(id + '-cont')?.classList.add('done');
+    container.innerHTML = '<div class="no-results">Không có phim hợp lệ (Ảnh lỗi hoặc không có dữ liệu).</div>';
+    return;
+  }
+
+  // Dùng DocumentFragment để đẩy toàn bộ HTML 1 lần
+  const fragment = document.createDocumentFragment();
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = disp.map(m => createCardHTML(m, id)).join('');
+  
+  while (wrapper.firstChild) {
+    fragment.appendChild(wrapper.firstChild);
+  }
   container.appendChild(fragment);
 
-  cards.forEach(o => {
-    if (!o.url) {
-      updateProg(id);
-      return;
-    }
-    o.imgReal.src = o.url;
+  // IntersectionObserver: Chỉ load ảnh khi cuộn tới
+  const imgObserver = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        img.src = img.dataset.src;
+        
+        img.onload = function() { 
+          this.style.opacity = '1'; 
+          this.parentElement.classList.add('loaded');
+          updateProg(this.dataset.prog);
+        };
+        
+        img.onerror = function() { 
+          updateProg(this.dataset.prog); 
+        };
+        
+        obs.unobserve(img);
+      }
+    });
+  }, { rootMargin: '200px' });
+
+  container.querySelectorAll('.movie-item').forEach(item => {
+    item.onclick = () => { 
+      saveState(); 
+      location.href = `detail.html?slug=${item.dataset.slug}&source=${item.dataset.source}`; 
+    };
   });
 
-  if (total === 0) {
-    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:100px;color:#aaa;">Không tìm thấy kết quả hoặc không hỗ trợ lọc này.<br>Hãy thử tìm bằng từ khóa khác.</div>';
-  }
+  container.querySelectorAll('.movie-img-real').forEach(img => imgObserver.observe(img));
 };
 
 const createSec = (id, title) => {
@@ -433,7 +478,7 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
 
   showSec(sec);
   const grid = document.getElementById(`${sid}-grid`);
-  grid.innerHTML = '';
+  grid.innerHTML = '<div class="loading-text">ĐANG TẢI...</div>';
 
   const movies = await interleaveFull(m, f, p, currentGenre, currentCountry, currentYear);
   await renderFinal(movies, grid, `${sid}-progress`);
@@ -442,7 +487,6 @@ const load = async (m, f = null, p = 1, g = null, c = null, y = null) => {
   saveState();
 };
 
-// ==================== HÀM BỎ DẤU TIẾNG VIỆT ====================
 const removeDiacritics = str => {
   const map = {
     'A':'A','À':'A','Á':'A','Ả':'A','Ã':'A','Ạ':'A','Ă':'A','Ằ':'A','Ắ':'A','Ẳ':'A','Ẵ':'A','Ặ':'A','Â':'A','Ầ':'A','Ấ':'A','Ẩ':'A','Ẫ':'A','Ậ':'A',
@@ -450,19 +494,16 @@ const removeDiacritics = str => {
     'D':'D','Đ':'D','d':'d','đ':'d',
     'E':'E','È':'E','É':'E','Ẻ':'E','Ẽ':'E','Ẹ':'E','Ê':'E','Ề':'E','Ế':'E','Ể':'E','Ễ':'E','Ệ':'E',
     'e':'e','è':'e','é':'e','ẻ':'e','ẽ':'e','ẹ':'e','ê':'e','ề':'e','ế':'e','ể':'e','ễ':'e','ệ':'e',
-    'I':'I','Ì':'I','Í':'I','Ỉ':'I','Ĩ':'I','Ị':'I',
-    'i':'i','ì':'i','í':'i','ỉ':'i','ĩ':'i','ị':'i',
+    'I':'I','Ì':'I','Í':'I','Ỉ':'I','Ĩ':'I','Ị':'I','i':'i','ì':'i','í':'i','ỉ':'i','ĩ':'i','ị':'i',
     'O':'O','Ò':'O','Ó':'O','Ỏ':'O','Õ':'O','Ọ':'O','Ô':'O','Ồ':'O','Ố':'O','Ổ':'O','Ỗ':'O','Ộ':'O','Ơ':'O','Ờ':'O','Ớ':'O','Ở':'O','Ỡ':'O','Ợ':'O',
     'o':'o','ò':'o','ó':'o','ỏ':'o','õ':'o','ọ':'o','ô':'o','ồ':'o','ố':'o','ổ':'o','ỗ':'o','ộ':'o','ơ':'o','ờ':'o','ớ':'o','ở':'o','ỡ':'o','ợ':'o',
     'U':'U','Ù':'U','Ú':'U','Ủ':'U','Ũ':'U','Ụ':'U','Ư':'U','Ừ':'U','Ứ':'U','Ử':'U','Ữ':'U','Ự':'U',
     'u':'u','ù':'u','ú':'u','ủ':'u','ũ':'u','ụ':'u','ư':'u','ừ':'u','ứ':'u','ử':'u','ữ':'u','ự':'u',
-    'Y':'Y','Ỳ':'Y','Ý':'Y','Ỷ':'Y','Ỹ':'Y','Ỵ':'Y',
-    'y':'y','ỳ':'y','ý':'y','ỷ':'y','ỹ':'y','ỵ':'y'
+    'Y':'Y','Ỳ':'Y','Ý':'Y','Ỷ':'Y','Ỹ':'Y','Ỵ':'Y','y':'y','ỳ':'y','ý':'y','ỷ':'y','ỹ':'y','ỵ':'y'
   };
   return str.split('').map(c => map[c] || c).join('');
 };
 
-// ==================== LOAD TXT ĐÃ SỬA ====================
 const loadTxt = async () => {
   try {
     const r = await fetch('./trangchu.txt?t=' + Date.now());
@@ -476,14 +517,11 @@ const loadTxt = async () => {
     });
     await Promise.all(promises);
   } catch {
-    document.getElementById('main-content').innerHTML = '<div class="container"><h2 style="text-align:center;padding:100px;color:#aaa;">Chưa có dữ liệu trangchu.txt</h2></div>';
+    document.getElementById('main-content').innerHTML = '<div class="container"><h2 class="loading-text">Chưa có dữ liệu trangchu.txt</h2></div>';
   }
   saveState();
 };
 
-// ==================== PARSE TXT ĐÃ SỬA ====================
-// Định dạng: # Tên nhóm
-//            tên phim có dấu| mã nguồn (ax/bx/cx) | link ảnh (hoặc để trống)
 const parseTxt = txt => {
   const lines = txt.split('\n');
   const g = {};
@@ -501,30 +539,23 @@ const parseTxt = txt => {
     const p = l.split('|');
     if (p.length < 2) return;
     
-    const tenPhim = p[0].trim();         // Tên phim có dấu
-    const maNguon = p[1].trim().toLowerCase(); // ax, bx, cx
-    const linkAnh = (p[2] || '').trim();      // Link ảnh hoặc chuỗi rỗng
+    const tenPhim = p[0].trim();
+    const maNguon = p[1].trim().toLowerCase();
+    const linkAnh = (p[2] || '').trim();
 
-    // Bỏ dấu tiếng Việt, lowercase, thay khoảng trắng bằng dấu gạch ngang
     const slug = removeDiacritics(tenPhim)
       .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, '')  // Xóa ký tự đặc biệt (giữ lại chữ, số, khoảng trắng)
-      .replace(/\s+/g, '-')         // Khoảng trắng thành dấu -
-      .replace(/-+/g, '-')          // Gộp nhiều dấu - thành 1
-      .replace(/^-+|-+$/g, '');     // Xóa dấu - ở đầu/cuối
+      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
 
-    g[cur].push({ 
-      slug: slug, 
-      source: maNguon,   // Lưu mã: ax, bx, cx
-      image: linkAnh,    // Lưu link ảnh (có thể rỗng)
-      displayName: tenPhim // Giữ tên gốc có dấu để hiển thị nếu cần
-    });
+    g[cur].push({ slug, source: maNguon, image: linkAnh, displayName: tenPhim });
   });
 
   return g;
 };
 
-// ==================== LOAD GROUP ĐÃ SỬA ====================
 const loadGroup = async (name, items) => {
   const sid = `txt-${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
   let sec = document.getElementById(sid);
@@ -533,39 +564,24 @@ const loadGroup = async (name, items) => {
   if (!document.getElementById(sid)) cont.appendChild(sec);
   sec.style.display = 'block';
   const grid = document.getElementById(`${sid}-grid`);
-  grid.innerHTML = '';
+  grid.innerHTML = '<div class="loading-text">ĐANG TẢI PHIM...</div>';
 
-  // Fetch từng phim theo slug + mã nguồn
   const fetchPromises = items.map(async (item) => {
-    // Tìm source theo mã code (ax, bx, cx)
     const src = Object.values(API_SOURCES).find(s => s.code === item.source);
-    if (!src) {
-      console.warn(`Nguồn "${item.source}" không hợp lệ. Chỉ hỗ trợ: ax, bx, cx`);
-      return null;
-    }
+    if (!src) return null;
 
     try {
       const results = await fetchFromSource(src, null, null, item.slug, null, null, null, true, false);
       if (results && results.length > 0) {
         const movie = results[0];
-        // Nếu có link ảnh tùy chỉnh trong txt → đè lên ảnh từ API
-        if (item.image) {
-          movie.thumb_url = item.image;
-        } else {
-          // Nếu không có link ảnh → để trống (không dùng ảnh API)
-          movie.thumb_url = '';
-        }
+        if (item.image) movie.thumb_url = item.image;
         return movie;
       }
-    } catch (e) {
-      console.error(`Lỗi load phim "${item.slug}" từ ${item.source}:`, e);
-    }
+    } catch (e) { console.error("Lỗi:", e); }
     return null;
   });
 
   const results = await Promise.all(fetchPromises);
-  
-  // Lọc bỏ null (phim không tìm thấy)
   const fin = results.filter(m => m !== null);
   
   await renderFinal(fin, grid, `${sid}-progress`);
@@ -574,6 +590,12 @@ const loadGroup = async (name, items) => {
 
 // ==================== KHỞI TẠO ====================
 document.addEventListener('DOMContentLoaded', () => {
+  adjustGridForScreen();
+  window.addEventListener('resize', () => {
+      const cols = adjustGridForScreen();
+      document.querySelectorAll('.movie-grid').forEach(g => g.style.gridTemplateColumns = `repeat(${cols}, 1fr)`);
+  });
+
   loadState();
 
   if (currentSearchQuery) {
