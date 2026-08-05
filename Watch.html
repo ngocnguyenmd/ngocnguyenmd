@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Xem Phim</title>
+  
+  <!-- CSS Giao diện web của bạn -->
+  <link rel="stylesheet" href="player.css">
+  
+  <!-- CSS Của trình phát Plyr -->
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+</head>
+<body>
+
+  <div class="bg-blur" id="bg"></div>
+  <div class="overlay"></div>
+
+  <div class="main-container">
+    <div class="title-bar" id="title-bar">Đang tải thông tin phim...</div>
+    
+    <div id="player-area">
+      <div class="loading-overlay">
+        <div class="spinner"></div>
+      </div>
+      
+      <!-- ĐÃ BỎ HẲN CHỮ controls ĐỂ TRÌNH DUYỆT KHÔNG TỰ VẼ THANH CŨ -->
+      <video id="hls-video" playsinline webkit-playsinline preload="none" style="display:none"></video>
+      
+      <iframe id="embed-frame" style="display:none" allowfullscreen allow="autoplay" loading="lazy" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+      
+      <div class="error-msg" id="error-msg" style="display:none;">
+        <span>Lỗi phát nguồn này. Hãy thử đổi Server.</span>
+      </div>
+    </div>
+
+    <div class="bar" id="source-mode-bar"></div>
+    <div class="bar" id="server-select"></div>
+
+    <div class="bar" id="ctl-bar">
+      <button class="btn" onclick="prevEp()">« Trước</button>
+      <button class="btn" onclick="seek(-40)">-40s</button>
+      <button class="btn" onclick="seek(40)">+40s</button>
+      <button class="btn" onclick="nextEp()">Sau »</button>
+    </div>
+
+    <div class="ep-grid" id="ep-grid"></div>
+
+    <div class="plot-container" id="plot-container">
+      <h3>Cốt truyện</h3>
+      <p id="plot-text">Đang tải nội dung phim...</p>
+    </div>
+
+    <a class="back-btn" href="/">« Quay lại Trang Chủ</a>
+  </div>
+
+  <div id="toast">Thông báo</div>
+
+  <div id="popup-confirm">
+    <div id="popup-box">
+      <p>Bạn có muốn chuyển sang tập kế tiếp không?</p>
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 15px;">
+        <button class="popup-btn popup-yes">Có</button>
+        <button class="popup-btn popup-no">Không</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="player.js"></script>
+</body>
+</html>

@@ -264,7 +264,6 @@ function resetPlayer() {
   if (hls) { hls.destroy(); hls = null; }
   if (plyrPlayer) { plyrPlayer.destroy(); plyrPlayer = null; }
   
-  // XÓA THẺ DIV BỌC PLYR ĐÃ TẠO RA TRƯỚC ĐÓ ĐỂ TRÁNH LỖI GIAO DIỆN
   const oldWrapper = document.getElementById('plyr-wrapper');
   if (oldWrapper) oldWrapper.remove();
 
@@ -287,14 +286,12 @@ function resetPlayer() {
 function playSo1(m3u8) {
   resetPlayer();
 
-  // TẠO MỘT THẺ DIV MỚI ĐỂ CHỨA VIDEO, KHÔNG ĐỂ PLYR TỰ ĐỘNG BỌC LẤY VIDEO GỐC
   const wrapper = document.createElement('div');
   wrapper.id = 'plyr-wrapper';
   wrapper.style.position = 'relative';
   wrapper.style.width = '100%';
   wrapper.style.height = '100%';
   
-  // Chèn thẻ video vào trong div mới
   wrapper.appendChild(videoEl);
   playerArea.insertBefore(wrapper, loading);
   
@@ -331,12 +328,11 @@ function playSo1(m3u8) {
     hls.loadSource(m3u8);
     hls.attachMedia(videoEl);
 
-    // KHỞI TẠO GIAO DIỆN PLYR VỚI TÙY CHỌN 'WRAPPER' ĐỂ KHÔNG LÀM HỎNG VIDEO GỐC
     plyrPlayer = new Plyr(videoEl, {
       controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'],
       autoplay: true,
       ratio: '16:9',
-      _allowMultipleInstances: true // Tránh cảnh báo nếu chưa kịp xóa hết instance cũ
+      _allowMultipleInstances: true 
     });
 
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
