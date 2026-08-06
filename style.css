@@ -23,14 +23,13 @@ body {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
-    /* Ngăn trôi lag khi cuộn trên iOS */
     -webkit-overflow-scrolling: touch;
 }
 
 a { text-decoration: none; color: inherit; }
 img { max-width: 100%; height: auto; display: block; }
 button { font-family: inherit; cursor: pointer; border: none; background: none; }
-:focus-visible { outline: 2px solid #e85d75; outline-offset: 2px; }
+:focus-visible { outline: 2px solid #ff8c00; outline-offset: 2px; }
 
 /* ===============================
    CONTAINER
@@ -63,7 +62,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .logo {
     font-size: 2.5rem;
     font-weight: 900;
-    color: #e85d75; 
+    color: #ff8c00; /* Đổi sang Cam */
     letter-spacing: -2px;
     cursor: pointer;
     transition: opacity 0.2s ease;
@@ -86,7 +85,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .nav-search:focus-within {
-    border-color: rgba(232, 93, 117, 0.5);
+    border-color: rgba(255, 140, 0, 0.5);
 }
 
 .nav-search-input {
@@ -104,8 +103,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .nav-search-input::placeholder { color: rgba(255, 255, 255, 0.4); }
 
 .nav-search-btn {
-    background: #e85d75;
-    color: #fff;
+    background: #ff8c00; /* Đổi sang Cam */
+    color: #000; /* Chữ đen nổi bật trên nền cam */
     font-weight: 700;
     padding: 10px 24px;
     margin: 4px;
@@ -139,7 +138,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     position: absolute;
     bottom: 0; left: 0;
     width: 0; height: 2px;
-    background: #e85d75;
+    background: #ff8c00; /* Đổi sang Cam */
     transition: width 0.3s ease;
 }
 
@@ -160,7 +159,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     transition: background 0.2s ease;
 }
 
-.hamburger-menu:hover { background: rgba(232, 93, 117, 0.2); }
+.hamburger-menu:hover { background: rgba(255, 140, 0, 0.2); }
 
 .hamburger {
     display: block;
@@ -260,8 +259,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .modal-item:nth-child(4n) { border-right: none; }
-.modal-item:hover { background: rgba(232, 93, 117, 0.1); color: #fff; }
-.modal-item.active { background: #e85d75; color: #fff; font-weight: 700; }
+.modal-item:hover { background: rgba(255, 140, 0, 0.1); color: #fff; }
+.modal-item.active { background: #ff8c00; color: #000; font-weight: 700; } /* Đổi sang Cam */
 
 /* ===============================
    SECTION
@@ -284,7 +283,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .section-header::before {
     content: '';
     width: 4px; height: 1.2em;
-    background: #e85d75;
+    background: #ff8c00; /* Đổi sang Cam */
     border-radius: 2px;
 }
 
@@ -295,7 +294,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     display: grid;
     grid-template-columns: repeat(var(--grid-cols, 6), 1fr);
     gap: 1rem;
-    /* Kích hoạt tăng tốc phần cứng mượt mà mà không tốn RAM như will-change */
     transform: translateZ(0); 
 }
 
@@ -305,13 +303,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     overflow: hidden;
     background: #151921;
     cursor: pointer;
-    /* Chỉ transition transform, KHÔNG transition box-shadow để chống lag PC */
     transition: transform 0.2s ease; 
 }
 
 .movie-item:hover {
     transform: translateY(-4px);
-    /* Giảm độ nặng của box-shadow để GPU không bị quá tải */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); 
 }
 
@@ -374,7 +370,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     background: rgba(0, 0, 0, 0.8);
 }
 
-.movie-year-tag { top: 8px; right: 8px; background: rgba(232, 93, 117, 0.9); }
+.movie-year-tag { top: 8px; right: 8px; background: rgba(255, 140, 0, 0.9); color: #000; } /* Đổi sang Cam */
 
 .movie-top-right {
     position: absolute;
@@ -388,9 +384,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .movie-top-right .movie-quality-tag,
 .movie-top-right .movie-source-tag { position: static; }
 
-.movie-quality-tag { background: #e85d75; padding: 3px 7px; }
+.movie-quality-tag { background: #ff8c00; color: #000; padding: 3px 7px; } /* Đổi sang Cam */
 .movie-source-tag { top: 32px; left: 8px; background: rgba(0, 0, 0, 0.8); font-size: 0.55rem; }
-.movie-lang-tag { bottom: 36px; left: 8px; background: rgba(232, 93, 117, 0.9); }
+.movie-lang-tag { bottom: 36px; left: 8px; background: rgba(255, 140, 0, 0.9); color: #000; } /* Đổi sang Cam */
 
 .movie-title {
     position: absolute;
@@ -424,7 +420,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .progress-bar {
     height: 100%;
-    background: #e85d75;
+    background: #ff8c00; /* Đổi sang Cam */
     width: 0%;
     transition: width 0.3s ease;
 }
@@ -454,8 +450,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     min-width: 44px;
 }
 
-.page-btn:hover:not(.active):not(:disabled) { background: rgba(255, 255, 255, 0.1); border-color: rgba(232, 93, 117, 0.4); }
-.page-btn.active { background: #e85d75; border-color: #e85d75; font-weight: 700; }
+.page-btn:hover:not(.active):not(:disabled) { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 140, 0, 0.4); }
+.page-btn.active { background: #ff8c00; color: #000; border-color: #ff8c00; font-weight: 700; } /* Đổi sang Cam */
 .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 /* ===============================
@@ -479,7 +475,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .loading-spinner {
     width: 50px; height: 50px;
     border: 4px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #e85d75;
+    border-top-color: #ff8c00; /* Đổi sang Cam */
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
@@ -504,9 +500,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-.toast.error { background: #e85d75; border-color: #e85d75; }
+.toast.error { background: #ff8c00; color: #000; border-color: #ff8c00; } /* Đổi sang Cam */
 .toast.success { background: #2d8a4e; border-color: #2d8a4e; }
-.toast.info { background: #14171e; border: 1px solid #e85d75; }
+.toast.info { background: #14171e; border: 1px solid #ff8c00; color: #ff8c00; } /* Đổi sang Cam */
 
 .loading-text,
 .no-results,
@@ -525,14 +521,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     width: 40px; height: 40px;
     margin: 0 auto 1rem;
     border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #e85d75;
+    border-top-color: #ff8c00; /* Đổi sang Cam */
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
 
-.error-text { color: #e85d75; }
+.error-text { color: #ff8c00; } /* Đổi sang Cam */
 
-/* Đổi hiệu ứng Skeleton từ shimmer (nặng) sang pulse (nhẹ hơn cho CPU) */
 .skeleton {
     background: #1e222b;
     animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -557,8 +552,8 @@ footer {
     margin-top: 4rem;
 }
 
-footer a { color: #e85d75; transition: color 0.2s ease; }
-footer a:hover { color: #ff7a92; }
+footer a { color: #ff8c00; transition: color 0.2s ease; } /* Đổi sang Cam */
+footer a:hover { color: #ffae42; }
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: #0b0e13; }
@@ -612,7 +607,6 @@ footer a:hover { color: #ff7a92; }
     .modal-item:nth-child(4n) { border-right: 1px solid rgba(255, 255, 255, 0.04); }
 }
 
-
 /* ==================================================================
    RESPONSIVE - MOBILE (Tối ưu cực mạnh chống lag)
    ================================================================== */
@@ -651,7 +645,6 @@ footer a:hover { color: #ff7a92; }
 
     #loading-overlay { background: rgba(0, 0, 0, 0.95) !important; }
 
-    /* Vô hiệu hóa hoàn toàn hover và transition trên mobile để tiết kiệm tối đa CPU/GPU */
     .movie-item { 
         transform: none !important; 
         transition: none !important; 

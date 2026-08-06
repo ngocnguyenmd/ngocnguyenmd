@@ -48,24 +48,24 @@ header {
 .logo {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #e50914;
+    color: #ff8c00; /* Đổi sang Cam */
     letter-spacing: -0.5px;
     cursor: pointer;
 }
 
 .back-home {
-    background: #e50914;
-    color: #fff;
+    background: #ff8c00; /* Đổi sang Cam */
+    color: #000; /* Chữ đen nổi bật */
     padding: 8px 20px;
     border-radius: 4px;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 700;
     border: none;
     cursor: pointer;
     transition: background 0.2s;
 }
 
-.back-home:hover { background: #c40812; }
+.back-home:hover { background: #e07e00; }
 
 /* ======== INFO CARD ======== */
 .info-card {
@@ -98,7 +98,7 @@ header {
     gap: 0.8rem;
 }
 
-/* ======== POSTER (Đã xóa hover) ======== */
+/* ======== POSTER ======== */
 .tilt-card {
     width: 220px;
     height: 330px;
@@ -142,7 +142,7 @@ header {
 .desc.expanded { max-height: 800px; }
 
 .toggle-desc {
-    color: #e50914;
+    color: #ff8c00; /* Đổi sang Cam */
     cursor: pointer;
     font-weight: 600;
     margin-top: 0.5rem;
@@ -172,8 +172,8 @@ header {
     cursor: pointer;
 }
 
-.btn-primary { background: #e50914; color: #fff; }
-.btn-primary:hover { background: #c40812; }
+.btn-primary { background: #ff8c00; color: #000; } /* Đổi sang Cam */
+.btn-primary:hover { background: #e07e00; }
 
 /* ======== SKELETON ======== */
 .skeleton {

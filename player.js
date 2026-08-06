@@ -37,7 +37,7 @@ let currentTimeUpdateHandler = null;
 let currentEndedHandler = null;
 
 // ==========================================
-// TẢI BẮT BUỘC CẢ 2 LINK HLS.JS VÀ PLYR.JS
+// TẢI THƯ VIỆN
 // ==========================================
 function loadScripts() {
   return new Promise((resolve, reject) => {
@@ -190,20 +190,27 @@ function loadPoster(url) {
   img.src = url;
 }
 
+// ==========================================
+// RENDER SOURCE BAR (SỬA LỖI DROPDOWN BỊ CẮT)
+// ==========================================
 function renderSourceModeBar() {
   sourceModeBar.innerHTML = '';
 
   const sourceDiv = document.createElement('div');
   sourceDiv.className = 'source-btn';
-  sourceDiv.innerHTML = `
-    <button class="btn active" id="current-source">${srcCode.toUpperCase()}</button>
-    <div class="dropdown">
-      <button onclick="changeSource('ax')">AX</button>
-      <button onclick="changeSource('bx')">BX</button>
-      <button onclick="changeSource('cx')">CX</button>
-    </div>
-  `;
+  
+  const sourceBtn = document.createElement('button');
+  sourceBtn.className = 'btn active';
+  sourceBtn.textContent = srcCode.toUpperCase();
+  
+  sourceDiv.appendChild(sourceBtn);
   sourceModeBar.appendChild(sourceDiv);
+
+  // Gán sự kiện click để mở menu global
+  sourceBtn.onclick = (e) => {
+    e.stopPropagation();
+    showGlobalDropdown(sourceBtn);
+  };
 
   const hasSo1 = episodes.some(e => e.link_so1?.trim());
   const hasSo2 = episodes.some(e => e.link_so2?.trim());
@@ -225,6 +232,40 @@ function renderSourceModeBar() {
     btn.onclick = () => { currentPlayMode = 'so2'; play(curEp); };
     sourceModeBar.appendChild(btn);
   }
+}
+
+// Tạo menu dropdown độc lập gắn vào body
+function showGlobalDropdown(anchorBtn) {
+  let dropdown = document.getElementById('global-dropdown');
+  if (!dropdown) {
+    dropdown = document.createElement('div');
+    dropdown.id = 'global-dropdown';
+    document.body.appendChild(dropdown);
+  }
+
+  // Vị trí chính xác ngay dưới nút bấm
+  const rect = anchorBtn.getBoundingClientRect();
+  dropdown.style.left = rect.left + 'px';
+  dropdown.style.top = rect.bottom + 'px';
+  dropdown.style.width = rect.width + 'px';
+  dropdown.style.display = 'block';
+
+  dropdown.innerHTML = `
+    <button onclick="changeSource('ax')">AX</button>
+    <button onclick="changeSource('bx')">BX</button>
+    <button onclick="changeSource('cx')">CX</button>
+  `;
+
+  // Đóng menu khi click ra ngoài
+  setTimeout(() => {
+    document.addEventListener('click', closeGlobalDropdown);
+  }, 10);
+}
+
+function closeGlobalDropdown() {
+  const dropdown = document.getElementById('global-dropdown');
+  if (dropdown) dropdown.style.display = 'none';
+  document.removeEventListener('click', closeGlobalDropdown);
 }
 
 function renderServerBar() {
@@ -490,6 +531,7 @@ function prevEp() { if (curEp > 0) play(curEp - 1); else showToast('Đang ở t�
 function nextEp() { if (curEp < episodes.length - 1) play(curEp + 1); else showToast('Hết tập'); }
 
 window.changeSource = async function(code) {
+  closeGlobalDropdown(); // Đóng menu khi chọn
   if (code === srcCode) return;
   srcCode = code;
   srcName = srcMap[code];
