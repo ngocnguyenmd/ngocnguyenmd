@@ -51,7 +51,7 @@ const API_SOURCES = {
 };
 
 const API_CACHE = {}; 
-let ITEMS_PER_PAGE = 16;
+let ITEMS_PER_PAGE = 6;
 let currentMode = 'default';
 let currentFilter = null;
 let currentPage = 1;
@@ -60,6 +60,7 @@ let currentGenre = null;
 let currentCountry = null;
 let currentYear = null;
 let combinedFilterMode = false;
+let activeFetchController = null; // Hủy yêu cầu cũ khi chuyển trang nhanh
 
 const STATE_KEY = 'phim_state';
 const saveState = () => localStorage.setItem(STATE_KEY, JSON.stringify({mode:currentMode,filter:currentFilter,page:currentPage,search:currentSearchQuery,genre:currentGenre,country:currentCountry,year:currentYear,combined:combinedFilterMode}));
@@ -75,14 +76,12 @@ const loadState = () => {
 };
 const clearState = () => localStorage.removeItem(STATE_KEY);
 
-// Tối ưu số cột grid tự động theo màn hình (A32, PC 1366...)
 const adjustGridForScreen = () => {
   const w = window.innerWidth;
   let cols = 6;
   if (w <= 600) cols = 2;
   else if (w <= 768) cols = 4;
   else if (w <= 1366) cols = 5;
-  
   document.documentElement.style.setProperty('--grid-cols', cols);
   return cols;
 };
@@ -104,7 +103,6 @@ const getEpisodeDisplay = i => {
   return disp;
 };
 
-// Hàm kiểm tra link ảnh 404 (Async)
 const checkImageValid = (url) => {
   return new Promise(resolve => {
     const img = new Image();
@@ -114,7 +112,7 @@ const checkImageValid = (url) => {
   });
 };
 
-const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null, isS=false, isK=false) => {
+const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null, isS=false, isK=false, signal=null) => {
   const cacheKey = `${src.code}-${m}-${f}-${p}-${genre}-${country}-${year}-${isS}-${isK}`;
   if (API_CACHE[cacheKey]) return API_CACHE[cacheKey];
 
@@ -155,7 +153,7 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
   else url = src.defaultUrl(p);
 
   try {
-    const r = await fetch(url);
+    const r = await fetch(url, { signal });
     if (!r.ok) return [];
     const d = await r.json();
     const parser = isK ? src.keywordParser : isS ? src.searchParser : src.parser;
@@ -172,7 +170,6 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
         thumb = cdn + thumb.replace(/^\/+/, '');
       }
       
-      // Sửa lỗi link Ophim bị lặp /uploads/movies/
       if (src.code === 'ax' && thumb.includes('/uploads/movies/uploads/movies/')) {
         thumb = thumb.replace('/uploads/movies/uploads/movies/', '/uploads/movies/');
       }
@@ -192,16 +189,24 @@ const fetchFromSource = async (src, p, m, f, genre=null, country=null, year=null
 
     API_CACHE[cacheKey] = result;
     return result;
-  } catch (e) { console.error('FETCH ERR:', src.name, e); return []; }
+  } catch (e) { 
+    if (e.name !== 'AbortError') console.error('FETCH ERR:', src.name, e);
+    return []; 
+  }
 };
 
 const interleaveFull = async (mode, filter, page, genre=null, country=null, year=null, isSearch=false, isKeyword=false) => {
+  // Hủy yêu cầu cũ nếu chưa xong → giảm tải & nhanh hơn
+  if (activeFetchController) activeFetchController.abort();
+  activeFetchController = new AbortController();
+  const signal = activeFetchController.signal;
+
   let sources = Object.values(API_SOURCES);
   if (combinedFilterMode && (mode === 'combined' || mode === 'genre' || mode === 'country' || mode === 'year')) {
     sources = sources.filter(s => s.code !== 'cx');
   }
   
-  const results = await Promise.all(sources.map(src => fetchFromSource(src, page, mode, filter, genre, country, year, isSearch, isKeyword)));
+  const results = await Promise.all(sources.map(src => fetchFromSource(src, page, mode, filter, genre, country, year, isSearch, isKeyword, signal)));
   
   const all = [];
   const seen = new Set();
@@ -278,7 +283,6 @@ const createCardHTML = (m, progId) => {
   
   const safeName = m.name.replace(/'/g, "\\'");
   
-  // Luôn dùng thẻ img thật, vì ta đã lọc 404 từ trước
   const imgReal = `<img class="movie-img-real" data-src="${m.thumb_url}" alt="${safeName}" data-prog="${progId}">`;
   const imgPlaceholder = `<div class="movie-img-placeholder"></div>`;
   
@@ -300,18 +304,11 @@ const createCardHTML = (m, progId) => {
 const renderFinal = async (movies, container, id) => {
   container.innerHTML = '';
   
-  // Lấy danh sách phim có link ảnh
+  // ✅ Chỉ lọc định dạng link hợp lệ — KHÔNG đợi kiểm tra ảnh 404 trước khi vẽ
   let disp = movies.filter(m => {
-      const url = m.thumb_url || '';
-      return url.trim() !== '' && (url.startsWith('http') || url.startsWith('//'));
+      const url = (m.thumb_url || '').trim();
+      return url.startsWith('http') || url.startsWith('//');
   }).slice(0, ITEMS_PER_PAGE);
-
-  // KIỂM TRA 404: Nếu ảnh hỏng -> LOẠI BỎ PHIM ĐÓ KHỎI MÀN HÌNH
-  disp = await Promise.all(disp.map(async m => {
-      const isValid = await checkImageValid(m.thumb_url);
-      return isValid ? m : null;
-  }));
-  disp = disp.filter(m => m !== null);
 
   total = disp.length;
   loaded = 0;
@@ -321,12 +318,12 @@ const renderFinal = async (movies, container, id) => {
   
   if (total === 0) {
     if (bar) bar.style.width = '100%';
-    document.getElementById(id + '-cont')?.classList.add('done');
-    container.innerHTML = '<div class="no-results">Không có phim hợp lệ (Ảnh lỗi hoặc không có dữ liệu).</div>';
+    document.getElementById(id + '-progress-cont')?.classList.add('done');
+    container.innerHTML = '<div class="no-results">Không có phim hợp lệ.</div>';
     return;
   }
 
-  // Dùng DocumentFragment để đẩy toàn bộ HTML 1 lần
+  // ✅ VẺ NGAY LẬP TỨC — không đợi ảnh
   const fragment = document.createDocumentFragment();
   const wrapper = document.createElement('div');
   wrapper.innerHTML = disp.map(m => createCardHTML(m, id)).join('');
@@ -336,7 +333,18 @@ const renderFinal = async (movies, container, id) => {
   }
   container.appendChild(fragment);
 
-  // IntersectionObserver: Chỉ load ảnh khi cuộn tới
+  // ✅ Kiểm tra ảnh lỗi chạy Ở NỀN sau khi phim đã hiện ra
+  setTimeout(() => {
+    disp.forEach((m, idx) => {
+      checkImageValid(m.thumb_url).then(ok => {
+        if (!ok && container.children[idx]) {
+          container.children[idx].style.opacity = '0.5';
+        }
+      });
+    });
+  }, 50);
+
+  // ✅ Tăng rootMargin → tải ảnh sớm hơn khi còn cách màn hình 400px
   const imgObserver = new IntersectionObserver((entries, obs) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -350,13 +358,14 @@ const renderFinal = async (movies, container, id) => {
         };
         
         img.onerror = function() { 
+          this.style.opacity = '0.3';
           updateProg(this.dataset.prog); 
         };
         
         obs.unobserve(img);
       }
     });
-  }, { rootMargin: '200px' });
+  }, { rootMargin: '400px' });
 
   container.querySelectorAll('.movie-item').forEach(item => {
     item.onclick = () => { 
@@ -588,7 +597,6 @@ const loadGroup = async (name, items) => {
   document.getElementById(`${sid}-pagination`).style.display = 'none';
 };
 
-// ==================== KHỞI TẠO ====================
 document.addEventListener('DOMContentLoaded', () => {
   adjustGridForScreen();
   window.addEventListener('resize', () => {
