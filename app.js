@@ -51,7 +51,7 @@ const API_SOURCES = {
 };
 
 const API_CACHE = {}; 
-let ITEMS_PER_PAGE = 6;
+let ITEMS_PER_PAGE = 12;
 let currentMode = 'default';
 let currentFilter = null;
 let currentPage = 1;
